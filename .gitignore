@@ -1,0 +1,4 @@
+*.pyc
+*_flymake.py
+/target
+/corpus

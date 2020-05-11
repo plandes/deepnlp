@@ -1,0 +1,5 @@
+gensim==3.8.2
+bcolz>=1.2.1
+transformers==2.8.0
+zensols.nlparse==0.0.10
+zensols.deeplearn==0.0.5
