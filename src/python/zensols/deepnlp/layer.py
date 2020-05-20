@@ -66,6 +66,7 @@ class WordEmbeddingLayer(EmbeddingLayer):
                      f'device={vecs.device}')
         self.emb.load_state_dict({'weight': vecs})
         if not self.trainable:
+            logger.debug('layer is not trainable')
             self.requires_grad = False
 
     def preemptive_foward(self, x):
@@ -134,7 +135,8 @@ class SentenceFeatureVectorizer(TokenContainerFeatureVectorizer):
     """
     :param layer: the embedding torch module later used as the input layer
     """
-    layer: EmbeddingLayer
+    embed_model: WordEmbedModel
+    as_batch: bool
     feature_type: str
 
 
@@ -143,22 +145,28 @@ class WordVectorSentenceFeatureVectorizer(SentenceFeatureVectorizer):
     NAME = 'word vector sentence'
 
     def _get_shape(self) -> Tuple[int, int]:
-        #return self.layer.embedding_dim, self.layer.token_length
-        return self.layer.token_length,
+        return self.manager.token_length,
 
     def _encode(self, container: TokensContainer) -> FeatureContext:
-        emodel = self.layer.embed_model
-        tw = self.layer.token_length
-        tokens = container.tokens[0:tw]
-        slen = len(tokens)
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(' '.join(map(lambda x: x.norm, tokens)))
-        tokens = [t.norm for t in tokens]
-        if slen < tw:
-            tokens += [WordEmbedModel.ZERO] * (tw - slen)
-        arr = self.torch_config.empty(self.shape)
-        for i, tok in enumerate(tokens):
-            arr[i] = emodel.word2idx_or_unk(tok)
+        emodel = self.embed_model
+        tw = self.manager.token_length
+        if self.as_batch:
+            containers = container
+        else:
+            containers = [container]
+        shape = (len(containers), self.shape[0])
+        arr = self.torch_config.empty(shape, dtype=torch.long)
+        for row, container in enumerate(containers):
+            tokens = container.tokens[0:tw]
+            slen = len(tokens)
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(' '.join(map(lambda x: x.norm, tokens)))
+            tokens = [t.norm for t in tokens]
+            if slen < tw:
+                tokens += [WordEmbedModel.ZERO] * (tw - slen)
+            #arr = self.torch_config.empty(self.shape, dtype=torch.long)
+            for i, tok in enumerate(tokens):
+                arr[row][i] = emodel.word2idx_or_unk(tok)
         return TensorFeatureContext(self.feature_type, arr)
 
 

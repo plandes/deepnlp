@@ -5,17 +5,21 @@ __author__ = 'Paul Landes'
 
 from typing import List, Dict, Tuple
 from dataclasses import dataclass, field
-from abc import ABC, abstractmethod
+from abc import ABCMeta, abstractmethod
 from pathlib import Path
 import logging
 import numpy as np
-from zensols.persist import persisted, PersistedWork
+from zensols.persist import (
+    persisted,
+    PersistedWork,
+    PersistableContainer,
+)
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass
-class WordEmbedModel(ABC):
+class WordEmbedModel(PersistableContainer, metaclass=ABCMeta):
     """This is an abstract base class that represents a set of word vectors
     (i.e. GloVe).
 
@@ -32,7 +36,8 @@ class WordEmbedModel(ABC):
     cache: bool = field(default=True)
 
     def __post_init__(self):
-        self._data_pw = PersistedWork('_data_pw', self, self.cache)
+        self._data_pw = PersistedWork(
+            '_data_pw', self, self.cache, transient=True)
 
     @abstractmethod
     def _create_data(self) -> Tuple[np.ndarray, List[str],
@@ -50,8 +55,8 @@ class WordEmbedModel(ABC):
         pass
 
     @persisted('_data_pw')
-    def _data(self)  -> Tuple[np.ndarray, List[str],
-                              Dict[str, int], Dict[str, np.ndarray]]:
+    def _data(self) -> Tuple[np.ndarray, List[str],
+                             Dict[str, int], Dict[str, np.ndarray]]:
         return self._create_data()
 
     @property

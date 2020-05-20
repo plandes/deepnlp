@@ -64,6 +64,7 @@ class GloveWordEmbedModel(WordEmbedModel):
         vec_bin_file = vec_bin_dir / f'{desc}.{dim}.dat'
         vec_words_file = vec_bin_dir / f'{desc}.{dim}_words.pkl'
         vec_idx_file = vec_bin_dir / f'{desc}.{dim}_idx.pkl'
+        logger.debug(f'creating paths to {self.path}')
         return vec_txt_path, vec_bin_dir, vec_bin_file, vec_words_file, vec_idx_file
 
     def _write_vecs(self) -> np.ndarray:
