@@ -2,6 +2,7 @@
 
 # type of project
 PROJ_TYPE=	python
+PROJ_MODULES=	git python-doc
 PROJ_ARGS =	-c resources/deepnlp.conf
 
 include ./zenbuild/main.mk
