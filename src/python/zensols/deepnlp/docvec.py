@@ -5,15 +5,14 @@ __author__ = 'Paul Landes'
 
 import logging
 import sys
-from typing import List, Union, Set, Tuple, Any, Dict, Type
+from typing import List, Union, Set, Tuple, Dict, Type
 from abc import abstractmethod, ABCMeta
 from dataclasses import dataclass, field
 import collections
 import torch
 from zensols.persist import persisted
 from zensols.nlp import LanguageResource, TokenFeatures
-from zensols.deeplearn import (
-    TorchConfig,
+from zensols.deeplearn.vectorize import (
     FeatureContext,
     EncodableFeatureVectorizer,
     TensorFeatureContext,

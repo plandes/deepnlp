@@ -10,7 +10,8 @@ import math
 import itertools as it
 from spacy.vocab import Vocab
 import torch
-from zensols.deeplearn import TorchConfig, FeatureVectorizer
+from zensols.deeplearn import TorchConfig
+from zensols.deeplearn.vectorize import FeatureVectorizer
 
 
 @dataclass

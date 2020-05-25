@@ -11,8 +11,8 @@ from typing import List, Tuple
 import numpy as np
 import torch
 from torch import nn
-from zensols.deeplearn import (
-    MaxPool1dFactory,
+from zensols.deeplearn.layer import MaxPool1dFactory
+from zensols.deeplearn.vectorize import (
     FeatureContext,
     TensorFeatureContext,
 )
