@@ -5,13 +5,13 @@ __author__ = 'Paul Landes'
 
 import logging
 import sys
-from typing import List, Union, Set, Tuple, Dict, Type
+from typing import List, Union, Set, Tuple, Dict
 from abc import abstractmethod, ABCMeta
 from dataclasses import dataclass, field
 import collections
 import torch
 from zensols.persist import persisted
-from zensols.nlp import LanguageResource, TokenFeatures
+from zensols.nlp import LanguageResource
 from zensols.deeplearn.vectorize import (
     FeatureContext,
     EncodableFeatureVectorizer,
@@ -20,74 +20,13 @@ from zensols.deeplearn.vectorize import (
 )
 from zensols.deepnlp import (
     FeatureToken,
-    FeatureSentence,
     FeatureDocument,
     TokensContainer,
-    SpacyFeatureVectorizer,
 )
+from zensols.deepnlp import FeatureDocumentParser
+from . import SpacyFeatureVectorizer
 
 logger = logging.getLogger(__name__)
-
-
-@dataclass
-class FeatureDocumentParser(object):
-    """This class parses text in to instances of ``FeatureDocument``.
-
-    *Important:* It is better to use ``TokenContainerFeatureVectorizerManager``
-     instead of this class.
-
-    :see TokenContainerFeatureVectorizerManager:
-
-    """
-    TOKEN_FEATURE_TYPES = FeatureToken.TOKEN_FEATURE_TYPES
-
-    langres: LanguageResource
-    token_feature_types: Set[str] = field(
-        default_factory=lambda: FeatureDocumentParser.TOKEN_FEATURE_TYPES)
-    doc_class: Type[FeatureDocument] = field(default=FeatureDocument)
-
-    def _create_token(self, feature: TokenFeatures) -> FeatureToken:
-        return FeatureToken(feature, self.token_feature_types)
-
-    def from_string(self, text: str) -> List[FeatureSentence]:
-        """Parse a document from a string.
-
-        """
-        lr = self.langres
-        doc = lr.parse(text)
-        sent_feats = []
-        for sent in doc.sents:
-            feats = tuple(map(self._create_token, lr.features(sent)))
-            sent_feats.append(FeatureSentence(sent.text, feats))
-        return sent_feats
-
-    def from_list(self, text: List[str]) -> List[FeatureSentence]:
-        """Parse a document from a list of strings.
-
-        """
-        lr = self.langres
-        sent_feats = []
-        for sent in text:
-            if logger.isEnabledFor(logging.DEBUG):
-                logger.debug(f'sentence: {sent}')
-            feats = tuple(map(self._create_token, lr.features(lr.parse(sent))))
-            sent_feats.append(FeatureSentence(sent, feats))
-        return sent_feats
-
-    def parse(self, text: Union[str, List[str]], *args, **kwargs) -> FeatureDocument:
-        """Parse text or a text as a list of sentences.
-
-        :param text: either a string or a list of strings; if the former a
-                     document with one sentence will be created, otherwise a
-                     document is returned with a sentence for each string in
-                     the list
-
-        """
-        if isinstance(text, str):
-            sents = self.from_string(text)
-        else:
-            sents = self.from_list(text)
-        return self.doc_class(sents, *args, **kwargs)
 
 
 @dataclass

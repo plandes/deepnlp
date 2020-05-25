@@ -12,17 +12,10 @@ import numpy as np
 import torch
 from torch import nn
 from zensols.deeplearn.layer import MaxPool1dFactory
-from zensols.deeplearn.vectorize import (
-    FeatureContext,
-    TensorFeatureContext,
-)
-from zensols.deepnlp import (
-    WordEmbedModel,
-    BertEmbedding,
-    TokensContainer,
-    FeatureSentence,
-    TokenContainerFeatureVectorizer,
-)
+from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
+from zensols.deepnlp import TokensContainer, FeatureSentence
+from zensols.deepnlp.embed import WordEmbedModel, BertEmbedding
+from . import TokenContainerFeatureVectorizer
 
 logger = logging.getLogger(__name__)
 

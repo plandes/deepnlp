@@ -6,10 +6,8 @@ import itertools as it
 from zensols.config import Configurable
 from zensols.persist import Stash, PrimeableStash
 from zensols.multi import MultiProcessStash
-from zensols.deepnlp import (
-    FeatureDocument,
-    TokenContainerFeatureVectorizerManager
-)
+from zensols.deepnlp import FeatureDocument
+from zensols.deepnlp.vectorize import TokenContainerFeatureVectorizerManager
 
 logger = logging.getLogger(__name__)
 

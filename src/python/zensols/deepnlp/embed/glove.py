@@ -27,7 +27,7 @@ class GloveWordEmbedModel(WordEmbedModel):
     An example configuration would be:
     ``
         [glove_embedding]
-        class_name = zensols.deepnlp.GloveWordEmbedModel
+        class_name = zensols.deepnlp.embed.GloveWordEmbedModel
         path = path: ${default:corpus_dir}/glove
         desc = 6B
         dimension = 50

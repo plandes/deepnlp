@@ -2,9 +2,7 @@ import logging
 import torch
 from zensols.config import ExtendedInterpolationConfig as AppConfig
 from zensols.config import ImportConfigFactory
-from zensols.deepnlp import (
-    SentenceFeatureVectorizer,
-)
+from zensols.deepnlp.vectorize import SentenceFeatureVectorizer
 from util import TestFeatureVectorization
 
 logger = logging.getLogger(__name__)

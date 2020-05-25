@@ -1,7 +1,7 @@
 import logging
 import torch
 from zensols.util import loglevel
-from zensols.deepnlp import TokenContainerFeatureVectorizer
+from zensols.deepnlp.vectorize import TokenContainerFeatureVectorizer
 from util import TestFeatureVectorization
 
 logger = logging.getLogger(__name__)
