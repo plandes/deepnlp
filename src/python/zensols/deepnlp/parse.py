@@ -1,4 +1,4 @@
-"""Generate and vectorize language features.
+"""Parse documents and generate features in an organized taxonomy.
 
 """
 __author__ = 'Paul Landes'

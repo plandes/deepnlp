@@ -1,3 +1,4 @@
 from .spacy import *
-from .feature import *
+from .manager import *
+from .vectorizers import *
 from .layer import *
