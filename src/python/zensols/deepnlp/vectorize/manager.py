@@ -60,7 +60,7 @@ class TokenContainerFeatureVectorizerManager(FeatureVectorizerManager):
     token_length: int
     token_feature_types: Set[str] = field(
         default_factory=lambda: FeatureDocumentParser.TOKEN_FEATURE_TYPES)
- 
+
     def __post_init__(self):
         super().__post_init__()
         feat_diff = self.token_feature_types - self.doc_parser.token_feature_types

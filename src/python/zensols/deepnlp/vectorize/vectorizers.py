@@ -44,24 +44,23 @@ class TypeTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
         attr_name = fvec.feature_type
         row_end = row_start + fvec.shape[1]
         toks = container.tokens[:arr.shape[1]]
-        #print('L', len(toks), arr.shape[1])
         for i, tok in enumerate(toks):
             val = getattr(tok, attr_name)
             vec = fvec.from_spacy(val)
             if vec is not None:
-                #print(row_start, row_end, i, tok.norm, val, attr_name, vec.shape)
                 arr[row_start:row_end, i] = vec
 
     def _encode(self, container: TokensContainer) -> FeatureContext:
         row_start = 0
         arr = self.torch_config.zeros(self.shape)
-        #print(f'shape: {self.shape}')
         for fvec in self.manager.spacy_vectorizers.values():
             row_end = row_start + fvec.shape[1]
             self.get_feature_vectors(
                 container, fvec, arr, row_start, row_end)
             row_start = row_end
         arr = arr.to_sparse()
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'array shape: {arr.shape}')
         return TensorFeatureContext(self.feature_type, arr)
 
     def _decode(self, context: FeatureContext) -> torch.Tensor:
@@ -206,6 +205,8 @@ class StatisticsTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer)
         stats = (n_char, n_toks, min_tlen, max_tlen, ave_tlen,
                  n_sents, ave_slen, min_slen, max_slen)
         arr = self.torch_config.from_iterable(stats)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'array shape: {arr.shape}')
         return TensorFeatureContext(self.feature_type, arr)
 
 
