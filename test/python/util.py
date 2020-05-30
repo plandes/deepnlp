@@ -9,12 +9,17 @@ logger = logging.getLogger(__name__)
 
 class TestFeatureVectorization(unittest.TestCase):
     def setUp(self):
-        config = AppConfig('test-resources/features.conf')
+        if hasattr(self.__class__, 'CONF_FILE'):
+            path = self.CONF_FILE
+        else:
+            path = 'test-resources/features.conf'
+        config = AppConfig(path)
         self.fac = ImportConfigFactory(config, shared=True)
         self.sent_text = 'I am a citizen of the United States of America.'
         self.def_parse = ('I', 'am', 'a', 'citizen', 'of',
                           'the United States of America', '.')
-        self.vec = self.fac.instance('feature_vectorizer')
+        if not hasattr(self.__class__, 'NO_VECTORIZER'):
+            self.vec = self.fac.instance('feature_vectorizer')
         self.sent_text2 = self.sent_text + "  My name is Paul Landes."
 
     def assertTensorEquals(self, should, tensor):

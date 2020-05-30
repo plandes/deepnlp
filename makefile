@@ -14,3 +14,7 @@ testparse:
 .PHONY:		testfeatnorm
 testfeatnorm:
 		make PY_SRC_TEST_PAT=test_featnorm.py test
+
+.PHONY:		testenum
+testenum:
+		make PY_SRC_TEST_PAT=test_enum.py test
