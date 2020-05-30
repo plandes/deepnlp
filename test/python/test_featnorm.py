@@ -154,7 +154,7 @@ class TestFeatureVectorizationStatistics(TestFeatureVectorization):
 class TestFeatureVectorizationCombinedSpacy(TestFeatureVectorization):
     def test_feature_type(self):
         fdoc = self.vec.parse(self.sent_text)
-        tvec = self.vec.vectorizers['ftvec']
+        tvec = self.vec.vectorizers['enum']
         tensor = tvec.transform(fdoc)
         self.assertTrue(isinstance(tensor, torch.Tensor))
         should = self.vec.torch_config.sparse(
@@ -179,7 +179,7 @@ class TestFeatureVectorizationCombined(TestFeatureVectorization):
             self.assertTrue(isinstance(arr, torch.Tensor))
             self.assertTrue(isinstance(vec, TokenContainerFeatureVectorizer))
         ftypes = ', '.join(map(lambda x: x[1].feature_type, res))
-        self.assertEqual('count, dep, ftvec, stats', ftypes)
+        self.assertEqual('count, dep, enum, stats', ftypes)
         # transpose added after transposed vectorizer
         shapes = tuple(map(lambda x: x[0].T.shape, res))
         self.assertEqual(((174,), (30,), (174, 30), (9,)), shapes)
@@ -193,7 +193,7 @@ class TestFeatureVectorizationCombined(TestFeatureVectorization):
             self.assertTrue(isinstance(arr, torch.Tensor))
             self.assertTrue(isinstance(vec, TokenContainerFeatureVectorizer))
         ftypes = ', '.join(map(lambda x: x[1].feature_type, res))
-        self.assertEqual('count, ftvec, stats', ftypes)
+        self.assertEqual('count, enum, stats', ftypes)
         # transpose added after transposed vectorizer
         shapes = tuple(map(lambda x: x[0].T.shape, res))
         self.assertEqual(((174,), (174, 25), (9,)), shapes)
