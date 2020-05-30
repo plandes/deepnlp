@@ -164,7 +164,9 @@ class TestFeatureVectorizationCombinedSpacy(TestFeatureVectorization):
               4,   3,   0,   1]],
             [1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],
             (174, 30))
-        self.assertTensorEquals(should.to_dense(), tensor)
+        # transpose added after transposed vectorizer
+        should = should.to_dense().T
+        self.assertTensorEquals(should, tensor)
         self.assertEqual(should.shape, tvec.shape)
 
 
@@ -178,7 +180,8 @@ class TestFeatureVectorizationCombined(TestFeatureVectorization):
             self.assertTrue(isinstance(vec, TokenContainerFeatureVectorizer))
         ftypes = ', '.join(map(lambda x: x[1].feature_type, res))
         self.assertEqual('count, dep, ftvec, stats', ftypes)
-        shapes = tuple(map(lambda x: x[0].shape, res))
+        # transpose added after transposed vectorizer
+        shapes = tuple(map(lambda x: x[0].T.shape, res))
         self.assertEqual(((174,), (30,), (174, 30), (9,)), shapes)
 
     def test_fewer_feats(self):
@@ -191,5 +194,6 @@ class TestFeatureVectorizationCombined(TestFeatureVectorization):
             self.assertTrue(isinstance(vec, TokenContainerFeatureVectorizer))
         ftypes = ', '.join(map(lambda x: x[1].feature_type, res))
         self.assertEqual('count, ftvec, stats', ftypes)
-        shapes = tuple(map(lambda x: x[0].shape, res))
+        # transpose added after transposed vectorizer
+        shapes = tuple(map(lambda x: x[0].T.shape, res))
         self.assertEqual(((174,), (174, 25), (9,)), shapes)

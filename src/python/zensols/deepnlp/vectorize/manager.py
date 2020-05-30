@@ -55,7 +55,6 @@ class TokenContainerFeatureVectorizerManager(FeatureVectorizerManager):
     :see parse:
 
     """
-    langres: LanguageResource
     doc_parser: FeatureDocumentParser
     token_length: int
     token_feature_types: Set[str] = field(
@@ -83,6 +82,10 @@ class TokenContainerFeatureVectorizerManager(FeatureVectorizerManager):
 
         """
         return self.doc_parser.parse(text, *args, **kwargs)
+
+    @property
+    def langres(self) -> LanguageResource:
+        return self.doc_parser.langres
 
     @property
     @persisted('_spacy_vectorizers')

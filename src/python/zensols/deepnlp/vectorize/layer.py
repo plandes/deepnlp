@@ -22,6 +22,10 @@ logger = logging.getLogger(__name__)
 
 # no datacasses are usable since pytorch is picky about initialization order
 class EmbeddingLayer(nn.Module):
+    """A class used as an input layer to provide word embeddings to a deep neural
+    network.
+
+    """
     def __init__(self, feature_vectorizer: TokenContainerFeatureVectorizer,
                  trainable: bool = False, cached: bool = False):
         super().__init__()
@@ -30,15 +34,24 @@ class EmbeddingLayer(nn.Module):
         self.trainable = trainable
         self.cached = cached
 
+    def __getstate__(self):
+        raise ValueError('layers should not be pickeled')
+
 
 class WordEmbeddingLayer(EmbeddingLayer):
-    """An input embedding layer.
+    """An input embedding layer.  This uses an instance of :class:`WordEmbedModel`
+    to compose the word embeddings from indexes.  Each index is that of word
+    vector, which is stacked to create the embedding.  This happens in the
+    PyTorch framework, and is fast.
 
     :param torch_config: the CUDA configuration
+
     :param token_length: the length of the sentence for the embedding
+
     :param trainable: ``True`` if the embedding layer is to be trained
+
     :param cached: ``True`` if to bypass this embedding layer and use
-                         the input directly as the output
+                    the input directly as the output
 
     """
     def __init__(self, embed_model: WordEmbedModel,
@@ -51,7 +64,7 @@ class WordEmbeddingLayer(EmbeddingLayer):
         self.emb = None
         vecs = embed_model.matrix
         if self.copy_vectors:
-            logger.debug(f'copying embedding vectors')
+            logger.debug('copying embedding vectors')
             vecs = np.copy(vecs)
         self.emb = nn.Embedding(*embed_model.matrix.shape)
         vecs = self.torch_config.from_numpy(vecs)
@@ -125,11 +138,20 @@ class BertEmbeddingLayer(EmbeddingLayer):
 
 @dataclass
 class SentenceFeatureVectorizer(TokenContainerFeatureVectorizer):
-    """
+    """Vectorize a :class:`TokensContainer` as a vector of embedding indexes.
+    Later, these indexes are used in a :class:`WordEmbeddingLayer` to create
+    the input word embedding during execution of the model.
+
     :param layer: the embedding torch module later used as the input layer
+
+    :param as_document: if ``True`` treat the embedding as a document, so use
+                        all tokens as one long stream; otherwise, stack each
+                        index as a row iteration of the container, which would
+                        be sentences of given a document
+
     """
     embed_model: WordEmbedModel
-    as_batch: bool
+    as_document: bool
     feature_type: str
 
 
@@ -143,10 +165,10 @@ class WordVectorSentenceFeatureVectorizer(SentenceFeatureVectorizer):
     def _encode(self, container: TokensContainer) -> FeatureContext:
         emodel = self.embed_model
         tw = self.manager.token_length
-        if self.as_batch:
-            containers = container
-        else:
+        if self.as_document:
             containers = [container]
+        else:
+            containers = container
         shape = (len(containers), self.shape[0])
         arr = self.torch_config.empty(shape, dtype=torch.long)
         for row, container in enumerate(containers):
@@ -157,7 +179,6 @@ class WordVectorSentenceFeatureVectorizer(SentenceFeatureVectorizer):
             tokens = [t.norm for t in tokens]
             if slen < tw:
                 tokens += [WordEmbedModel.ZERO] * (tw - slen)
-            #arr = self.torch_config.empty(self.shape, dtype=torch.long)
             for i, tok in enumerate(tokens):
                 arr[row][i] = emodel.word2idx_or_unk(tok)
         return TensorFeatureContext(self.feature_type, arr)
