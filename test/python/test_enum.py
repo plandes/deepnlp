@@ -16,7 +16,7 @@ class TestEnumVectorizer(TestFeatureVectorization):
         self.assertEquals(1, len(res))
         arr, vec = res[0]
         self.assertTrue(isinstance(vec, TokenContainerFeatureVectorizer))
-        self.assertEquals('enum', vec.feature_type)
+        self.assertEquals('enum', vec.feature_id)
         should = (30, 92)
         self.assertEquals(should, arr.shape)
         self.assertEquals(should, vec.shape)
@@ -28,7 +28,7 @@ class TestEnumVectorizer(TestFeatureVectorization):
         self.assertEquals(1, len(res))
         arr, vec = res[0]
         self.assertTrue(isinstance(vec, TokenContainerFeatureVectorizer))
-        self.assertEquals('enum', vec.feature_type)
+        self.assertEquals('enum', vec.feature_id)
         should = (30, 21)
         self.assertEquals(should, arr.shape)
         self.assertEquals(should, vec.shape)

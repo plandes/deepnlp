@@ -40,18 +40,18 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
 
     """
     NAME = 'spacy feature vectorizer'
-    feature_type: str
-    decoded_feature_types: Set[str] = field(default=None)
+    feature_id: str
+    decoded_feature_ids: Set[str] = field(default=None)
 
-    def _get_shape_with_feature_types(self, feature_types: Set[str]):
-        """Compute the shape based on what spacy feature types are given.
+    def _get_shape_with_feature_ids(self, feature_ids: Set[str]):
+        """Compute the shape based on what spacy feature ids are given.
 
-        :param feature_types: the spacy feature types used to filter the result
+        :param feature_ids: the spacy feature ids used to filter the result
 
         """
         flen = 0
         for fvec in self.manager.spacy_vectorizers.values():
-            if feature_types is None or fvec.feature_type in feature_types:
+            if feature_ids is None or fvec.feature_id in feature_ids:
                 flen += fvec.shape[1]
         return self.token_length, flen
 
@@ -59,13 +59,13 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
         """Return the shape needed for the tensor when encoding.
 
         """
-        return self._get_shape_with_feature_types(None)
+        return self._get_shape_with_feature_ids(None)
 
     def _get_shape(self) -> Tuple[int, int]:
-        """Compute the shape based on what spacy feature types are given.
+        """Compute the shape based on what spacy feature ids are given.
 
         """
-        return self._get_shape_with_feature_types(self.decoded_feature_types)
+        return self._get_shape_with_feature_ids(self.decoded_feature_ids)
 
     def _populate_feature_vectors(self, container: TokensContainer,
                                   fvec: SpacyFeatureVectorizer,
@@ -76,7 +76,7 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
         the spacy vectorizer ``fvec`` across all tokens for a column range.
 
         """
-        attr_name = fvec.feature_type
+        attr_name = fvec.feature_id
         col_end = col_start + fvec.shape[1]
         toks = container.tokens[:arr.shape[0]]
         for i, tok in enumerate(toks):
@@ -102,21 +102,21 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'array shape: {arr.shape}')
         return SparseTensorFeatureContext.instance(
-            self.feature_type, arr, self.torch_config)
+            self.feature_id, arr, self.torch_config)
 
     def _slice_by_attributes(self, arr: torch.Tensor) -> torch.Tensor:
         """Create a new tensor from column based slices of the encoded tensor for each
-        specified feature type given in :py:attrib:`~decoded_feature_types`.
+        specified feature id given in :py:attrib:`~decoded_feature_ids`.
 
         """
-        keeps = self.decoded_feature_types
+        keeps = self.decoded_feature_ids
         col_start = 0
         tensors = []
         for fvec in self.manager.spacy_vectorizers.values():
             col_end = col_start + fvec.shape[1]
             if logger.isEnabledFor(logging.DEBUG):
-                logger.debug(f'type={fvec.feature_type}, to keep={keeps}')
-            if fvec.feature_type in keeps:
+                logger.debug(f'type={fvec.feature_id}, to keep={keeps}')
+            if fvec.feature_id in keeps:
                 tensors.append(arr[:, col_start:col_end])
             col_start = col_end
         return torch.cat(tensors, 1)
@@ -126,7 +126,7 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
             arr = context.to_tensor(self.manager.torch_config)
         else:
             arr = super()._decode(context)
-        if self.decoded_feature_types is not None:
+        if self.decoded_feature_ids is not None:
             arr = self._slice_by_attributes(arr)
         return arr
 
@@ -134,13 +134,13 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
 @dataclass
 class CountTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
     """Return the count of all tokens as a 1 X M * N tensor where M is the number
-    of token feature types and N is the columns of the ``fvec`` vectorizer.
-    Each column position's count represents the number of counts for that spacy
+    of token feature ids and N is the columns of the ``fvec`` vectorizer.  Each
+    column position's count represents the number of counts for that spacy
     symol for that index position in the ``fvec``.
 
     """
     NAME = 'token level feature counts'
-    FEATURE_TYPE = 'count'
+    FEATURE_ID = 'count'
 
     def _get_shape(self) -> Tuple[int, int]:
         flen = 0
@@ -153,7 +153,7 @@ class CountTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
         for fvec in self.manager.spacy_vectorizers.values():
             tensors.append(self.get_feature_counts(container, fvec))
         return TensorFeatureContext(
-            self.feature_type, torch.cat(tensors))
+            self.feature_id, torch.cat(tensors))
 
     def get_feature_counts(self, container: TokensContainer,
                            fvec: SpacyFeatureVectorizer) -> torch.Tensor:
@@ -163,7 +163,7 @@ class CountTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
         ``fvec``.
 
         """
-        attr_name = fvec.feature_type
+        attr_name = fvec.feature_id
         fcounts = self.torch_config.zeros(fvec.shape[1])
         for tok in container.tokens:
             val = getattr(tok, attr_name)
@@ -183,7 +183,7 @@ class DepthTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
 
     """
     NAME = 'head depth'
-    FEATURE_TYPE = 'dep'
+    FEATURE_ID = 'dep'
 
     def _get_shape(self) -> Tuple[int, int]:
         return self.token_length,
@@ -195,7 +195,7 @@ class DepthTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
                 self._transform_sent(sent, arr)
         else:
             self._transform_sent(container, arr)
-        return TensorFeatureContext(self.feature_type, arr)
+        return TensorFeatureContext(self.feature_id, arr)
 
     def _transform_sent(self, container: TokensContainer,  arr: torch.Tensor):
         head_depths = self._get_head_depth(container)
@@ -235,7 +235,7 @@ class StatisticsTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer)
 
     """
     NAME = 'statistics'
-    FEATURE_TYPE = 'stats'
+    FEATURE_ID = 'stats'
 
     def _get_shape(self) -> Tuple[int, int]:
         return 9,
@@ -268,7 +268,7 @@ class StatisticsTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer)
         arr = self.torch_config.from_iterable(stats)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'array shape: {arr.shape}')
-        return TensorFeatureContext(self.feature_type, arr)
+        return TensorFeatureContext(self.feature_id, arr)
 
 
 TokenContainerFeatureVectorizerManager.register_vectorizer(StatisticsTokenContainerFeatureVectorizer)

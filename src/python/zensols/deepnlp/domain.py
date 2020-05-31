@@ -39,26 +39,26 @@ class FeatureToken(TextContainer):
     data structures and is hard/expensive to pickle.
 
     """
-    TOKEN_FEATURE_TYPES_BY_TYPE = {
+    TOKEN_FEATURE_IDS_BY_TYPE = {
         'bool': frozenset('is_space is_stop is_ent'.split()),
         'int': frozenset('i idx is_punctuation tag ent dep'.split()),
         'str': frozenset('norm lemma tag_ ent_ dep_'.split()),
         'dict': frozenset('children'.split())}
-    TYPES_BY_TOKEN_FEATURE_TYPE = dict(chain.from_iterable(
+    TYPES_BY_TOKEN_FEATURE_ID = dict(chain.from_iterable(
         map(lambda itm: map(lambda f: (f, itm[0]), itm[1]),
-            TOKEN_FEATURE_TYPES_BY_TYPE.items())))
-    TOKEN_FEATURE_TYPES = frozenset(
-        reduce(lambda res, x: res | x, TOKEN_FEATURE_TYPES_BY_TYPE.values()))
+            TOKEN_FEATURE_IDS_BY_TYPE.items())))
+    TOKEN_FEATURE_IDS = frozenset(
+        reduce(lambda res, x: res | x, TOKEN_FEATURE_IDS_BY_TYPE.values()))
 
-    def __init__(self, features: TokenFeatures, feature_types: Set[str]):
+    def __init__(self, features: TokenFeatures, feature_ids: Set[str]):
         """Initialize.
 
         :param features: the features that describes a token
-        :param feature_type: a string identifying the type of feature that will
+        :param feature_id: a string identifying the type of feature that will
 
         """
-        fd = features.detach(feature_types).to_dict()
-        for k in feature_types:
+        fd = features.detach(feature_ids).to_dict()
+        for k in feature_ids:
             if k not in fd:
                 fd[k] = None
         self.__dict__.update(fd)
@@ -67,18 +67,18 @@ class FeatureToken(TextContainer):
     def text(self):
         return self.norm
 
-    def to_vector(self, feature_types: List[str]) -> Iterable[str]:
+    def to_vector(self, feature_ids: List[str]) -> Iterable[str]:
         """Return an iterable of feature data.
 
         """
-        return map(lambda a: getattr(self, a), feature_types)
+        return map(lambda a: getattr(self, a), feature_ids)
 
     def write(self, depth: int = 0, writer=sys.stdout):
         s2 = self._indspc(depth + 1)
         super().write(depth, writer)
         for k, v in self.__dict__.items():
             if k != 'norm':
-                ptype = self.TYPES_BY_TOKEN_FEATURE_TYPE[k]
+                ptype = self.TYPES_BY_TOKEN_FEATURE_ID[k]
                 writer.write(f'{s2}{k}={v} ({ptype})\n')
 
     def __str__(self):

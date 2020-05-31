@@ -57,12 +57,12 @@ class TokenContainerFeatureVectorizerManager(FeatureVectorizerManager):
     """
     doc_parser: FeatureDocumentParser
     token_length: int
-    token_feature_types: Set[str] = field(
-        default_factory=lambda: FeatureDocumentParser.TOKEN_FEATURE_TYPES)
+    token_feature_ids: Set[str] = field(
+        default_factory=lambda: FeatureDocumentParser.TOKEN_FEATURE_IDS)
 
     def __post_init__(self):
         super().__post_init__()
-        feat_diff = self.token_feature_types - self.doc_parser.token_feature_types
+        feat_diff = self.token_feature_ids - self.doc_parser.token_feature_ids
         if len(feat_diff) > 0:
             fdiffs = ', '.join(feat_diff)
             s = f'parser token features do not exist in vectorizer: {fdiffs}'
@@ -90,17 +90,17 @@ class TokenContainerFeatureVectorizerManager(FeatureVectorizerManager):
     @property
     @persisted('_spacy_vectorizers')
     def spacy_vectorizers(self) -> Dict[str, SpacyFeatureVectorizer]:
-        """Return vectorizers based on the ``token_feature_types`` configured on this
-        instance.  Keys are token level feature types found in
+        """Return vectorizers based on the ``token_feature_ids`` configured on this
+        instance.  Keys are token level feature ids found in
         ``SpacyFeatureVectorizer.VECTORIZERS``.
 
         """
-        token_feature_types = set(SpacyFeatureVectorizer.VECTORIZERS.keys())
-        token_feature_types = token_feature_types & self.token_feature_types
-        token_feature_types = sorted(token_feature_types)
+        token_feature_ids = set(SpacyFeatureVectorizer.VECTORIZERS.keys())
+        token_feature_ids = token_feature_ids & self.token_feature_ids
+        token_feature_ids = sorted(token_feature_ids)
         vectorizers = collections.OrderedDict()
-        for feature_type in token_feature_types:
-            cls = SpacyFeatureVectorizer.VECTORIZERS[feature_type]
+        for feature_id in token_feature_ids:
+            cls = SpacyFeatureVectorizer.VECTORIZERS[feature_id]
             inst = cls(self.torch_config, self.langres.model.vocab)
-            vectorizers[feature_type] = inst
+            vectorizers[feature_id] = inst
         return vectorizers

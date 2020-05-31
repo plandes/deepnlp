@@ -152,7 +152,7 @@ class TestFeatureVectorizationStatistics(TestFeatureVectorization):
 
 
 class TestFeatureVectorizationCombinedSpacy(TestFeatureVectorization):
-    def test_feature_type(self):
+    def test_feature_id(self):
         fdoc = self.vmng.parse(self.sent_text)
         tvec = self.vmng.vectorizers['enum']
         tensor = tvec.transform(fdoc)
@@ -178,8 +178,8 @@ class TestFeatureVectorizationCombined(TestFeatureVectorization):
         for arr, vec in res:
             self.assertTrue(isinstance(arr, torch.Tensor))
             self.assertTrue(isinstance(vec, TokenContainerFeatureVectorizer))
-        ftypes = ', '.join(map(lambda x: x[1].feature_type, res))
-        self.assertEqual('count, dep, enum, stats', ftypes)
+        feature_ids = ', '.join(map(lambda x: x[1].feature_id, res))
+        self.assertEqual('count, dep, enum, stats', feature_ids)
         # transpose added after transposed vectorizer
         shapes = tuple(map(lambda x: x[0].T.shape, res))
         self.assertEqual(((174,), (30,), (174, 30), (9,)), shapes)
@@ -192,8 +192,8 @@ class TestFeatureVectorizationCombined(TestFeatureVectorization):
         for arr, vec in res:
             self.assertTrue(isinstance(arr, torch.Tensor))
             self.assertTrue(isinstance(vec, TokenContainerFeatureVectorizer))
-        ftypes = ', '.join(map(lambda x: x[1].feature_type, res))
-        self.assertEqual('count, enum, stats', ftypes)
+        feature_ids = ', '.join(map(lambda x: x[1].feature_id, res))
+        self.assertEqual('count, enum, stats', feature_ids)
         # transpose added after transposed vectorizer
         shapes = tuple(map(lambda x: x[0].T.shape, res))
         self.assertEqual(((174,), (174, 25), (9,)), shapes)

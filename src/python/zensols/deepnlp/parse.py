@@ -22,15 +22,15 @@ class FeatureDocumentParser(object):
     :see TokenContainerFeatureVectorizerManager:
 
     """
-    TOKEN_FEATURE_TYPES = FeatureToken.TOKEN_FEATURE_TYPES
+    TOKEN_FEATURE_IDS = FeatureToken.TOKEN_FEATURE_IDS
 
     langres: LanguageResource
-    token_feature_types: Set[str] = field(
-        default_factory=lambda: FeatureDocumentParser.TOKEN_FEATURE_TYPES)
+    token_feature_ids: Set[str] = field(
+        default_factory=lambda: FeatureDocumentParser.TOKEN_FEATURE_IDS)
     doc_class: Type[FeatureDocument] = field(default=FeatureDocument)
 
     def _create_token(self, feature: TokenFeatures) -> FeatureToken:
-        return FeatureToken(feature, self.token_feature_types)
+        return FeatureToken(feature, self.token_feature_ids)
 
     def from_string(self, text: str) -> List[FeatureSentence]:
         """Parse a document from a string.

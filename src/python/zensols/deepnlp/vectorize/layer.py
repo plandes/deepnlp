@@ -152,7 +152,7 @@ class SentenceFeatureVectorizer(TokenContainerFeatureVectorizer):
     """
     embed_model: WordEmbedModel
     as_document: bool
-    feature_type: str
+    feature_id: str
 
 
 @dataclass
@@ -181,7 +181,7 @@ class WordVectorSentenceFeatureVectorizer(SentenceFeatureVectorizer):
                 tokens += [WordEmbedModel.ZERO] * (tw - slen)
             for i, tok in enumerate(tokens):
                 arr[row][i] = emodel.word2idx_or_unk(tok)
-        return TensorFeatureContext(self.feature_type, arr)
+        return TensorFeatureContext(self.feature_id, arr)
 
 
 @dataclass
@@ -199,4 +199,4 @@ class BertSentenceFeatureVectorizer(SentenceFeatureVectorizer):
         else:
             batch = self.layer_config.layer.doc_to_batch([sent.text])[0]
         return TensorFeatureContext(
-            self.feature_type, self.torch_config.to(batch))
+            self.feature_id, self.torch_config.to(batch))

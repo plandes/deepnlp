@@ -115,14 +115,14 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
             writer.write(f'  {k} => {syms[k]} ({self.transform(k)})\n')
 
     def __str__(self):
-        return f'{self.NAME} ({self.FEATURE_TYPE})'
+        return f'{self.NAME} ({self.FEATURE_ID})'
 
 
 @dataclass
 class NamedEntityRecognitionFeatureVectorizer(SpacyFeatureVectorizer):
     NAME = 'named entity recognition'
     LANG = 'en'
-    FEATURE_TYPE = 'ent'
+    FEATURE_ID = 'ent'
     SYMBOLS = """PERSON NORP FACILITY FAC ORG GPE LOC PRODUCT EVENT WORK_OF_ART LAW LANGUAGE
     DATE TIME PERCENT MONEY QUANTITY ORDINAL CARDINAL PER MISC"""
 
@@ -131,7 +131,7 @@ class NamedEntityRecognitionFeatureVectorizer(SpacyFeatureVectorizer):
 class DependencyFeatureVectorizer(SpacyFeatureVectorizer):
     NAME = 'dependency'
     LANG = 'en'
-    FEATURE_TYPE = 'dep'
+    FEATURE_ID = 'dep'
     SYMBOLS = """acl acomp advcl advmod agent amod appos attr aux auxpass case cc ccomp clf
 complm compound conj cop csubj csubjpass dative dep det discourse dislocated
 dobj expl fixed flat goeswith hmod hyph infmod intj iobj list mark meta neg
@@ -144,7 +144,7 @@ quantmod rcmod relcl reparandum root vocative xcomp ROOT"""
 class PartOfSpeechFeatureVectorizer(SpacyFeatureVectorizer):
     NAME = 'part of speech'
     LANG = 'en'
-    FEATURE_TYPE = 'tag'
+    FEATURE_ID = 'tag'
     SYMBOLS = """ADJ ADP ADV AUX CONJ CCONJ DET INTJ NOUN NUM PART PRON PROPN PUNCT SCONJ SYM
 VERB X EOL SPACE . , -LRB- -RRB- `` " ' $ # AFX CC CD DT EX FW HYPH IN JJ JJR
 JJS LS MD NIL NN NNP NNPS NNS PDT POS PRP PRP$ RB RBR RBS RP TO UH VB VBD VBG
@@ -153,6 +153,6 @@ PNP"""
 
 
 SpacyFeatureVectorizer.VECTORIZERS = \
-    {cls.FEATURE_TYPE: cls for cls in (NamedEntityRecognitionFeatureVectorizer,
+    {cls.FEATURE_ID: cls for cls in (NamedEntityRecognitionFeatureVectorizer,
                                        DependencyFeatureVectorizer,
                                        PartOfSpeechFeatureVectorizer)}
