@@ -6,6 +6,7 @@ __author__ = 'Paul Landes'
 
 import logging
 from typing import List, Union, Set, Dict
+from enum import Enum
 from abc import abstractmethod, ABCMeta
 from dataclasses import dataclass, field
 import collections
@@ -23,6 +24,20 @@ from . import SpacyFeatureVectorizer
 logger = logging.getLogger(__name__)
 
 
+class TokenContainerFeatureType(Enum):
+    """The type of :class:`TokenContainerFeatureVectorizer`, which are one of:
+
+       - TOKEN: token level with a shape congruent with the number of tokens,
+                typically concatenated with the ebedding layer
+       - DOCUMENT: document level, typically added to a join layer
+       - EMBEDDING: embedding layer, typically used as the input layer
+
+    """
+    TOKEN = 0
+    DOCUMENT = 1
+    EMBEDDING = 2
+
+
 @dataclass
 class TokenContainerFeatureVectorizer(EncodableFeatureVectorizer,
                                       metaclass=ABCMeta):
@@ -35,8 +50,17 @@ class TokenContainerFeatureVectorizer(EncodableFeatureVectorizer,
         pass
 
     @property
+    def feature_type(self) -> TokenContainerFeatureType:
+        return self.FEATURE_TYPE
+
+    @property
     def token_length(self) -> int:
         return self.manager.token_length
+
+    def __str__(self):
+        return (f'{super().__str__()}, ' +
+                f'feature type: {self.feature_type.name}, ' +
+                f'token length: {self.token_length}')
 
 
 @dataclass

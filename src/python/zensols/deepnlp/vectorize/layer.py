@@ -15,6 +15,7 @@ from zensols.deeplearn.layer import MaxPool1dFactory
 from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
 from zensols.deepnlp import TokensContainer, FeatureSentence
 from zensols.deepnlp.embed import WordEmbedModel, BertEmbedding
+from zensols.deepnlp.vectorize import TokenContainerFeatureType
 from . import TokenContainerFeatureVectorizer
 
 logger = logging.getLogger(__name__)
@@ -158,9 +159,10 @@ class SentenceFeatureVectorizer(TokenContainerFeatureVectorizer):
 @dataclass
 class WordVectorSentenceFeatureVectorizer(SentenceFeatureVectorizer):
     NAME = 'word vector sentence'
+    FEATURE_TYPE = TokenContainerFeatureType.EMBEDDING
 
     def _get_shape(self) -> Tuple[int, int]:
-        return self.manager.token_length,
+        return self.manager.token_length, self.embed_model.vector_dimension
 
     def _encode(self, container: TokensContainer) -> FeatureContext:
         emodel = self.embed_model
@@ -187,6 +189,7 @@ class WordVectorSentenceFeatureVectorizer(SentenceFeatureVectorizer):
 @dataclass
 class BertSentenceFeatureVectorizer(SentenceFeatureVectorizer):
     NAME = 'bert vector sentence'
+    FEATURE_TYPE = TokenContainerFeatureType.EMBEDDING
 
     def _get_shape(self) -> Tuple[int, int]:
         return self.layer.vector_dimension, self.layer.token_length

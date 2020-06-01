@@ -22,6 +22,7 @@ from . import (
     SpacyFeatureVectorizer,
     TokenContainerFeatureVectorizer,
     TokenContainerFeatureVectorizerManager,
+    TokenContainerFeatureType,
 )
 
 logger = logging.getLogger(__name__)
@@ -40,6 +41,7 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
 
     """
     NAME = 'spacy feature vectorizer'
+    FEATURE_TYPE = TokenContainerFeatureType.TOKEN
     feature_id: str
     decoded_feature_ids: Set[str] = field(default=None)
 
@@ -109,16 +111,20 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
         specified feature id given in :py:attrib:`~decoded_feature_ids`.
 
         """
-        keeps = self.decoded_feature_ids
+        keeps = set(self.decoded_feature_ids)
         col_start = 0
         tensors = []
         for fvec in self.manager.spacy_vectorizers.values():
             col_end = col_start + fvec.shape[1]
+            fid = fvec.feature_id
             if logger.isEnabledFor(logging.DEBUG):
-                logger.debug(f'type={fvec.feature_id}, to keep={keeps}')
-            if fvec.feature_id in keeps:
+                logger.debug(f'type={fid}, to keep={keeps}')
+            if fid in keeps:
                 tensors.append(arr[:, col_start:col_end])
+                keeps.remove(fid)
             col_start = col_end
+        if len(keeps) > 0:
+            raise ValueError(f'unknown feature type IDs: {keeps}')
         return torch.cat(tensors, 1)
 
     def _decode(self, context: FeatureContext) -> torch.Tensor:
@@ -126,6 +132,8 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
             arr = context.to_tensor(self.manager.torch_config)
         else:
             arr = super()._decode(context)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'decoded features: {self.decoded_feature_ids}')
         if self.decoded_feature_ids is not None:
             arr = self._slice_by_attributes(arr)
         return arr
@@ -141,6 +149,7 @@ class CountTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
     """
     NAME = 'token level feature counts'
     FEATURE_ID = 'count'
+    FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
 
     def _get_shape(self) -> Tuple[int, int]:
         flen = 0
@@ -163,10 +172,10 @@ class CountTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
         ``fvec``.
 
         """
-        attr_name = fvec.feature_id
+        fid = fvec.feature_id
         fcounts = self.torch_config.zeros(fvec.shape[1])
         for tok in container.tokens:
-            val = getattr(tok, attr_name)
+            val = getattr(tok, fid)
             fnid = fvec.id_from_spacy(val, -1)
             if fnid > -1:
                 fcounts[fnid] += 1
@@ -184,6 +193,7 @@ class DepthTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
     """
     NAME = 'head depth'
     FEATURE_ID = 'dep'
+    FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
 
     def _get_shape(self) -> Tuple[int, int]:
         return self.token_length,
@@ -236,6 +246,7 @@ class StatisticsTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer)
     """
     NAME = 'statistics'
     FEATURE_ID = 'stats'
+    FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
 
     def _get_shape(self) -> Tuple[int, int]:
         return 9,
