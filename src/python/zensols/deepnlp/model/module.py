@@ -1,8 +1,18 @@
+"""An embedding layer module useful for models that use embeddings as input.
+
+"""
+__author__ = 'Paul Landes'
+
 import logging
 from dataclasses import dataclass
+import torch
 from zensols.deeplearn.vectorize import FeatureVectorizer
 from zensols.deeplearn.model import NetworkSettings, BaseNetworkModule
-from zensols.deeplearn.batch import BatchMetadataFactory, BatchFieldMetadata
+from zensols.deeplearn.batch import (
+    BatchMetadataFactory,
+    BatchFieldMetadata,
+    Batch,
+)
 from zensols.deepnlp.vectorize import (
     WordEmbeddingLayer,
     TokenContainerFeatureType,
@@ -14,7 +24,8 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class EmbeddingNetworkSettings(NetworkSettings):
-    """A utility container settings class for convulsion network models.
+    """A utility container settings class for models that use an embedding input
+    layer.
 
     """
     embedding_layer: WordEmbeddingLayer
@@ -28,12 +39,32 @@ class EmbeddingNetworkSettings(NetworkSettings):
 
 
 class EmbeddingBaseNetworkModule(BaseNetworkModule):
+    """An module that uses an embedding as the input layer.  It creates this as
+    attribute ``embedding`` for the sub class to use in the :meth:`_forward`
+    method.  In addition, it creates the following attributes:
+
+      - ``embedding_output_size``: the outpu size of the embedding layer, note
+                                   this includes any features layered/concated
+                                   given in all token level vectorizer's
+                                   configuration
+
+      - ``join_size``: if a join layer is to be used, this has the size of the
+                       part of the join layer that will have the document level
+                       features
+
+      - ``token_attribs``: the token level feature names (see
+                           :meth:`_forward_token_features`)
+
+      - ``doc_attribs``: the doc level feature names (see
+                         :meth:`_forward_document_features`)
+
+    """
     def __init__(self, net_settings: EmbeddingNetworkSettings,
                  logger: logging.Logger = None):
         super().__init__(net_settings, logger)
-        self.emb = net_settings.embedding_layer
-        self.input_size = self.emb.embedding_dim
-        self.fc_in = 0
+        self.embedding = net_settings.embedding_layer
+        self.embedding_output_size = self.embedding.embedding_dim
+        self.join_size = 0
         meta = self.net_settings.batch_metadata_factory()
         if self.net_settings.debug:
             meta.write()
@@ -46,8 +77,32 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule):
                 logger.debug(f'{name} -> {field_meta}')
             if isinstance(vec, TokenContainerFeatureVectorizer):
                 if vec.feature_type == TokenContainerFeatureType.TOKEN:
-                    self.input_size += vec.shape[1]
+                    self.embedding_output_size += vec.shape[1]
                     self.token_attribs.append(field_meta.field.attr)
                 elif vec.feature_type == TokenContainerFeatureType.DOCUMENT:
-                    self.fc_in += field_meta.shape[0]
+                    self.join_size += field_meta.shape[0]
                     self.doc_attribs.append(field_meta.field.attr)
+
+    def _forward_token_features(self, batch: Batch, x: torch.Tensor) \
+            -> torch.Tensor:
+        """Concatenate any token features given by the vectorizer configuration.
+
+        """
+        for attrib in self.token_attribs:
+            feats = batch.attributes[attrib]
+            self._shape_debug(attrib, feats)
+            x = torch.cat((x, feats), 2)
+            self._shape_debug('token concat ' + attrib, x)
+        return x
+
+    def _forward_document_features(self, batch: Batch, x: torch.Tensor) \
+            -> torch.Tensor:
+        """Concatenate any document features given by the vectorizer configuration.
+
+        """
+        for attrib in self.doc_attribs:
+            st = batch.attributes[attrib]
+            self._shape_debug(attrib, st)
+            x = torch.cat((x, st), 1)
+            self._shape_debug('doc concat' + attrib, x)
+        return x
