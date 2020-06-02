@@ -18,7 +18,7 @@ class TestFeatureVectorization(TestFeatureVectorization):
         vec = self.fac('feature_vectorizer')
         sent_vec = vec.vectorizers['wsv']
         self.assertTrue(isinstance(sent_vec, SentenceFeatureVectorizer))
-        self.assertEqual((20,), sent_vec.shape)
+        self.assertEqual((20, 50), sent_vec.shape)
         doc = vec.parse(self.sent_text)
         arr = sent_vec.transform(doc)
         self.assertTrue(isinstance(arr, torch.Tensor))

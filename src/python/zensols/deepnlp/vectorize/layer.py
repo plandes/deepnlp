@@ -8,7 +8,6 @@ __author__ = 'Paul Landes'
 import logging
 from dataclasses import dataclass
 from typing import List, Tuple
-import numpy as np
 import torch
 from torch import nn
 from zensols.deeplearn.layer import MaxPool1dFactory
@@ -28,18 +27,20 @@ class EmbeddingLayer(nn.Module):
 
     """
     def __init__(self, feature_vectorizer: TokenContainerFeatureVectorizer,
-                 trainable: bool = False, cached: bool = False):
+                 embedding_dim: int, trainable: bool = False,
+                 sparse: bool = False):
         super().__init__()
+        self.embedding_dim = embedding_dim
         self.token_length = feature_vectorizer.token_length
         self.torch_config = feature_vectorizer.torch_config
         self.trainable = trainable
-        self.cached = cached
+        self.sparse = sparse
 
     def __getstate__(self):
         raise ValueError('layers should not be pickeled')
 
 
-class WordEmbeddingLayer(EmbeddingLayer):
+class WordVectorEmbeddingLayer(EmbeddingLayer):
     """An input embedding layer.  This uses an instance of :class:`WordEmbedModel`
     to compose the word embeddings from indexes.  Each index is that of word
     vector, which is stacked to create the embedding.  This happens in the
@@ -52,36 +53,53 @@ class WordEmbeddingLayer(EmbeddingLayer):
     :param trainable: ``True`` if the embedding layer is to be trained
 
     :param cached: ``True`` if to bypass this embedding layer and use
-                    the input directly as the output
+                   the input directly as the output
 
     """
-    def __init__(self, embed_model: WordEmbedModel,
-                 *args, copy_vectors: bool = False, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, embed_model: WordEmbedModel, *args, **kwargs):
+        super().__init__(*args, embedding_dim=embed_model.matrix.shape[1],
+                         **kwargs)
         self.embed_model = embed_model
-        self.copy_vectors = copy_vectors
         self.num_embeddings = embed_model.matrix.shape[0]
-        self.embedding_dim = embed_model.matrix.shape[1]
-        self.emb = None
-        vecs = embed_model.matrix
-        if self.copy_vectors:
-            logger.debug('copying embedding vectors')
-            vecs = np.copy(vecs)
-        self.emb = nn.Embedding(*embed_model.matrix.shape)
-        vecs = self.torch_config.from_numpy(vecs)
-        logger.debug(f'setting tensors: {vecs.shape}, ' +
-                     f'device={vecs.device}')
-        self.emb.load_state_dict({'weight': vecs})
-        if not self.trainable:
+        vecs = self.torch_config.from_numpy(embed_model.matrix)
+        if self.trainable:
+            logger.debug('cloning embedding for trainability')
+            vecs = torch.clone(vecs)
+        else:
             logger.debug('layer is not trainable')
             self.requires_grad = False
+        logger.debug(f'setting tensors: {vecs.shape}, ' +
+                     f'device={vecs.device}')
+        self.emb = nn.Embedding.from_pretrained(
+            vecs, freeze=self.trainable, sparse=self.sparse)
 
     def forward(self, x):
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'forward: {x.shape}: cache={self.cached}')
-        if not self.cached:
-            x = self.emb.forward(x)
-        return x
+            logger.debug(f'forward: {x.shape}')
+        return self.emb.forward(x)
+
+
+class ConstructedWordVectorEmbeddingLayer(EmbeddingLayer):
+    def __init__(self, embed_model: WordEmbedModel, *args, **kwargs):
+        super().__init__(*args, embedding_dim=embed_model.matrix.shape[1],
+                         **kwargs)
+        self.embed_model = embed_model
+        self.num_embeddings = embed_model.matrix.shape[0]
+        vecs = self.torch_config.from_numpy(embed_model.matrix)
+        self.vecs = nn.Parameter(vecs, requires_grad=False)
+        self.requires_grad = False
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        batches = []
+        vecs = []
+        src_vecs = self.vecs
+        for batch_idx in x:
+            for idxt in batch_idx:
+                idx = idxt.item()
+                vecs.append(src_vecs[idx])
+            batches.append(torch.stack(vecs))
+            vecs.clear()
+        return torch.stack(batches).contiguous()
 
 
 class BertEmbeddingLayer(EmbeddingLayer):

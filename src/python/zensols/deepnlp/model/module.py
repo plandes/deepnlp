@@ -3,8 +3,8 @@
 """
 __author__ = 'Paul Landes'
 
-import logging
 from dataclasses import dataclass
+import logging
 import torch
 from zensols.deeplearn.vectorize import FeatureVectorizer
 from zensols.deeplearn.model import NetworkSettings, BaseNetworkModule
@@ -14,7 +14,7 @@ from zensols.deeplearn.batch import (
     Batch,
 )
 from zensols.deepnlp.vectorize import (
-    WordEmbeddingLayer,
+    EmbeddingLayer,
     TokenContainerFeatureType,
     TokenContainerFeatureVectorizer,
 )
@@ -34,9 +34,9 @@ class EmbeddingNetworkSettings(NetworkSettings):
                                    :py:meth:`_forward`
 
     """
-    #embeddings_attribute_name: str
-    embedding_layer: WordEmbeddingLayer
+    embedding_layer: EmbeddingLayer
     batch_metadata_factory: BatchMetadataFactory
+    cache_embedding: bool
 
     def __getstate__(self):
         state = super().__getstate__()
@@ -75,7 +75,6 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule):
                  logger: logging.Logger = None):
         super().__init__(net_settings, logger)
         self.embedding = net_settings.embedding_layer
-        emb_model = self.embedding.embed_model
         self.embedding_output_size = self.embedding.embedding_dim
         self.join_size = 0
         meta = self.net_settings.batch_metadata_factory()
@@ -108,12 +107,24 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule):
         """Use the embedding layer return the word embedding tensors.
  
         """
-        x = batch.attributes[self.embeddings_attribute_name]
-        self._shape_debug('input', x)
+        cache = self.net_settings.cache_embedding
+        cache_attr = f'_cache_{self.__class__.__name__}'
 
-        x = self.embedding(x)
-        self._shape_debug('embedding', x)
+        logger.debug(f'caching embedding: {cache} attr name: {cache_attr}')
 
+        if cache and hasattr(batch, cache_attr):
+            logger.debug('reusing previous calc embedding')
+            x = getattr(batch, cache_attr)
+        else:
+            x = batch.attributes[self.embeddings_attribute_name]
+            self._shape_debug('input', x)
+
+            x = self.embedding(x)
+            self._shape_debug('embedding', x)
+
+            if cache:
+                logger.debug(f'{batch.id} ({id(batch)}): saving embedding: {x.shape}')
+                setattr(batch, cache_attr, x)
         return x
 
     def _forward_token_features(self, batch: Batch, x: torch.Tensor) \
