@@ -85,9 +85,14 @@ class ConstructedWordVectorEmbeddingLayer(EmbeddingLayer):
                          **kwargs)
         self.embed_model = embed_model
         self.num_embeddings = embed_model.matrix.shape[0]
-        vecs = self.torch_config.from_numpy(embed_model.matrix)
-        self.vecs = nn.Parameter(vecs, requires_grad=False)
+        self.vecs = self.torch_config.from_numpy(embed_model.matrix)
         self.requires_grad = False
+
+    def _apply(self, fn):
+        super()._apply(fn)
+        # apply the device memory copy to the GPU
+        self.vecs = fn(self.vecs)
+        return self
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         batches = []

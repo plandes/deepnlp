@@ -40,8 +40,8 @@ class EmbeddingNetworkSettings(NetworkSettings):
 
     def __getstate__(self):
         state = super().__getstate__()
-        del state['embedding_layer']
-        del state['batch_metadata_factory']
+        state.pop('embedding_layer', None)
+        state.pop('batch_metadata_factory', None)
         return state
 
 
