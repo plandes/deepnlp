@@ -42,7 +42,6 @@ class GloveWordEmbedModel(WordEmbedModel):
     :param vocab_size: vocabulary size
 
     """
-
     desc: str = field(default='6B')
     dimension: str = field(default=300)
     vocab_size: int = field(default=400000)

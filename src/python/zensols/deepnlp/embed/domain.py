@@ -5,21 +5,16 @@ __author__ = 'Paul Landes'
 
 from typing import List, Dict, Tuple
 from dataclasses import dataclass, field
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 from pathlib import Path
 import logging
 import numpy as np
-from zensols.persist import (
-    persisted,
-    PersistedWork,
-    PersistableContainer,
-)
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass
-class WordEmbedModel(PersistableContainer, metaclass=ABCMeta):
+class WordEmbedModel(ABC):
     """This is an abstract base class that represents a set of word vectors
     (i.e. GloVe).
 
@@ -31,13 +26,12 @@ class WordEmbedModel(PersistableContainer, metaclass=ABCMeta):
     """
     UNKNOWN = '<unk>'
     ZERO = UNKNOWN
+    CACHE = {}
 
+    name: str
     path: Path
     cache: bool = field(default=True)
-
-    def __post_init__(self):
-        self._data_pw = PersistedWork(
-            '_data_pw', self, self.cache, transient=True)
+    lowercase: bool = field(default=False)
 
     @abstractmethod
     def _create_data(self) -> Tuple[np.ndarray, List[str],
@@ -51,13 +45,26 @@ class WordEmbedModel(PersistableContainer, metaclass=ABCMeta):
             - ``word2vec`` is the word to word vector mapping
             - ``words`` are the string vocabulary
             - ``word2idx`` is the word to word vector index mapping
+
         """
         pass
 
-    @persisted('_data_pw')
+    def clear_cache(self):
+        self.CACHE.clear()
+
     def _data(self) -> Tuple[np.ndarray, List[str],
                              Dict[str, int], Dict[str, np.ndarray]]:
-        return self._create_data()
+        if not hasattr(self, '_data_inst'):
+            self._data_inst = self.CACHE.get(self.name)
+            if self._data_inst is None:
+                self._data_inst = self._create_data()
+                self.CACHE[self.name] = self._data_inst
+        return self._data_inst
+
+    def __getstate__(self):
+        state = dict(self.__dict__())
+        state.pop('_data_inst', None)
+        return state
 
     @property
     def matrix(self) -> np.ndarray:
@@ -80,28 +87,38 @@ class WordEmbedModel(PersistableContainer, metaclass=ABCMeta):
         """
         return self.matrix.shape[1]
 
-    def word2idx_or_unk(self, word) -> np.ndarray:
+    def word2idx_or_unk(self, word: str) -> int:
+        if self.lowercase:
+            word = word.lower()
         word2idx = self._data()[3]
         idx = word2idx.get(word)
         if idx is None:
             idx = word2idx.get(self.UNKNOWN)
         return idx
 
-    def get(self, key, default=None) -> np.ndarray:
+    def get(self, key: str, default: np.ndarray = None) -> np.ndarray:
         """Just like a ``dict.get()``, but but return the vector for a word.
 
         :param key: the word to get the vector
+
         :param default: what to return if ``key`` doesn't exist in the dict
-        :return: the GloVE word vector
+
+        :return: the word vector
         """
+        if self.lowercase:
+            key = key.lower()
         if key not in self.vectors:
             key = self.UNKNOWN
         return self.vectors.get(key, default)
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: str):
+        if self.lowercase:
+            key = key.lower()
         return self.vectors[key]
 
-    def __contains__(self, key):
+    def __contains__(self, key: str):
+        if self.lowercase:
+            key = key.lower()
         return key in self.vectors
 
     def __len__(self):

@@ -8,10 +8,7 @@ from typing import List, Dict, Tuple
 from dataclasses import dataclass, field
 import logging
 import numpy as np
-from gensim.models import (
-    KeyedVectors,
-    Word2Vec,
-)
+from gensim.models import KeyedVectors, Word2Vec
 from zensols.util import time
 from zensols.deepnlp.embed import WordEmbedModel
 
@@ -26,9 +23,9 @@ class Word2VecModel(WordEmbedModel):
     dimension: int = field(default=300)
     model_type: str = field(default='keyed')
 
-    def __post_init__(self):
-        super().__post_init__()
-        self.zero_arr = np.zeros((1, int(self.dimension)),)
+    @property
+    def model(self) -> KeyedVectors:
+        return self._data()[1]
 
     def _get_model(self):
         """The word2vec model.
@@ -41,15 +38,16 @@ class Word2VecModel(WordEmbedModel):
                 model = self._get_trained_model()
             return model
 
-    def _get_keyed_model(self):
+    def _get_keyed_model(self) -> KeyedVectors:
         """Load a model from a pretrained word2vec model.
 
         """
         logger.info(f'loading keyed file: {self.path}')
         fname = str(self.path.absolute())
-        return KeyedVectors.load_word2vec_format(fname, binary=True)
+        with time(f'loaded key model from {fname}l'):
+            return KeyedVectors.load_word2vec_format(fname, binary=True)
 
-    def _get_trained_model(self):
+    def _get_trained_model(self) -> Word2Vec:
         """Load a model trained with gensim.
 
         """
@@ -65,15 +63,32 @@ class Word2VecModel(WordEmbedModel):
 
     def _create_data(self) -> Tuple[np.ndarray, List[str],
                                     Dict[str, int], Dict[str, np.ndarray]]:
-        logger.info(f'reading binary vector file')
+        logger.info('reading binary vector file')
         wv = self._get_model().wv
         words = wv.index2entity
-        word2vec = wv
+        word2vec = {}
         word2idx = {}
         vectors = []
         with time('created data structures'):
             for i, word in enumerate(words):
                 word2idx[word] = i
-                vectors.append(wv[word])
+                vec = wv[word]
+                vectors.append(vec)
+                word2vec[word] = vec
             vectors = np.array(vectors)
+        unknown_vec = np.expand_dims(np.zeros(self.dimension), axis=0)
+        vectors = np.concatenate((vectors, unknown_vec))
+        word2idx[self.UNKNOWN] = len(words)
+        words.append(self.UNKNOWN)
+        word2vec[self.UNKNOWN] = unknown_vec
         return vectors, word2vec, words, word2idx
+
+    # def get(self, key: str, default: np.ndarray = None) -> np.ndarray:
+    #     vecs = self.vectors
+    #     if self.lowercase:
+    #         key = key.lower()
+    #     if key not in self.vectors:
+    #         key = self.UNKNOWN
+    #     if key in vecs:
+    #         return vecs[key]
+    #     return default

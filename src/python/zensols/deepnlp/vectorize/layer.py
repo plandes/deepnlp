@@ -76,14 +76,6 @@ class WordEmbeddingLayer(EmbeddingLayer):
             logger.debug('layer is not trainable')
             self.requires_grad = False
 
-    def preemptive_foward(self, x):
-        x = x.to(next(self.parameters()).device)
-        nx = self.emb.forward(x)
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'pre-forward: {x.shape} -> {nx.shape}: ' +
-                         f'cache={self.cached}')
-        return nx
-
     def forward(self, x):
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'forward: {x.shape}: cache={self.cached}')
