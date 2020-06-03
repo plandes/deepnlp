@@ -105,16 +105,17 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule):
 
     def _forward_embedding_features(self, batch: Batch) -> torch.Tensor:
         """Use the embedding layer return the word embedding tensors.
- 
+
         """
         cache = self.net_settings.cache_embedding
         cache_attr = f'_cache_{self.__class__.__name__}'
+        attribs = batch.attributes
 
         logger.debug(f'caching embedding: {cache} attr name: {cache_attr}')
 
-        if cache and hasattr(batch, cache_attr):
+        if cache and cache_attr in attribs:
             logger.debug('reusing previous calc embedding')
-            x = getattr(batch, cache_attr)
+            x = attribs[cache_attr]
         else:
             x = batch.attributes[self.embeddings_attribute_name]
             self._shape_debug('input', x)
@@ -123,8 +124,9 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule):
             self._shape_debug('embedding', x)
 
             if cache:
-                logger.debug(f'{batch.id} ({id(batch)}): saving embedding: {x.shape}')
-                setattr(batch, cache_attr, x)
+                attribs[cache_attr] = x
+                logger.debug(f'{batch.id} ({id(batch)}): ' +
+                             f'saving embedding: {x.shape}')
         return x
 
     def _forward_token_features(self, batch: Batch, x: torch.Tensor) \
