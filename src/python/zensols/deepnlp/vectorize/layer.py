@@ -5,11 +5,12 @@ efficient retrival.
 """
 __author__ = 'Paul Landes'
 
-import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Tuple
+import logging
 import torch
 from torch import nn
+from zensols.persist import persisted
 from zensols.deeplearn.layer import MaxPool1dFactory
 from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
 from zensols.deepnlp import TokensContainer, FeatureSentence
@@ -79,34 +80,6 @@ class WordVectorEmbeddingLayer(EmbeddingLayer):
         return self.emb.forward(x)
 
 
-class ConstructedWordVectorEmbeddingLayer(EmbeddingLayer):
-    def __init__(self, embed_model: WordEmbedModel, *args, **kwargs):
-        super().__init__(*args, embedding_dim=embed_model.matrix.shape[1],
-                         **kwargs)
-        self.embed_model = embed_model
-        self.num_embeddings = embed_model.matrix.shape[0]
-        self.vecs = self.torch_config.from_numpy(embed_model.matrix)
-        self.requires_grad = False
-
-    def _apply(self, fn):
-        super()._apply(fn)
-        # apply the device memory copy to the GPU
-        self.vecs = fn(self.vecs)
-        return self
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        batches = []
-        vecs = []
-        src_vecs = self.vecs
-        for batch_idx in x:
-            for idxt in batch_idx:
-                idx = idxt.item()
-                vecs.append(src_vecs[idx])
-            batches.append(torch.stack(vecs))
-            vecs.clear()
-        return torch.stack(batches).contiguous()
-
-
 class BertEmbeddingLayer(EmbeddingLayer):
     def __init__(self, embed_model: BertEmbedding,
                  max_pool: dict):
@@ -169,6 +142,7 @@ class SentenceFeatureVectorizer(TokenContainerFeatureVectorizer):
     embed_model: WordEmbedModel
     as_document: bool
     feature_id: str
+    decode_embedding: bool = field(default=False)
 
 
 @dataclass
@@ -199,6 +173,27 @@ class WordVectorSentenceFeatureVectorizer(SentenceFeatureVectorizer):
             for i, tok in enumerate(tokens):
                 arr[row][i] = emodel.word2idx_or_unk(tok)
         return TensorFeatureContext(self.feature_id, arr)
+
+
+    @property
+    @persisted('_vectors')
+    def vectors(self):
+        return self.torch_config.from_numpy(self.embed_model.matrix)
+
+    def _decode(self, context: FeatureContext) -> torch.Tensor:
+        x = super()._decode(context)
+        if self.decode_embedding:
+            src_vecs = self.vectors
+            batches = []
+            vecs = []
+            for batch_idx in x:
+                for idxt in batch_idx:
+                    idx = idxt.item()
+                    vecs.append(src_vecs[idx])
+                batches.append(torch.stack(vecs))
+                vecs.clear()
+            x = torch.stack(batches).contiguous()
+        return x
 
 
 @dataclass
