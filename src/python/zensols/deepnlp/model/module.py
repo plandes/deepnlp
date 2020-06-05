@@ -6,6 +6,7 @@ __author__ = 'Paul Landes'
 from dataclasses import dataclass
 import logging
 import torch
+from zensols.persist import Deallocatable
 from zensols.deeplearn.vectorize import FeatureVectorizer
 from zensols.deeplearn.model import NetworkSettings, BaseNetworkModule
 from zensols.deeplearn.batch import (
@@ -45,7 +46,7 @@ class EmbeddingNetworkSettings(NetworkSettings):
         return state
 
 
-class EmbeddingBaseNetworkModule(BaseNetworkModule):
+class EmbeddingBaseNetworkModule(BaseNetworkModule, Deallocatable):
     """An module that uses an embedding as the input layer.  It creates this as
     attribute ``embedding`` for the sub class to use in the :meth:`_forward`
     method.  In addition, it creates the following attributes:
@@ -103,6 +104,10 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule):
             raise ValueError('expecting exactly one embedding vectorizer ' +
                              f'feature type, but got {len(embedding_attribs)}')
         self.embeddings_attribute_name = embedding_attribs[0]
+
+    def deallocate(self):
+        super().deallocate()
+        self.net_settings.embedding_layer.deallocate()
 
     def _forward_embedding_features(self, batch: Batch) -> torch.Tensor:
         """Use the embedding layer return the word embedding tensors.

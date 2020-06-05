@@ -10,7 +10,7 @@ from typing import List, Tuple
 import logging
 import torch
 from torch import nn
-from zensols.persist import persisted
+from zensols.persist import persisted, Deallocatable
 from zensols.deeplearn.layer import MaxPool1dFactory
 from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
 from zensols.deepnlp import TokensContainer, FeatureSentence
@@ -41,7 +41,7 @@ class EmbeddingLayer(nn.Module):
         raise ValueError('layers should not be pickeled')
 
 
-class WordVectorEmbeddingLayer(EmbeddingLayer):
+class WordVectorEmbeddingLayer(EmbeddingLayer, Deallocatable):
     """An input embedding layer.  This uses an instance of :class:`WordEmbedModel`
     to compose the word embeddings from indexes.  Each index is that of word
     vector, which is stacked to create the embedding.  This happens in the
@@ -73,6 +73,11 @@ class WordVectorEmbeddingLayer(EmbeddingLayer):
                      f'device={vecs.device}')
         self.emb = nn.Embedding.from_pretrained(
             vecs, freeze=self.trainable, sparse=self.sparse)
+
+    def deallocate(self):
+        super().deallocate()
+        del self.emb
+        del self.embed_model
 
     def forward(self, x):
         if logger.isEnabledFor(logging.DEBUG):
@@ -173,7 +178,6 @@ class WordVectorSentenceFeatureVectorizer(SentenceFeatureVectorizer):
             for i, tok in enumerate(tokens):
                 arr[row][i] = emodel.word2idx_or_unk(tok)
         return TensorFeatureContext(self.feature_id, arr)
-
 
     @property
     @persisted('_vectors')
