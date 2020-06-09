@@ -109,6 +109,13 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule, Deallocatable):
         super().deallocate()
         self.net_settings.embedding_layer.deallocate()
 
+    def _forward(self, batch: Batch) -> torch.Tensor:
+        logger.debug(f'batch: {batch}')
+        x = self._forward_embedding_features(batch)
+        x = self._forward_token_features(batch, x)
+        x = self._forward_document_features(batch, x)
+        return x
+
     def _forward_embedding_features(self, batch: Batch) -> torch.Tensor:
         """Use the embedding layer return the word embedding tensors.
 
@@ -129,11 +136,13 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule, Deallocatable):
         """Concatenate any token features given by the vectorizer configuration.
 
         """
+        arrs = [x]
         for attrib in self.token_attribs:
             feats = batch.attributes[attrib]
-            self._shape_debug(attrib, feats)
-            x = torch.cat((x, feats), 2)
-            self._shape_debug('token concat ' + attrib, x)
+            self._shape_debug(f'token attrib {attrib}', feats)
+            arrs.append(feats)
+        x = torch.cat(arrs, 2)
+        self._shape_debug('token concat', x)
         return x
 
     def _forward_document_features(self, batch: Batch, x: torch.Tensor) \
@@ -141,9 +150,11 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule, Deallocatable):
         """Concatenate any document features given by the vectorizer configuration.
 
         """
+        arrs = [x]
         for attrib in self.doc_attribs:
             st = batch.attributes[attrib]
-            self._shape_debug(attrib, st)
-            x = torch.cat((x, st), 1)
-            self._shape_debug('doc concat' + attrib, x)
+            self._shape_debug(f'doc attrib {attrib}', st)
+            arrs.append(st)
+        x = torch.cat(arrs, 1)
+        self._shape_debug('doc concat ' + attrib, x)
         return x

@@ -99,7 +99,7 @@ class TestFeatureVectorizationCount(TestFeatureVectorization):
         fdoc = vec.parse(self.sent_text)
         tvec = vec.vectorizers['count']
         tensor = tvec.transform(fdoc)
-        self.assertEqual((82,), tensor.shape)
+        self.assertEqual((174,), tensor.shape)
 
 
 class TestFeatureVectorizationDepth(TestFeatureVectorization):
