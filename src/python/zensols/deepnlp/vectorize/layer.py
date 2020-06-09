@@ -28,14 +28,12 @@ class EmbeddingLayer(nn.Module):
 
     """
     def __init__(self, feature_vectorizer: TokenContainerFeatureVectorizer,
-                 embedding_dim: int, trainable: bool = False,
-                 sparse: bool = False):
+                 embedding_dim: int, trainable: bool = False):
         super().__init__()
         self.embedding_dim = embedding_dim
         self.token_length = feature_vectorizer.token_length
         self.torch_config = feature_vectorizer.torch_config
         self.trainable = trainable
-        self.sparse = sparse
 
     def __getstate__(self):
         raise ValueError('layers should not be pickeled')
@@ -71,8 +69,7 @@ class WordVectorEmbeddingLayer(EmbeddingLayer, Deallocatable):
             self.requires_grad = False
         logger.debug(f'setting tensors: {vecs.shape}, ' +
                      f'device={vecs.device}')
-        self.emb = nn.Embedding.from_pretrained(
-            vecs, freeze=self.trainable, sparse=self.sparse)
+        self.emb = nn.Embedding.from_pretrained(vecs, freeze=self.trainable)
 
     def deallocate(self):
         super().deallocate()
@@ -100,9 +97,6 @@ class BertEmbeddingLayer(EmbeddingLayer):
             self.embedding_dim = fac.W_out
         else:
             self.pool = None
-
-    def preemptive_foward(self, x):
-        return x
 
     def doc_to_batch(self, sents: List[str]) -> torch.Tensor:
         mats = []
