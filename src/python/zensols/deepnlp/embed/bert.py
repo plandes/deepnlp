@@ -3,6 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
+from dataclasses import dataclass, field, InitVar
 import logging
 import torch
 from pathlib import Path
@@ -20,28 +21,34 @@ from zensols.deeplearn import TorchConfig
 logger = logging.getLogger(__name__)
 
 
-class BertEmbedding(object):
-    """Initialize.
+@dataclass
+class BertEmbeddingModel(object):
+    """An model for BERT embeddings that wraps the HuggingFace transformms API.
 
-    :param model: the type of model (currently only ``bert`` is supported)
+    :param torch_config: the config device used to copy the embedding data
+
     :param size: the model size, which is either ``base`` (default), ``small``
                  or ``large``; if ``small`` is used, then use DistilBert
+
+    :param cache_dir: the directory that is contains the BERT model(s)
+
+    :param model: the type of model (currently only ``bert`` is supported)
+
     :param case: ``True`` for the case sensitive, ``False`` (default) otherwise
 
     """
-    def __init__(self, cuda_config: TorchConfig,
-                 model: str = 'bert',
-                 size: str = 'base',
-                 case: bool = False,
-                 cache_dir: Path = Path('.')):
-        self.cuda_config = cuda_config
-        self.size = size
+    torch_config: TorchConfig
+    cache_dir: Path = field(default=Path('.'))
+    size: str = field(default='base')
+    model_name: InitVar[str] = field(default='bert')
+    case: InitVar[bool] = field(default=False)
+
+    def __post_init__(self, model_name: str, case: bool):
         self.lower_case = not case
-        self.model_name = f'{model}-{size}'
-        self.model_desc = model
-        if model != 'roberta':
-            self.model_name += f'-{"" if case else "un"}cased'
-        self.cache_dir = cache_dir
+        self.model_id = f'{model_name}-{self.size}'
+        self.model_desc = model_name
+        if model_name != 'roberta':
+            self.model_id += f'-{"" if case else "un"}cased'
         if not self.cache_dir.exists():
             self.cache_dir.mkdir(parents=True, exist_ok=True)
 
@@ -55,7 +62,7 @@ class BertEmbedding(object):
     def tokenizer(self):
         cls = self._get_model_cnf()[0]
         return cls.from_pretrained(
-            self.model_name,
+            self.model_id,
             cache_dir=str(self.cache_dir.absolute()),
             # do_basic_tokenize=True,
             do_lower_case=self.lower_case,
@@ -66,10 +73,10 @@ class BertEmbedding(object):
     @persisted('_model', cache_global=True)
     def model(self):
         # load pre-trained model (weights)
-        logger.debug(f'loading model of size {self.size}: {self.model_name}')
+        logger.debug(f'loading model of size {self.size}: {self.model_id}')
         cls = self._get_model_cnf()[1]
         return cls.from_pretrained(
-            self.model_name,
+            self.model_id,
             cache_dir=str(self.cache_dir.absolute()),
         )
 
@@ -82,16 +89,16 @@ class BertEmbedding(object):
     @property
     @persisted('_vec_dim')
     def vector_dimension(self):
-        emb = self('the')[1]
+        emb = self.transform('the')[1]
         return emb.shape[1]
 
     @property
     @persisted('_zeros')
     def zeros(self):
-        return self.cuda_config.zeros(self.vector_dimension)
+        return self.torch_config.zeros(self.vector_dimension)
 
     def transform(self, sentence: str) -> torch.Tensor:
-        cuda_config = self.cuda_config
+        torch_config = self.torch_config
         tokenizer = self.tokenizer
         model = self.model
 
@@ -112,12 +119,12 @@ class BertEmbedding(object):
         segments_ids = [1] * len(tokenized_text)
 
         # convert to GPU tensors
-        tokens_tensor = cuda_config.singleton([indexed_tokens], dtype=torch.long)
-        segments_tensors = cuda_config.singleton([segments_ids], dtype=torch.long)
+        tokens_tensor = torch_config.singleton([indexed_tokens], dtype=torch.long)
+        segments_tensors = torch_config.singleton([segments_ids], dtype=torch.long)
 
         # put the model in `evaluation` mode, meaning feed-forward operation.
         model.eval()
-        model = cuda_config.to(model)
+        model = torch_config.to(model)
 
         # predict hidden states features for each layer
         with torch.no_grad():

@@ -6,15 +6,15 @@ efficient retrival.
 __author__ = 'Paul Landes'
 
 from dataclasses import dataclass, field
-from typing import List, Tuple
+from typing import Tuple
 import logging
 import torch
 from torch import nn
 from zensols.persist import persisted, Deallocatable
 from zensols.deeplearn.layer import MaxPool1dFactory
 from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
-from zensols.deepnlp import TokensContainer, FeatureSentence
-from zensols.deepnlp.embed import WordEmbedModel, BertEmbedding
+from zensols.deepnlp import TokensContainer, FeatureSentence, FeatureDocument
+from zensols.deepnlp.embed import WordEmbedModel, BertEmbeddingModel
 from zensols.deepnlp.vectorize import TokenContainerFeatureType
 from . import TokenContainerFeatureVectorizer
 
@@ -76,51 +76,35 @@ class WordVectorEmbeddingLayer(EmbeddingLayer, Deallocatable):
         del self.emb
         del self.embed_model
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'forward: {x.shape}')
         return self.emb.forward(x)
 
 
-class BertEmbeddingLayer(EmbeddingLayer):
-    def __init__(self, embed_model: BertEmbedding,
-                 max_pool: dict):
-        super().__init__()
-        if self.trainable and self.cached:
-            msg = f'embedding layer can not be trainable and cached: {self}'
-            raise ValueError(msg)
-        self.embedding_dim = self.embed_model.vector_dimension
-        logger.debug(f'config pool: {self.max_pool}')
-        if len(self.max_pool) > 0:
-            fac = MaxPool1dFactory(W=self.embedding_dim, **self.max_pool)
+class BertEmbeddingLayer(EmbeddingLayer, Deallocatable):
+    def __init__(self, *args, embed_model: BertEmbeddingModel,
+                 max_pool: dict = None, **kwargs):
+        super().__init__(
+            *args, embedding_dim=embed_model.vector_dimension, **kwargs)
+        self.embed_model = embed_model
+        logger.debug(f'config pool: {max_pool}')
+        if max_pool is not None:
+            fac = MaxPool1dFactory(W=self.embedding_dim, **max_pool)
             self.pool = fac.max_pool1d()
             self.embedding_dim = fac.W_out
         else:
             self.pool = None
 
-    def doc_to_batch(self, sents: List[str]) -> torch.Tensor:
-        mats = []
-        for sent in sents:
-            emb = self.embed_model(sent)[1]
-            diff = self.token_length - emb.shape[0]
-            if diff > 0:
-                zeros = self.embed_model.zeros
-                emb = torch.cat((torch.stack([zeros] * diff), emb))
-            elif diff < 0:
-                emb = emb[0:diff]
-            mats.append(emb)
-        x = torch.stack(mats)
+    def deallocate(self):
+        super().deallocate()
+        del self.embed_model
+
+    def forward(self, x: Tuple[str]) -> torch.Tensor:
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'forward: {x.shape}')
         if self.pool is not None:
             x = self.pool(x)
-        return x
-
-    def forward(self, x):
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'forward: {x.shape}: cache={self.cached}')
-        if not self.cached and False:
-            x = self.embed_model(x)[1]
-            if self.pool is not None:
-                x = self.pool(x)
         return x
 
 
@@ -143,14 +127,14 @@ class SentenceFeatureVectorizer(TokenContainerFeatureVectorizer):
     feature_id: str
     decode_embedding: bool = field(default=False)
 
+    def _get_shape(self) -> Tuple[int, int]:
+        return self.manager.token_length, self.embed_model.vector_dimension
+
 
 @dataclass
 class WordVectorSentenceFeatureVectorizer(SentenceFeatureVectorizer):
     NAME = 'word vector sentence'
     FEATURE_TYPE = TokenContainerFeatureType.EMBEDDING
-
-    def _get_shape(self) -> Tuple[int, int]:
-        return self.manager.token_length, self.embed_model.vector_dimension
 
     def _encode(self, container: TokensContainer) -> FeatureContext:
         emodel = self.embed_model
@@ -195,19 +179,36 @@ class WordVectorSentenceFeatureVectorizer(SentenceFeatureVectorizer):
 
 
 @dataclass
+class BertFeatureContext(FeatureContext):
+    sentences: Tuple[str]
+
+
+@dataclass
 class BertSentenceFeatureVectorizer(SentenceFeatureVectorizer):
     NAME = 'bert vector sentence'
     FEATURE_TYPE = TokenContainerFeatureType.EMBEDDING
 
-    def _get_shape(self) -> Tuple[int, int]:
-        return self.layer.vector_dimension, self.layer.token_length
-
     def _encode(self, container: TokensContainer) -> FeatureContext:
-        sent: FeatureSentence = container.to_sentence(self.token_length)
-        if not self.layer_config.cached:
-            text = sent.text
-            return text
+        if self.as_document:
+            sent: FeatureSentence = container.to_sentence()
+            sents = [sent]
         else:
-            batch = self.layer_config.layer.doc_to_batch([sent.text])[0]
-        return TensorFeatureContext(
-            self.feature_id, self.torch_config.to(batch))
+            doc: FeatureDocument = container
+            sents = doc.sents
+        sent_strs = tuple(map(lambda s: s.text, sents))
+        # batch = self.layer_config.layer.doc_to_batch([sent.text])[0]
+        return BertFeatureContext(self.feature_id, sent_strs)
+
+    #def doc_to_batch(self, sents: List[str]) -> torch.Tensor:
+    def _decode(self, context: BertFeatureContext) -> torch.Tensor:
+        mats = []
+        for sent in context.sentences:
+            emb = self.embed_model.transform(sent)[1]
+            diff = self.token_length - emb.shape[0]
+            if diff > 0:
+                zeros = self.embed_model.zeros
+                emb = torch.cat((torch.stack([zeros] * diff), emb))
+            elif diff < 0:
+                emb = emb[0:diff]
+            mats.append(emb)
+        return torch.stack(mats)

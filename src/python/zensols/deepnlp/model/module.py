@@ -8,7 +8,7 @@ import logging
 import torch
 from zensols.persist import Deallocatable
 from zensols.deeplearn.vectorize import FeatureVectorizer
-from zensols.deeplearn.model import NetworkSettings, BaseNetworkModule
+from zensols.deeplearn.model import BasicNetworkSettings, BaseNetworkModule
 from zensols.deeplearn.batch import (
     BatchMetadataFactory,
     BatchFieldMetadata,
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class EmbeddingNetworkSettings(NetworkSettings):
+class EmbeddingNetworkSettings(BasicNetworkSettings):
     """A utility container settings class for models that use an embedding input
     layer.
 
@@ -156,5 +156,5 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule, Deallocatable):
             self._shape_debug(f'doc attrib {attrib}', st)
             arrs.append(st)
         x = torch.cat(arrs, 1)
-        self._shape_debug('doc concat ' + attrib, x)
+        self._shape_debug('doc concat', x)
         return x
