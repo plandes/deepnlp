@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 @dataclass
 class EmbeddingModelFacade(ModelFacade):
     def _configure_debug_logging(self):
-        lg = logging.getLogger(__name__ + '.module')
-        lg.setLevel(logging.DEBUG)
+        logging.getLogger(__name__).setLevel(logging.DEBUG)
+        logging.getLogger('zensols.deeplearn.layer.linear').setLevel(logging.DEBUG)
 
     @property
     def batch_metadata(self) -> BatchMetadata:
