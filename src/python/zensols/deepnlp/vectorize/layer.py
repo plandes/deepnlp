@@ -133,7 +133,7 @@ class SentenceFeatureVectorizer(TokenContainerFeatureVectorizer):
 
 @dataclass
 class WordVectorSentenceFeatureVectorizer(SentenceFeatureVectorizer):
-    NAME = 'word vector sentence'
+    DESCRIPTION = 'word vector sentence'
     FEATURE_TYPE = TokenContainerFeatureType.EMBEDDING
 
     def _encode(self, container: TokensContainer) -> FeatureContext:
@@ -185,7 +185,7 @@ class BertFeatureContext(FeatureContext):
 
 @dataclass
 class BertSentenceFeatureVectorizer(SentenceFeatureVectorizer):
-    NAME = 'bert vector sentence'
+    DESCRIPTION = 'bert vector sentence'
     FEATURE_TYPE = TokenContainerFeatureType.EMBEDDING
 
     def _encode(self, container: TokensContainer) -> FeatureContext:

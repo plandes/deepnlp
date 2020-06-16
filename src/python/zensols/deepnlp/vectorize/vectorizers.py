@@ -40,7 +40,7 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
     sparse, and decoded as a dense matrix.
 
     """
-    NAME = 'spacy feature vectorizer'
+    DESCRIPTION = 'spacy feature vectorizer'
     FEATURE_TYPE = TokenContainerFeatureType.TOKEN
     feature_id: str
     decoded_feature_ids: Set[str] = field(default=None)
@@ -147,7 +147,7 @@ class CountEnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
     symol for that index position in the ``fvec``.
 
     """
-    NAME = 'token level feature counts'
+    DESCRIPTION = 'token level feature counts'
     FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
     feature_id: str
     decoded_feature_ids: Set[str] = field(default=None)
@@ -181,11 +181,9 @@ class CountEnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
         return fcounts
 
     def _encode(self, container: TokensContainer) -> FeatureContext:
-        feature_ids = self.decoded_feature_ids
         tensors = []
         for fvec in self.manager.spacy_vectorizers.values():
-            if feature_ids is None or fvec.feature_id in feature_ids:
-                tensors.append(self.get_feature_counts(container, fvec))
+            tensors.append(self.get_feature_counts(container, fvec))
         return TensorFeatureContext(self.feature_id, torch.cat(tensors))
 
     def _slice_by_attributes(self, arr: torch.Tensor) -> torch.Tensor:
@@ -224,7 +222,7 @@ class DepthTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
     tree.
 
     """
-    NAME = 'head depth'
+    DESCRIPTION = 'head depth'
     FEATURE_ID = 'dep'
     FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
 
@@ -277,7 +275,7 @@ class StatisticsTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer)
     FeatureDocuments).
 
     """
-    NAME = 'statistics'
+    DESCRIPTION = 'statistics'
     FEATURE_ID = 'stats'
     FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
 
