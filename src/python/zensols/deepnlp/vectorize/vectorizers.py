@@ -21,7 +21,6 @@ from zensols.deepnlp import (
 from . import (
     SpacyFeatureVectorizer,
     TokenContainerFeatureVectorizer,
-    TokenContainerFeatureVectorizerManager,
     TokenContainerFeatureType,
 )
 
@@ -42,7 +41,7 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
     """
     DESCRIPTION = 'spacy feature vectorizer'
     FEATURE_TYPE = TokenContainerFeatureType.TOKEN
-    feature_id: str
+
     decoded_feature_ids: Set[str] = field(default=None)
 
     def _get_shape_with_feature_ids(self, feature_ids: Set[str]):
@@ -149,7 +148,7 @@ class CountEnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
     """
     DESCRIPTION = 'token level feature counts'
     FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
-    feature_id: str
+
     decoded_feature_ids: Set[str] = field(default=None)
 
     def _get_shape(self) -> Tuple[int, int]:
@@ -223,7 +222,6 @@ class DepthTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
 
     """
     DESCRIPTION = 'head depth'
-    FEATURE_ID = 'dep'
     FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
 
     def _get_shape(self) -> Tuple[int, int]:
@@ -266,9 +264,6 @@ class DepthTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
         return deps
 
 
-TokenContainerFeatureVectorizerManager.register_vectorizer(DepthTokenContainerFeatureVectorizer)
-
-
 @dataclass
 class StatisticsTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
     """Return basic statics including: token count, sentence count (for
@@ -276,7 +271,6 @@ class StatisticsTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer)
 
     """
     DESCRIPTION = 'statistics'
-    FEATURE_ID = 'stats'
     FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
 
     def _get_shape(self) -> Tuple[int, int]:
@@ -311,6 +305,3 @@ class StatisticsTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'array shape: {arr.shape}')
         return TensorFeatureContext(self.feature_id, arr)
-
-
-TokenContainerFeatureVectorizerManager.register_vectorizer(StatisticsTokenContainerFeatureVectorizer)

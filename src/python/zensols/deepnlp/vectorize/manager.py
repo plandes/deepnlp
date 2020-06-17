@@ -125,6 +125,10 @@ class TokenContainerFeatureVectorizerManager(FeatureVectorizerManager):
         vectorizers = collections.OrderedDict()
         for feature_id in token_feature_ids:
             cls = SpacyFeatureVectorizer.VECTORIZERS[feature_id]
-            inst = cls(self.torch_config, self.langres.model.vocab)
+            inst = cls(name=f'spacy vectorizer: {feature_id}',
+                       config=self.config_factory.config,
+                       feature_id=feature_id,
+                       torch_config=self.torch_config,
+                       vocab=self.langres.model.vocab)
             vectorizers[feature_id] = inst
         return vectorizers
