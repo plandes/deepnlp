@@ -124,7 +124,6 @@ class SentenceFeatureVectorizer(TokenContainerFeatureVectorizer):
     """
     embed_model: WordEmbedModel
     as_document: bool
-    feature_id: str
     decode_embedding: bool = field(default=False)
 
     def _get_shape(self) -> Tuple[int, int]:

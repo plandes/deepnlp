@@ -126,7 +126,7 @@ class TokenContainerFeatureVectorizerManager(FeatureVectorizerManager):
         for feature_id in token_feature_ids:
             cls = SpacyFeatureVectorizer.VECTORIZERS[feature_id]
             inst = cls(name=f'spacy vectorizer: {feature_id}',
-                       config=self.config_factory.config,
+                       config_factory=self.config_factory,
                        feature_id=feature_id,
                        torch_config=self.torch_config,
                        vocab=self.langres.model.vocab)

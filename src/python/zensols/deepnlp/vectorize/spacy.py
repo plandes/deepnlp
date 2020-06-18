@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple
+from typing import Tuple, Any
 from dataclasses import dataclass
 import sys
 import math
@@ -50,6 +50,9 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
         rows = zip(syms, map(lambda i: arr[i], range(n)))
         self.symbol_to_vector = dict(rows)
         self.symbol_to_norm = {k: syms[k] / q for k in syms}
+
+    def _is_settable(self, name: str, value: Any) -> bool:
+        return False
 
     def _to_hot_coded_matrix(self, rows: int):
         arr = self.torch_config.zeros((rows, rows))
