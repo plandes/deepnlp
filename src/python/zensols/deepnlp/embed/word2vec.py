@@ -82,13 +82,3 @@ class Word2VecModel(WordEmbedModel):
         words.append(self.UNKNOWN)
         word2vec[self.UNKNOWN] = unknown_vec
         return vectors, word2vec, words, word2idx
-
-    # def get(self, key: str, default: np.ndarray = None) -> np.ndarray:
-    #     vecs = self.vectors
-    #     if self.lowercase:
-    #         key = key.lower()
-    #     if key not in self.vectors:
-    #         key = self.UNKNOWN
-    #     if key in vecs:
-    #         return vecs[key]
-    #     return default

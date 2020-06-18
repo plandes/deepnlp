@@ -64,10 +64,7 @@ class BertEmbeddingModel(object):
         return cls.from_pretrained(
             self.model_id,
             cache_dir=str(self.cache_dir.absolute()),
-            # do_basic_tokenize=True,
-            do_lower_case=self.lower_case,
-            #add_prefix_space=self.model_desc == 'roberta'
-        )
+            do_lower_case=self.lower_case)
 
     @property
     @persisted('_model', cache_global=True)
@@ -77,8 +74,7 @@ class BertEmbeddingModel(object):
         cls = self._get_model_cnf()[1]
         return cls.from_pretrained(
             self.model_id,
-            cache_dir=str(self.cache_dir.absolute()),
-        )
+            cache_dir=str(self.cache_dir.absolute()))
 
     def clear(self):
         self.tokenizer
