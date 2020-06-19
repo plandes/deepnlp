@@ -69,7 +69,36 @@ class WordVectorEmbeddingLayer(EmbeddingLayer):
             self.requires_grad = False
         logger.debug(f'setting tensors: {vecs.shape}, ' +
                      f'device={vecs.device}')
+        self.vecs = vecs
         self.emb = nn.Embedding.from_pretrained(vecs, freeze=self.trainable)
+
+    def _find_parameter_key(self, param_name: str, state: dict) -> str:
+        key_name = f'{param_name}.weight'
+        param_key = None
+        for k, v in state.items():
+            if k.endswith(key_name):
+                param_key = k
+                break
+        if param_key is None:
+            logger.warning('missing embedded weight key')
+        return param_key
+
+    def state_dict(self, *args, **kwargs):
+        state = super().state_dict(*args, **kwargs)
+        if not self.trainable:
+            emb_key = self._find_parameter_key('emb', state)
+            if emb_key is not None:
+                arr = state[emb_key]
+                assert arr.shape == self.embed_model.matrix.shape
+                state[emb_key] = None
+        return state
+
+    def _load_from_state_dict(self, state_dict, *args, **kwargs):
+        if not self.trainable:
+            emb_key = self._find_parameter_key('emb', state_dict)
+            if emb_key is not None:
+                state_dict[emb_key] = self.vecs
+        super()._load_from_state_dict(state_dict, *args, **kwargs)
 
     def deallocate(self):
         super().deallocate()
