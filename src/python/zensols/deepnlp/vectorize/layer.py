@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 # no datacasses are usable since pytorch is picky about initialization order
-class EmbeddingLayer(nn.Module):
+class EmbeddingLayer(nn.Module, Deallocatable):
     """A class used as an input layer to provide word embeddings to a deep neural
     network.
 
@@ -39,7 +39,7 @@ class EmbeddingLayer(nn.Module):
         raise ValueError('layers should not be pickeled')
 
 
-class WordVectorEmbeddingLayer(EmbeddingLayer, Deallocatable):
+class WordVectorEmbeddingLayer(EmbeddingLayer):
     """An input embedding layer.  This uses an instance of :class:`WordEmbedModel`
     to compose the word embeddings from indexes.  Each index is that of word
     vector, which is stacked to create the embedding.  This happens in the
@@ -73,8 +73,14 @@ class WordVectorEmbeddingLayer(EmbeddingLayer, Deallocatable):
 
     def deallocate(self):
         super().deallocate()
-        del self.emb
-        del self.embed_model
+        if hasattr(self, 'emb'):
+            if logger.isEnabledFor(logging.DEBUG):
+                em = '<deallocated>'
+                if hasattr(self, 'embed_model'):
+                    em = self.embed_model.name
+                logger.debug(f'deallocating: {em} and {type(self.emb)}')
+            del self.emb
+            del self.embed_model
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         if logger.isEnabledFor(logging.DEBUG):
@@ -82,7 +88,7 @@ class WordVectorEmbeddingLayer(EmbeddingLayer, Deallocatable):
         return self.emb.forward(x)
 
 
-class BertEmbeddingLayer(EmbeddingLayer, Deallocatable):
+class BertEmbeddingLayer(EmbeddingLayer):
     def __init__(self, *args, embed_model: BertEmbeddingModel,
                  max_pool: dict = None, **kwargs):
         super().__init__(

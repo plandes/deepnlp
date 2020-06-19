@@ -40,11 +40,10 @@ class EmbeddingNetworkSettings(BasicNetworkSettings):
     embedding_layer: EmbeddingLayer
     batch_metadata_factory: BatchMetadataFactory
 
-    def __getstate__(self):
-        state = super().__getstate__()
-        state.pop('embedding_layer', None)
-        state.pop('batch_metadata_factory', None)
-        return state
+    def deallocate(self):
+        super().deallocate()
+        self.embedding_layer.deallocate()
+        self.batch_metadata_factory.deallocate()
 
 
 class EmbeddingBaseNetworkModule(BaseNetworkModule, Deallocatable):
