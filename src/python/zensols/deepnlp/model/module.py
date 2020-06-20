@@ -40,11 +40,6 @@ class EmbeddingNetworkSettings(BasicNetworkSettings):
     embedding_layer: EmbeddingLayer
     batch_metadata_factory: BatchMetadataFactory
 
-    def deallocate(self):
-        super().deallocate()
-        self.embedding_layer.deallocate()
-        self.batch_metadata_factory.deallocate()
-
 
 class EmbeddingBaseNetworkModule(BaseNetworkModule, Deallocatable):
     """An module that uses an embedding as the input layer.  It creates this as

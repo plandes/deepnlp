@@ -26,6 +26,19 @@ class EmbeddingLayer(nn.Module, Deallocatable):
     """A class used as an input layer to provide word embeddings to a deep neural
     network.
 
+    **Important**: you must always check for attributes in
+    :meth:`.Deallocatable.deallocate` since it might be called more than once
+    (i.e. from directly deallocating and then from the factory).
+
+
+    :param embedding_dim: the vector dimension of the embedding
+
+    :param token_length: the length of the sentence for the embedding
+
+    :param torch_config: the CUDA configuration
+
+    :param trainable: ``True`` if the embedding layer is to be trained
+
     """
     def __init__(self, feature_vectorizer: TokenContainerFeatureVectorizer,
                  embedding_dim: int, trainable: bool = False):
@@ -45,14 +58,14 @@ class WordVectorEmbeddingLayer(EmbeddingLayer):
     vector, which is stacked to create the embedding.  This happens in the
     PyTorch framework, and is fast.
 
-    :param torch_config: the CUDA configuration
+    This class overrides PyTorch methods that disable persistance of the
+    embedding weights when configured to be frozen (not trainable).  Otherwise,
+    the entire embedding model is saved *every* time the model is saved for
+    each epoch, which is both unecessary, but costs in terms of time and
+    memory.
 
-    :param token_length: the length of the sentence for the embedding
-
-    :param trainable: ``True`` if the embedding layer is to be trained
-
-    :param cached: ``True`` if to bypass this embedding layer and use
-                   the input directly as the output
+    :param embed_model: contains the word embedding model, such as ``glove``,
+                        and ``word2vec``
 
     """
     def __init__(self, embed_model: WordEmbedModel, *args, **kwargs):
@@ -73,6 +86,9 @@ class WordVectorEmbeddingLayer(EmbeddingLayer):
         self.emb = nn.Embedding.from_pretrained(vecs, freeze=self.trainable)
 
     def _find_parameter_key(self, param_name: str, state: dict) -> str:
+        """Find the embedding parameter key in the ``state_dict``.
+
+        """
         key_name = f'{param_name}.weight'
         param_key = None
         for k, v in state.items():
@@ -118,6 +134,9 @@ class WordVectorEmbeddingLayer(EmbeddingLayer):
 
 
 class BertEmbeddingLayer(EmbeddingLayer):
+    """A BERT embedding layer.
+
+    """
     def __init__(self, *args, embed_model: BertEmbeddingModel,
                  max_pool: dict = None, **kwargs):
         super().__init__(
@@ -133,7 +152,8 @@ class BertEmbeddingLayer(EmbeddingLayer):
 
     def deallocate(self):
         super().deallocate()
-        del self.embed_model
+        if hasattr(self, 'embed_model'):
+            del self.embed_model
 
     def forward(self, x: Tuple[str]) -> torch.Tensor:
         if logger.isEnabledFor(logging.DEBUG):
