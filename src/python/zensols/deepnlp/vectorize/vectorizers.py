@@ -220,6 +220,10 @@ class DepthTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
     """Return the depths of tokens based on how deep they are in a head dependency
     tree.
 
+    Even though this is a document level vectorizer and is usually added in a
+    join layer rather than stacked on to the embedded layer, it still assumes
+    congruence with the token length, which is used in its shape.
+
     """
     DESCRIPTION = 'head depth'
     FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT

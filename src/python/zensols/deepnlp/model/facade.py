@@ -57,21 +57,46 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
         """
         pass
 
-    def set_enum_feature_ids(self, feature_ids: Set[str]):
-        """Set spacy enumeration encodings used to token wise to widen the input
+    @property
+    def enum_feature_ids(self) -> Set[str]:
+        """Spacy enumeration encodings used to token wise to widen the input
+        embeddings.
+
+        """
+        return self.enum_feature_ids
+
+    @enum_feature_ids.setter
+    def enum_feature_ids(self, feature_ids: Set[str]):
+        """Spacy enumeration encodings used to token wise to widen the input
         embeddings.
 
         """
         self._set_vectorizer_feature_ids('enum', feature_ids)
 
-    def set_count_feature_ids(self, feature_ids: Set[str]):
-        """Set which spacy token features are used in the join layer.
+    @property
+    def count_feature_ids(self) -> Set[str]:
+        """The spacy token features are used in the join layer.
+
+        """
+        return self.count_feature_ids
+
+    @count_feature_ids.setter
+    def count_feature_ids(self, feature_ids: Set[str]):
+        """The spacy token features are used in the join layer.
 
         """
         self._set_vectorizer_feature_ids('count', feature_ids)
 
-    def set_language_attributes(self, attributes: Set[str]):
-        """Set the language attributes to be used.
+    @property
+    def language_attributes(self) -> Set[str]:
+        """The language attributes to be used.
+
+        """
+        return self.language_attributes
+
+    @language_attributes.setter
+    def language_attributes(self, attributes: Set[str]):
+        """The language attributes to be used.
 
         :param attributes: the set of attributes to use, which is any
                            combination of: 'enums', 'stats', 'counts',
