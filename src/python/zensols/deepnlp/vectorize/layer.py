@@ -165,16 +165,21 @@ class BertEmbeddingLayer(EmbeddingLayer):
 
 @dataclass
 class SentenceFeatureVectorizer(TokenContainerFeatureVectorizer):
-    """Vectorize a :class:`TokensContainer` as a vector of embedding indexes.
+    """Vectorize a :class:`.TokensContainer` as a vector of embedding indexes.
     Later, these indexes are used in a :class:`WordEmbeddingLayer` to create
     the input word embedding during execution of the model.
 
-    :param layer: the embedding torch module later used as the input layer
+    :param embed_model: contains the word vector model
 
     :param as_document: if ``True`` treat the embedding as a document, so use
                         all tokens as one long stream; otherwise, stack each
                         index as a row iteration of the container, which would
                         be sentences of given a document
+
+    :param decode_embedding: whether or not to decode the embedding during the
+                             decode phase, which is helpful when caching
+                             batches; otherwise, the data is decoded from
+                             indexes to embeddings each epoch
 
     """
     embed_model: WordEmbedModel
@@ -187,6 +192,9 @@ class SentenceFeatureVectorizer(TokenContainerFeatureVectorizer):
 
 @dataclass
 class WordVectorSentenceFeatureVectorizer(SentenceFeatureVectorizer):
+    """Vectorize sentences using an embedding model with :class:`.WordEmbedModel`.
+
+    """
     DESCRIPTION = 'word vector sentence'
     FEATURE_TYPE = TokenContainerFeatureType.EMBEDDING
 
