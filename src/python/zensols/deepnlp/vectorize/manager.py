@@ -96,8 +96,8 @@ class TokenContainerFeatureVectorizerManager(FeatureVectorizerManager):
         """Parse text or a text as a list of sentences.
 
         *Important:* Parsing documents through this manager instance is better
-         since safe checks are made that features are available from those used
-         when documents are parsed before pickling.
+        since safe checks are made that features are available from those used
+        when documents are parsed before pickling.
 
         :param text: either a string or a list of strings; if the former a
                      document with one sentence will be created, otherwise a
