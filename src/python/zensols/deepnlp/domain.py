@@ -43,7 +43,7 @@ class FeatureToken(TextContainer):
         'bool': frozenset('is_space is_stop is_ent'.split()),
         'int': frozenset('i idx is_punctuation tag ent dep'.split()),
         'str': frozenset('norm lemma tag_ ent_ dep_'.split()),
-        'dict': frozenset('children'.split())}
+        'list': frozenset('children'.split())}
     TYPES_BY_TOKEN_FEATURE_ID = dict(chain.from_iterable(
         map(lambda itm: map(lambda f: (f, itm[0]), itm[1]),
             TOKEN_FEATURE_IDS_BY_TYPE.items())))
@@ -77,9 +77,9 @@ class FeatureToken(TextContainer):
         s2 = self._indspc(depth + 1)
         super().write(depth, writer)
         for k, v in self.__dict__.items():
-            if k != 'norm':
-                ptype = self.TYPES_BY_TOKEN_FEATURE_ID[k]
-                writer.write(f'{s2}{k}={v} ({ptype})\n')
+            ptype = self.TYPES_BY_TOKEN_FEATURE_ID.get(k)
+            ptype = 'missing type' if ptype is None else ptype
+            writer.write(f'{s2}{k}={v} ({ptype})\n')
 
     def __str__(self):
         s = self

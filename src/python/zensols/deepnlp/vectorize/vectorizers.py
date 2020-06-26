@@ -127,10 +127,7 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
         return torch.cat(tensors, 1)
 
     def _decode(self, context: FeatureContext) -> torch.Tensor:
-        if isinstance(context, SparseTensorFeatureContext):
-            arr = context.to_tensor(self.manager.torch_config)
-        else:
-            arr = super()._decode(context)
+        arr = super()._decode(context)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'decoded features: {self.decoded_feature_ids}')
         if self.decoded_feature_ids is not None:

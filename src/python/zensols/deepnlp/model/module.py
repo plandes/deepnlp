@@ -3,17 +3,17 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Set
 from dataclasses import dataclass
 import logging
 import torch
 from zensols.persist import Deallocatable
+from zensols.deeplearn import BasicNetworkSettings
 from zensols.deeplearn.vectorize import FeatureVectorizer
-from zensols.deeplearn.model import BasicNetworkSettings, BaseNetworkModule
+from zensols.deeplearn.model import BaseNetworkModule
 from zensols.deeplearn.batch import (
-    BatchMetadataFactory,
     BatchFieldMetadata,
     Batch,
+    MetadataNetworkSettings,
 )
 from zensols.deepnlp.vectorize import (
     EmbeddingLayer,
@@ -26,19 +26,14 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class EmbeddingNetworkSettings(BasicNetworkSettings):
+class EmbeddingNetworkSettings(BasicNetworkSettings, MetadataNetworkSettings):
     """A utility container settings class for models that use an embedding input
     layer.
 
     :param embedding_layer: the word embedding layer used to vectorize
 
-    :param batch_metadata_factory: the factory that produces the metadata that
-                                   describe the batch data during the calls to
-                                   :py:meth:`_forward`
-
     """
     embedding_layer: EmbeddingLayer
-    batch_metadata_factory: BatchMetadataFactory
 
 
 class EmbeddingBaseNetworkModule(BaseNetworkModule, Deallocatable):
@@ -74,8 +69,6 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule, Deallocatable):
         self.embedding_output_size = self.embedding.embedding_dim
         self.join_size = 0
         meta = self.net_settings.batch_metadata_factory()
-        if self.net_settings.debug:
-            meta.write()
         self.token_attribs = []
         self.doc_attribs = []
         embedding_attribs = []

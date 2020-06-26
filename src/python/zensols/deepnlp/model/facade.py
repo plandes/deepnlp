@@ -45,10 +45,12 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
 
     """
     def _configure_debug_logging(self):
-        logging.getLogger(__name__).setLevel(logging.DEBUG)
-        for n in ['zensols.deeplearn.layer.linear',
-                  'zensols.deepnlp.model.module']:
-            logging.getLogger(n).setLevel(logging.DEBUG)
+        super()._configure_debug_logging()
+        for name in ['zensols.deeplearn.layer.linear',
+                     'zensols.deepnlp.vectorize.vectorizers',
+                     'zensols.deepnlp.model.module',
+                     __name__]:
+            logging.getLogger(name).setLevel(logging.DEBUG)
 
     @abstractmethod
     def _get_language_model_config(self) -> LanguageModelFacadeConfig:

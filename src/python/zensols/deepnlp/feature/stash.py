@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class DocumentFeatureStash(MultiProcessStash, metaclass=ABCMeta):
-    """This class parses ``FeatureDocument`` instances in to ``FeatureDocument``
+    """This class parses natural language text in to :class:`.FeatureDocument`
     instances in multiple sub processes.
 
     """
