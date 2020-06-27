@@ -5,7 +5,7 @@ __author__ = 'Paul Landes'
 
 from dataclasses import dataclass
 import sys
-from io import TextIOWrapper
+from io import TextIOBase
 from zensols.deeplearn.batch import DataPoint
 from zensols.deepnlp import FeatureDocument
 
@@ -17,7 +17,7 @@ class FeatureDocumentDataPoint(DataPoint):
     """
     doc: FeatureDocument
 
-    def write(self, depth: int = 0, writer: TextIOWrapper = sys.stdout):
+    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
         super().write(depth, writer)
         self._write_line('document:', depth, writer)
         self.doc.write(depth + 1, writer)
