@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from typing import Set
 from abc import ABCMeta, abstractmethod
 import logging
+from zensols.deeplearn import NetworkSettings, ModelSettings
 from zensols.deeplearn.vectorize import FeatureVectorizerManager
 from zensols.deeplearn.model import ModelFacade
 
@@ -47,10 +48,11 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
     def _configure_debug_logging(self):
         super()._configure_debug_logging()
         for name in ['zensols.deeplearn.layer.linear',
-                     'zensols.deepnlp.vectorize.vectorizers',
                      'zensols.deepnlp.model.module',
                      __name__]:
             logging.getLogger(name).setLevel(logging.DEBUG)
+        for name in ['zensols.deepnlp.vectorize.vectorizers']:
+            logging.getLogger(name).setLevel(logging.INFO)
 
     @abstractmethod
     def _get_language_model_config(self) -> LanguageModelFacadeConfig:
@@ -59,13 +61,21 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
         """
         pass
 
+    def _create_facade_explorer(self):
+        from zensols.deepnlp.vectorize import SentenceFeatureVectorizer
+        ce = super()._create_facade_explorer()
+        ce.include_classes.update({NetworkSettings, ModelSettings})
+        ce.exclude_classes.update({SentenceFeatureVectorizer})
+        ce.dictify_dataclasses = True
+        return ce
+
     @property
     def enum_feature_ids(self) -> Set[str]:
         """Spacy enumeration encodings used to token wise to widen the input
         embeddings.
 
         """
-        return self.enum_feature_ids
+        return self._get_vectorizer_feature_ids('enum')
 
     @enum_feature_ids.setter
     def enum_feature_ids(self, feature_ids: Set[str]):
@@ -80,7 +90,7 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
         """The spacy token features are used in the join layer.
 
         """
-        return self.count_feature_ids
+        return self._get_vectorizer_feature_ids('count')
 
     @count_feature_ids.setter
     def count_feature_ids(self, feature_ids: Set[str]):
@@ -94,7 +104,9 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
         """The language attributes to be used.
 
         """
-        return self.language_attributes
+        lc = self._get_language_model_config()
+        stash = self.batch_stash
+        return stash.decoded_attributes & lc.attribs
 
     @language_attributes.setter
     def language_attributes(self, attributes: Set[str]):
@@ -105,20 +117,21 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
                            'dependencies'
 
         """
-        lc = self._get_language_model_config()
-        for feat in attributes:
-            if feat not in lc.attribs:
-                raise ValueError(f'no such langauge attribute: {feat}')
         stash = self.batch_stash
-        cur_attribs = stash.decoded_attributes
-        to_add = attributes | {self.label_attribute_name}
-        attribs = (cur_attribs & lc.embedding_attribs) | to_add
+        lc = self._get_language_model_config()
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'decoded batch stash attribs: {attribs}')
-        if cur_attribs == attribs:
+            logger.debug(f'all language attributes: {lc.attribs}')
+        non_existant = attributes - lc.attribs
+        if len(non_existant) > 0:
+            raise ValueError(f'no such langauge attributes: {non_existant}')
+        cur_attribs = self.batch_stash.decoded_attributes
+        to_set = (cur_attribs - lc.attribs) | attributes
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'settings decoded batch stash attribs: {to_set}')
+        if cur_attribs == to_set:
             logger.info('no attribute changes--skipping')
         else:
-            stash.decoded_attributes = attribs
+            stash.decoded_attributes = to_set
             self.clear()
 
     @property
@@ -129,7 +142,17 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
         lc = self._get_language_model_config()
         return self.vectorizer_manager_set[lc.manager_name]
 
+    def _get_vectorizer_feature_ids(self, name: str) -> Set[str]:
+        lang_vec = self.language_vectorizer_manager.vectorizers[name]
+        return lang_vec.decoded_feature_ids
+
     def _set_vectorizer_feature_ids(self, name: str, feature_ids: Set[str]):
-        lang_vec_mng = self.language_vectorizer_manager.vectorizers[name]
-        lang_vec_mng.decoded_feature_ids = feature_ids
-        self.clear()
+        lang_vec_mng = self.language_vectorizer_manager
+        lang_vec = lang_vec_mng.vectorizers[name]
+        spacy_feat_ids = set(lang_vec_mng.spacy_vectorizers.keys())
+        non_existant = feature_ids - spacy_feat_ids
+        if len(non_existant) > 0:
+            raise ValueError(f'no such spacy feature IDs: {non_existant}')
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'settings {feature_ids} on {lang_vec}')
+        lang_vec.decoded_feature_ids = feature_ids

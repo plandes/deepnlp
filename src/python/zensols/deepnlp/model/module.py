@@ -141,16 +141,23 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule, Deallocatable):
         self._shape_debug('token concat', x)
         return x
 
+    def _add_document_features(self, batch, arrs):
+        for attrib in self.doc_attribs:
+            st = batch.attributes[attrib]
+            self._shape_debug(f'doc attrib {attrib}', st)
+            arrs.append(st)
+
     def _forward_document_features(self, batch: Batch, x: torch.Tensor) \
             -> torch.Tensor:
         """Concatenate any document features given by the vectorizer configuration.
 
         """
         arrs = [x]
-        for attrib in self.doc_attribs:
-            st = batch.attributes[attrib]
-            self._shape_debug(f'doc attrib {attrib}', st)
-            arrs.append(st)
+        self._add_document_features(batch, arrs)
+        # for attrib in self.doc_attribs:
+        #     st = batch.attributes[attrib]
+        #     self._shape_debug(f'doc attrib {attrib}', st)
+        #     arrs.append(st)
         x = torch.cat(arrs, 1)
         self._shape_debug('doc concat', x)
         return x

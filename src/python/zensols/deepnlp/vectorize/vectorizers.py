@@ -39,6 +39,7 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
     sparse, and decoded as a dense matrix.
 
     """
+    ATTR_EXP_META = ('decoded_feature_ids',)
     DESCRIPTION = 'spacy feature vectorizer'
     FEATURE_TYPE = TokenContainerFeatureType.TOKEN
 
@@ -143,6 +144,7 @@ class CountEnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
     symol for that index position in the ``fvec``.
 
     """
+    ATTR_EXP_META = ('decoded_feature_ids',)
     DESCRIPTION = 'token level feature counts'
     FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
 
