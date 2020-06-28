@@ -41,8 +41,8 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule, Deallocatable):
     attribute ``embedding`` for the sub class to use in the :meth:`_forward`
     method.  In addition, it creates the following attributes:
 
-      - ``embeddings_attribute_name``: the name of the word embedding
-                                       vectorized feature attribute name
+      - ``embedding_attribute_name``: the name of the word embedding
+                                      vectorized feature attribute name
 
       - ``embedding_output_size``: the outpu size of the embedding layer, note
                                    this includes any features layered/concated
@@ -71,7 +71,11 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule, Deallocatable):
         meta = self.net_settings.batch_metadata_factory()
         self.token_attribs = []
         self.doc_attribs = []
-        embedding_attribs = []
+        self.embedding_attribute_name = self._get_embedding_attribute_name()
+        if self.embedding_attribute_name is None:
+            embedding_attribs = []
+        else:
+            embedding_attribs = None
         field: BatchFieldMetadata
         for name, field_meta in meta.fields_by_attribute.items():
             vec: FeatureVectorizer = field_meta.vectorizer
@@ -94,12 +98,18 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule, Deallocatable):
                 elif vec.feature_type == TokenContainerFeatureType.EMBEDDING:
                     if logger.isEnabledFor(logging.DEBUG):
                         logger.debug(f'adding embedding: {attr}')
-                    embedding_attribs.append(attr)
+                    if embedding_attribs is not None:
+                        embedding_attribs.append(attr)
                     self.embedding_vectorizer = vec
-        if len(embedding_attribs) != 1:
-            raise ValueError('expecting exactly one embedding vectorizer ' +
-                             f'feature type, but got {len(embedding_attribs)}')
-        self.embeddings_attribute_name = embedding_attribs[0]
+        if self.embedding_attribute_name is None:
+            if len(embedding_attribs) != 1:
+                raise ValueError(
+                    'expecting exactly one embedding vectorizer ' +
+                    f'feature type, but got {len(embedding_attribs)}')
+            self.embedding_attribute_name = embedding_attribs[0]
+
+    def _get_embedding_attribute_name(self):
+        pass
 
     def deallocate(self):
         super().deallocate()
@@ -117,7 +127,7 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule, Deallocatable):
 
         """
         decoded = False
-        x = batch.attributes[self.embeddings_attribute_name]
+        x = batch.attributes[self.embedding_attribute_name]
         self._shape_debug('input', x)
         if isinstance(self.embedding_vectorizer, SentenceFeatureVectorizer):
             logger.debug('skipping embedding encoding, assume complete')

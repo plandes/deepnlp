@@ -101,10 +101,16 @@ class WordVectorEmbeddingLayer(EmbeddingLayer):
 
     def state_dict(self, *args, **kwargs):
         state = super().state_dict(*args, **kwargs)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'state_dict: trainable: {self.trainable}')
         if not self.trainable:
             emb_key = self._find_parameter_key('emb', state)
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'state_dict: embeding key: {emb_key}')
             if emb_key is not None:
                 arr = state[emb_key]
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug(f'state_dict: emb state: {arr.shape}')
                 assert arr.shape == self.embed_model.matrix.shape
                 state[emb_key] = None
         return state
@@ -112,6 +118,8 @@ class WordVectorEmbeddingLayer(EmbeddingLayer):
     def _load_from_state_dict(self, state_dict, *args, **kwargs):
         if not self.trainable:
             emb_key = self._find_parameter_key('emb', state_dict)
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'load_state_dict: {emb_key}')
             if emb_key is not None:
                 state_dict[emb_key] = self.vecs
         super()._load_from_state_dict(state_dict, *args, **kwargs)
