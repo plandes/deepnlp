@@ -52,6 +52,14 @@ class EmbeddingLayer(nn.Module, Deallocatable):
         raise ValueError('layers should not be pickeled')
 
 
+class ResetLockedEmbedding(nn.Embedding):
+    """Prevent weights from being reset after initialization with word vectors.
+
+    """
+    def reset_parameters(self):
+        pass
+
+
 class WordVectorEmbeddingLayer(EmbeddingLayer):
     """An input embedding layer.  This uses an instance of :class:`WordEmbedModel`
     to compose the word embeddings from indexes.  Each index is that of word
@@ -83,7 +91,21 @@ class WordVectorEmbeddingLayer(EmbeddingLayer):
         logger.debug(f'setting tensors: {vecs.shape}, ' +
                      f'device={vecs.device}')
         self.vecs = vecs
-        self.emb = nn.Embedding.from_pretrained(vecs, freeze=self.trainable)
+        if 0:
+            self.emb = nn.Embedding.from_pretrained(vecs, freeze=self.trainable)
+        else:
+            rows, cols = vecs.shape
+            self.emb = ResetLockedEmbedding(
+                num_embeddings=rows,
+                embedding_dim=cols,
+                _weight=vecs
+            )
+            self.emb.freeze = self.trainable
+            self.emb.locked = True
+
+    def reset_parameters(self):
+        if self.trainable:
+            self.emb.load_state_dict({'weight': self.vecs})
 
     def _find_parameter_key(self, param_name: str, state: dict) -> str:
         """Find the embedding parameter key in the ``state_dict``.
