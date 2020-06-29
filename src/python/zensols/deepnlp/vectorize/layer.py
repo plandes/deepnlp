@@ -91,17 +91,13 @@ class WordVectorEmbeddingLayer(EmbeddingLayer):
         logger.debug(f'setting tensors: {vecs.shape}, ' +
                      f'device={vecs.device}')
         self.vecs = vecs
-        if 0:
-            self.emb = nn.Embedding.from_pretrained(vecs, freeze=self.trainable)
-        else:
-            rows, cols = vecs.shape
-            self.emb = ResetLockedEmbedding(
-                num_embeddings=rows,
-                embedding_dim=cols,
-                _weight=vecs
-            )
-            self.emb.freeze = self.trainable
-            self.emb.locked = True
+        rows, cols = vecs.shape
+        self.emb = ResetLockedEmbedding(
+            num_embeddings=rows,
+            embedding_dim=cols,
+            _weight=vecs
+        )
+        self.emb.freeze = self.trainable
 
     def reset_parameters(self):
         if self.trainable:
