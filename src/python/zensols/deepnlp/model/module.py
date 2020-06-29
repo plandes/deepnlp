@@ -4,6 +4,7 @@
 __author__ = 'Paul Landes'
 
 from dataclasses import dataclass
+from typing import Callable
 import logging
 import torch
 from zensols.persist import Deallocatable
@@ -77,7 +78,9 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule, Deallocatable):
         else:
             embedding_attribs = None
         field: BatchFieldMetadata
-        for name, field_meta in meta.fields_by_attribute.items():
+        fba = meta.fields_by_attribute
+        for name in sorted(fba.keys()):
+            field_meta = fba[name]
             vec: FeatureVectorizer = field_meta.vectorizer
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'{name} -> {field_meta}')
@@ -137,13 +140,15 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule, Deallocatable):
             self._shape_debug('embedding', x)
         return x
 
-    def _forward_token_features(self, batch: Batch, x: torch.Tensor) \
-            -> torch.Tensor:
+    def _forward_token_features(self, batch: Batch, x: torch.Tensor,
+                                include_fn: Callable = None) -> torch.Tensor:
         """Concatenate any token features given by the vectorizer configuration.
 
         """
         arrs = [x]
         for attrib in self.token_attribs:
+            if include_fn is not None and not include_fn(attrib):
+                continue
             feats = batch.attributes[attrib]
             self._shape_debug(f'token attrib {attrib}', feats)
             arrs.append(feats)
@@ -151,23 +156,25 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule, Deallocatable):
         self._shape_debug('token concat', x)
         return x
 
-    def _add_document_features(self, batch, arrs):
-        for attrib in self.doc_attribs:
-            st = batch.attributes[attrib]
-            self._shape_debug(f'doc attrib {attrib}', st)
-            arrs.append(st)
+    # def _add_document_features(self, batch, arrs):
+    #     for attrib in self.doc_attribs:
+    #         st = batch.attributes[attrib]
+    #         self._shape_debug(f'doc attrib {attrib}', st)
+    #         arrs.append(st)
 
-    def _forward_document_features(self, batch: Batch, x: torch.Tensor) \
-            -> torch.Tensor:
+    def _forward_document_features(self, batch: Batch, x: torch.Tensor,
+                                   include_fn: Callable = None) -> torch.Tensor:
         """Concatenate any document features given by the vectorizer configuration.
 
         """
         arrs = [x]
         self._add_document_features(batch, arrs)
-        # for attrib in self.doc_attribs:
-        #     st = batch.attributes[attrib]
-        #     self._shape_debug(f'doc attrib {attrib}', st)
-        #     arrs.append(st)
+        for attrib in self.doc_attribs:
+            if include_fn is not None and not include_fn(attrib):
+                continue
+            st = batch.attributes[attrib]
+            self._shape_debug(f'doc attrib {attrib}', st)
+            arrs.append(st)
         x = torch.cat(arrs, 1)
         self._shape_debug('doc concat', x)
         return x
