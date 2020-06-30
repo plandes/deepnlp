@@ -45,15 +45,6 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
     for this package.
 
     """
-    def _configure_debug_logging(self):
-        super()._configure_debug_logging()
-        for name in ['zensols.deeplearn.layer.linear',
-                     'zensols.deepnlp.model.module',
-                     __name__]:
-            logging.getLogger(name).setLevel(logging.DEBUG)
-        for name in ['zensols.deepnlp.vectorize.vectorizers']:
-            logging.getLogger(name).setLevel(logging.INFO)
-
     @abstractmethod
     def _get_language_model_config(self) -> LanguageModelFacadeConfig:
         """Get the langauge model configuration.
@@ -156,3 +147,17 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'settings {feature_ids} on {lang_vec}')
         lang_vec.decoded_feature_ids = feature_ids
+
+    def _configure_debug_logging(self):
+        super()._configure_debug_logging()
+        for name in ['zensols.deeplearn.layer.linear',
+                     __name__]:
+            logging.getLogger(name).setLevel(logging.DEBUG)
+        for name in ['zensols.deepnlp.vectorize.vectorizers',
+                     'zensols.deepnlp.model.module']:
+            logging.getLogger(name).setLevel(logging.INFO)
+
+    def configure_cli_logging(self):
+        # show (slow) embedding loading
+        for name in ['zensols.deepnlp.embed']:
+            logging.getLogger(name).setLevel(logging.INFO)

@@ -8,12 +8,12 @@ from typing import Callable
 import logging
 import torch
 from zensols.persist import Deallocatable
-from zensols.deeplearn import BasicNetworkSettings
 from zensols.deeplearn.vectorize import FeatureVectorizer
 from zensols.deeplearn.model import BaseNetworkModule
 from zensols.deeplearn.batch import (
     BatchFieldMetadata,
     Batch,
+    BatchFieldMetadata,
     MetadataNetworkSettings,
 )
 from zensols.deepnlp.vectorize import (
@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class EmbeddingNetworkSettings(BasicNetworkSettings, MetadataNetworkSettings):
+class EmbeddingNetworkSettings(MetadataNetworkSettings):
     """A utility container settings class for models that use an embedding input
     layer.
 
@@ -64,23 +64,25 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule, Deallocatable):
 
     """
     def __init__(self, net_settings: EmbeddingNetworkSettings,
-                 logger: logging.Logger = None):
-        super().__init__(net_settings, logger)
+                 module_logger: logging.Logger = None,
+                 filter_attrib_fn: Callable[[BatchFieldMetadata], bool] = None):
+        super().__init__(net_settings, module_logger)
         self.embedding = net_settings.embedding_layer
         self.embedding_output_size = self.embedding.embedding_dim
         self.join_size = 0
         meta = self.net_settings.batch_metadata_factory()
         self.token_attribs = []
         self.doc_attribs = []
-        self.embedding_attribute_name = self._get_embedding_attribute_name()
-        if self.embedding_attribute_name is None:
-            embedding_attribs = []
-        else:
-            embedding_attribs = None
+        embedding_attribs = []
         field: BatchFieldMetadata
         fba = meta.fields_by_attribute
         for name in sorted(fba.keys()):
-            field_meta = fba[name]
+            field_meta: BatchFieldMetadata = fba[name]
+            if filter_attrib_fn is not None and \
+               not filter_attrib_fn(field_meta):
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug(f'skipping: {name}')
+                continue
             vec: FeatureVectorizer = field_meta.vectorizer
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'{name} -> {field_meta}')
@@ -104,15 +106,14 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule, Deallocatable):
                     if embedding_attribs is not None:
                         embedding_attribs.append(attr)
                     self.embedding_vectorizer = vec
-        if self.embedding_attribute_name is None:
-            if len(embedding_attribs) != 1:
-                raise ValueError(
-                    'expecting exactly one embedding vectorizer ' +
-                    f'feature type, but got {len(embedding_attribs)}')
-            self.embedding_attribute_name = embedding_attribs[0]
+        if len(embedding_attribs) != 1:
+            raise ValueError(
+                'expecting exactly one embedding vectorizer ' +
+                f'feature type, but got {len(embedding_attribs)}')
+        self.embedding_attribute_name = embedding_attribs[0]
 
     def _get_embedding_attribute_name(self):
-        pass
+        return None
 
     def deallocate(self):
         super().deallocate()
@@ -140,15 +141,13 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule, Deallocatable):
             self._shape_debug('embedding', x)
         return x
 
-    def _forward_token_features(self, batch: Batch, x: torch.Tensor,
-                                include_fn: Callable = None) -> torch.Tensor:
+    def _forward_token_features(self, batch: Batch, x: torch.Tensor) \
+            -> torch.Tensor:
         """Concatenate any token features given by the vectorizer configuration.
 
         """
         arrs = [x]
         for attrib in self.token_attribs:
-            if include_fn is not None and not include_fn(attrib):
-                continue
             feats = batch.attributes[attrib]
             self._shape_debug(f'token attrib {attrib}', feats)
             arrs.append(feats)
@@ -156,19 +155,12 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule, Deallocatable):
         self._shape_debug('token concat', x)
         return x
 
-    # def _add_document_features(self, batch, arrs):
-    #     for attrib in self.doc_attribs:
-    #         st = batch.attributes[attrib]
-    #         self._shape_debug(f'doc attrib {attrib}', st)
-    #         arrs.append(st)
-
     def _forward_document_features(self, batch: Batch, x: torch.Tensor,
                                    include_fn: Callable = None) -> torch.Tensor:
         """Concatenate any document features given by the vectorizer configuration.
 
         """
         arrs = [x]
-        self._add_document_features(batch, arrs)
         for attrib in self.doc_attribs:
             if include_fn is not None and not include_fn(attrib):
                 continue
