@@ -11,6 +11,7 @@ import logging
 import torch
 from torch import nn
 from zensols.persist import persisted, Deallocatable
+from zensols.deeplearn.model import BaseNetworkModule
 from zensols.deeplearn.layer import MaxPool1dFactory
 from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
 from zensols.deepnlp import TokensContainer, FeatureSentence, FeatureDocument
@@ -52,14 +53,6 @@ class EmbeddingLayer(nn.Module, Deallocatable):
         raise ValueError('layers should not be pickeled')
 
 
-class ResetLockedEmbedding(nn.Embedding):
-    """Prevent weights from being reset after initialization with word vectors.
-
-    """
-    def reset_parameters(self):
-        pass
-
-
 class WordVectorEmbeddingLayer(EmbeddingLayer):
     """An input embedding layer.  This uses an instance of :class:`WordEmbedModel`
     to compose the word embeddings from indexes.  Each index is that of word
@@ -91,12 +84,7 @@ class WordVectorEmbeddingLayer(EmbeddingLayer):
         logger.debug(f'setting tensors: {vecs.shape}, ' +
                      f'device={vecs.device}')
         self.vecs = vecs
-        rows, cols = vecs.shape
-        self.emb = ResetLockedEmbedding(
-            num_embeddings=rows,
-            embedding_dim=cols,
-            _weight=vecs
-        )
+        self.emb = nn.Embedding.from_pretrained(vecs)
         self.emb.freeze = self.trainable
 
     def reset_parameters(self):
@@ -155,7 +143,8 @@ class WordVectorEmbeddingLayer(EmbeddingLayer):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'forward: {x.shape}')
+            logger.debug(f'forward: {x.shape}, device: {x.device} = ' +
+                         f'{BaseNetworkModule.device_from_module(self.emb)}')
         return self.emb.forward(x)
 
 
