@@ -36,7 +36,7 @@ class EmbeddingNetworkSettings(MetadataNetworkSettings):
     embedding_layer: EmbeddingLayer
 
 
-class EmbeddingBaseNetworkModule(BaseNetworkModule, Deallocatable):
+class EmbeddingBaseNetworkModule(BaseNetworkModule):
     """An module that uses an embedding as the input layer.  It creates this as
     attribute ``embedding`` for the sub class to use in the :meth:`_forward`
     method.  In addition, it creates the following attributes:
@@ -113,10 +113,6 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule, Deallocatable):
 
     def _get_embedding_attribute_name(self):
         return None
-
-    def deallocate(self):
-        super().deallocate()
-        self.net_settings.embedding_layer.deallocate()
 
     def _forward(self, batch: Batch) -> torch.Tensor:
         logger.debug(f'batch: {batch}')
