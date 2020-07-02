@@ -91,7 +91,7 @@ class DeepConvolution1dNetworkSettings(BasicNetworkSettings, Writable):
                 f'conv factory: {self.layer_factory}')
 
 
-class DeepConvolution1d(BaseNetworkModule, Deallocatable):
+class DeepConvolution1d(BaseNetworkModule):
     def __init__(self, net_settings: DeepConvolution1dNetworkSettings,
                  logger: logging.Logger):
         super().__init__(net_settings, logger)
@@ -99,45 +99,51 @@ class DeepConvolution1d(BaseNetworkModule, Deallocatable):
         layers = []
         self.pairs = []
         self._create_layers(layers, self.pairs)
-        self.dropout = ns.dropout_layer
         self.seq_layers = nn.Sequential(*layers)
+        self.dropout = ns.dropout_layer
+        self.activation_function = ns.activation_function
 
     def _create_layers(self, layers: List[nn.Module],
                        pairs: List[Tuple[nn.Module, nn.Module]]):
-        pool_factory = self.net_settings.pool_factory
-        conv_layer_factory = pool_factory.layer_factory
+        pool_factory: MaxPool1dFactory = self.net_settings.pool_factory
+        conv_factory: ConvolutionLayerFactory = pool_factory.layer_factory
         n_sets = self.net_settings.n_sets
         for n_set in range(n_sets):
             if self.logger.isEnabledFor(logging.DEBUG):
-                self.logger.debug(f'conv_layer_factory: {conv_layer_factory}')
+                self.logger.debug(f'conv_factory: {conv_factory}')
                 self.logger.debug(f'pool factory: {pool_factory}')
             pool = pool_factory.create_pool()
-            if logger.isEnabledFor(logging.DEBUG):
-                logger.debug(f'pool: {pool}')
-            conv = conv_layer_factory.conv1d()
-            if logger.isEnabledFor(logging.DEBUG):
-                logger.debug(f'conv: {conv}')
+            if self.logger.isEnabledFor(logging.DEBUG):
+                self.logger.debug(f'pool: {pool}')
+            conv = conv_factory.conv1d()
+            if self.logger.isEnabledFor(logging.DEBUG):
+                self.logger.debug(f'conv: {conv}')
             pair = (conv, pool)
             pairs.append(pair)
             layers.extend(pair)
+            pool_out = pool_factory.flatten_dim
             if n_set < n_sets:
-                pool_out = pool_factory.out_shape
-                clone = conv_layer_factory.clone()
+                conv_factory.width = pool_out
+                conv_factory.height = 1
+                conv_factory.kernel_filter = (conv_factory.kernel_filter[0], 1)
                 if self.logger.isEnabledFor(logging.DEBUG):
                     self.logger.debug(f'pool out: {pool_out}')
-                break
+        self.out_features = pool_out
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self.logger.debug(f'out features: {self.out_features}')
 
     def deallocate(self):
         super().deallocate()
-        for layer in self.layers:
-            self._try_deallocate(layer)
-        self.layers.clear()
+        self._deallocate_attribute('seq_layers')
 
     def get_layers(self):
         return tuple(self.seq_layers)
 
     def _forward(self, x: torch.Tensor) -> torch.Tensor:
-        for conv, pool in self.pairs:
+        pairs = self.pairs
+        plen = len(pairs)
+        for i, (conv, pool) in enumerate(pairs):
+            self.logger.debug(f'layer set iter: {i}')
             x = conv(x)
             self._shape_debug('conv', x)
 
@@ -149,4 +155,11 @@ class DeepConvolution1d(BaseNetworkModule, Deallocatable):
 
             if self.dropout is not None:
                 x = self.dropout(x)
+
+            if self.activation_function is not None:
+                x = self.activation_function(x)
+
+            if i < plen - 1:
+                x = x.unsqueeze(3)
+                self._shape_debug('unsqueeze', x)
         return x
