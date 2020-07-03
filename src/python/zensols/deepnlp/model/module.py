@@ -7,7 +7,6 @@ from dataclasses import dataclass
 from typing import Callable
 import logging
 import torch
-from zensols.persist import Deallocatable
 from zensols.deeplearn.vectorize import FeatureVectorizer
 from zensols.deeplearn.model import BaseNetworkModule
 from zensols.deeplearn.batch import (
