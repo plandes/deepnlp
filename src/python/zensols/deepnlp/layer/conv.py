@@ -13,7 +13,6 @@ from zensols.config import Writable
 import torch
 from torch import nn
 from zensols.persist import persisted
-from zensols.config import Deallocatable
 from zensols.deeplearn.layer import ConvolutionLayerFactory, MaxPool1dFactory
 from zensols.deeplearn import BasicNetworkSettings
 from zensols.deeplearn.model import BaseNetworkModule
@@ -85,10 +84,6 @@ class DeepConvolution1dNetworkSettings(BasicNetworkSettings, Writable):
 
     def get_module_class_name(self) -> str:
         return __name__ + '.DeepConvolution1d'
-
-    def __str__(self):
-        return (f'{super().__str__()}, ' +
-                f'conv factory: {self.layer_factory}')
 
 
 class DeepConvolution1d(BaseNetworkModule):
