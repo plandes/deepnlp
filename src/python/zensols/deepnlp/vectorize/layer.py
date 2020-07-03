@@ -115,9 +115,10 @@ class WordVectorEmbeddingLayer(EmbeddingLayer):
                 logger.debug(f'state_dict: embeding key: {emb_key}')
             if emb_key is not None:
                 arr = state[emb_key]
-                if logger.isEnabledFor(logging.DEBUG):
-                    logger.debug(f'state_dict: emb state: {arr.shape}')
-                assert arr.shape == self.embed_model.matrix.shape
+                if arr is not None:
+                    if logger.isEnabledFor(logging.DEBUG):
+                        logger.debug(f'state_dict: emb state: {arr.shape}')
+                    assert arr.shape == self.embed_model.matrix.shape
                 state[emb_key] = None
         return state
 
