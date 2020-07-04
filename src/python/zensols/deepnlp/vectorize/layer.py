@@ -74,17 +74,16 @@ class WordVectorEmbeddingLayer(EmbeddingLayer):
                          **kwargs)
         self.embed_model = embed_model
         self.num_embeddings = embed_model.matrix.shape[0]
-        vecs = self.torch_config.from_numpy(embed_model.matrix)
+        self.vecs = embed_model.to_matrix(self.torch_config)
         if self.trainable:
             logger.debug('cloning embedding for trainability')
-            vecs = torch.clone(vecs)
+            self.vecs = torch.clone(self.vecs)
         else:
             logger.debug('layer is not trainable')
             self.requires_grad = False
-        logger.debug(f'setting tensors: {vecs.shape}, ' +
-                     f'device={vecs.device}')
-        self.vecs = vecs
-        self.emb = nn.Embedding.from_pretrained(vecs)
+        logger.debug(f'setting tensors: {self.vecs.shape}, ' +
+                     f'device={self.vecs.device}')
+        self.emb = nn.Embedding.from_pretrained(self.vecs)
         self.emb.freeze = self.trainable
 
     def reset_parameters(self):

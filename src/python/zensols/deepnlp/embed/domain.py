@@ -9,8 +9,45 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 import logging
 import numpy as np
+import torch
+from zensols.deeplearn import TorchConfig
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class WordVectorModel(object):
+    """Vector data from the model
+
+    :param vectors: are the word vectors
+
+    :param word2vec: is the word to word vector mapping
+
+    :param words: are the string vocabulary
+
+    :param word2idx: is the word to word vector index mapping
+
+    """
+    vectors: np.ndarray
+    word2vec: List[str]
+    words: Dict[str, int]
+    word2idx: Dict[str, np.ndarray]
+
+    def __post_init__(self):
+        self.tensors = {}
+
+    def to_matrix(self, torch_config: TorchConfig) -> torch.Tensor:
+        dev = torch_config.device
+        if dev in self.tensors:
+            if logger.isEnabledFor(logging.INFO):
+                logger.info(f'reusing already cached from {torch_config}')
+            vecs = self.tensors[dev]
+        else:
+            if logger.isEnabledFor(logging.INFO):
+                logger.info(f'created tensor vectory matrix on {torch_config}')
+            vecs = torch_config.from_numpy(self.vectors)
+            self.tensors[dev] = vecs
+        return vecs
 
 
 @dataclass
@@ -18,10 +55,17 @@ class WordEmbedModel(ABC):
     """This is an abstract base class that represents a set of word vectors
     (i.e. GloVe).
 
+    :param name: the name of the model given by the configuration and must be
+                 unique across word vector type and dimension
+
     :param path: the path to the model file(s)
+
     :param cache: if ``True`` globally cache all data strucures, which should
                   be ``False`` if more than one embedding across a model type
                   is used.
+
+    :param lowercase: if ``True``, downcase each word for all methods that take
+                      a word as input
 
     """
     UNKNOWN = '<unk>'
@@ -34,17 +78,12 @@ class WordEmbedModel(ABC):
     lowercase: bool = field(default=False)
 
     @abstractmethod
-    def _create_data(self) -> Tuple[np.ndarray, List[str],
-                                    Dict[str, int], Dict[str, np.ndarray]]:
+    def _create_data(self) -> WordVectorModel:
         """Return the vector data from the model in the form:
 
             (vectors, word2vec, words, word2idx)
 
         where:
-            - ``vectors`` are the word vectors
-            - ``word2vec`` is the word to word vector mapping
-            - ``words`` are the string vocabulary
-            - ``word2idx`` is the word to word vector index mapping
 
         """
         pass
@@ -71,14 +110,17 @@ class WordEmbedModel(ABC):
         """Return the word vector matrix.
 
         """
-        return self._data()[0]
+        return self._data().vectors
+
+    def to_matrix(self, torch_config: TorchConfig) -> torch.Tensor:
+        return self._data().to_matrix(torch_config)
 
     @property
     def vectors(self) -> Dict[str, np.ndarray]:
         """Return all word vectors with the string words as keys.
 
         """
-        return self._data()[1]
+        return self._data().word2vec
 
     @property
     def vector_dimension(self) -> int:
@@ -90,7 +132,7 @@ class WordEmbedModel(ABC):
     def word2idx_or_unk(self, word: str) -> int:
         if self.lowercase:
             word = word.lower()
-        word2idx = self._data()[3]
+        word2idx = self._data().word2idx
         idx = word2idx.get(word)
         if idx is None:
             idx = word2idx.get(self.UNKNOWN)

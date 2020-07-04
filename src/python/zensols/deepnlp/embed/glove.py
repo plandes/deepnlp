@@ -6,13 +6,13 @@ representation for quick loading on start up.
 __author__ = 'Paul Landes'
 
 import logging
-from typing import List, Dict, Tuple
+from typing import List
 from dataclasses import dataclass, field
 from pathlib import Path
 import pickle
 import numpy as np
 import bcolz
-from zensols.deepnlp.embed import WordEmbedModel
+from zensols.deepnlp.embed import WordVectorModel, WordEmbedModel
 
 
 logger = logging.getLogger(__name__)
@@ -101,8 +101,7 @@ class GloveWordEmbedModel(WordEmbedModel):
         pickle.dump(words[:], open(vec_words_file, 'wb'))
         pickle.dump(word2idx, open(vec_idx_file, 'wb'))
 
-    def _create_data(self) -> Tuple[np.ndarray, List[str],
-                                    Dict[str, int], Dict[str, np.ndarray]]:
+    def _create_data(self) -> WordVectorModel:
         """Read the binary bcolz, vocabulary and index files from disk.
 
         """
@@ -121,4 +120,4 @@ class GloveWordEmbedModel(WordEmbedModel):
         word2idx[self.UNKNOWN] = len(words)
         words.append(self.UNKNOWN)
         word2vec = {w: vectors[word2idx[w]] for w in words}
-        return vectors, word2vec, words, word2idx
+        return WordVectorModel(vectors, word2vec, words, word2idx)

@@ -4,13 +4,12 @@
 __author__ = 'Paul Landes'
 
 
-from typing import List, Dict, Tuple
 from dataclasses import dataclass, field
 import logging
 import numpy as np
 from gensim.models import KeyedVectors, Word2Vec
 from zensols.util import time
-from zensols.deepnlp.embed import WordEmbedModel
+from zensols.deepnlp.embed import WordVectorModel, WordEmbedModel
 
 logger = logging.getLogger(__name__)
 
@@ -61,8 +60,7 @@ class Word2VecModel(WordEmbedModel):
             model.save(str(path.absolute()))
         return model
 
-    def _create_data(self) -> Tuple[np.ndarray, List[str],
-                                    Dict[str, int], Dict[str, np.ndarray]]:
+    def _create_data(self) -> WordVectorModel:
         logger.info('reading binary vector file')
         wv = self._get_model().wv
         words = wv.index2entity
@@ -81,4 +79,4 @@ class Word2VecModel(WordEmbedModel):
         word2idx[self.UNKNOWN] = len(words)
         words.append(self.UNKNOWN)
         word2vec[self.UNKNOWN] = unknown_vec
-        return vectors, word2vec, words, word2idx
+        return WordVectorModel(vectors, word2vec, words, word2idx)
