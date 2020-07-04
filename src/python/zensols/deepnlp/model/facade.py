@@ -5,7 +5,7 @@ facade.
 __author__ = 'Paul Landes'
 
 from dataclasses import dataclass
-from typing import Set
+from typing import Set, List
 from abc import ABCMeta, abstractmethod
 import logging
 from zensols.deeplearn import NetworkSettings, ModelSettings
@@ -157,7 +157,9 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
                      'zensols.deepnlp.model.module']:
             logging.getLogger(name).setLevel(logging.INFO)
 
-    def configure_cli_logging(self):
-        # show (slow) embedding loading
-        for name in ['zensols.deepnlp.embed']:
-            logging.getLogger(name).setLevel(logging.INFO)
+    def _configure_cli_logging(self, info_loggers: List[str],
+                               debug_loggers: List[str]):
+        super()._configure_cli_logging(info_loggers, debug_loggers)
+        info_loggers.extend([
+            # show (slow) embedding loading
+            'zensols.deepnlp.embed'])
