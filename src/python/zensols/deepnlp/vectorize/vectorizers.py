@@ -7,6 +7,7 @@ import logging
 import sys
 from typing import List, Tuple, Set
 from dataclasses import dataclass, field
+from functools import reduce
 import torch
 from zensols.deeplearn.vectorize import (
     FeatureContext,
@@ -139,9 +140,10 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
 @dataclass
 class CountEnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
     """Return the count of all tokens as a 1 X M * N tensor where M is the number
-    of token feature ids and N is the columns of the ``fvec`` vectorizer.  Each
-    column position's count represents the number of counts for that spacy
-    symol for that index position in the ``fvec``.
+    of token feature ids and N is the columns of the output of the
+    :class:`.SpacyFeatureVectorizer` vectorizer.  Each column position's
+    count represents the number of counts for that spacy symol for that index
+    position in the output of :class:`.SpacyFeatureVectorizer`.
 
     """
     ATTR_EXP_META = ('decoded_feature_ids',)
@@ -308,3 +310,80 @@ class StatisticsTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'array shape: {arr.shape}')
         return TensorFeatureContext(self.feature_id, arr)
+
+
+@dataclass
+class OverlappingTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
+    """Return the number of normalized and lemmatized tokens across multiple
+    documents.
+
+    """
+    DESCRIPTION = 'overlapping token counts'
+    FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
+
+    def _get_shape(self) -> Tuple[int, int]:
+        return 2,
+
+    @staticmethod
+    def _norms(ac: TokensContainer, bc: TokensContainer) -> Tuple[int]:
+        a = set(map(lambda s: s.norm.lower(), ac.token_iter()))
+        b = set(map(lambda s: s.norm.lower(), bc.token_iter()))
+        return a & b
+
+    @staticmethod
+    def _lemmas(ac: TokensContainer, bc: TokensContainer) -> Tuple[int]:
+        a = set(map(lambda s: s.lemma.lower(), ac.token_iter()))
+        b = set(map(lambda s: s.lemma.lower(), bc.token_iter()))
+        return a & b
+
+    def _encode(self, containers: Tuple[TokensContainer]) -> FeatureContext:
+        norms = reduce(self._norms, containers)
+        lemmas = reduce(self._lemmas, containers)
+        arr = self.torch_config.from_iterable((len(norms), len(lemmas)))
+        return TensorFeatureContext(self.feature_id, arr)
+
+
+@dataclass
+class FeatureContextSeries(FeatureContext):
+    contexts: Tuple[FeatureContext]
+
+
+@dataclass
+class MutualFeaturesContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
+    """Return the number of normalized and lemmatized tokens across multiple
+    documents.
+
+    """
+    DESCRIPTION = 'mutual feature counts'
+    FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
+
+    count_vectorizer_feature_id: str
+
+    @property
+    def count_vectorizer(self) -> CountEnumContainerFeatureVectorizer:
+        return self.manager[self.count_vectorizer_feature_id]
+
+    @property
+    def ones(self) -> torch.Tensor:
+        ones = self.torch_config.empty((1, self.shape[0]))
+        ones.fill_(1)
+        return ones
+
+    def _get_shape(self) -> Tuple[int, int]:
+        return self.count_vectorizer.shape
+
+    def _encode(self, containers: Tuple[TokensContainer]) -> Tuple[FeatureContext]:
+        ctxs = tuple(map(self.count_vectorizer.encode, containers))
+        return FeatureContextSeries(self.feature_id, ctxs)
+
+    def _decode(self, context: FeatureContextSeries) -> torch.Tensor:
+        ones = self.ones
+        arrs = tuple(map(self.count_vectorizer.decode, context.contexts))
+        if len(arrs) == 1:
+            return arrs[0]
+        else:
+            arrs = torch.stack(arrs, axis=0)
+            cnts = torch.tensor(arrs)
+            mask = torch.min(torch.cat((cnts.prod(axis=0).unsqueeze(0), ones)),
+                             axis=0)[0]
+            return (cnts * mask).sum(axis=0)

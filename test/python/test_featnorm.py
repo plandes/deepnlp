@@ -197,3 +197,35 @@ class TestFeatureVectorizationCombined(TestFeatureVectorization):
         # transpose added after transposed vectorizer
         shapes = tuple(map(lambda x: x[0].T.shape, res))
         self.assertEqual(((174,), (174, 25), (9,)), shapes)
+
+
+class TestFeatureVectorizationOverlap(TestFeatureVectorization):
+    def test_token_counts(self):
+        vec = self.fac.instance('overlap_vectorizer_manager')
+        fdoc = vec.parse(self.sent_text)
+        fdoc2 = vec.parse('I be a Citizen')
+        tvec = vec.vectorizers['overlap_token']
+        self.assertEqual((2,), tvec.shape)
+        tensor = tvec.transform((fdoc, fdoc2))
+        self.assertEqual((2,), tuple(tensor.shape))
+        self.assertTensorEquals(torch.tensor([3, 4]), tensor)
+
+    def test_mutual_counts(self):
+        vec = self.fac.instance('overlap_vectorizer_manager')
+        fdoc = vec.parse(self.sent_text)
+        fdoc2 = vec.parse('I be a Citizen.  I am Paul Landes.  I made $3 from my plasma.')
+        tvec = vec.vectorizers['mutual_count']
+        self.assertEqual((174,), tvec.shape)
+        tensor = tvec.transform((fdoc, fdoc2))
+        self.assertEqual((174,), tensor.shape)
+        ar = [0., 0., 0., 0., 0., 0., 0., 3., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+              0., 0., 0., 0., 3., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+              0., 0., 0., 0., 0., 0., 4., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+              0., 0., 0., 0., 0., 0., 2., 0., 4., 0., 0., 0., 0., 0., 0., 0., 4., 0.,
+              0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+              0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+              0., 0., 0., 0., 4., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 3., 0.,
+              0., 0., 2., 0., 0., 0., 0., 0., 0., 2., 0., 0., 0., 0., 0., 4., 0., 0.,
+              0., 0., 0., 0., 0., 0., 0., 0., 0., 3., 0., 0., 0., 0., 0., 0., 0., 0.,
+              0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.]
+        self.assertTensorEquals(torch.tensor(ar), tensor)
