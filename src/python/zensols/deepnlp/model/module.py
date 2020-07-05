@@ -135,12 +135,14 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule):
             self._shape_debug('embedding', x)
         return x
 
-    def _forward_token_features(self, batch: Batch, x: torch.Tensor) \
+    def _forward_token_features(self, batch: Batch, x: torch.Tensor = None) \
             -> torch.Tensor:
         """Concatenate any token features given by the vectorizer configuration.
 
         """
-        arrs = [x]
+        arrs = []
+        if x is not None:
+            arrs.append(x)
         for attrib in self.token_attribs:
             feats = batch.attributes[attrib]
             self._shape_debug(f'token attrib {attrib}', feats)
@@ -149,12 +151,14 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule):
         self._shape_debug('token concat', x)
         return x
 
-    def _forward_document_features(self, batch: Batch, x: torch.Tensor,
+    def _forward_document_features(self, batch: Batch, x: torch.Tensor = None,
                                    include_fn: Callable = None) -> torch.Tensor:
         """Concatenate any document features given by the vectorizer configuration.
 
         """
-        arrs = [x]
+        arrs = []
+        if x is not None:
+            arrs.append(x)
         for attrib in self.doc_attribs:
             if include_fn is not None and not include_fn(attrib):
                 continue
