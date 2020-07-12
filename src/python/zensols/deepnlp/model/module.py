@@ -147,8 +147,9 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule):
             feats = batch.attributes[attrib]
             self._shape_debug(f'token attrib {attrib}', feats)
             arrs.append(feats)
-        x = torch.cat(arrs, 2)
-        self._shape_debug('token concat', x)
+        if len(arrs) > 0:
+            x = torch.cat(arrs, 2)
+            self._shape_debug('token concat', x)
         return x
 
     def _forward_document_features(self, batch: Batch, x: torch.Tensor = None,
@@ -165,6 +166,7 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule):
             st = batch.attributes[attrib]
             self._shape_debug(f'doc attrib {attrib}', st)
             arrs.append(st)
-        x = torch.cat(arrs, 1)
-        self._shape_debug('doc concat', x)
+        if len(arrs) > 0:
+            x = torch.cat(arrs, 1)
+            self._shape_debug('doc concat', x)
         return x

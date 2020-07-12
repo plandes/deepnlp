@@ -32,7 +32,7 @@ class DeepConvolution1dNetworkSettings(BasicNetworkSettings, Writable):
     pool_token_kernel: int = field(default=2)
     pool_stride: int = field(default=1)
     pool_padding: int = field(default=0)
-    n_sets: int = field(default=1)
+    repeats: int = field(default=1)
 
     def _assert_module(self):
         if not hasattr(self, 'module'):
@@ -102,8 +102,8 @@ class DeepConvolution1d(BaseNetworkModule):
                        pairs: List[Tuple[nn.Module, nn.Module]]):
         pool_factory: MaxPool1dFactory = self.net_settings.pool_factory
         conv_factory: ConvolutionLayerFactory = pool_factory.layer_factory
-        n_sets = self.net_settings.n_sets
-        for n_set in range(n_sets):
+        repeats = self.net_settings.repeats
+        for n_set in range(repeats):
             if self.logger.isEnabledFor(logging.DEBUG):
                 self.logger.debug(f'conv_factory: {conv_factory}')
                 self.logger.debug(f'pool factory: {pool_factory}')
@@ -117,7 +117,7 @@ class DeepConvolution1d(BaseNetworkModule):
             pairs.append(pair)
             layers.extend(pair)
             pool_out = pool_factory.flatten_dim
-            if n_set < n_sets:
+            if n_set < repeats:
                 conv_factory.width = pool_out
                 conv_factory.height = 1
                 conv_factory.kernel_filter = (conv_factory.kernel_filter[0], 1)
