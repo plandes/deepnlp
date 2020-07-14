@@ -1,4 +1,4 @@
-n"""This file contains a stash used to load an embedding layer.  It creates
+"""This file contains a stash used to load an embedding layer.  It creates
 features in batches of matrices and persists matrix only (sans features) for
 efficient retrival.
 
