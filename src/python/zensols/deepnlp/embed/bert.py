@@ -103,10 +103,13 @@ class BertEmbeddingModel(object):
         else:
             # add the special tokens.
             sentence = '[CLS] ' + sentence + ' [SEP]'
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'sent: {sentence}')
 
         # split the sentence into tokens.
         tokenized_text = tokenizer.tokenize(sentence)
-        logger.debug(f'tokenized: {tokenized_text}')
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'tokenized: {tokenized_text}')
 
         # map the token strings to their vocabulary indeces.
         indexed_tokens = tokenizer.convert_tokens_to_ids(tokenized_text)
@@ -125,10 +128,12 @@ class BertEmbeddingModel(object):
         # predict hidden states features for each layer
         with torch.no_grad():
             emb = model(tokens_tensor, segments_tensors)[0]
-        logger.debug(f'embedding dim: {emb.size()} ({type(emb)})')
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'embedding dim: {emb.size()} ({type(emb)})')
 
         # remove dimension 1, the `batches`
         emb = torch.squeeze(emb)
-        logger.debug(f'after remove: {emb.size()}')
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'after remove: {emb.size()}')
 
         return tokenized_text, emb

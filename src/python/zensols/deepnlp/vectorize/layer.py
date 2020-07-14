@@ -1,4 +1,4 @@
-"""This file contains a stash used to load an embedding layer.  It creates
+n"""This file contains a stash used to load an embedding layer.  It creates
 features in batches of matrices and persists matrix only (sans features) for
 efficient retrival.
 
@@ -276,16 +276,18 @@ class BertSentenceFeatureVectorizer(SentenceFeatureVectorizer):
         # batch = self.layer_config.layer.doc_to_batch([sent.text])[0]
         return BertFeatureContext(self.feature_id, sent_strs)
 
-    #def doc_to_batch(self, sents: List[str]) -> torch.Tensor:
     def _decode(self, context: BertFeatureContext) -> torch.Tensor:
         mats = []
         for sent in context.sentences:
-            emb = self.embed_model.transform(sent)[1]
+            text, emb = self.embed_model.transform(sent)
             diff = self.token_length - emb.shape[0]
             if diff > 0:
                 zeros = self.embed_model.zeros
                 emb = torch.cat((torch.stack([zeros] * diff), emb))
             elif diff < 0:
                 emb = emb[0:diff]
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'text: {text}')
+                logger.debug(f'diff: {diff}, emb shape: {emb.shape}')
             mats.append(emb)
         return torch.stack(mats)
