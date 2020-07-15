@@ -28,9 +28,6 @@ class DocumentIndexVectorizer(TokenContainerFeatureVectorizer):
         index_path.parent.mkdir(parents=True, exist_ok=True)
         self._model = PersistedWork(index_path, self, cache_global=True)
 
-    def _get_shape(self) -> Tuple[int, int]:
-        return 2,
-
     def feat_to_tokens(self, docs: Tuple[FeatureDocument]) -> Tuple[str]:
         toks = map(lambda d: d.lemma.lower(),
                    filter(lambda d: not d.is_stop and not d.is_punctuation,

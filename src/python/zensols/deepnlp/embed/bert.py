@@ -15,6 +15,7 @@ from transformers import (
     RobertaTokenizer,
     RobertaModel,
 )
+from zensols.config import Writable
 from zensols.persist import persisted
 from zensols.deeplearn import TorchConfig
 
@@ -42,6 +43,7 @@ class BertEmbeddingModel(object):
     size: str = field(default='base')
     model_name: InitVar[str] = field(default='bert')
     case: InitVar[bool] = field(default=False)
+    token_length: int = field(default=512)
 
     def __post_init__(self, model_name: str, case: bool):
         self.lower_case = not case
@@ -51,6 +53,9 @@ class BertEmbeddingModel(object):
             self.model_id += f'-{"" if case else "un"}cased'
         if not self.cache_dir.exists():
             self.cache_dir.mkdir(parents=True, exist_ok=True)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'model name/desc: {self.model_name}' +
+                         f'/{self.model_desc}')
 
     def _get_model_cnf(self):
         return {'bert': (BertTokenizer, BertModel),
@@ -98,7 +103,7 @@ class BertEmbeddingModel(object):
         tokenizer = self.tokenizer
         model = self.model
 
-        if self.model_desc == 'roberta' and 0:
+        if self.model_desc == 'roberta':
             sentence = ' ' + sentence
         else:
             # add the special tokens.
@@ -111,6 +116,9 @@ class BertEmbeddingModel(object):
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'tokenized: {tokenized_text}')
 
+        # truncate, otherwise error: CUDA error: device-side assert triggered
+        tokenized_text = tokenized_text[:self.token_length]
+
         # map the token strings to their vocabulary indeces.
         indexed_tokens = tokenizer.convert_tokens_to_ids(tokenized_text)
 
@@ -118,8 +126,18 @@ class BertEmbeddingModel(object):
         segments_ids = [1] * len(tokenized_text)
 
         # convert to GPU tensors
-        tokens_tensor = torch_config.singleton([indexed_tokens], dtype=torch.long)
-        segments_tensors = torch_config.singleton([segments_ids], dtype=torch.long)
+        if logger.isEnabledFor(logging.DEBUG):
+            tl = len(indexed_tokens)
+            si = len(segments_ids)
+            logger.debug(Writable._trunc(f'indexed tokens: ({tl}) {indexed_tokens}'))
+            logger.debug(Writable._trunc(f'segments IDS: ({si}) {segments_ids}'))
+        tokens_tensor = torch_config.singleton(indexed_tokens, dtype=torch.long)
+        segments_tensors = torch_config.singleton(segments_ids, dtype=torch.long)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'toks/seg shapes: {tokens_tensor.shape}' +
+                         f'/{segments_tensors.shape}')
+        tokens_tensor = tokens_tensor.unsqueeze(0)
+        segments_tensors = segments_tensors.unsqueeze(0)
 
         # put the model in `evaluation` mode, meaning feed-forward operation.
         model.eval()
@@ -132,7 +150,7 @@ class BertEmbeddingModel(object):
             logger.debug(f'embedding dim: {emb.size()} ({type(emb)})')
 
         # remove dimension 1, the `batches`
-        emb = torch.squeeze(emb)
+        emb = torch.squeeze(emb, dim=0)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'after remove: {emb.size()}')
 
