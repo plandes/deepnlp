@@ -22,6 +22,9 @@ class LatentSemanticDocumentIndexerVectorizer(DocumentIndexVectorizer):
     components: int = field(default=100)
     iterations: int = field(default=7)
 
+    def _get_shape(self) -> Tuple[int, int]:
+        return 1,
+
     def _create_model(self):
         docs = self.doc_factory.create_training_docs()
         vectorizer = TfidfVectorizer(

@@ -18,6 +18,14 @@ class TopicModelDocumentIndexerVectorizer(DocumentIndexVectorizer):
     FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
 
     topics: int = field(default=10)
+    decode_as_flat: bool = field(default=True)
+    n_containers: int = field(default=1)
+
+    def _get_shape(self) -> Tuple[int, int]:
+        if self.decode_as_flat:
+            return self.n_containers * self.topics,
+        else:
+            return self.n_containers, self.topics
 
     def _create_model(self):
         if logger.isEnabledFor(logging.DEBUG):
@@ -61,6 +69,15 @@ class TopicModelDocumentIndexerVectorizer(DocumentIndexVectorizer):
             arrs.append(arr)
         arrs = torch.stack(arrs)
         return TensorFeatureContext(self.feature_id, arrs)
+
+    def _decode(self, context: FeatureContext) -> torch.Tensor:
+        arr = super()._decode(context)
+        if self.decode_as_flat:
+            shape = arr.shape
+            arr = arr.flatten()
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'decode shape {shape} -> {arr.shape}')
+        return arr
 
     def tmp(self):
         #self.clear()
