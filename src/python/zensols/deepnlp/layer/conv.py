@@ -13,8 +13,12 @@ from zensols.config import Writable
 import torch
 from torch import nn
 from zensols.persist import persisted
+from zensols.deeplearn import (
+    ActivationNetworkSettings,
+    DropoutNetworkSettings,
+    BatchNormNetworkSettings,
+)
 from zensols.deeplearn.layer import ConvolutionLayerFactory, MaxPool1dFactory
-from zensols.deeplearn import BasicNetworkSettings
 from zensols.deeplearn.model import BaseNetworkModule
 from zensols.deepnlp.model import EmbeddingBaseNetworkModule
 
@@ -22,7 +26,9 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class DeepConvolution1dNetworkSettings(BasicNetworkSettings, Writable):
+class DeepConvolution1dNetworkSettings(ActivationNetworkSettings,
+                                       DropoutNetworkSettings,
+                                       Writable):
     token_length: int = field(default=None)
     embedding_dimension: int = field(default=None)
     token_kernel: int = field(default=2)
@@ -33,6 +39,7 @@ class DeepConvolution1dNetworkSettings(BasicNetworkSettings, Writable):
     pool_stride: int = field(default=1)
     pool_padding: int = field(default=0)
     repeats: int = field(default=1)
+    batch_norm_d: int = field(default=None)
 
     def _assert_module(self):
         if not hasattr(self, 'module'):
@@ -113,7 +120,14 @@ class DeepConvolution1d(BaseNetworkModule):
             conv = conv_factory.conv1d()
             if self.logger.isEnabledFor(logging.DEBUG):
                 self.logger.debug(f'conv: {conv}')
-            pair = (conv, pool)
+            if self.net_settings.batch_norm_d is not None:
+                batch_norm = BatchNormNetworkSettings.create_layer(
+                    self.net_settings.batch_norm_d, pool_factory.out_shape[0])
+            else:
+                batch_norm = None
+            if self.logger.isEnabledFor(logging.DEBUG):
+                self.logger.debug(f'batch_norm: {batch_norm}')
+            pair = (conv, pool, batch_norm)
             pairs.append(pair)
             layers.extend(pair)
             pool_out = pool_factory.flatten_dim
@@ -137,8 +151,9 @@ class DeepConvolution1d(BaseNetworkModule):
     def _forward(self, x: torch.Tensor) -> torch.Tensor:
         pairs = self.pairs
         plen = len(pairs)
-        for i, (conv, pool) in enumerate(pairs):
-            self.logger.debug(f'layer set iter: {i}')
+        for i, (conv, pool, batch_norm) in enumerate(pairs):
+            if self.logger.isEnabledFor(logging.DEBUG):
+                self.logger.debug(f'layer set iter: {i}')
             x = conv(x)
             self._shape_debug('conv', x)
 
@@ -150,6 +165,11 @@ class DeepConvolution1d(BaseNetworkModule):
 
             if self.dropout is not None:
                 x = self.dropout(x)
+
+            if batch_norm is not None:
+                if self.logger.isEnabledFor(logging.DEBUG):
+                    self.logger.debug(f'batch norm: {batch_norm}')
+                x = batch_norm(x)
 
             if self.activation_function is not None:
                 x = self.activation_function(x)
