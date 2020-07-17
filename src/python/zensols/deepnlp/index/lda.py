@@ -17,7 +17,7 @@ class TopicModelDocumentIndexerVectorizer(DocumentIndexVectorizer):
     DESCRIPTION = 'latent semantic indexing'
     FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
 
-    topics: int = field(default=10)
+    topics: int = field(default=30)
     decode_as_flat: bool = field(default=True)
     n_containers: int = field(default=1)
 
@@ -78,13 +78,3 @@ class TopicModelDocumentIndexerVectorizer(DocumentIndexVectorizer):
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'decode shape {shape} -> {arr.shape}')
         return arr
-
-    def tmp(self):
-        #self.clear()
-        terms = 'islam sdfjlksdfj law'.split()
-        topics = self.query(terms)
-        s = 0
-        for topic_id, prob in topics:
-            print(topic_id, prob)
-            s += prob
-        print(s)
