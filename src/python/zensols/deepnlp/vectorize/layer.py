@@ -90,28 +90,17 @@ class WordVectorEmbeddingLayer(EmbeddingLayer):
         if self.trainable:
             self.emb.load_state_dict({'weight': self.vecs})
 
-    def _find_parameter_key(self, param_name: str, state: dict) -> str:
-        """Find the embedding parameter key in the ``state_dict``.
+    def _get_emb_key(self, prefix: str):
+        return f'{prefix}emb.weight'
 
-        """
-        key_name = f'{param_name}.weight'
-        param_key = None
-        for k, v in state.items():
-            if k.endswith(key_name):
-                param_key = k
-                break
-        if param_key is None:
-            logger.warning('missing embedded weight key')
-        return param_key
-
-    def state_dict(self, *args, **kwargs):
-        state = super().state_dict(*args, **kwargs)
+    def state_dict(self, destination=None, prefix='', *args, **kwargs):
+        state = super().state_dict(destination, prefix, *args, **kwargs)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'state_dict: trainable: {self.trainable}')
         if not self.trainable:
-            emb_key = self._find_parameter_key('emb', state)
+            emb_key = self._get_emb_key(prefix)
             if logger.isEnabledFor(logging.DEBUG):
-                logger.debug(f'state_dict: embeding key: {emb_key}')
+                logger.debug(f'state_dict: embedding key: {emb_key}')
             if emb_key is not None:
                 arr = state[emb_key]
                 if arr is not None:
@@ -121,14 +110,14 @@ class WordVectorEmbeddingLayer(EmbeddingLayer):
                 state[emb_key] = None
         return state
 
-    def _load_from_state_dict(self, state_dict, *args, **kwargs):
+    def _load_from_state_dict(self, state_dict, prefix, *args, **kwargs):
         if not self.trainable:
-            emb_key = self._find_parameter_key('emb', state_dict)
+            emb_key = self._get_emb_key(prefix)
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'load_state_dict: {emb_key}')
             if emb_key is not None:
                 state_dict[emb_key] = self.vecs
-        super()._load_from_state_dict(state_dict, *args, **kwargs)
+        super()._load_from_state_dict(state_dict, prefix, *args, **kwargs)
 
     def deallocate(self):
         super().deallocate()
