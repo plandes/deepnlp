@@ -121,7 +121,7 @@ class DeepConvolution1d(BaseNetworkModule):
             if self.logger.isEnabledFor(logging.DEBUG):
                 self.logger.debug(f'conv: {conv}')
             if self.net_settings.batch_norm_d is not None:
-                batch_norm = BatchNormNetworkSettings.create_layer(
+                batch_norm = BatchNormNetworkSettings.create_batch_norm_layer(
                     self.net_settings.batch_norm_d, pool_factory.out_shape[0])
             else:
                 batch_norm = None
@@ -151,6 +151,7 @@ class DeepConvolution1d(BaseNetworkModule):
     def _forward(self, x: torch.Tensor) -> torch.Tensor:
         pairs = self.pairs
         plen = len(pairs)
+
         for i, (conv, pool, batch_norm) in enumerate(pairs):
             if self.logger.isEnabledFor(logging.DEBUG):
                 self.logger.debug(f'layer set iter: {i}')
@@ -164,6 +165,8 @@ class DeepConvolution1d(BaseNetworkModule):
             self._shape_debug('pool', x)
 
             if self.dropout is not None:
+                if self.logger.isEnabledFor(logging.DEBUG):
+                    self.logger.debug(f'dropout: {self.dropout}')
                 x = self.dropout(x)
 
             if batch_norm is not None:
@@ -172,9 +175,12 @@ class DeepConvolution1d(BaseNetworkModule):
                 x = batch_norm(x)
 
             if self.activation_function is not None:
+                if self.logger.isEnabledFor(logging.DEBUG):
+                    self.logger.debug(f'act: {self.activation_function}')
                 x = self.activation_function(x)
 
             if i < plen - 1:
                 x = x.unsqueeze(3)
                 self._shape_debug('unsqueeze', x)
+
         return x
