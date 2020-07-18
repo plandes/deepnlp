@@ -164,5 +164,4 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
             # show (slow) embedding loading
             'zensols.deepnlp.embed',
             # show (slow) embedding loading
-            'zensols.deepnlp.index'
-        ])
+            'zensols.deepnlp.index'])
