@@ -162,4 +162,7 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
         super()._configure_cli_logging(info_loggers, debug_loggers)
         info_loggers.extend([
             # show (slow) embedding loading
-            'zensols.deepnlp.embed'])
+            'zensols.deepnlp.embed',
+            # show (slow) embedding loading
+            'zensols.deepnlp.index'
+        ])
