@@ -7,6 +7,7 @@ from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.preprocessing import Normalizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
+from zensols.util import time
 from zensols.deepnlp import FeatureDocument, TokensContainer
 from zensols.deepnlp.vectorize import TokenContainerFeatureType
 from . import DocumentIndexVectorizer
@@ -20,23 +21,30 @@ class LatentSemanticDocumentIndexerVectorizer(DocumentIndexVectorizer):
     FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
 
     components: int = field(default=100)
-    iterations: int = field(default=7)
+    iterations: int = field(default=10)
 
     def _get_shape(self) -> Tuple[int, int]:
         return 1,
 
     def _create_model(self):
-        docs = self.doc_factory.create_training_docs()
+        docs = tuple(self.doc_factory.create_training_docs())
         vectorizer = TfidfVectorizer(
             lowercase=False,
             tokenizer=self.feat_to_tokens
         )
-        X_train_tfidf = vectorizer.fit_transform(docs)
-        logger.debug(f'tfidf shape: {X_train_tfidf.shape}')
+        with time(f'TF/IDF vectorized {len(docs)} documents'):
+            X_train_tfidf = vectorizer.fit_transform(docs)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'tfidf shape: {X_train_tfidf.shape}')
         svd = TruncatedSVD(self.components, n_iter=self.iterations)
         lsa: Pipeline = make_pipeline(svd, Normalizer(copy=False))
-        X_train_lsa = lsa.fit_transform(X_train_tfidf)
-        logger.debug(f'truncated svd shape: {X_train_lsa.shape}')
+        with time('SVD complete'):
+            X_train_lsa = lsa.fit_transform(X_train_tfidf)
+        if logger.isEnabledFor(logging.INFO):
+            logger.info(f'created model with {self.components} components, ' +
+                        f'over {self.iterations} iterations with ' +
+                        f'TF/IDF matrix shape: {X_train_tfidf.shape}, ' +
+                        f'SVD matrix shape: {X_train_lsa.shape}')
         return {'vectorizer': vectorizer, 'lsa': lsa}
 
     def _transform_doc(self, doc: FeatureDocument, vectorizer: TfidfVectorizer,

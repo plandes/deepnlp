@@ -5,7 +5,7 @@ import logging
 from itertools import chain
 from pathlib import Path
 from zensols.util import time
-from zensols.persist import persisted, PersistedWork
+from zensols.persist import persisted, PersistedWork, Primeable
 from zensols.deepnlp import FeatureDocument
 from zensols.deepnlp.vectorize import TokenContainerFeatureVectorizer
 
@@ -20,15 +20,23 @@ class IndexedDocumentFactory(ABC):
 
 
 @dataclass
-class DocumentIndexVectorizer(TokenContainerFeatureVectorizer):
+class DocumentIndexVectorizer(TokenContainerFeatureVectorizer, Primeable):
     doc_factory: IndexedDocumentFactory
-    index_path: InitVar[Path]
+    index_path: Path
 
-    def __post_init__(self, index_path: Path):
-        index_path.parent.mkdir(parents=True, exist_ok=True)
-        self._model = PersistedWork(index_path, self, cache_global=True)
+    def __post_init__(self):
+        self.index_path.parent.mkdir(parents=True, exist_ok=True)
+        self._model_pw = PersistedWork(self.index_path, self)
 
-    def feat_to_tokens(self, docs: Tuple[FeatureDocument]) -> Tuple[str]:
+    @staticmethod
+    def feat_to_tokens(docs: Tuple[FeatureDocument]) -> Tuple[str]:
+        """Create a tuple of string tokens from a set of documents suitable for
+        document indexing.  The strings are the lemmas of the tokens.
+
+        **Important**: this method must remain static since the LSI instance of
+        this class uses it as a factory function in the a vectorizer.
+
+        """
         toks = map(lambda d: d.lemma.lower(),
                    filter(lambda d: not d.is_stop and not d.is_punctuation,
                           chain.from_iterable(
@@ -40,12 +48,16 @@ class DocumentIndexVectorizer(TokenContainerFeatureVectorizer):
         pass
 
     @property
-    @persisted('_model')
+    @persisted('_model_pw')
     def model(self):
         with time('trained model'):
+            if logger.isEnabledFor(logging.INFO):
+                logger.info(f'creating model at {self.index_path}')
             return self._create_model()
 
     def prime(self):
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'priming {self}')
         self.model
 
     def clear(self):

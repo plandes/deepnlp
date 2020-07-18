@@ -4,6 +4,8 @@ import logging
 import torch
 import gensim.corpora as corpora
 from gensim.models.ldamodel import LdaModel
+from zensols.util import time
+from zensols.deeplearn import TorchConfig
 from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
 from zensols.deepnlp import TokensContainer
 from zensols.deepnlp.vectorize import TokenContainerFeatureType
@@ -17,7 +19,7 @@ class TopicModelDocumentIndexerVectorizer(DocumentIndexVectorizer):
     DESCRIPTION = 'latent semantic indexing'
     FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
 
-    topics: int = field(default=30)
+    topics: int = field(default=20)
     decode_as_flat: bool = field(default=True)
     n_containers: int = field(default=1)
 
@@ -28,22 +30,29 @@ class TopicModelDocumentIndexerVectorizer(DocumentIndexVectorizer):
             return self.n_containers, self.topics
 
     def _create_model(self):
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'creating {self.topics}')
+        if logger.isEnabledFor(logging.INFO):
+            logger.info(f'creating {self.topics} topics with ' +
+                        f'{self.n_containers} containers')
         docs = self.doc_factory.create_training_docs()
         docs = tuple(map(lambda doc: self.feat_to_tokens(doc), docs))
         id2word = corpora.Dictionary(docs)
         corpus = tuple(map(lambda doc: id2word.doc2bow(doc), docs))
-        lda = LdaModel(
-            corpus=corpus,
-            id2word=id2word,
-            num_topics=self.topics,
-            random_state=100,
-            update_every=1,
-            chunksize=100,
-            passes=10,
-            alpha='auto',
-            per_word_topics=True)
+        rand_state = TorchConfig.get_random_seed()
+        if rand_state is None:
+            rand_state = 0
+        params = {
+            'corpus': corpus,
+            'id2word': id2word,
+            'num_topics': self.topics,
+            'random_state': rand_state,
+            'update_every': 1,
+            'chunksize': 100,
+            'passes': 10,
+            'alpha': 'auto',
+            'per_word_topics': True
+        }
+        with time(f'modeled {self.topics} acros {len(docs)} documents'):
+            lda = LdaModel(**params)
         return {'lda': lda, 'corpus': corpus, 'id2word': id2word}
 
     def query(self, tokens: Tuple[str]) -> Tuple[float]:
