@@ -101,7 +101,7 @@ class WordEmbedModel(ABC):
         return self._data_inst
 
     def __getstate__(self):
-        state = dict(self.__dict__())
+        state = dict(self.__dict__)
         state.pop('_data_inst', None)
         return state
 
@@ -167,5 +167,8 @@ class WordEmbedModel(ABC):
         return self.matrix.shape[0]
 
     def __str__(self):
-        return (f'glove: num words: {len(self)}, ' +
-                f'vector dim: {self.vector_dimension}')
+        if not hasattr(self, '_data_inst'):
+            return 'type(self) model not loaded'
+        else:
+            return (f'word embed model: num words: {len(self)}, ' +
+                    f'vector dim: {self.vector_dimension}')
