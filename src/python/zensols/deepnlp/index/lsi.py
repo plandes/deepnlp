@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Iterable, Any
 from dataclasses import dataclass, field
 import logging
 import numpy as np
@@ -26,13 +26,12 @@ class LatentSemanticDocumentIndexerVectorizer(DocumentIndexVectorizer):
     def _get_shape(self) -> Tuple[int, int]:
         return 1,
 
-    def _create_model(self):
-        docs = tuple(self.doc_factory.create_training_docs())
+    def _create_model(self, docs: Iterable[FeatureDocument]) -> Any:
         vectorizer = TfidfVectorizer(
             lowercase=False,
             tokenizer=self.feat_to_tokens
         )
-        with time(f'TF/IDF vectorized {len(docs)} documents'):
+        with time('TF/IDF vectorized {X_train_tfidf.shape[0]} documents'):
             X_train_tfidf = vectorizer.fit_transform(docs)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'tfidf shape: {X_train_tfidf.shape}')

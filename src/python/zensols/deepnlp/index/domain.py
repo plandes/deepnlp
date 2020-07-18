@@ -1,11 +1,21 @@
-from typing import Tuple
-from dataclasses import dataclass, InitVar
+"""Contains a base class for vectorizers for indexing document.
+
+"""
+__author__ = 'Paul Landes'
+
+from typing import Tuple, Iterable, Any
+from dataclasses import dataclass
 from abc import ABC, abstractmethod
 import logging
 from itertools import chain
 from pathlib import Path
 from zensols.util import time
-from zensols.persist import persisted, PersistedWork, Primeable
+from zensols.persist import (
+    persisted,
+    PersistedWork,
+    PersistableContainer,
+    Primeable
+)
 from zensols.deepnlp import FeatureDocument
 from zensols.deepnlp.vectorize import TokenContainerFeatureVectorizer
 
@@ -14,17 +24,32 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class IndexedDocumentFactory(ABC):
+    """Creates training documents used to generate indexed features (i.e. latent
+    dirichlet allocation, latent semantic indexing etc).
+
+    """
     @abstractmethod
     def create_training_docs(self) -> Tuple[FeatureDocument]:
+        """Create the documents used to index in the model during training.
+
+        """
         pass
 
 
 @dataclass
-class DocumentIndexVectorizer(TokenContainerFeatureVectorizer, Primeable):
+class DocumentIndexVectorizer(TokenContainerFeatureVectorizer,
+                              PersistableContainer, Primeable):
+    """A vectorizer that generates vectorized features based on the index documents
+    of the training set.  For example, latent dirichlet allocation maybe be
+    used to generated a distrubiton of likelihood a document belongs to a
+    topic.
+
+    """
     doc_factory: IndexedDocumentFactory
     index_path: Path
 
     def __post_init__(self):
+        PersistableContainer.__init__(self)
         self.index_path.parent.mkdir(parents=True, exist_ok=True)
         self._model_pw = PersistedWork(self.index_path, self)
 
@@ -44,16 +69,25 @@ class DocumentIndexVectorizer(TokenContainerFeatureVectorizer, Primeable):
         return tuple(toks)
 
     @abstractmethod
-    def _create_model(self):
+    def _create_model(self, docs: Iterable[FeatureDocument]) -> Any:
+        """
+
+        """
         pass
 
     @property
     @persisted('_model_pw')
     def model(self):
+        with time('created training documents'):
+            docs = self.doc_factory.create_training_docs()
         with time('trained model'):
             if logger.isEnabledFor(logging.INFO):
                 logger.info(f'creating model at {self.index_path}')
-            return self._create_model()
+            return self._create_model(docs)
+
+    def __getstate__(self):
+        print('IN DOC INDX VEC GETSTS')
+        return self.__dict__
 
     def prime(self):
         if logger.isEnabledFor(logging.DEBUG):

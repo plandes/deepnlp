@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Iterable, Any
 from dataclasses import dataclass, field
 import logging
 import torch
@@ -7,7 +7,7 @@ from gensim.models.ldamodel import LdaModel
 from zensols.util import time
 from zensols.deeplearn import TorchConfig
 from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
-from zensols.deepnlp import TokensContainer
+from zensols.deepnlp import TokensContainer, FeatureDocument
 from zensols.deepnlp.vectorize import TokenContainerFeatureType
 from . import DocumentIndexVectorizer
 
@@ -29,11 +29,10 @@ class TopicModelDocumentIndexerVectorizer(DocumentIndexVectorizer):
         else:
             return self.n_containers, self.topics
 
-    def _create_model(self):
+    def _create_model(self, docs: Iterable[FeatureDocument]) -> Any:
         if logger.isEnabledFor(logging.INFO):
             logger.info(f'creating {self.topics} topics with ' +
                         f'{self.n_containers} containers')
-        docs = self.doc_factory.create_training_docs()
         docs = tuple(map(lambda doc: self.feat_to_tokens(doc), docs))
         id2word = corpora.Dictionary(docs)
         corpus = tuple(map(lambda doc: id2word.doc2bow(doc), docs))
