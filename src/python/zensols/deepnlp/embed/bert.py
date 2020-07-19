@@ -38,6 +38,7 @@ class BertEmbeddingModel(object):
     :param case: ``True`` for the case sensitive, ``False`` (default) otherwise
 
     """
+    name: str
     torch_config: TorchConfig
     cache_dir: Path = field(default=Path('.'))
     size: str = field(default='base')
