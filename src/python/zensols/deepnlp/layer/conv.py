@@ -97,13 +97,10 @@ class DeepConvolution1d(BaseNetworkModule):
     def __init__(self, net_settings: DeepConvolution1dNetworkSettings,
                  logger: logging.Logger):
         super().__init__(net_settings, logger)
-        ns = net_settings
         layers = []
         self.pairs = []
         self._create_layers(layers, self.pairs)
         self.seq_layers = nn.Sequential(*layers)
-        self.dropout = ns.dropout_layer
-        self.activation_function = ns.activation_function
 
     def _create_layers(self, layers: List[nn.Module],
                        pairs: List[Tuple[nn.Module, nn.Module]]):
@@ -164,20 +161,14 @@ class DeepConvolution1d(BaseNetworkModule):
             x = pool(x)
             self._shape_debug('pool', x)
 
-            if self.dropout is not None:
-                if self.logger.isEnabledFor(logging.DEBUG):
-                    self.logger.debug(f'dropout: {self.dropout}')
-                x = self.dropout(x)
+            self._forward_dropout(x)
 
             if batch_norm is not None:
                 if self.logger.isEnabledFor(logging.DEBUG):
                     self.logger.debug(f'batch norm: {batch_norm}')
                 x = batch_norm(x)
 
-            if self.activation_function is not None:
-                if self.logger.isEnabledFor(logging.DEBUG):
-                    self.logger.debug(f'act: {self.activation_function}')
-                x = self.activation_function(x)
+            self._forward_activation(x)
 
             if i < plen - 1:
                 x = x.unsqueeze(3)
