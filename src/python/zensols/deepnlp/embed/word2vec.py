@@ -22,6 +22,9 @@ class Word2VecModel(WordEmbedModel):
     dimension: int = field(default=300)
     model_type: str = field(default='keyed')
 
+    def _get_model_id(self) -> str:
+        return f'word2vec: type={self.model_type}, dim={self.dimension}'
+
     @property
     def model(self) -> KeyedVectors:
         return self._data()[1]

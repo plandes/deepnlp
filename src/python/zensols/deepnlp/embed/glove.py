@@ -66,6 +66,9 @@ class GloveWordEmbedModel(WordEmbedModel):
         logger.debug(f'creating paths to {self.path}')
         return vec_txt_path, vec_bin_dir, vec_bin_file, vec_words_file, vec_idx_file
 
+    def _get_model_id(self) -> str:
+        return f'glove: size={self.desc}, dim={self.dimension}'
+
     def _write_vecs(self) -> np.ndarray:
         """Write the bcolz binary files.  Only when they do not exist on the files
         system already are they calculated and written.

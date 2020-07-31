@@ -78,6 +78,18 @@ class WordEmbedModel(ABC):
     lowercase: bool = field(default=False)
 
     @abstractmethod
+    def _get_model_id(self) -> str:
+        """Return a string that uniquely identifies this instance of the embedding
+        model.  This should have the type, size and dimension of the embedding.
+
+        This string is used to cache models in both CPU and GPU memory so the
+        layers can have the benefit of reusing the same in memeory word
+        embedding matrix.
+
+        """
+        pass
+
+    @abstractmethod
     def _create_data(self) -> WordVectorModel:
         """Return the vector data from the model in the form:
 
@@ -91,13 +103,18 @@ class WordEmbedModel(ABC):
     def clear_cache(self):
         self.CACHE.clear()
 
+    @property
+    def model_id(self) -> str:
+        return self._get_model_id()
+
     def _data(self) -> Tuple[np.ndarray, List[str],
                              Dict[str, int], Dict[str, np.ndarray]]:
         if not hasattr(self, '_data_inst'):
-            self._data_inst = self.CACHE.get(self.name)
+            model_id = self.model_id
+            self._data_inst = self.CACHE.get(model_id)
             if self._data_inst is None:
                 self._data_inst = self._create_data()
-                self.CACHE[self.name] = self._data_inst
+                self.CACHE[model_id] = self._data_inst
         return self._data_inst
 
     def __getstate__(self):
@@ -168,7 +185,7 @@ class WordEmbedModel(ABC):
 
     def __str__(self):
         if not hasattr(self, '_data_inst'):
-            return 'type(self) model not loaded'
+            return self.model_id
         else:
             return (f'word embed model: num words: {len(self)}, ' +
                     f'vector dim: {self.vector_dimension}')
