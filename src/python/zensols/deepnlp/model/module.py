@@ -7,7 +7,6 @@ from dataclasses import dataclass
 from typing import Callable
 import logging
 import torch
-from zensols.persist import persisted
 from zensols.deeplearn.vectorize import FeatureVectorizer
 from zensols.deeplearn.model import BaseNetworkModule
 from zensols.deeplearn.batch import (
@@ -114,6 +113,11 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule):
 
     @property
     def batch_metadata(self) -> BatchMetadata:
+        """Return the batch metadata used by this model.
+
+        """
+        # it's not necessary to persist here since the call in the factory
+        # already does
         return self.net_settings.batch_metadata_factory()
 
     def _get_embedding_attribute_name(self):
