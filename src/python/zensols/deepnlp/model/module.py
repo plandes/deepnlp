@@ -7,10 +7,12 @@ from dataclasses import dataclass
 from typing import Callable
 import logging
 import torch
+from zensols.persist import persisted
 from zensols.deeplearn.vectorize import FeatureVectorizer
 from zensols.deeplearn.model import BaseNetworkModule
 from zensols.deeplearn.batch import (
     Batch,
+    BatchMetadata,
     BatchFieldMetadata,
     MetadataNetworkSettings,
 )
@@ -68,7 +70,7 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule):
         self.embedding = net_settings.embedding_layer
         self.embedding_output_size = self.embedding.embedding_dim
         self.join_size = 0
-        meta = self.net_settings.batch_metadata_factory()
+        meta = self.batch_metadata
         self.token_attribs = []
         self.doc_attribs = []
         embedding_attribs = []
@@ -109,6 +111,10 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule):
                 'expecting exactly one embedding vectorizer ' +
                 f'feature type, but got {len(embedding_attribs)}')
         self.embedding_attribute_name = embedding_attribs[0]
+
+    @property
+    def batch_metadata(self) -> BatchMetadata:
+        return self.net_settings.batch_metadata_factory()
 
     def _get_embedding_attribute_name(self):
         return None
