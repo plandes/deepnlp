@@ -350,8 +350,14 @@ class FeatureContextSeries(FeatureContext):
 
 @dataclass
 class MutualFeaturesContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
-    """Return the number of normalized and lemmatized tokens across multiple
-    documents.
+    """Return the shared count of all tokens as a 1 X M * N tensor where M is the
+    number of token feature ids and N is the columns of the output of the
+    :class:`.SpacyFeatureVectorizer` vectorizer.
+
+    This uses an instance of :class:`CountEnumContainerFeatureVectorizer` to
+    compute across each spacy feature and then sums them up for only those
+    features shared.  If at least one shared document has a zero count, the
+    features is zeroed.
 
     """
     DESCRIPTION = 'mutual feature counts'
