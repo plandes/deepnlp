@@ -163,5 +163,5 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
         info_loggers.extend([
             # show (slow) embedding loading
             'zensols.deepnlp.embed',
-            # show (slow) embedding loading
+            # LSI/LDA indexing
             'zensols.deepnlp.index'])
