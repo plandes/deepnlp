@@ -41,7 +41,7 @@ class FeatureDocumentParser(object):
         sent_feats = []
         for sent in doc.sents:
             feats = tuple(map(self._create_token, lr.features(sent)))
-            sent_feats.append(FeatureSentence(sent.text, feats))
+            sent_feats.append(FeatureSentence(feats, sent.text))
         return sent_feats
 
     def from_list(self, text: List[str]) -> List[FeatureSentence]:
@@ -54,7 +54,7 @@ class FeatureDocumentParser(object):
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'sentence: {sent}')
             feats = tuple(map(self._create_token, lr.features(lr.parse(sent))))
-            sent_feats.append(FeatureSentence(sent, feats))
+            sent_feats.append(FeatureSentence(feats, sent))
         return sent_feats
 
     def parse(self, text: Union[str, List[str]], *args, **kwargs) -> FeatureDocument:

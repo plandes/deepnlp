@@ -3,16 +3,15 @@
 """
 __author__ = 'Paul Landes'
 
+from typing import List, Tuple, Set, Iterable, Any
+from dataclasses import dataclass, field
+from abc import ABC, ABCMeta, abstractmethod
 import sys
 import logging
-from abc import ABC, ABCMeta, abstractmethod
-from typing import List, Tuple, Set, Iterable, Any
-from dataclasses import dataclass
-from functools import reduce
 from itertools import chain
 import itertools as it
 from zensols.persist import PersistableContainer, persisted
-from zensols.nlp import TokenFeatures
+from zensols.nlp import TokenAttributes, TokenFeatures
 
 logger = logging.getLogger(__name__)
 
@@ -39,16 +38,9 @@ class FeatureToken(TextContainer):
     data structures and is hard/expensive to pickle.
 
     """
-    TOKEN_FEATURE_IDS_BY_TYPE = {
-        'bool': frozenset('is_space is_stop is_ent'.split()),
-        'int': frozenset('i idx is_punctuation tag ent dep'.split()),
-        'str': frozenset('norm lemma tag_ ent_ dep_'.split()),
-        'list': frozenset('children'.split())}
-    TYPES_BY_TOKEN_FEATURE_ID = dict(chain.from_iterable(
-        map(lambda itm: map(lambda f: (f, itm[0]), itm[1]),
-            TOKEN_FEATURE_IDS_BY_TYPE.items())))
-    TOKEN_FEATURE_IDS = frozenset(
-        reduce(lambda res, x: res | x, TOKEN_FEATURE_IDS_BY_TYPE.values()))
+    TOKEN_FEATURE_IDS_BY_TYPE = TokenAttributes.FIELD_IDS_BY_TYPE
+    TYPES_BY_TOKEN_FEATURE_ID = TokenAttributes.TYPES_BY_FIELD_ID
+    TOKEN_FEATURE_IDS = TokenAttributes.FIELD_IDS
 
     def __init__(self, features: TokenFeatures, feature_ids: Set[str]):
         """Initialize.
@@ -82,8 +74,12 @@ class FeatureToken(TextContainer):
             writer.write(f'{s2}{k}={v} ({ptype})\n')
 
     def __str__(self):
-        s = self
-        return f'{s.norm}: lemma={s.lemma}, tag={s.tag}, ner={s.ent}'
+        attrs = []
+        for s in 'norm lemma tag ent'.split():
+            v = getattr(self, s) if hasattr(self, s) else None
+            if v is not None:
+                attrs.append(f'{s}: {v}')
+        return ', '.join(attrs)
 
     def __repr__(self):
         return self.__str__()
@@ -140,8 +136,11 @@ class TokensContainer(PersistableContainer, TextContainer, metaclass=ABCMeta):
 
 @dataclass
 class FeatureSentence(TokensContainer):
-    text: str
     sent_tokens: Tuple[FeatureToken]
+    text: str = field(default=None)
+
+    def __post_init__(self):
+        self.text = ' '.join(map(lambda t: t.text, self.sent_tokens))
 
     def token_iter(self, *args) -> Iterable[TokenFeatures]:
         if len(args) == 0:
@@ -172,6 +171,9 @@ class FeatureSentence(TokensContainer):
     def __str__(self):
         return f'<{self.text[:79]}>'
 
+    def __repr__(self):
+        return self.__str__()
+
 
 @dataclass
 class FeatureDocument(TokensContainer):
@@ -196,7 +198,7 @@ class FeatureDocument(TokensContainer):
     def to_sentence(self, *args) -> FeatureSentence:
         sents = self.sent_iter(*args)
         toks = chain.from_iterable(map(lambda s: s.tokens, sents))
-        return FeatureSentence(self.get_text(*args), tuple(toks))
+        return FeatureSentence(tuple(toks), self.get_text(*args))
 
     @property
     @persisted('_text', transient=True)
