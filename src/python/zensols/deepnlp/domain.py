@@ -140,7 +140,9 @@ class FeatureSentence(TokensContainer):
     text: str = field(default=None)
 
     def __post_init__(self):
-        self.text = ' '.join(map(lambda t: t.text, self.sent_tokens))
+        super().__init__()
+        if self.text is None:
+            self.text = ' '.join(map(lambda t: t.text, self.sent_tokens))
 
     def token_iter(self, *args) -> Iterable[TokenFeatures]:
         if len(args) == 0:

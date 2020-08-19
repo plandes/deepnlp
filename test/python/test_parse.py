@@ -79,6 +79,8 @@ the United States of America."""
 
     def test_token_iteration(self):
         parser = self.fac('doc_parser')
+        print()
+        print(type(parser))
         doc = parser.parse(self.sent_text2)
         self._test_token_iter(doc)
 
