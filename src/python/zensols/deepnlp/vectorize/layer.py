@@ -240,7 +240,7 @@ class WordVectorSentenceFeatureVectorizer(SentenceFeatureVectorizer):
                     vecs.append(src_vecs[idx])
                 batches.append(torch.stack(vecs))
                 vecs.clear()
-            x = torch.stack(batches).contiguous()
+            x = torch.stack(batches)
         return x
 
 
