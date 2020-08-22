@@ -155,6 +155,9 @@ class WordEmbedModel(ABC):
             idx = word2idx.get(self.UNKNOWN)
         return idx
 
+    def prime(self):
+        pass
+
     def get(self, key: str, default: np.ndarray = None) -> np.ndarray:
         """Just like a ``dict.get()``, but but return the vector for a word.
 

@@ -5,12 +5,12 @@ efficient retrival.
 """
 __author__ = 'Paul Landes'
 
+from typing import Tuple, Union
 from dataclasses import dataclass, field
-from typing import Tuple
 import logging
 import torch
 from torch import nn
-from zensols.persist import persisted, Deallocatable
+from zensols.persist import persisted, Deallocatable, Primeable
 from zensols.deeplearn.model import BaseNetworkModule
 from zensols.deeplearn.layer import MaxPool1dFactory
 from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
@@ -168,7 +168,7 @@ class BertEmbeddingLayer(EmbeddingLayer):
 
 
 @dataclass
-class SentenceFeatureVectorizer(TokenContainerFeatureVectorizer):
+class SentenceFeatureVectorizer(TokenContainerFeatureVectorizer, Primeable):
     """Vectorize a :class:`.TokensContainer` as a vector of embedding indexes.
     Later, these indexes are used in a :class:`WordEmbeddingLayer` to create
     the input word embedding during execution of the model.
@@ -186,12 +186,16 @@ class SentenceFeatureVectorizer(TokenContainerFeatureVectorizer):
                              indexes to embeddings each epoch
 
     """
-    embed_model: WordEmbedModel
+    embed_model: Union[WordEmbedModel, BertEmbeddingModel]
     as_document: bool
     decode_embedding: bool = field(default=False)
 
     def _get_shape(self) -> Tuple[int, int]:
         return self.manager.token_length, self.embed_model.vector_dimension
+
+    def prime(self):
+        if isinstance(self.embed_model, Primeable):
+            self.embed_model.prime()
 
 
 @dataclass

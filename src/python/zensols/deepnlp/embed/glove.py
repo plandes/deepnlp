@@ -12,14 +12,14 @@ from pathlib import Path
 import pickle
 import numpy as np
 import bcolz
+from zensols.persist import Primeable
 from zensols.deepnlp.embed import WordVectorModel, WordEmbedModel
-
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass
-class GloveWordEmbedModel(WordEmbedModel):
+class GloveWordEmbedModel(WordEmbedModel, Primeable):
     """This class uses the Stanford pretrained GloVE embeddings as a ``dict`` like
     Python object.  It loads the glove vectors from a text file and then
     creates a binary file that's quick to load on subsequent uses.
@@ -79,7 +79,8 @@ class GloveWordEmbedModel(WordEmbedModel):
         words = []
         idx = 0
         word2idx = {}
-        logger.info(f'writing text {vec_txt_path} -> {vec_bin_dir}')
+        if logger.isEnabledFor(logging.INFO):
+            logger.info(f'writing text {vec_txt_path} -> {vec_bin_dir}')
         vectors = bcolz.carray(np.zeros(1), rootdir=vec_bin_file, mode='w')
         with open(vec_txt_path, 'rb') as f:
             lc = 0
@@ -104,14 +105,22 @@ class GloveWordEmbedModel(WordEmbedModel):
         pickle.dump(words[:], open(vec_words_file, 'wb'))
         pickle.dump(word2idx, open(vec_idx_file, 'wb'))
 
+    def _assert_binary_vecs(self):
+        vec_txt_path, vec_bin_dir, vec_bin_file, vec_words_file, vec_idx_file = self._vec_paths()
+        if not vec_bin_file.exists():
+            if logger.isEnabledFor(logging.INFO):
+                logger.info(f'wriging binary vectors to: {vec_bin_file}')
+            self._write_vecs()
+
+    def prime(self):
+        self._assert_binary_vecs()
+
     def _create_data(self) -> WordVectorModel:
         """Read the binary bcolz, vocabulary and index files from disk.
 
         """
+        self._assert_binary_vecs()
         vec_txt_path, vec_bin_dir, vec_bin_file, vec_words_file, vec_idx_file = self._vec_paths()
-        if not vec_bin_file.exists():
-            logger.info(f'wriging binary vectors to: {vec_bin_file}')
-            self._write_vecs()
         logger.info(f'reading binary vector file: {vec_bin_file}')
         vectors = bcolz.open(vec_bin_file)[:]
         with open(vec_words_file, 'rb') as f:
