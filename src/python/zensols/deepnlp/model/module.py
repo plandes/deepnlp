@@ -11,7 +11,6 @@ from zensols.deeplearn.vectorize import FeatureVectorizer
 from zensols.deeplearn.model import BaseNetworkModule
 from zensols.deeplearn.batch import (
     Batch,
-    BatchMetadata,
     BatchFieldMetadata,
     MetadataNetworkSettings,
 )
@@ -35,8 +34,11 @@ class EmbeddingNetworkSettings(MetadataNetworkSettings):
     """
     embedding_layer: EmbeddingLayer
 
+    def get_module_class_name(self) -> str:
+        return __name__ + '.EmbeddingNetworkModule'
 
-class EmbeddingBaseNetworkModule(BaseNetworkModule):
+
+class EmbeddingNetworkModule(BaseNetworkModule):
     """An module that uses an embedding as the input layer.  It creates this as
     attribute ``embedding`` for the sub class to use in the :meth:`_forward`
     method.  In addition, it creates the following attributes:
@@ -69,7 +71,7 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule):
         self.embedding = net_settings.embedding_layer
         self.embedding_output_size = self.embedding.embedding_dim
         self.join_size = 0
-        meta = self.batch_metadata
+        meta = self.net_settings.batch_metadata
         self.token_attribs = []
         self.doc_attribs = []
         embedding_attribs = []
@@ -112,25 +114,24 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule):
         self.embedding_attribute_name = embedding_attribs[0]
 
     @property
-    def batch_metadata(self) -> BatchMetadata:
-        """Return the batch metadata used by this model.
+    def embedding_dimension(self) -> int:
+        """Return the dimension of the embeddings, which doesn't include any additional
+        token or document features potentially added.
 
         """
-        # it's not necessary to persist here since the call in the factory
-        # already does
-        return self.net_settings.batch_metadata_factory()
+        return self.embedding.embedding_dim
 
     def _get_embedding_attribute_name(self):
         return None
 
     def _forward(self, batch: Batch) -> torch.Tensor:
         logger.debug(f'batch: {batch}')
-        x = self._forward_embedding_features(batch)
-        x = self._forward_token_features(batch, x)
-        x = self._forward_document_features(batch, x)
+        x = self.forward_embedding_features(batch)
+        x = self.forward_token_features(batch, x)
+        x = self.forward_document_features(batch, x)
         return x
 
-    def _forward_embedding_features(self, batch: Batch) -> torch.Tensor:
+    def forward_embedding_features(self, batch: Batch) -> torch.Tensor:
         """Use the embedding layer return the word embedding tensors.
 
         """
@@ -145,7 +146,7 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule):
             self._shape_debug('embedding', x)
         return x
 
-    def _forward_token_features(self, batch: Batch, x: torch.Tensor = None) \
+    def forward_token_features(self, batch: Batch, x: torch.Tensor = None) \
             -> torch.Tensor:
         """Concatenate any token features given by the vectorizer configuration.
 
@@ -162,8 +163,8 @@ class EmbeddingBaseNetworkModule(BaseNetworkModule):
             self._shape_debug('token concat', x)
         return x
 
-    def _forward_document_features(self, batch: Batch, x: torch.Tensor = None,
-                                   include_fn: Callable = None) -> torch.Tensor:
+    def forward_document_features(self, batch: Batch, x: torch.Tensor = None,
+                                  include_fn: Callable = None) -> torch.Tensor:
         """Concatenate any document features given by the vectorizer configuration.
 
         """

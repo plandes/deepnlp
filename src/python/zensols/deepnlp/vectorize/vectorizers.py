@@ -13,6 +13,7 @@ from zensols.deeplearn.vectorize import (
     FeatureContext,
     TensorFeatureContext,
     SparseTensorFeatureContext,
+    MultiFeatureContext,
 )
 from zensols.deepnlp import (
     FeatureToken,
@@ -344,11 +345,6 @@ class OverlappingTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer
 
 
 @dataclass
-class FeatureContextSeries(FeatureContext):
-    contexts: Tuple[FeatureContext]
-
-
-@dataclass
 class MutualFeaturesContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
     """Return the shared count of all tokens as a 1 X M * N tensor where M is the
     number of token feature ids and N is the columns of the output of the
@@ -371,18 +367,16 @@ class MutualFeaturesContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
 
     @property
     def ones(self) -> torch.Tensor:
-        ones = self.torch_config.empty((1, self.shape[0]))
-        ones.fill_(1)
-        return ones
+        return self.torch_config.ones((1, self.shape[0]))
 
     def _get_shape(self) -> Tuple[int, int]:
         return self.count_vectorizer.shape
 
-    def _encode(self, containers: Tuple[TokensContainer]) -> Tuple[FeatureContext]:
+    def _encode(self, containers: Tuple[TokensContainer]) -> FeatureContext:
         ctxs = tuple(map(self.count_vectorizer.encode, containers))
-        return FeatureContextSeries(self.feature_id, ctxs)
+        return MultiFeatureContext(self.feature_id, ctxs)
 
-    def _decode(self, context: FeatureContextSeries) -> torch.Tensor:
+    def _decode(self, context: MultiFeatureContext) -> torch.Tensor:
         ones = self.ones
         arrs = tuple(map(self.count_vectorizer.decode, context.contexts))
         if len(arrs) == 1:

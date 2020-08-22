@@ -20,7 +20,7 @@ from zensols.deeplearn import (
 )
 from zensols.deeplearn.layer import ConvolutionLayerFactory, MaxPool1dFactory
 from zensols.deeplearn.model import BaseNetworkModule
-from zensols.deepnlp.model import EmbeddingBaseNetworkModule
+from zensols.deepnlp.model import EmbeddingNetworkModule
 
 logger = logging.getLogger(__name__)
 
@@ -67,7 +67,7 @@ class DeepConvolution1dNetworkSettings(ActivationNetworkSettings,
             stride=self.pool_stride,
             padding=self.pool_padding)
 
-    def clone(self, module: EmbeddingBaseNetworkModule, **kwargs):
+    def clone(self, module: EmbeddingNetworkModule, **kwargs):
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'cloning module from module with {kwargs}')
         if hasattr(self, 'module'):
