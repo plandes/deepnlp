@@ -40,8 +40,9 @@ class EmbeddedRecurrentCRFNetwork(ScoredNetworkModule):
     configured with an LSTM, this becomes a (Bi)LSTM CRF.
 
     """
-    def __init__(self, net_settings: EmbeddedRecurrentCRFNetworkSettings):
-        super().__init__(net_settings, logger)
+    def __init__(self, net_settings: EmbeddedRecurrentCRFNetworkSettings,
+                 sub_logger: logging.Logger = None):
+        super().__init__(net_settings, sub_logger)
         ns = self.net_settings
         es = ns.embedding_settings
         rc = ns.recurrent_crf_settings
