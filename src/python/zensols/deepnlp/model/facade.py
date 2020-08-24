@@ -125,6 +125,50 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
             stash.decoded_attributes = to_set
             self.clear()
 
+    def _get_default_token_length(self, embedding: str) -> int:
+        return self.config.get_option_int('token_length', 'language_defaults')
+
+    @property
+    def embedding(self) -> str:
+        """Configure the embedding layer.
+
+        """
+        return self.embedding
+
+    @embedding.setter
+    def embedding(self, embedding: str):
+        """Configure the embedding layer.
+
+        :param embedding: the kind of embedding, which is one of ``glove_50``
+                          for glove 50 dimension, ``glove_300`` for glove 300
+                          dimension or ``bert`` for BERT embeddings
+
+        """
+        lang_attribs = self._get_language_model_config()
+        emb_sec = f'{embedding}_embedding'
+        if emb_sec not in lang_attribs.embedding_attribs:
+            raise ValueError(f'no such embedding attribute: {embedding}')
+        stash = self.batch_stash
+        cur_attribs = stash.decoded_attributes
+        attribs = (cur_attribs - lang_attribs.embedding_attribs) | {emb_sec}
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'decoded batch stash attribs: {attribs}')
+            logger.debug(f'embedding layer: {emb_sec}')
+        if cur_attribs == attribs:
+            logger.info('no attribute changes--skipping')
+        else:
+            vec_mng = self.language_vectorizer_manager
+            old_emb = lang_attribs.embedding_attribs & cur_attribs
+            assert len(old_emb) == 1
+            old_emb = next(iter(old_emb))
+            old_layer = f'{old_emb}_layer'
+            self._deallocate_config_instance(old_layer)
+            stash.decoded_attributes = attribs
+            elayer = f'instance: {emb_sec}_layer'
+            self.executor.net_settings.embedding_layer = elayer
+            vec_mng.token_length = self._get_default_token_length(embedding)
+            self.clear()
+
     @property
     def language_vectorizer_manager(self) -> FeatureVectorizerManager:
         """Return the language vectorizer manager for the class.
