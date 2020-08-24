@@ -14,7 +14,7 @@ from zensols.deepnlp.model import (
 
 
 @dataclass
-class EmbeddedRecurrentCRFNetworkSettings(NetworkSettings):
+class EmbeddedRecurrentCRFNetworkSettings(EmbeddingNetworkSettings):
     """A utility container settings class for convulsion network models.
 
     :param embedding_settings: the configured embedded layer
@@ -26,15 +26,14 @@ class EmbeddedRecurrentCRFNetworkSettings(NetworkSettings):
                            embedded layer before feeding in to the RNN/LSTM/GRU
 
     """
-    embedding_settings: EmbeddingNetworkSettings
     recurrent_crf_settings: RecurrentCRFNetworkSettings
-    add_attributes: Tuple[str]
+    mask_attribute: str
 
     def get_module_class_name(self) -> str:
         return __name__ + '.EmbeddedRecurrentCRFNetwork'
 
 
-class EmbeddedRecurrentCRFNetwork(ScoredNetworkModule):
+class EmbeddedRecurrentCRFNetwork(EmbeddingNetworkModule, ScoredNetworkModule):
     """A recurrent neural network composed of an embedding input, an recurrent
     network, and a linear conditional random field output layer.  When
     configured with an LSTM, this becomes a (Bi)LSTM CRF.
@@ -44,53 +43,28 @@ class EmbeddedRecurrentCRFNetwork(ScoredNetworkModule):
                  sub_logger: logging.Logger = None):
         super().__init__(net_settings, sub_logger)
         ns = self.net_settings
-        es = ns.embedding_settings
         rc = ns.recurrent_crf_settings
-
-        self.emb = EmbeddingNetworkModule(es, self.logger)
-        rc_input_size = self.emb.embedding_dimension
-        meta = ns.embedding_settings.batch_metadata
-        if ns.add_attributes is not None:
-            for attr in ns.add_attributes:
-                fba: BatchFieldMetadata = meta.fields_by_attribute[attr]
-                size = fba.shape[1]
-                if self.logger.isEnabledFor(logging.DEBUG):
-                    self.logger.debug(f'adding feature attribute {attr} ' +
-                                      f'({fba.field.feature_id}), size: {size}')
-                rc_input_size += size
-
-        rc.input_size = rc_input_size
+        rc.input_size = self.embedding_output_size
         self.logger.debug(f'recur settings: {rc}')
         self.recurcrf = RecurrentCRF(rc, self.logger)
 
     def deallocate(self):
         super().deallocate()
-        self.emb.deallocate()
         self.recurcrf.deallocate()
 
-    def _forward_embedding_features(self, batch: Batch) -> Tensor:
-        ns = self.net_settings
-        x = self.emb.forward_embedding_features(batch)
-
-        # foward additional configured features
-        if ns.add_attributes is not None:
-            feats = [x]
-            for attr in ns.add_attributes:
-                feat_arr = batch[attr]
-                self._shape_debug('feats', feat_arr)
-                feats.append(feat_arr)
-            if len(feats) > 1:
-                x = torch.cat(feats, 2)
-                x = x.contiguous()
-
-        return x
-
     def _forward(self, batch: Batch) -> Tensor:
-        x = self._forward_embedding_features(batch)
-        x = self.recurcrf.forward(x, batch['mask'], batch.get_labels())
+        labels = batch.get_labels()
+        self._shape_debug('labels', labels)
+        mask = batch[self.net_settings.mask_attribute]
+        self._shape_debug('mask', mask)
+        x = self.forward_embedding_features(batch)
+        self._shape_debug('emb', x)
+        x = self.recurcrf.forward(x, mask, labels)
         return x
 
     def _score(self, batch: Batch) -> Tuple[Tensor, Tensor]:
-        x = self._forward_embedding_features(batch)
-        x, score = self.recurcrf.decode(x, batch['mask'])
+        mask = batch[self.net_settings.mask_attribute]
+        self._shape_debug('mask', mask)
+        x = self.forward_embedding_features(batch)
+        x, score = self.recurcrf.decode(x, mask)
         return x, score
