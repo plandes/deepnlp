@@ -1,13 +1,11 @@
 from typing import Tuple
 from dataclasses import dataclass
 import logging
-import torch
 from torch import Tensor
-from zensols.deeplearn import NetworkSettings
 from zensols.deeplearn.model import ScoredNetworkModule
-from zensols.deeplearn.batch import Batch, BatchFieldMetadata
+from zensols.deeplearn.batch import Batch
 from zensols.deeplearn.layer import RecurrentCRFNetworkSettings, RecurrentCRF
-from zensols.deepnlp.model import (
+from zensols.deepnlp.layer import (
     EmbeddingNetworkSettings,
     EmbeddingNetworkModule,
 )

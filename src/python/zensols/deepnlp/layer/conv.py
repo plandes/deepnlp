@@ -20,7 +20,7 @@ from zensols.deeplearn import (
 )
 from zensols.deeplearn.layer import ConvolutionLayerFactory, MaxPool1dFactory
 from zensols.deeplearn.model import BaseNetworkModule
-from zensols.deepnlp.model import EmbeddingNetworkModule
+from . import EmbeddingNetworkModule
 
 logger = logging.getLogger(__name__)
 
