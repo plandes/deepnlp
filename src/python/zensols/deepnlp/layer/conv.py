@@ -94,6 +94,8 @@ class DeepConvolution1dNetworkSettings(ActivationNetworkSettings,
 
 
 class DeepConvolution1d(BaseNetworkModule):
+    MODULE_NAME = 'conv'
+
     def __init__(self, net_settings: DeepConvolution1dNetworkSettings,
                  logger: logging.Logger):
         super().__init__(net_settings, logger)
@@ -109,21 +111,21 @@ class DeepConvolution1d(BaseNetworkModule):
         repeats = self.net_settings.repeats
         for n_set in range(repeats):
             if self.logger.isEnabledFor(logging.DEBUG):
-                self.logger.debug(f'conv_factory: {conv_factory}')
-                self.logger.debug(f'pool factory: {pool_factory}')
+                self._debug(f'conv_factory: {conv_factory}')
+                self._debug(f'pool factory: {pool_factory}')
             pool = pool_factory.create_pool()
             if self.logger.isEnabledFor(logging.DEBUG):
-                self.logger.debug(f'pool: {pool}')
+                self._debug(f'pool: {pool}')
             conv = conv_factory.conv1d()
             if self.logger.isEnabledFor(logging.DEBUG):
-                self.logger.debug(f'conv: {conv}')
+                self._debug(f'conv: {conv}')
             if self.net_settings.batch_norm_d is not None:
                 batch_norm = BatchNormNetworkSettings.create_batch_norm_layer(
                     self.net_settings.batch_norm_d, pool_factory.out_shape[0])
             else:
                 batch_norm = None
             if self.logger.isEnabledFor(logging.DEBUG):
-                self.logger.debug(f'batch_norm: {batch_norm}')
+                self._debug(f'batch_norm: {batch_norm}')
             pair = (conv, pool, batch_norm)
             pairs.append(pair)
             layers.extend(pair)
@@ -133,10 +135,10 @@ class DeepConvolution1d(BaseNetworkModule):
                 conv_factory.height = 1
                 conv_factory.kernel_filter = (conv_factory.kernel_filter[0], 1)
                 if self.logger.isEnabledFor(logging.DEBUG):
-                    self.logger.debug(f'pool out: {pool_out}')
+                    self._debug(f'pool out: {pool_out}')
         self.out_features = pool_out
         if self.logger.isEnabledFor(logging.DEBUG):
-            self.logger.debug(f'out features: {self.out_features}')
+            self._debug(f'out features: {self.out_features}')
 
     def deallocate(self):
         super().deallocate()
@@ -151,7 +153,7 @@ class DeepConvolution1d(BaseNetworkModule):
 
         for i, (conv, pool, batch_norm) in enumerate(pairs):
             if self.logger.isEnabledFor(logging.DEBUG):
-                self.logger.debug(f'layer set iter: {i}')
+                self._debug(f'layer set iter: {i}')
             x = conv(x)
             self._shape_debug('conv', x)
 
@@ -165,7 +167,7 @@ class DeepConvolution1d(BaseNetworkModule):
 
             if batch_norm is not None:
                 if self.logger.isEnabledFor(logging.DEBUG):
-                    self.logger.debug(f'batch norm: {batch_norm}')
+                    self._debug(f'batch norm: {batch_norm}')
                 x = batch_norm(x)
 
             self._forward_activation(x)

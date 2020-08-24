@@ -64,6 +64,8 @@ class EmbeddingNetworkModule(BaseNetworkModule):
       - ``embedding``: the embedding layer used get the input embedding tensors
 
     """
+    MODULE_NAME = 'emb'
+
     def __init__(self, net_settings: EmbeddingNetworkSettings,
                  module_logger: logging.Logger = None,
                  filter_attrib_fn: Callable[[BatchFieldMetadata], bool] = None):
@@ -82,28 +84,28 @@ class EmbeddingNetworkModule(BaseNetworkModule):
             if filter_attrib_fn is not None and \
                not filter_attrib_fn(field_meta):
                 if logger.isEnabledFor(logging.DEBUG):
-                    logger.debug(f'skipping: {name}')
+                    logger._debug(f'skipping: {name}')
                 continue
             vec: FeatureVectorizer = field_meta.vectorizer
             if logger.isEnabledFor(logging.DEBUG):
-                logger.debug(f'{name} -> {field_meta}')
+                logger._debug(f'{name} -> {field_meta}')
             if isinstance(vec, TokenContainerFeatureVectorizer):
                 attr = field_meta.field.attr
                 if vec.feature_type == TokenContainerFeatureType.TOKEN:
                     if logger.isEnabledFor(logging.DEBUG):
-                        logger.debug('adding embedding_output_size: ' +
-                                     str(vec.shape[1]))
+                        logger._debug('adding embedding_output_size: ' +
+                                      str(vec.shape[1]))
                     self.embedding_output_size += vec.shape[1]
                     self.token_attribs.append(attr)
                 elif vec.feature_type == TokenContainerFeatureType.DOCUMENT:
                     if logger.isEnabledFor(logging.DEBUG):
-                        logger.debug(f'adding join size for {attr}: ' +
-                                     str(field_meta.shape[0]))
+                        logger._debug(f'adding join size for {attr}: ' +
+                                      str(field_meta.shape[0]))
                     self.join_size += field_meta.shape[0]
                     self.doc_attribs.append(attr)
                 elif vec.feature_type == TokenContainerFeatureType.EMBEDDING:
                     if logger.isEnabledFor(logging.DEBUG):
-                        logger.debug(f'adding embedding: {attr}')
+                        logger._debug(f'adding embedding: {attr}')
                     if embedding_attribs is not None:
                         embedding_attribs.append(attr)
                     self.embedding_vectorizer = vec
@@ -125,7 +127,8 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         return None
 
     def _forward(self, batch: Batch) -> torch.Tensor:
-        logger.debug(f'batch: {batch}')
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self._debug(f'batch: {batch}')
         x = self.forward_embedding_features(batch)
         x = self.forward_token_features(batch, x)
         x = self.forward_document_features(batch, x)
@@ -139,7 +142,8 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         x = batch.attributes[self.embedding_attribute_name]
         self._shape_debug('input', x)
         if isinstance(self.embedding_vectorizer, SentenceFeatureVectorizer):
-            logger.debug('skipping embedding encoding, assume complete')
+            if self.logger.isEnabledFor(logging.DEBUG):
+                self._debug('skipping embedding encoding, assume complete')
             decoded = self.embedding_vectorizer.decode_embedding
         if not decoded:
             x = self.embedding(x)

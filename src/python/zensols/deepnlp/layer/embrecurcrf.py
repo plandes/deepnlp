@@ -37,6 +37,8 @@ class EmbeddedRecurrentCRFNetwork(EmbeddingNetworkModule, ScoredNetworkModule):
     configured with an LSTM, this becomes a (Bi)LSTM CRF.
 
     """
+    MODULE_NAME = 'emb recur crf'
+
     def __init__(self, net_settings: EmbeddedRecurrentCRFNetworkSettings,
                  sub_logger: logging.Logger = None):
         super().__init__(net_settings, sub_logger)
@@ -44,7 +46,8 @@ class EmbeddedRecurrentCRFNetwork(EmbeddingNetworkModule, ScoredNetworkModule):
         rc = ns.recurrent_crf_settings
         rc.input_size = self.embedding_output_size
         self.mask_attribute = ns.mask_attribute
-        self.logger.debug(f'recur settings: {rc}')
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self._debug(f'recur settings: {rc}')
         self.recurcrf = RecurrentCRF(rc, self.logger)
 
     def deallocate(self):
@@ -60,7 +63,7 @@ class EmbeddedRecurrentCRFNetwork(EmbeddingNetworkModule, ScoredNetworkModule):
         labels = batch.get_labels()
         self._shape_debug('labels', labels)
 
-        mask = self._get_mask()
+        mask = self._get_mask(batch)
 
         x = super()._forward(batch)
         self._shape_debug('super emb', x)
@@ -71,7 +74,7 @@ class EmbeddedRecurrentCRFNetwork(EmbeddingNetworkModule, ScoredNetworkModule):
         return x
 
     def _score(self, batch: Batch) -> Tuple[Tensor, Tensor]:
-        mask = self._get_mask()
+        mask = self._get_mask(batch)
 
         x = super()._forward(batch)
         self._shape_debug('super emb', x)
