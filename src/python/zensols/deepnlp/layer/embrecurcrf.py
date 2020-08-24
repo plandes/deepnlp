@@ -43,6 +43,7 @@ class EmbeddedRecurrentCRFNetwork(EmbeddingNetworkModule, ScoredNetworkModule):
         ns = self.net_settings
         rc = ns.recurrent_crf_settings
         rc.input_size = self.embedding_output_size
+        self.mask_attribute = ns.mask_attribute
         self.logger.debug(f'recur settings: {rc}')
         self.recurcrf = RecurrentCRF(rc, self.logger)
 
@@ -50,19 +51,33 @@ class EmbeddedRecurrentCRFNetwork(EmbeddingNetworkModule, ScoredNetworkModule):
         super().deallocate()
         self.recurcrf.deallocate()
 
+    def _get_mask(self, batch: Batch) -> Tensor:
+        mask = batch[self.mask_attribute]
+        self._shape_debug('mask', mask)
+        return mask
+
     def _forward(self, batch: Batch) -> Tensor:
         labels = batch.get_labels()
         self._shape_debug('labels', labels)
-        mask = batch[self.net_settings.mask_attribute]
-        self._shape_debug('mask', mask)
-        x = self.forward_embedding_features(batch)
-        self._shape_debug('emb', x)
+
+        mask = self._get_mask()
+
+        x = super()._forward(batch)
+        self._shape_debug('super emb', x)
+
         x = self.recurcrf.forward(x, mask, labels)
+        self._shape_debug('recur', x)
+
         return x
 
     def _score(self, batch: Batch) -> Tuple[Tensor, Tensor]:
-        mask = batch[self.net_settings.mask_attribute]
-        self._shape_debug('mask', mask)
-        x = self.forward_embedding_features(batch)
+        mask = self._get_mask()
+
+        x = super()._forward(batch)
+        self._shape_debug('super emb', x)
+
         x, score = self.recurcrf.decode(x, mask)
+        self._shape_debug('recur', x)
+        self._shape_debug('score', score)
+
         return x, score
