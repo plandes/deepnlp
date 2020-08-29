@@ -133,7 +133,12 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
         """Configure the embedding layer.
 
         """
-        return self.embedding
+        stash = self.batch_stash
+        cur_attribs = stash.decoded_attributes
+        lang_attribs = self._get_language_model_config()
+        emb = lang_attribs.embedding_attribs & cur_attribs
+        assert len(emb) == 1
+        return next(iter(emb))
 
     @embedding.setter
     def embedding(self, embedding: str):
@@ -144,8 +149,12 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
                           dimension or ``bert`` for BERT embeddings
 
         """
+        self._set_embedding(embedding)
+
+    def _set_embedding(self, embedding: str):
         lang_attribs = self._get_language_model_config()
-        emb_sec = f'{embedding}_embedding'
+        #emb_sec = f'{embedding}_embedding'
+        emb_sec = embedding
         if emb_sec not in lang_attribs.embedding_attribs:
             raise ValueError(f'no such embedding attribute: {embedding}')
         stash = self.batch_stash
@@ -158,9 +167,7 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
             logger.info('no attribute changes--skipping')
         else:
             vec_mng = self.language_vectorizer_manager
-            old_emb = lang_attribs.embedding_attribs & cur_attribs
-            assert len(old_emb) == 1
-            old_emb = next(iter(old_emb))
+            old_emb = self.embedding
             old_layer = f'{old_emb}_layer'
             self._deallocate_config_instance(old_layer)
             stash.decoded_attributes = attribs

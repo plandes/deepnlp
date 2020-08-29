@@ -142,12 +142,12 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         x = batch.attributes[self.embedding_attribute_name]
         self._shape_debug('input', x)
         if isinstance(self.embedding_vectorizer, SentenceFeatureVectorizer):
-            if self.logger.isEnabledFor(logging.DEBUG):
-                self._debug('skipping embedding encoding, assume complete')
             decoded = self.embedding_vectorizer.decode_embedding
+            if self.logger.isEnabledFor(logging.DEBUG):
+                self._debug(f'is embedding already decoded: {decoded}')
         if not decoded:
             x = self.embedding(x)
-            self._shape_debug('embedding', x)
+            self._shape_debug('decoded embedding', x)
         return x
 
     def forward_token_features(self, batch: Batch, x: torch.Tensor = None) \
