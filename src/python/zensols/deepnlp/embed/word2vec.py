@@ -46,7 +46,7 @@ class Word2VecModel(WordEmbedModel):
         """
         logger.info(f'loading keyed file: {self.path}')
         fname = str(self.path.absolute())
-        with time(f'loaded key model from {fname}l'):
+        with time(f'loaded key model from {fname}'):
             return KeyedVectors.load_word2vec_format(fname, binary=True)
 
     def _get_trained_model(self) -> Word2Vec:
