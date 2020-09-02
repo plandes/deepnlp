@@ -49,7 +49,7 @@ class FeatureToken(TextContainer):
         :param feature_id: a string identifying the type of feature that will
 
         """
-        fd = features.detach(feature_ids).to_dict()
+        fd = features.detach(feature_ids).asdict()
         for k in feature_ids:
             if k not in fd:
                 fd[k] = None
