@@ -1,4 +1,4 @@
-# Deep learning utility library for natural language processing
+# DeepZensols Natural Language Processing
 
 [![Travis CI Build Status][travis-badge]][travis-link]
 [![PyPI][pypi-badge]][pypi-link]
