@@ -153,17 +153,17 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
 
     def _set_embedding(self, embedding: str):
         lang_attribs = self._get_language_model_config()
-        #emb_sec = f'{embedding}_embedding'
         emb_sec = embedding
         if emb_sec not in lang_attribs.embedding_attribs:
             raise ValueError(f'no such embedding attribute: {embedding}')
         stash = self.batch_stash
         cur_attribs = stash.decoded_attributes
         attribs = (cur_attribs - lang_attribs.embedding_attribs) | {emb_sec}
+        needs_change = cur_attribs == attribs
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'decoded batch stash attribs: {attribs}')
             logger.debug(f'embedding layer: {emb_sec}')
-        if cur_attribs == attribs:
+        if needs_change:
             logger.info('no attribute changes--skipping')
         else:
             vec_mng = self.language_vectorizer_manager
@@ -175,6 +175,7 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
             self.executor.net_settings.embedding_layer = elayer
             vec_mng.token_length = self._get_default_token_length(embedding)
             self.clear()
+        return needs_change
 
     @property
     def language_vectorizer_manager(self) -> FeatureVectorizerManager:
