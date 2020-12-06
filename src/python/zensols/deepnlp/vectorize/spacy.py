@@ -9,7 +9,7 @@ import sys
 import math
 import itertools as it
 from spacy.vocab import Vocab
-import torch
+from torch import Tensor
 from zensols.deeplearn import TorchConfig
 from zensols.deeplearn.vectorize import FeatureVectorizer
 
@@ -29,8 +29,8 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
     All symbols are taken from spacy.glossary.
 
     :param vocab: the vocabulary used for ``from_spacy`` to compute the
-                  normalized feature from the spacy ID (i.e. token.ent_,
-                  token.tag_ etc.)
+                  normalized feature from the spacy ID (i.e. ``token.ent_``,
+                  ``token.tag_`` etc.)
 
     :see: spacy.glossary
     :see: feature.TokenAttributes
@@ -71,7 +71,7 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
     def _get_shape(self) -> Tuple[int, int]:
         return 1, len(self.as_list)
 
-    def transform(self, symbol: str) -> torch.tensor:
+    def transform(self, symbol: str) -> Tensor:
         return self.symbol_to_vector[symbol]
 
     def dist(self, symbol: str) -> float:
@@ -84,7 +84,7 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
         return self.symbol_to_norm[symbol]
 
     def id_from_spacy_symbol(self, id: int, default: int = -1) -> str:
-        """Return the Spacy text symbol for it's ID (token.ent -> token.ent_).
+        """Return the Spacy text symbol for it's ID (``token.ent`` -> ``token.ent_``).
 
         """
         strs = self.vocab.strings
@@ -93,7 +93,7 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
         else:
             return default
 
-    def from_spacy(self, id: int) -> torch.tensor:
+    def from_spacy(self, id: int) -> Tensor:
         """Return a binary feature from a Spacy ID or ``None`` if it doesn't have a
         mapping the ID.
 

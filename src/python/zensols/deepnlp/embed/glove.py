@@ -18,14 +18,14 @@ class GloveWordEmbedModel(TextWordEmbedModel):
     Python object.  It loads the glove vectors from a text file and then
     creates a binary file that's quick to load on subsequent uses.
 
-    An example configuration would be:
-    ``
+    An example configuration would be::
+
         [glove_embedding]
         class_name = zensols.deepnlp.embed.GloveWordEmbedModel
         path = path: ${default:corpus_dir}/glove
         desc = 6B
         dimension = 50
-    ``
+
 
     :param path: the directory path to where the unziped GloVE
                  embedding text vector files and binary representation
