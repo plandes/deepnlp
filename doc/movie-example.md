@@ -446,7 +446,7 @@ To run the jupyter notebook:
 1. Pip install: `pip install notebook`
 1. Go to the notebook directory: `cd examples/movie/notebook`
 1. Start the notebook: `jupyter notebook`
-1. Start the execution in the notebook with `Cell > Run Cells`.
+1. Start the execution in the notebook with `Cell > Run All`.
 
 
 <!-- links -->
