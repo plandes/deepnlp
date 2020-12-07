@@ -20,20 +20,21 @@ W2V_SRC_URL = 		https://s3.amazonaws.com/dl4j-distribution/GoogleNews-vectors-ne
 W2V_DIR =		$(dir $(W2V_PATH))
 W2V_FILE =		$(notdir $(W2V_PATH))
 
-include $(MTARG)/env.mk
+include $(ENV_INC)
 
 
 ## targets
 
-$(MTARG)/env.mk:
+$(ENV_INC):
 			mkdir -p $(MTARG)
 			$(ENTRY_POINT) env > $(ENV_INC)
 
-.PHONY:			movieinfo
-movieinfo:
+.PHONY:			info
+info:
 			@echo "glove-dir: $(GLOVE_DIR)"
 			@echo "stanford-dir: $(STANFORD_DIR)"
 			@echo "cornell-dir: $(CORNELL_DIR)"
+			@echo "w2v-dir: $(W2V_DIR)"
 
 $(GLOVE_DIR):
 			@echo "downloading glove embeddings"
@@ -80,7 +81,7 @@ help:
 
 .PHONY:			env
 env:
-			$(ENTRY_POINT) env
+			cat $(ENV_INC)
 
 .PHONY:			modelinfo
 modelinfo:
@@ -100,11 +101,11 @@ clean:
 			find . -type d -name __pycache__ -prune -exec rm -r {} \;
 
 .PHONY:			cleanall
-cleanall:
+cleanall:		clean
 			rm -fr *.log results
 
 .PHONY:			cleancorpus
-cleancorpus:		clean
+cleancorpus:
 			rm -fr $(CORPUS_DIR)
 
 .PHONY:			vaporize
