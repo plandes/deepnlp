@@ -19,9 +19,9 @@ CORNELL_SRC_URL = 	https://www.cs.cornell.edu/people/pabo/movie-review-data/rt-p
 W2V_SRC_URL = 		https://s3.amazonaws.com/dl4j-distribution/GoogleNews-vectors-negative300.bin.gz
 W2V_DIR =		$(dir $(W2V_PATH))
 W2V_FILE =		$(notdir $(W2V_PATH))
-#gunzip GoogleNews-vectors-negative300.bin
 
 include $(MTARG)/env.mk
+
 
 ## targets
 
