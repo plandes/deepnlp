@@ -1,4 +1,4 @@
-# Movie Review Sentiment Example
+# Usage and Example
 
 This document describes the [movie review task example] to demonstrate the
 DeepZenols NLP framework for the Stanford/Cornell movie review data set
