@@ -1,4 +1,4 @@
-# Usage and Example
+# Movie Review Sentiment Example
 
 This document describes the [movie review task example] to demonstrate the
 DeepZenols NLP framework for the Stanford/Cornell movie review data set
@@ -336,14 +336,18 @@ the single abstract method of the [Batch] super class:
 The batch stash configuration should look familiar if you have read through the
 [deeplearn API batch stash] documentation.  It bears mention the utility of the
 [BatchDirectoryCompositeStash] configuration that splits data in separate files
-across features for each batch.  In this configuration, we split the label,
-embeddings, and linguistic features in their own groups so that we can
-experiment using different embeddings for each test.  Using BERT will take the
-longest since each sentence will be computed during decoding.  However, a much
-faster set, will be [Glove] 50D embeddings as only the indexes are stored and
-quickly retrieved in the [PyTorch] API on demand.  Our caching strategy also
-changes as we can (with most graphics cards) fit the entire [Glove] 50D embedding
-in GPU memory.
+across features for each batch.
+
+In this configuration, we split the label, embeddings, and linguistic features
+in their own groups so that we can experiment using different embeddings for
+each test.  Using BERT will take the longest since each sentence will be
+computed during decoding.
+
+However, a much faster set, will be [Glove] 50D embeddings as only the indexes
+are stored and quickly retrieved in the [PyTorch] API on demand.  Our caching
+strategy also changes as we can (with most graphics cards) fit the entire
+[Glove] 50D embedding in GPU memory.  Our composition stash configuration
+follows:
 ```ini
 [batch_dir_stash]
 class_name = zensols.deeplearn.batch.BatchDirectoryCompositeStash
@@ -427,7 +431,7 @@ To install the corpus:
 1. Install [GNU make](https://www.gnu.org/software/make/)
 1. Change the working directory to the example: `cd examples/movie`
 1. Download and install the corpora: `make corpus`.  This should download all
-   the necessary corpora and [Glove] word embeddings.
+   the necessary corpora and [Glove] and [Word2Vec] word embeddings.
 1. Confirm there are no errors and the corpus directories exist:
    * `corpus/stanfordSentimentTreebank/datasetSentences.txt`
    * `corpus/rt-polaritydata/rt-polarity.{pos,neg}`
@@ -456,6 +460,7 @@ To run the jupyter notebook:
 [huggingface]: https://github.com/huggingface/transformers
 [spaCy]: https://spacy.io
 [Glove]: https://nlp.stanford.edu/projects/glove/
+[Word2Vec]: https://code.google.com/archive/p/word2vec/
 
 [nlparse]: https://github.com/plandes/nlparse
 [deeplearn API]: https://plandes.github.io/deeplearn/index.html
