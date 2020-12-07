@@ -136,6 +136,9 @@ class TokensContainer(PersistableContainer, TextContainer, metaclass=ABCMeta):
 
 @dataclass
 class FeatureSentence(TokensContainer):
+    """A container class of tokens that make a sentence.
+
+    """
     sent_tokens: Tuple[FeatureToken]
     text: str = field(default=None)
 
@@ -179,6 +182,13 @@ class FeatureSentence(TokensContainer):
 
 @dataclass
 class FeatureDocument(TokensContainer):
+    """A container class of tokens that make a document.  This class contains a one
+    to many of sentences.  However, it can be treated like any
+    :class:`.TokensContainer` to fetch tokens.
+
+    :param sents: the sentences defined for this document
+
+    """
     sents: List[FeatureSentence]
 
     def token_iter(self, *args) -> Iterable[TokenFeatures]:
