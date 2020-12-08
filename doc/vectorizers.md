@@ -23,7 +23,7 @@ The set of vectorizers included with this package are listed below:
 
 <!-- links -->
 
-[vectorizers]: https://plandes.github.io/deepnlp/doc/movie-example.html#vectorizer-configuration
+[vectorizers]: movie-example.html#vectorizer-configuration
 
 [EnumContainerFeatureVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer
 [CountEnumContainerFeatureVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer

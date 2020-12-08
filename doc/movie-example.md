@@ -1,8 +1,8 @@
 # Movie Review Sentiment Example
 
 This document describes the [movie review task example] to demonstrate the
-DeepZenols NLP framework for the Stanford/Cornell movie review data set
-sentiment analysis task.
+DeepZenols NLP framework on the sentiment analysis task using the [Stanford
+movie review] and [Cornell sentiment polarity] data sets.
 
 As before, we'll incrementally go through the [configuration file] section by
 section skipping those we have already covered in the [deeplearn API] and [deep
@@ -461,6 +461,8 @@ To run the jupyter notebook:
 [spaCy]: https://spacy.io
 [Glove]: https://nlp.stanford.edu/projects/glove/
 [Word2Vec]: https://code.google.com/archive/p/word2vec/
+[Stanford movie review]: https://ai.stanford.edu/~amaas/data/sentiment/
+[Cornell sentiment polarity]: https://www.cs.cornell.edu/people/pabo/movie-review-data/
 
 [nlparse]: https://github.com/plandes/nlparse
 [deeplearn API]: https://plandes.github.io/deeplearn/index.html

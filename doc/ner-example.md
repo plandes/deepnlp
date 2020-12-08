@@ -9,8 +9,8 @@ The first thing you'll notice is that there is not one single configuration
 file like there is for the [movie review example] or any test project in the
 [deeplearn API].  Instead, all the files in this directory are read as one
 contiguous configuration, which is done by giving a directory instead of file
-path as the `config_file` parameter to the [IniConfig.__init__] initializer
-(see the [config.py] source file).
+path as the `config_file` parameter to the [IniConfig initializer] (see the
+[config.py] source file).
 
 
 ## Configuration Files
@@ -24,8 +24,9 @@ summarized below:
 * [lang.conf]: has the linguistic vectorizers, managers and embeddings just as
   before
 * [vectorizer.conf]: contains the one hot encoded vectorizers for the features
-  given in the CoNLL 2003 data set; something to note in this configuration
-  file is the `mask_vectorizer` configuration entry, which we'll discuss later
+  given in the [CoNLL 2003 data set]; something to note in this configuration
+  file is the `mask_vectorizer` configuration entry (see the [Mask](#mask)
+  section)
 * [batch.conf]: has the batch configuration and settings, such as batch size
 * [corpus.conf]: configuration for the code that parses the CoNNL formatted
   corpus
@@ -47,14 +48,41 @@ to the `recurrent_crf_settings` entry, we have a complete neural network
 without having to write any code for it.
 
 
+### Mask
+
+As mentioned in the [Configuration Files](#configuration-files) section, as
+mask vectorizer is specified.  This is needed for the [CRF] to mask out blank
+tokens for sentences shorter than a max length.  Usually, zeroed tensors are
+used for token slots not used, for example in the word embedding layer for deep
+learning networks.  This is because the zero vectors are learned for sentences
+are shorter.  However, the CRF layer needs to block these as valid state
+transitions during training and testing.
+
+
 ### Scored Batch Iteration
 
 The [ScoredBatchIterator] configured in the `model_settings` in [model.conf]
 indicates to use a different scoring method.  This class is used in the
-framework to calculate a different loss and produce the output.  Because we use
-a [CRF] as the output layer, our output are the NER labels, which must be
-treated differently than neural float tensor output.  We must also set
-`reduce_outcomes = none` to pass the [CRF] output through unaltered.
+framework to calculate a different loss and produce the output, which must be
+treated differently than neural float tensor output.  This is because the
+Viterbi algorithm is used to determine the lowest cost path through the
+elements.  The sum of this path is used as the cost instead of a differential
+optimization function.
+
+Because we use a [CRF] as the output layer, our output are the NER labels.
+Therefore, must also set `reduce_outcomes = none` to pass the [CRF] output
+through unaltered.
+
+
+## Code
+
+As mentioned, no code is necessary for the model is it is already provided in
+configuration using the framework.  The code that is necessary includes:
+* [corpus.py] to parse the [CoNLL 2003 data set]
+* [batch.py] defines data point and batch classes just as seen in the [movie
+  review example]
+* [facade.py] defines and wires the batch mappings just as seen in the [movie
+  review example]
 
 
 ### Corpus Install
@@ -88,16 +116,26 @@ To run the jupyter notebook:
 <!-- links -->
 
 [Glove]: https://nlp.stanford.edu/projects/glove/
+[Word2Vec]: https://code.google.com/archive/p/word2vec/
+[CoNLL 2003 data set]: https://www.clips.uantwerpen.be/conll2003/ner/
 
 [named entity task example]: https://github.com/plandes/deepnlp/blob/master/example/ner
 [movie review example]: movie-example.html
 [deeplearn API]: https://plandes.github.io/deeplearn/index.html
-[dataset.py]: https://github.com/plandes/deepnlp/blob/master/example/ner/src/ner/config.py
-[main.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/conf/main.conf
+[config.py]: https://github.com/plandes/deepnlp/blob/master/example/ner/src/ner/config.py
+[corpus.py]: https://github.com/plandes/deepnlp/blob/master/example/ner/src/ner/corpus.py
+[batch.py]: https://github.com/plandes/deepnlp/blob/master/example/ner/src/ner/batch.py
+[facade.py]: https://github.com/plandes/deepnlp/blob/master/example/ner/src/ner/facade.py
+
+[batch.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/conf/batch.conf
+[model.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/conf/model.conf
 [vectorizer.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/conf/vectorizer.conf
+[main.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/conf/main.conf
+[lang.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/conf/lang.conf
+[corpus.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/conf/corpus.conf
 
 [ExtendedInterpolationEnvConfig]: https://plandes.github.io/util/api/zensols.config.html#zensols.config.iniconfig.ExtendedInterpolationEnvConfig
-[IniConfig.__init__]: https://plandes.github.io/util/api/zensols.config.html#zensols.config.iniconfig.IniConfig.__init__
+[IniConfig initializer]: https://plandes.github.io/util/api/zensols.config.html#zensols.config.iniconfig.IniConfig.__init__
 [CRF]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.layer.html#zensols.deeplearn.layer.crf.CRF
 [EmbeddedRecurrentCRFNetworkSettings]: ../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFNetworkSettings
 [ScoredBatchIterator]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.model.html#zensols.deeplearn.model.batchiter.ScoredBatchIterator
