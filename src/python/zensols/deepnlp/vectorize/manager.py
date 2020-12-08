@@ -28,17 +28,24 @@ logger = logging.getLogger(__name__)
 
 
 class TokenContainerFeatureType(Enum):
-    """The type of :class:`TokenContainerFeatureVectorizer`, which are one of:
-
-       - TOKEN: token level with a shape congruent with the number of tokens,
-                typically concatenated with the ebedding layer
-       - DOCUMENT: document level, typically added to a join layer
-       - EMBEDDING: embedding layer, typically used as the input layer
+    """The type of :class:`TokenContainerFeatureVectorizer`.
 
     """
     TOKEN = 0
+    """token level with a shape congruent with the number of tokens, typically
+    concatenated with the ebedding layer
+
+    """
+
     DOCUMENT = 1
+    """document level, typically added to a join layer
+
+    """
+
     EMBEDDING = 2
+    """embedding layer, typically used as the input layer
+
+    """
 
 
 @dataclass

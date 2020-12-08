@@ -11,6 +11,7 @@ from zensols.deeplearn.vectorize import FeatureVectorizer
 from zensols.deeplearn.model import BaseNetworkModule
 from zensols.deeplearn.batch import (
     Batch,
+    BatchMetadata,
     BatchFieldMetadata,
     MetadataNetworkSettings,
 )
@@ -27,7 +28,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class EmbeddingNetworkSettings(MetadataNetworkSettings):
     """A utility container settings class for models that use an embedding input
-    layer.
+    layer that inherit from :class:`.EmbeddingNetworkModule`.
 
     :param embedding_layer: the word embedding layer used to vectorize
 
@@ -39,29 +40,52 @@ class EmbeddingNetworkSettings(MetadataNetworkSettings):
 
 
 class EmbeddingNetworkModule(BaseNetworkModule):
-    """An module that uses an embedding as the input layer.  It creates this as
-    attribute ``embedding`` for the sub class to use in the :meth:`_forward`
-    method.  In addition, it creates the following attributes:
+    """An module that uses an embedding as the input layer.  This class uses an
+    instance of :class:`.EmbeddingLayer` provided by the network settings
+    configuration for resolving the embedding during the *forward* phase.
 
-      - ``embedding_attribute_name``: the name of the word embedding
-                                      vectorized feature attribute name
+    The following attributes are created and/or set during initialization:
 
-      - ``embedding_output_size``: the outpu size of the embedding layer, note
-                                   this includes any features layered/concated
-                                   given in all token level vectorizer's
-                                   configuration
+      * ``embedding`` the :class:`.EmbeddingLayer` instance used get the input
+        embedding tensors
 
-      - ``join_size``: if a join layer is to be used, this has the size of the
-                       part of the join layer that will have the document level
-                       features
+      * ``embedding_attribute_name`` the name of the word embedding
+        vectorized feature attribute name
 
-      - ``token_attribs``: the token level feature names (see
-                           :meth:`_forward_token_features`)
+      * ``embedding_output_size`` the outpu size of the embedding layer, note
+        this includes any features layered/concated given in all token level
+        vectorizer's configuration
 
-      - ``doc_attribs``: the doc level feature names (see
-                         :meth:`_forward_document_features`)
+      * ``join_size`` if a join layer is to be used, this has the size of the
+        part of the join layer that will have the document level features
 
-      - ``embedding``: the embedding layer used get the input embedding tensors
+      * ``token_attribs`` the token level feature names (see
+        :meth:`forward_token_features`)
+
+      * ``doc_attribs`` the doc level feature names (see
+        :meth:`forward_document_features`)
+
+    The initializer adds additional attributes conditional on the
+    :class:`.EmbeddingNetworkSettings` instance's
+    :obj:`~zensols.deeplearn.batch.meta.MetadataNetworkSettings.batch_metadata`
+    property (type :class:`~zensols.deeplearn.batch.meta.BatchMetadata`).  For
+    each meta data field's vectorizer that extends class
+    :class:`.TokenContainerFeatureVectorizer` the following is set on this
+    instance based on the value of ``feature_type`` (of type
+    :class:`.TokenContainerFeatureType`):
+
+      * :obj:`~.TokenContainerFeatureType.TOKEN`: ``embedding_output_size`` is
+        increased by the vectorizer's shape
+
+      * :obj:`~.TokenContainerFeatureType.DOCUMENT`: ``join_size`` is increased
+        by the vectorizer's shape
+
+      * :obj:`~.TokenContainerFeatureType.EMBEDDING`:
+        ``embedding_attribute_name`` is set to the name field's attribute and
+        ``embedding_vectorizer`` set to the field's vectorizer
+
+    Fields can be filtered by passing a filter function to the initializer.
+    See :meth:`__init__` for more information.
 
     """
     MODULE_NAME = 'emb'
@@ -69,11 +93,25 @@ class EmbeddingNetworkModule(BaseNetworkModule):
     def __init__(self, net_settings: EmbeddingNetworkSettings,
                  module_logger: logging.Logger = None,
                  filter_attrib_fn: Callable[[BatchFieldMetadata], bool] = None):
+        """Initialize the embedding layer.
+
+        :param net_settings: the embedding layer configuration
+
+        :param logger: the logger to use for the forward process in this layer
+
+        :param filter_attrib_fn:
+
+            if provided, called with a :class:`.BatchFieldMetadata` for each
+            field returning ``True`` if the batch field should be retained and
+            used in the embedding layer (see class docs); if ``None`` all
+            fields are considered
+
+        """
         super().__init__(net_settings, module_logger)
         self.embedding = net_settings.embedding_layer
         self.embedding_output_size = self.embedding.embedding_dim
         self.join_size = 0
-        meta = self.net_settings.batch_metadata
+        meta: BatchMetadata = self.net_settings.batch_metadata
         self.token_attribs = []
         self.doc_attribs = []
         embedding_attribs = []
@@ -106,8 +144,7 @@ class EmbeddingNetworkModule(BaseNetworkModule):
                 elif vec.feature_type == TokenContainerFeatureType.EMBEDDING:
                     if logger.isEnabledFor(logging.DEBUG):
                         logger._debug(f'adding embedding: {attr}')
-                    if embedding_attribs is not None:
-                        embedding_attribs.append(attr)
+                    embedding_attribs.append(attr)
                     self.embedding_vectorizer = vec
         if len(embedding_attribs) != 1:
             raise ValueError(

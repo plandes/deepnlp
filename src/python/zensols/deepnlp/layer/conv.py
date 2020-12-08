@@ -29,11 +29,48 @@ logger = logging.getLogger(__name__)
 class DeepConvolution1dNetworkSettings(ActivationNetworkSettings,
                                        DropoutNetworkSettings,
                                        Writable):
+    """Configurable repeated series of 1-dimension convolution, pooling, batch norm
+    and activation layers.  This layer is specifically designed for natural
+    language processing task, which is why this configuration includes
+    parameters for token counts.
+
+    Each layer repeat consists of::
+      1. convolution
+      2. max pool
+      3. batch (optional)
+      4. activation
+
+    This class is typically used directly after an embedding layer such as
+
+    :param token_length: the number of tokens processed through the layer
+
+    :param embedding_dimension: the dimension of the embedding (word vector)
+                                layer
+
+    :param token_kernel:
+
+    :param n_filters:
+
+    :param stride:
+
+    :param padding:
+
+    :param pool_token_kernel:
+
+    :param pool_stride:
+
+    :param pool_padding:
+
+    :param repeats:
+
+    :param batch_norm_d:
+
+    """
     token_length: int = field(default=None)
     embedding_dimension: int = field(default=None)
     token_kernel: int = field(default=2)
-    n_filters: int = field(default=1)
     stride: int = field(default=1)
+    n_filters: int = field(default=1)
     padding: int = field(default=1)
     pool_token_kernel: int = field(default=2)
     pool_stride: int = field(default=1)
@@ -94,10 +131,23 @@ class DeepConvolution1dNetworkSettings(ActivationNetworkSettings,
 
 
 class DeepConvolution1d(BaseNetworkModule):
+    """Configurable repeated series of 1-dimension convolution, pooling, batch norm
+    and activation layers.
+
+    :see: :class:`.DeepConvolution1dNetworkSettings`
+
+    """
     MODULE_NAME = 'conv'
 
     def __init__(self, net_settings: DeepConvolution1dNetworkSettings,
                  logger: logging.Logger):
+        """Initialize the deep convolution layer.
+
+        :param net_settings: the deep convolution layer configuration
+
+        :param logger: the logger to use for the forward process in this layer
+
+        """
         super().__init__(net_settings, logger)
         layers = []
         self.pairs = []

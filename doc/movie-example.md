@@ -15,9 +15,11 @@ file] so it is recommended the reader follow it while reading this tutorial.
 
 ## Embedding
 
-The `embedding` section of the [configuration file] specifies word vector
-models and layers that use them.  This defines the 6 billion token (400K vocab)
-50 dimension [Glove] model with a [GloveWordEmbedModel] instance:
+The Zensols [deep NLP] library supports word embeddings for [Glove],
+[Word2Vec], [fastText] and [BERT].  The `embedding` section of the
+[configuration file] specifies which word vector models and layers that use
+them.  This defines the 6 billion token (400K vocab) 50 dimension [Glove] model
+with a [GloveWordEmbedModel] instance:
 ```ini
 # glove embeddding model (not layer)
 [glove_50_embedding]
@@ -62,14 +64,14 @@ This module uses the glove embedding model to forward using a
 The reference to `language_feature_manager` is covered later.
 
 The next three entries have similar definitions for [Glove] 300 dimension,
-Google's pre-trained 300 dimension word2vec, and BERT embeddings.  The
+Google's pre-trained 300 dimension word2vec, and [BERT] embeddings.  The
 `as_document`, when true, parameter tells the framework to treat the embedding
 as a document using all tokens as one long stream as apposed to "stacking" each
 as a sentence.  When `decode_embedding` is set to true, the embedding is
 created during decode time, rather than at the time the batch is processed.
-The `model_name` for the BERT embeddings tells it which model to use, which can
-be `bert`, `distilbert`, `roberta` as defined by the [huggingface] transformers
-API.
+The `model_name` for the [BERT] embeddings tells it which model to use, which
+can be `bert`, `distilbert`, `roberta` as defined by the [huggingface]
+transformers API.
 
 
 ## Linguistic Configuration
@@ -446,7 +448,7 @@ To train and test the model invoke: `make modeltraintest`.
 
 ### Jupyter Notebook
 
-To run the jupyter notebook:
+To run the [Jupyter movie notebook]:
 1. Pip install: `pip install notebook`
 1. Go to the notebook directory: `cd examples/movie/notebook`
 1. Start the notebook: `jupyter notebook`
@@ -461,6 +463,8 @@ To run the jupyter notebook:
 [spaCy]: https://spacy.io
 [Glove]: https://nlp.stanford.edu/projects/glove/
 [Word2Vec]: https://code.google.com/archive/p/word2vec/
+[fastText]: https://fasttext.cc
+[BERT]: https://huggingface.co/transformers/model_doc/bert.html
 [Stanford movie review]: https://ai.stanford.edu/~amaas/data/sentiment/
 [Cornell sentiment polarity]: https://www.cs.cornell.edu/people/pabo/movie-review-data/
 
@@ -477,6 +481,7 @@ To run the jupyter notebook:
 [dataset.py]: https://github.com/plandes/deepnlp/blob/master/example/movie/src/movie/dataset.py
 [domain.py]: https://github.com/plandes/deepnlp/blob/master/example/movie/src/movie/domain.py
 [facade.py]: https://github.com/plandes/deepnlp/blob/master/example/movie/src/movie/facade.py
+[Jupyter movie notebook]: https://github.com/plandes/deepnlp/blob/master/example/movie/notebook/movie.ipynb
 
 [DataframeStash]: https://plandes.github.io/deeplearn/api/zensols.dataframe.html#zensols.dataframe.stash.DataframeStash
 [Batch]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.batch.html#zensols.deeplearn.batch.domain.Batch

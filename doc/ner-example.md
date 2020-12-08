@@ -44,8 +44,9 @@ entry contains the configuration for this BiLSTM-CRF.
 
 The [EmbeddedRecurrentCRFNetworkSettings] given in the [model.conf] shows how
 to configure the BiLSTM-CRF with an input embedded layer.  With the reference
-to the `recurrent_crf_settings` entry, we have a complete neural network
-without having to write any code for it.
+to the `recurrent_crf_settings` entry, which uses an instance
+[EmbeddedRecurrentCRFNetwork], we have a complete neural network without having
+to write any code for it.
 
 
 ### Mask
@@ -106,7 +107,7 @@ To train and test the model invoke: `make modeltraintest`.
 
 ### Jupyter Notebook
 
-To run the jupyter notebook:
+To run the [Jupyter NER notebook]:
 1. Pip install: `pip install notebook`
 1. Go to the notebook directory: `cd examples/ner/notebook`
 1. Start the notebook: `jupyter notebook`
@@ -121,6 +122,7 @@ To run the jupyter notebook:
 
 [named entity task example]: https://github.com/plandes/deepnlp/blob/master/example/ner
 [movie review example]: movie-example.html
+
 [deeplearn API]: https://plandes.github.io/deeplearn/index.html
 [config.py]: https://github.com/plandes/deepnlp/blob/master/example/ner/src/ner/config.py
 [corpus.py]: https://github.com/plandes/deepnlp/blob/master/example/ner/src/ner/corpus.py
@@ -134,8 +136,11 @@ To run the jupyter notebook:
 [lang.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/conf/lang.conf
 [corpus.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/conf/corpus.conf
 
+[Jupyter NER notebook]: https://github.com/plandes/deepnlp/blob/master/example/ner/notebook/ner.ipynb
+
 [ExtendedInterpolationEnvConfig]: https://plandes.github.io/util/api/zensols.config.html#zensols.config.iniconfig.ExtendedInterpolationEnvConfig
 [IniConfig initializer]: https://plandes.github.io/util/api/zensols.config.html#zensols.config.iniconfig.IniConfig.__init__
 [CRF]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.layer.html#zensols.deeplearn.layer.crf.CRF
 [EmbeddedRecurrentCRFNetworkSettings]: ../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFNetworkSettings
+[EmbeddedRecurrentCRFNetwork]: ../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFNetwork
 [ScoredBatchIterator]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.model.html#zensols.deeplearn.model.batchiter.ScoredBatchIterator

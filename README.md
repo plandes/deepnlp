@@ -7,8 +7,23 @@ Deep learning utility library for natural language processing that aids in
 feature engineering and embedding layers (see the [full documentation]).
 
 Features:
-* Configurable layers with no need to write code.
+* Configurable layers with little to no need to write code.
+* Natural language specific layers:
+  * Easy to configure *N* [deep convolution layer] with automatic
+    dimensionality calculation and configurable pooling and batch centering.
+  * Full [Embedding+BiLSTM-CRF] implementation using easy to configure
+	constituent layers.
+* [NLP specific vectorizers] that generated [zensols deeplearn] encoded and
+  decoded [batched tensors] for [spaCy] parsed features, dependency tree
+  features, overlapping text features and others.
+* Easily swapable during runtime embedded layers as [batched tensors] and other
+  linguistic vectorized features.
+* Support and easily configurable word embeddings for [Glove], [Word2Vec],
+  [fastText] and [BERT].
+* Support for token, document and embedding level vectorized features.
 * Integration with [Pandas] data frames from data ingestion.
+* Two full documented examples provided as both command line and [Jupyter
+  notebooks](#usage-and-examples).
 
 
 ## Documentation
@@ -36,16 +51,19 @@ the tutorial.
 The usage of this library is explained in terms of two examples:
 * The [Movie Review Sentiment] trained and tested on the [Stanford movie
   review] and [Cornell sentiment polarity] data sets, which assigns a positive
-  or negative score to a natural language movie review by critics.
+  or negative score to a natural language movie review by critics.  Also see
+  the [Jupyter movie notebook].
+
 * The [Named Entity Recognizer] trained and tested on the [CoNLL 2003 data set]
-  to label named entities on natural language text.
+  to label named entities on natural language text.  Also see the [Jupyter NER
+  notebook].
 
 
 ## Attribution
 
 This project, or example code, uses:
-* [Gensim] for [Glove] and [Word2Vec] word embeddings.
-* [Huggingface Transformers] for BERT contextual word embeddings.
+* [Gensim] for [Glove], [Word2Vec] and [fastText] word embeddings.
+* [Huggingface Transformers] for [BERT] contextual word embeddings.
 * [bcolz] for fast read access to word embedding vectors.
 * [zensols nlparse] for feature generation from [spaCy] parsing.
 * [zensols deeplearn] for deep learning network libraries.
@@ -79,6 +97,8 @@ Copyright (c) 2020 Paul Landes
 [Huggingface Transformers]: https://huggingface.co
 [Glove]: https://nlp.stanford.edu/projects/glove/
 [Word2Vec]: https://code.google.com/archive/p/word2vec/
+[fastText]: https://fasttext.cc
+[BERT]: https://huggingface.co/transformers/model_doc/bert.html
 [bcolz]: https://pypi.org/project/bcolz/
 [spaCy]: https://spacy.io
 [Pandas]: https://pandas.pydata.org
@@ -87,9 +107,15 @@ Copyright (c) 2020 Paul Landes
 [Cornell sentiment polarity]: https://www.cs.cornell.edu/people/pabo/movie-review-data/
 [CoNLL 2003 data set]: https://www.clips.uantwerpen.be/conll2003/ner/
 
+[zensols deeplearn]: https://github.com/plandes/deeplearn
+[zensols nlparse]: https://github.com/plandes/nlparse
+
 [full documentation]: https://plandes.github.io/deepnlp/index.html
 [Movie Review Sentiment]: doc/movie-example.md
 [Named Entity Recognizer]: doc/ner-example.md
-
-[zensols deeplearn]: https://github.com/plandes/deeplearn
-[zensols nlparse]: https://github.com/plandes/nlparse
+[Embedding+BiLSTM-CRF]: doc/ner-example.html#bilstm-crf
+[batched tensors]: https://plandes.github.io/deeplearn/doc/preprocess.html#batches
+[deep convolution layer]: api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1d
+[NLP specific vectorizers]: doc/vectorizers.md
+[Jupyter NER notebook]: https://github.com/plandes/deepnlp/blob/master/example/ner/notebook/ner.ipynb
+[Jupyter movie notebook]: https://github.com/plandes/deepnlp/blob/master/example/movie/notebook/movie.ipynb

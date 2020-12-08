@@ -58,7 +58,7 @@ extensions = [
 
 # autodoc extension configuration
 autodoc_default_options = {
-    # add __init__ methods
+    # Add __init__ methods (see functions maybe_skip_member and setup)
     'special-members': True,
 }
 
@@ -82,6 +82,7 @@ intersphinx_mapping = {
     'zensols.cli': ('https://plandes.github.io/util/', None),
     'zensols.multi': ('https://plandes.github.io/util/', None),
     'zensols.nlp': ('https://plandes.github.io/nlparse/', None),
+    'zensols.deeplearn': ('https://plandes.github.io/deeplearn/', None),
 }
 
 # The master toctree document.
@@ -119,6 +120,20 @@ autosectionlabel_prefix_document = True
 github_doc_root = 'https://github.com/plandes/deepnlp/tree/master/doc'
 
 
+def maybe_skip_member(app, what, name, obj, skip, options):
+    """Skip only non-init methods.  This filters out all cluttering attributes such
+    as ``__dataclass_parameters`` and ``__abstractmethods__``, which show up
+    after setting ``special-members=True`` in ``autodoc_default_options``.
+
+    :see: :obj:`autodoc_default_options`
+
+    """
+    if not skip and (what == 'class') and (name != '__init__') \
+       and (name.startswith('__') and name.endswith('__')):
+        return True
+    return skip
+
+
 def setup(app):
     app.add_config_value('recommonmark_config', {
         'url_resolver': lambda url: github_doc_root + url,
@@ -126,3 +141,4 @@ def setup(app):
         'auto_toc_maxdepth': 4,
     }, True)
     app.add_transform(AutoStructify)
+    app.connect('autodoc-skip-member', maybe_skip_member)
