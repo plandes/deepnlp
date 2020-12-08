@@ -40,30 +40,45 @@ class DeepConvolution1dNetworkSettings(ActivationNetworkSettings,
       3. batch (optional)
       4. activation
 
-    This class is typically used directly after an embedding layer such as
+    This class is used directly after embedding (and in conjuction with) a
+    layer class that extends :class:`.EmbeddingNetworkModule`.  The lifecycle
+    of this class starts with being instantiated (usually configured using a
+    :class:`~zensols.config.factory.ImportConfigFactory`), then cloned with
+    :meth:`clone` during the initialization on the layer from which it's used.
 
-    :param token_length: the number of tokens processed through the layer
+    :param token_length: the number of tokens processed through the layer (used
+                         as the width kernel parameter ``W``)
 
     :param embedding_dimension: the dimension of the embedding (word vector)
-                                layer
+                                layer (height dimension ``H`` and the kernel
+                                parameter ``F``)
 
-    :param token_kernel:
+    :param token_kernel: the size of the kernel in number of tokens (width
+                         dimension of kernel parameter ``F``)
 
-    :param n_filters:
+    :param n_filters: number of filters to use, aka filter depth/volume (``K``)
 
-    :param stride:
+    :param stride: the stride, which is the number of cells to skip for each
+                   convolution (``S``)
 
-    :param padding:
+    :param padding: the zero'd number of cells on the ends of tokens X
+                    embedding neurons (``P``)
 
-    :param pool_token_kernel:
+    :param pool_token_kernel: like ``token_length`` but in the pooling layer
 
-    :param pool_stride:
+    :param pool_stride: like ``stride`` but in the pooling layer
 
-    :param pool_padding:
+    :param pool_padding: like ``padding`` but in the pooling layer
 
-    :param repeats:
+    :param repeats: number of times the convolution, max pool, batch,
+                    activation layers are repeated
 
-    :param batch_norm_d:
+    :param batch_norm_d: the dimension of the batch norm (should be ``1``) or
+                         ``None`` to disable
+
+    :see: :class:`.DeepConvolution1d`
+
+    :see :class:`.EmbeddingNetworkModule`
 
     """
     token_length: int = field(default=None)
@@ -79,12 +94,18 @@ class DeepConvolution1dNetworkSettings(ActivationNetworkSettings,
     batch_norm_d: int = field(default=None)
 
     def _assert_module(self):
+        """Raise an exception if we don't have an embedding module configured.
+
+        """
         if not hasattr(self, 'module'):
             raise ValueError('not created with embedding module')
 
     @property
     @persisted('_layer_factory')
     def layer_factory(self) -> ConvolutionLayerFactory:
+        """Return the factory used to create convolution layers.
+
+        """
         self._assert_module()
         return ConvolutionLayerFactory(
             width=self.token_length,
@@ -97,6 +118,9 @@ class DeepConvolution1dNetworkSettings(ActivationNetworkSettings,
     @property
     @persisted('_pool_factory')
     def pool_factory(self) -> MaxPool1dFactory:
+        """Return the factory used to create max 1D pool layers.
+
+        """
         self._assert_module()
         return MaxPool1dFactory(
             layer_factory=self.layer_factory,
@@ -105,6 +129,14 @@ class DeepConvolution1dNetworkSettings(ActivationNetworkSettings,
             padding=self.pool_padding)
 
     def clone(self, module: EmbeddingNetworkModule, **kwargs):
+        """Clone this network settings configuration with a different embedding
+        settings.
+
+        :param module: the embedding settings to use in the clone
+
+        :param kwargs: arguments as attributes on the clone
+
+        """
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'cloning module from module with {kwargs}')
         if hasattr(self, 'module'):
@@ -156,6 +188,10 @@ class DeepConvolution1d(BaseNetworkModule):
 
     def _create_layers(self, layers: List[nn.Module],
                        pairs: List[Tuple[nn.Module, nn.Module]]):
+        """Create the convolution, max pool and batch norm layers used to forward
+        through.
+
+        """
         pool_factory: MaxPool1dFactory = self.net_settings.pool_factory
         conv_factory: ConvolutionLayerFactory = pool_factory.layer_factory
         repeats = self.net_settings.repeats
