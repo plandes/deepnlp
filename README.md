@@ -8,7 +8,7 @@ feature engineering and embedding layers (see the [full documentation]).
 
 Features:
 * Configurable layers with little to no need to write code.
-* Natural language specific layers:
+* [Natural language specific layers](doc/layers.md):
   * Easy to configure *N* [deep convolution layer] with automatic
     dimensionality calculation and configurable pooling and batch centering.
   * Full [Embedding+BiLSTM-CRF] implementation using easy to configure
