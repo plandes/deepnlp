@@ -70,9 +70,9 @@ Viterbi algorithm is used to determine the lowest cost path through the
 elements.  The sum of this path is used as the cost instead of a differential
 optimization function.
 
-Because we use a [CRF] as the output layer, our output are the NER labels.
-Therefore, must also set `reduce_outcomes = none` to pass the [CRF] output
-through unaltered.
+Because we use a [CRF] as the output layer for [EmbeddedRecurrentCRF], our
+output are the NER labels.  Therefore, must also set `reduce_outcomes = none`
+to pass the [CRF] output through unaltered.
 
 
 ## Code
