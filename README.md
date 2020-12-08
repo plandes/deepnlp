@@ -1,6 +1,5 @@
 # DeepZensols Natural Language Processing
 
-[![Travis CI Build Status][travis-badge]][travis-link]
 [![PyPI][pypi-badge]][pypi-link]
 [![Python 3.7][python37-badge]][python37-link]
 
@@ -70,8 +69,6 @@ Copyright (c) 2020 Paul Landes
 
 
 <!-- links -->
-[travis-link]: https://travis-ci.org/plandes/deepnlp
-[travis-badge]: https://travis-ci.org/plandes/deepnlp.svg?branch=master
 [pypi]: https://pypi.org/project/zensols.deepnlp/
 [pypi-link]: https://pypi.python.org/pypi/zensols.deepnlp
 [pypi-badge]: https://img.shields.io/pypi/v/zensols.deepnlp.svg
