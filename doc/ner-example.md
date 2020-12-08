@@ -42,10 +42,10 @@ connected to a CRF terminal layer.  This network learns sequences of nominal
 labels, which in our case, are the NER tags.  The `recurrent_crf_settings`
 entry contains the configuration for this BiLSTM-CRF.
 
-The [EmbeddedRecurrentCRFNetworkSettings] given in the [model.conf] shows how
+The [EmbeddedRecurrentCRFSettings] given in the [model.conf] shows how
 to configure the BiLSTM-CRF with an input embedded layer.  With the reference
 to the `recurrent_crf_settings` entry, which uses an instance
-[EmbeddedRecurrentCRFNetwork], we have a complete neural network without having
+[EmbeddedRecurrentCRF], we have a complete neural network without having
 to write any code for it.
 
 
@@ -141,6 +141,6 @@ To run the [Jupyter NER notebook]:
 [ExtendedInterpolationEnvConfig]: https://plandes.github.io/util/api/zensols.config.html#zensols.config.iniconfig.ExtendedInterpolationEnvConfig
 [IniConfig initializer]: https://plandes.github.io/util/api/zensols.config.html#zensols.config.iniconfig.IniConfig.__init__
 [CRF]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.layer.html#zensols.deeplearn.layer.crf.CRF
-[EmbeddedRecurrentCRFNetworkSettings]: ../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFNetworkSettings
-[EmbeddedRecurrentCRFNetwork]: ../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFNetwork
+[EmbeddedRecurrentCRFSettings]: ../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings
+[EmbeddedRecurrentCRF]: ../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRF
 [ScoredBatchIterator]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.model.html#zensols.deeplearn.model.batchiter.ScoredBatchIterator

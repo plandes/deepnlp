@@ -12,7 +12,7 @@ from zensols.deepnlp.layer import (
 
 
 @dataclass
-class EmbeddedRecurrentCRFNetworkSettings(EmbeddingNetworkSettings):
+class EmbeddedRecurrentCRFSettings(EmbeddingNetworkSettings):
     """A utility container settings class for convulsion network models.
 
     :param embedding_settings: the configured embedded layer
@@ -28,10 +28,10 @@ class EmbeddedRecurrentCRFNetworkSettings(EmbeddingNetworkSettings):
     mask_attribute: str
 
     def get_module_class_name(self) -> str:
-        return __name__ + '.EmbeddedRecurrentCRFNetwork'
+        return __name__ + '.EmbeddedRecurrentCRF'
 
 
-class EmbeddedRecurrentCRFNetwork(EmbeddingNetworkModule, ScoredNetworkModule):
+class EmbeddedRecurrentCRF(EmbeddingNetworkModule, ScoredNetworkModule):
     """A recurrent neural network composed of an embedding input, an recurrent
     network, and a linear conditional random field output layer.  When
     configured with an LSTM, this becomes a (Bi)LSTM CRF.
@@ -39,7 +39,7 @@ class EmbeddedRecurrentCRFNetwork(EmbeddingNetworkModule, ScoredNetworkModule):
     """
     MODULE_NAME = 'emb recur crf'
 
-    def __init__(self, net_settings: EmbeddedRecurrentCRFNetworkSettings,
+    def __init__(self, net_settings: EmbeddedRecurrentCRFSettings,
                  sub_logger: logging.Logger = None):
         super().__init__(net_settings, sub_logger)
         ns = self.net_settings
