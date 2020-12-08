@@ -164,7 +164,7 @@ class DeepConvolution1dNetworkSettings(ActivationNetworkSettings,
 
 class DeepConvolution1d(BaseNetworkModule):
     """Configurable repeated series of 1-dimension convolution, pooling, batch norm
-    and activation layers.
+    and activation layers. See :meth:`get_layers`.
 
     :see: :class:`.DeepConvolution1dNetworkSettings`
 
@@ -175,6 +175,10 @@ class DeepConvolution1d(BaseNetworkModule):
                  logger: logging.Logger):
         """Initialize the deep convolution layer.
 
+        *Implementation note*: all layers are stored sequentially using a
+         :class:`torch.nn.Sequential` to get normal weight persistance on torch
+         save/loads.
+
         :param net_settings: the deep convolution layer configuration
 
         :param logger: the logger to use for the forward process in this layer
@@ -182,14 +186,19 @@ class DeepConvolution1d(BaseNetworkModule):
         """
         super().__init__(net_settings, logger)
         layers = []
-        self.pairs = []
-        self._create_layers(layers, self.pairs)
+        self.layer_sets = []
+        self._create_layers(layers, self.layer_sets)
         self.seq_layers = nn.Sequential(*layers)
 
     def _create_layers(self, layers: List[nn.Module],
-                       pairs: List[Tuple[nn.Module, nn.Module]]):
+                       layer_sets: List[Tuple[nn.Module, nn.Module, nn.Module]]):
         """Create the convolution, max pool and batch norm layers used to forward
         through.
+
+        :param layers: the layers to populate used in an
+                       :class:`torch.nn.Sequential`
+
+        :param layer_sets: tuples of (conv, pool, batch_norm) layers
 
         """
         pool_factory: MaxPool1dFactory = self.net_settings.pool_factory
@@ -212,9 +221,9 @@ class DeepConvolution1d(BaseNetworkModule):
                 batch_norm = None
             if self.logger.isEnabledFor(logging.DEBUG):
                 self._debug(f'batch_norm: {batch_norm}')
-            pair = (conv, pool, batch_norm)
-            pairs.append(pair)
-            layers.extend(pair)
+            layer_set = (conv, pool, batch_norm)
+            layer_sets.append(layer_set)
+            layers.extend(layer_set)
             pool_out = pool_factory.flatten_dim
             if n_set < repeats:
                 conv_factory.width = pool_out
@@ -230,14 +239,19 @@ class DeepConvolution1d(BaseNetworkModule):
         super().deallocate()
         self._deallocate_attribute('seq_layers')
 
-    def get_layers(self):
+    def get_layers(self) -> Tuple[Tuple[nn.Module, nn.Module, nn.Module]]:
+        """Return a tuple of layer sets, with each having the form: ``(convolution, max
+        pool, batch_norm)``.  The ``batch_norm`` norm is ``None`` if not
+        configured.
+
+        """
         return tuple(self.seq_layers)
 
     def _forward(self, x: torch.Tensor) -> torch.Tensor:
-        pairs = self.pairs
-        plen = len(pairs)
+        layer_sets = self.layer_sets
+        ls_len = len(layer_sets)
 
-        for i, (conv, pool, batch_norm) in enumerate(pairs):
+        for i, (conv, pool, batch_norm) in enumerate(layer_sets):
             if self.logger.isEnabledFor(logging.DEBUG):
                 self._debug(f'layer set iter: {i}')
             x = conv(x)
@@ -258,7 +272,7 @@ class DeepConvolution1d(BaseNetworkModule):
 
             self._forward_activation(x)
 
-            if i < plen - 1:
+            if i < ls_len - 1:
                 x = x.unsqueeze(3)
                 self._shape_debug('unsqueeze', x)
 
