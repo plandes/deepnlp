@@ -4,6 +4,7 @@
 PROJ_TYPE=	python
 PROJ_MODULES=	git python-doc python-doc-deploy
 PROJ_ARGS =	-c resources/deepnlp.conf
+CLEAN_DEPS +=	exampleclean
 
 include ./zenbuild/main.mk
 
@@ -18,3 +19,9 @@ testfeatnorm:
 .PHONY:		testenum
 testenum:
 		make PY_SRC_TEST_PAT=test_enum.py test
+
+.PHONY:		exampleclean
+exampleclean:
+		@for i in example/* ; do \
+			make -C $$i clean ; \
+		done
