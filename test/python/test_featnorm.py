@@ -20,10 +20,10 @@ class TestFeatureVectorizationParse(TestFeatureVectorization):
 
     def test_token_parse(self):
         fdoc = self.vmng.parse(self.sent_text)
-        self.assertEquals(1, len(fdoc.sents))
-        self.assertEquals(7, len(fdoc.tokens))
-        self.assertEquals(7, len(fdoc.sents[0].tokens))
-        self.assertEquals(self.def_parse,
+        self.assertEqual(1, len(fdoc.sents))
+        self.assertEqual(7, len(fdoc.tokens))
+        self.assertEqual(7, len(fdoc.sents[0].tokens))
+        self.assertEqual(self.def_parse,
                           tuple((map(lambda f: f.norm, fdoc.tokens))))
 
     def test_torch_config(self):
@@ -174,7 +174,7 @@ class TestFeatureVectorizationCombined(TestFeatureVectorization):
     def test_all_feats(self):
         fdoc = self.vmng.parse(self.sent_text2)
         res = self.vmng.transform(fdoc)
-        self.assertEquals(4, len(res))
+        self.assertEqual(4, len(res))
         for arr, vec in res:
             self.assertTrue(isinstance(arr, torch.Tensor))
             self.assertTrue(isinstance(vec, TokenContainerFeatureVectorizer))
@@ -188,7 +188,7 @@ class TestFeatureVectorizationCombined(TestFeatureVectorization):
         vec = self.fac.instance('single_vectorizer_feature_vectorizer_manager')
         fdoc = vec.parse(self.sent_text2)
         res = vec.transform(fdoc)
-        self.assertEquals(3, len(res))
+        self.assertEqual(3, len(res))
         for arr, vec in res:
             self.assertTrue(isinstance(arr, torch.Tensor))
             self.assertTrue(isinstance(vec, TokenContainerFeatureVectorizer))
