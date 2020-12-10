@@ -69,7 +69,7 @@ clean:
 
 .PHONY:			cleanall
 cleanall:		clean
-			rm -fr *.log results
+			rm -fr $(MTARG) results jupyter.log
 
 .PHONY:			cleancorpus
 cleancorpus:

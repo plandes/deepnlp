@@ -97,12 +97,12 @@ modeltraintest:
 
 .PHONY:			clean
 clean:
-			rm -fr $(MTARG)
+			rm -fr $(MTARG) jupyter.log
 			find . -type d -name __pycache__ -prune -exec rm -r {} \;
 
 .PHONY:			cleanall
 cleanall:		clean
-			rm -fr *.log results
+			rm -fr *.log results data
 
 .PHONY:			cleancorpus
 cleancorpus:
