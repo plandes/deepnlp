@@ -64,7 +64,7 @@ modeltraintest:
 
 .PHONY:			clean
 clean:
-			rm -fr $(MTARG)
+			rm -fr $(MTARG) *.log
 			find . -type d -name __pycache__ -prune -exec rm -r {} \;
 
 .PHONY:			cleanall
