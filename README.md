@@ -119,9 +119,9 @@ Copyright (c) 2020 Paul Landes
 [full documentation]: https://plandes.github.io/deepnlp/index.html
 [Movie Review Sentiment]: doc/movie-example.md
 [Named Entity Recognizer]: doc/ner-example.md
-[Embedding+BiLSTM-CRF]: doc/ner-example.html#bilstm-crf
+[Embedding+BiLSTM-CRF]: https://plandes.github.io/deepnlp/doc/ner-example.html#bilstm-crf
 [batched tensors]: https://plandes.github.io/deeplearn/doc/preprocess.html#batches
-[deep convolution layer]: api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1d
+[deep convolution layer]: https://plandes.github.io/deepnlp/api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1d
 [NLP specific vectorizers]: doc/vectorizers.md
 [Jupyter NER notebook]: https://github.com/plandes/deepnlp/blob/master/example/ner/notebook/ner.ipynb
 [Jupyter movie notebook]: https://github.com/plandes/deepnlp/blob/master/example/movie/notebook/movie.ipynb
