@@ -36,7 +36,7 @@ summarized below:
 ### BiLSTM-CRF
 
 The [model.conf] is the more interesting file for this project as it defines
-the [CRF] used to for sequencing over the NER tags.  For our example, we
+a [CRF] used to for sequencing over the NER tags.  For our example, we
 configure a BiLSTM-CRF, which is a bi-directional LSTM with a decoding layer
 connected to a CRF terminal layer.  This network learns sequences of nominal
 labels, which in our case, are the NER tags.  The `recurrent_crf_settings`
