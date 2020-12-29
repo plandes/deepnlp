@@ -1,0 +1,21 @@
+zensols.deepnlp.feature package
+===============================
+
+Submodules
+----------
+
+zensols.deepnlp.feature.stash module
+------------------------------------
+
+.. automodule:: zensols.deepnlp.feature.stash
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: zensols.deepnlp.feature
+   :members:
+   :undoc-members:
+   :show-inheritance:

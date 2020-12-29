@@ -1,0 +1,21 @@
+zensols.deepnlp.batch package
+=============================
+
+Submodules
+----------
+
+zensols.deepnlp.batch.domain module
+-----------------------------------
+
+.. automodule:: zensols.deepnlp.batch.domain
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: zensols.deepnlp.batch
+   :members:
+   :undoc-members:
+   :show-inheritance:

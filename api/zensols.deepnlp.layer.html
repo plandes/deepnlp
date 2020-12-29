@@ -1,0 +1,742 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>zensols.deepnlp.layer package &mdash; DeepZensols Natural Language Processing 0.0.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="zensols.deepnlp.model package" href="zensols.deepnlp.model.html" />
+    <link rel="prev" title="zensols.deepnlp.index package" href="zensols.deepnlp.index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../top.html" class="icon icon-home" alt="Documentation Home"> DeepZensols Natural Language Processing
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/movie-example.html">Movie Review Sentiment Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/ner-example.html">NER Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/vectorizers.html">Vectorizers</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="zensols.deepnlp.html">zensols.deepnlp package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="zensols.deepnlp.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="zensols.deepnlp.batch.html">zensols.deepnlp.batch package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="zensols.deepnlp.embed.html">zensols.deepnlp.embed package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="zensols.deepnlp.feature.html">zensols.deepnlp.feature package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="zensols.deepnlp.index.html">zensols.deepnlp.index package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">zensols.deepnlp.layer package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="zensols.deepnlp.model.html">zensols.deepnlp.model package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="zensols.deepnlp.vectorize.html">zensols.deepnlp.vectorize package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="zensols.deepnlp.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zensols.deepnlp.html#module-zensols.deepnlp.domain">zensols.deepnlp.domain module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zensols.deepnlp.html#module-zensols.deepnlp.parse">zensols.deepnlp.parse module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zensols.deepnlp.html#module-zensols.deepnlp">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.batch.html">zensols.deepnlp.batch package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.embed.html">zensols.deepnlp.embed package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.feature.html">zensols.deepnlp.feature package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.index.html">zensols.deepnlp.index package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">zensols.deepnlp.layer package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-zensols.deepnlp.layer.conv">zensols.deepnlp.layer.conv module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-zensols.deepnlp.layer.embed">zensols.deepnlp.layer.embed module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-zensols.deepnlp.layer.embrecurcrf">zensols.deepnlp.layer.embrecurcrf module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-zensols.deepnlp.layer">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.model.html">zensols.deepnlp.model package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.vectorize.html">zensols.deepnlp.vectorize package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../top.html">DeepZensols Natural Language Processing</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../top.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../api.html">API Reference</a> &raquo;</li>
+        
+          <li><a href="zensols.deepnlp.html">zensols.deepnlp package</a> &raquo;</li>
+        
+      <li>zensols.deepnlp.layer package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/zensols.deepnlp.layer.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="zensols-deepnlp-layer-package">
+<h1>zensols.deepnlp.layer package<a class="headerlink" href="#zensols-deepnlp-layer-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-zensols.deepnlp.layer.conv">
+<span id="zensols-deepnlp-layer-conv-module"></span><h2>zensols.deepnlp.layer.conv module<a class="headerlink" href="#module-zensols.deepnlp.layer.conv" title="Permalink to this headline">¶</a></h2>
+<p>Contains convolution functionality useful for NLP tasks.</p>
+<dl class="py class">
+<dt id="zensols.deepnlp.layer.conv.DeepConvolution1d">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.layer.conv.</code><code class="sig-name descname">DeepConvolution1d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">net_settings</span></em>, <em class="sig-param"><span class="n">logger</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/layer/conv.html#DeepConvolution1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.layer.conv.DeepConvolution1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.model.html#zensols.deeplearn.model.module.BaseNetworkModule" title="(in DeepZensols Deep Learning Framework v0.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deeplearn.model.module.BaseNetworkModule</span></code></a></p>
+<p>Configurable repeated series of 1-dimension convolution, pooling, batch norm
+and activation layers. See <a class="reference internal" href="#zensols.deepnlp.layer.conv.DeepConvolution1d.get_layers" title="zensols.deepnlp.layer.conv.DeepConvolution1d.get_layers"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_layers()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">See</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings" title="zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings"><code class="xref py py-class docutils literal notranslate"><span class="pre">DeepConvolution1dNetworkSettings</span></code></a></p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="zensols.deepnlp.layer.conv.DeepConvolution1d.MODULE_NAME">
+<code class="sig-name descname">MODULE_NAME</code><em class="property"> = 'conv'</em><a class="headerlink" href="#zensols.deepnlp.layer.conv.DeepConvolution1d.MODULE_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.layer.conv.DeepConvolution1d.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">net_settings</span></em>, <em class="sig-param"><span class="n">logger</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/layer/conv.html#DeepConvolution1d.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.layer.conv.DeepConvolution1d.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the deep convolution layer.</p>
+<dl class="simple">
+<dt><em>Implementation note</em>: all layers are stored sequentially using a</dt><dd><p><a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Sequential.html#torch.nn.Sequential" title="(in PyTorch vmaster (1.8.0a0+3c48255 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.Sequential</span></code></a> to get normal weight persistance on torch
+save/loads.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>net_settings</strong> (<a class="reference internal" href="#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings" title="zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings"><code class="xref py py-class docutils literal notranslate"><span class="pre">DeepConvolution1dNetworkSettings</span></code></a>) – the deep convolution layer configuration</p></li>
+<li><p><strong>logger</strong> (<a class="reference external" href="https://docs.python.org/3/library/logging.html#logging.Logger" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logger</span></code></a>) – the logger to use for the forward process in this layer</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.layer.conv.DeepConvolution1d.deallocate">
+<code class="sig-name descname">deallocate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/layer/conv.html#DeepConvolution1d.deallocate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.layer.conv.DeepConvolution1d.deallocate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deallocate all resources for this instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.layer.conv.DeepConvolution1d.get_layers">
+<code class="sig-name descname">get_layers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/layer/conv.html#DeepConvolution1d.get_layers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.layer.conv.DeepConvolution1d.get_layers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a tuple of layer sets, with each having the form: <code class="docutils literal notranslate"><span class="pre">(convolution,</span> <span class="pre">max</span>
+<span class="pre">pool,</span> <span class="pre">batch_norm)</span></code>.  The <code class="docutils literal notranslate"><span class="pre">batch_norm</span></code> norm is <code class="docutils literal notranslate"><span class="pre">None</span></code> if not
+configured.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.layer.conv.DeepConvolution1d.training">
+<code class="sig-name descname">training</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#zensols.deepnlp.layer.conv.DeepConvolution1d.training" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.layer.conv.</code><code class="sig-name descname">DeepConvolution1dNetworkSettings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">dropout</span></em>, <em class="sig-param"><span class="n">activation</span></em>, <em class="sig-param"><span class="n">token_length</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">embedding_dimension</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">token_kernel</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">stride</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">n_filters</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">padding</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">pool_token_kernel</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">pool_stride</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">pool_padding</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">repeats</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">batch_norm_d</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/layer/conv.html#DeepConvolution1dNetworkSettings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.html#zensols.deeplearn.domain.ActivationNetworkSettings" title="(in DeepZensols Deep Learning Framework v0.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deeplearn.domain.ActivationNetworkSettings</span></code></a>, <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.html#zensols.deeplearn.domain.DropoutNetworkSettings" title="(in DeepZensols Deep Learning Framework v0.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deeplearn.domain.DropoutNetworkSettings</span></code></a>, <a class="reference external" href="https://plandes.github.io/util/api/zensols.config.html#zensols.config.writable.Writable" title="(in Zensols Utilities v1.3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.config.writable.Writable</span></code></a></p>
+<p>Configurable repeated series of 1-dimension convolution, pooling, batch norm
+and activation layers.  This layer is specifically designed for natural
+language processing task, which is why this configuration includes
+parameters for token counts.</p>
+<dl class="simple">
+<dt>Each layer repeat consists of::</dt><dd><ol class="arabic simple">
+<li><p>convolution</p></li>
+<li><p>max pool</p></li>
+<li><p>batch (optional)</p></li>
+<li><p>activation</p></li>
+</ol>
+</dd>
+</dl>
+<p>This class is used directly after embedding (and in conjuction with) a
+layer class that extends <a class="reference internal" href="#zensols.deepnlp.layer.embed.EmbeddingNetworkModule" title="zensols.deepnlp.layer.embed.EmbeddingNetworkModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">EmbeddingNetworkModule</span></code></a>.  The lifecycle
+of this class starts with being instantiated (usually configured using a
+<a class="reference external" href="https://plandes.github.io/util/api/zensols.config.html#zensols.config.factory.ImportConfigFactory" title="(in Zensols Utilities v1.3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImportConfigFactory</span></code></a>), then cloned with
+<a class="reference internal" href="#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.clone" title="zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.clone"><code class="xref py py-meth docutils literal notranslate"><span class="pre">clone()</span></code></a> during the initialization on the layer from which it’s used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – the number of tokens processed through the layer (used
+as the width kernel parameter <code class="docutils literal notranslate"><span class="pre">W</span></code>)</p></li>
+<li><p><strong>embedding_dimension</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – the dimension of the embedding (word vector)
+layer (height dimension <code class="docutils literal notranslate"><span class="pre">H</span></code> and the kernel
+parameter <code class="docutils literal notranslate"><span class="pre">F</span></code>)</p></li>
+<li><p><strong>token_kernel</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the size of the kernel in number of tokens (width
+dimension of kernel parameter <code class="docutils literal notranslate"><span class="pre">F</span></code>)</p></li>
+<li><p><strong>n_filters</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – number of filters to use, aka filter depth/volume (<code class="docutils literal notranslate"><span class="pre">K</span></code>)</p></li>
+<li><p><strong>stride</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the stride, which is the number of cells to skip for each
+convolution (<code class="docutils literal notranslate"><span class="pre">S</span></code>)</p></li>
+<li><p><strong>padding</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the zero’d number of cells on the ends of tokens X
+embedding neurons (<code class="docutils literal notranslate"><span class="pre">P</span></code>)</p></li>
+<li><p><strong>pool_token_kernel</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – like <code class="docutils literal notranslate"><span class="pre">token_length</span></code> but in the pooling layer</p></li>
+<li><p><strong>pool_stride</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – like <code class="docutils literal notranslate"><span class="pre">stride</span></code> but in the pooling layer</p></li>
+<li><p><strong>pool_padding</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – like <code class="docutils literal notranslate"><span class="pre">padding</span></code> but in the pooling layer</p></li>
+<li><p><strong>repeats</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – number of times the convolution, max pool, batch,
+activation layers are repeated</p></li>
+<li><p><strong>batch_norm_d</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – the dimension of the batch norm (should be <code class="docutils literal notranslate"><span class="pre">1</span></code>) or
+<code class="docutils literal notranslate"><span class="pre">None</span></code> to disable</p></li>
+</ul>
+</dd>
+<dt class="field-even">See</dt>
+<dd class="field-even"><p><a class="reference internal" href="#zensols.deepnlp.layer.conv.DeepConvolution1d" title="zensols.deepnlp.layer.conv.DeepConvolution1d"><code class="xref py py-class docutils literal notranslate"><span class="pre">DeepConvolution1d</span></code></a></p>
+</dd>
+</dl>
+<p>:see <a class="reference internal" href="#zensols.deepnlp.layer.embed.EmbeddingNetworkModule" title="zensols.deepnlp.layer.embed.EmbeddingNetworkModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">EmbeddingNetworkModule</span></code></a></p>
+<dl class="py method">
+<dt id="zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">dropout</span></em>, <em class="sig-param"><span class="n">activation</span></em>, <em class="sig-param"><span class="n">token_length</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">embedding_dimension</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">token_kernel</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">stride</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">n_filters</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">padding</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">pool_token_kernel</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">pool_stride</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">pool_padding</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">repeats</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">batch_norm_d</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.batch_norm_d">
+<code class="sig-name descname">batch_norm_d</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></em><em class="property"> = None</em><a class="headerlink" href="#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.batch_norm_d" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.clone">
+<code class="sig-name descname">clone</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">module</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/layer/conv.html#DeepConvolution1dNetworkSettings.clone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.clone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clone this network settings configuration with a different embedding
+settings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>module</strong> (<a class="reference internal" href="#zensols.deepnlp.layer.embed.EmbeddingNetworkModule" title="zensols.deepnlp.layer.embed.EmbeddingNetworkModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">EmbeddingNetworkModule</span></code></a>) – the embedding settings to use in the clone</p></li>
+<li><p><strong>kwargs</strong> – arguments as attributes on the clone</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.embedding_dimension">
+<code class="sig-name descname">embedding_dimension</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></em><em class="property"> = None</em><a class="headerlink" href="#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.embedding_dimension" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.get_module_class_name">
+<code class="sig-name descname">get_module_class_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/layer/conv.html#DeepConvolution1dNetworkSettings.get_module_class_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.get_module_class_name" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.layer_factory">
+<em class="property">property </em><code class="sig-name descname">layer_factory</code><a class="headerlink" href="#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.layer_factory" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.n_filters">
+<code class="sig-name descname">n_filters</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></em><em class="property"> = 1</em><a class="headerlink" href="#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.n_filters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.padding">
+<code class="sig-name descname">padding</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></em><em class="property"> = 1</em><a class="headerlink" href="#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.padding" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.pool_factory">
+<em class="property">property </em><code class="sig-name descname">pool_factory</code><a class="headerlink" href="#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.pool_factory" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.pool_padding">
+<code class="sig-name descname">pool_padding</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></em><em class="property"> = 0</em><a class="headerlink" href="#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.pool_padding" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.pool_stride">
+<code class="sig-name descname">pool_stride</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></em><em class="property"> = 1</em><a class="headerlink" href="#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.pool_stride" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.pool_token_kernel">
+<code class="sig-name descname">pool_token_kernel</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></em><em class="property"> = 2</em><a class="headerlink" href="#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.pool_token_kernel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.repeats">
+<code class="sig-name descname">repeats</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></em><em class="property"> = 1</em><a class="headerlink" href="#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.repeats" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.stride">
+<code class="sig-name descname">stride</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></em><em class="property"> = 1</em><a class="headerlink" href="#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.stride" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.token_kernel">
+<code class="sig-name descname">token_kernel</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></em><em class="property"> = 2</em><a class="headerlink" href="#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.token_kernel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.token_length">
+<code class="sig-name descname">token_length</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></em><em class="property"> = None</em><a class="headerlink" href="#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.token_length" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.write">
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param">depth=0</em>, <em class="sig-param">writer=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='utf-8'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/layer/conv.html#DeepConvolution1dNetworkSettings.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the contents of this instance to <code class="docutils literal notranslate"><span class="pre">writer</span></code> using indention <code class="docutils literal notranslate"><span class="pre">depth</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>depth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the starting indentation depth</p></li>
+<li><p><strong>writer</strong> (<a class="reference external" href="https://docs.python.org/3/library/io.html#io.TextIOBase" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TextIOBase</span></code></a>) – the writer to dump the content of this writable</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-zensols.deepnlp.layer.embed">
+<span id="zensols-deepnlp-layer-embed-module"></span><h2>zensols.deepnlp.layer.embed module<a class="headerlink" href="#module-zensols.deepnlp.layer.embed" title="Permalink to this headline">¶</a></h2>
+<p>An embedding layer module useful for models that use embeddings as input.</p>
+<dl class="py class">
+<dt id="zensols.deepnlp.layer.embed.EmbeddingNetworkModule">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.layer.embed.</code><code class="sig-name descname">EmbeddingNetworkModule</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">net_settings</span></em>, <em class="sig-param"><span class="n">module_logger</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">filter_attrib_fn</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/layer/embed.html#EmbeddingNetworkModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.layer.embed.EmbeddingNetworkModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.model.html#zensols.deeplearn.model.module.BaseNetworkModule" title="(in DeepZensols Deep Learning Framework v0.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deeplearn.model.module.BaseNetworkModule</span></code></a></p>
+<p>An module that uses an embedding as the input layer.  This class uses an
+instance of <a class="reference internal" href="zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.EmbeddingLayer" title="zensols.deepnlp.vectorize.layer.EmbeddingLayer"><code class="xref py py-class docutils literal notranslate"><span class="pre">EmbeddingLayer</span></code></a> provided by the network settings
+configuration for resolving the embedding during the <em>forward</em> phase.</p>
+<p>The following attributes are created and/or set during initialization:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">embedding</span></code> the <a class="reference internal" href="zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.EmbeddingLayer" title="zensols.deepnlp.vectorize.layer.EmbeddingLayer"><code class="xref py py-class docutils literal notranslate"><span class="pre">EmbeddingLayer</span></code></a> instance used get the input
+embedding tensors</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">embedding_attribute_name</span></code> the name of the word embedding
+vectorized feature attribute name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">embedding_output_size</span></code> the outpu size of the embedding layer, note
+this includes any features layered/concated given in all token level
+vectorizer’s configuration</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">join_size</span></code> if a join layer is to be used, this has the size of the
+part of the join layer that will have the document level features</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">token_attribs</span></code> the token level feature names (see
+<a class="reference internal" href="#zensols.deepnlp.layer.embed.EmbeddingNetworkModule.forward_token_features" title="zensols.deepnlp.layer.embed.EmbeddingNetworkModule.forward_token_features"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward_token_features()</span></code></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">doc_attribs</span></code> the doc level feature names (see
+<a class="reference internal" href="#zensols.deepnlp.layer.embed.EmbeddingNetworkModule.forward_document_features" title="zensols.deepnlp.layer.embed.EmbeddingNetworkModule.forward_document_features"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward_document_features()</span></code></a>)</p></li>
+</ul>
+</div></blockquote>
+<p>The initializer adds additional attributes conditional on the
+<a class="reference internal" href="#zensols.deepnlp.layer.embed.EmbeddingNetworkSettings" title="zensols.deepnlp.layer.embed.EmbeddingNetworkSettings"><code class="xref py py-class docutils literal notranslate"><span class="pre">EmbeddingNetworkSettings</span></code></a> instance’s
+<a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.batch.html#zensols.deeplearn.batch.meta.MetadataNetworkSettings.batch_metadata" title="(in DeepZensols Deep Learning Framework v0.1.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">batch_metadata</span></code></a>
+property (type <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.batch.html#zensols.deeplearn.batch.meta.BatchMetadata" title="(in DeepZensols Deep Learning Framework v0.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BatchMetadata</span></code></a>).  For
+each meta data field’s vectorizer that extends class
+<a class="reference internal" href="zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer" title="zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">TokenContainerFeatureVectorizer</span></code></a> the following is set on this
+instance based on the value of <code class="docutils literal notranslate"><span class="pre">feature_type</span></code> (of type
+<a class="reference internal" href="zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.TokenContainerFeatureType" title="zensols.deepnlp.vectorize.manager.TokenContainerFeatureType"><code class="xref py py-class docutils literal notranslate"><span class="pre">TokenContainerFeatureType</span></code></a>):</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.TokenContainerFeatureType.TOKEN" title="zensols.deepnlp.vectorize.manager.TokenContainerFeatureType.TOKEN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TOKEN</span></code></a>: <code class="docutils literal notranslate"><span class="pre">embedding_output_size</span></code> is
+increased by the vectorizer’s shape</p></li>
+<li><p><a class="reference internal" href="zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.TokenContainerFeatureType.DOCUMENT" title="zensols.deepnlp.vectorize.manager.TokenContainerFeatureType.DOCUMENT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DOCUMENT</span></code></a>: <code class="docutils literal notranslate"><span class="pre">join_size</span></code> is increased
+by the vectorizer’s shape</p></li>
+<li><p><a class="reference internal" href="zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.TokenContainerFeatureType.EMBEDDING" title="zensols.deepnlp.vectorize.manager.TokenContainerFeatureType.EMBEDDING"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EMBEDDING</span></code></a>:
+<code class="docutils literal notranslate"><span class="pre">embedding_attribute_name</span></code> is set to the name field’s attribute and
+<code class="docutils literal notranslate"><span class="pre">embedding_vectorizer</span></code> set to the field’s vectorizer</p></li>
+</ul>
+</div></blockquote>
+<p>Fields can be filtered by passing a filter function to the initializer.
+See <a class="reference internal" href="#zensols.deepnlp.layer.embed.EmbeddingNetworkModule.__init__" title="zensols.deepnlp.layer.embed.EmbeddingNetworkModule.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__init__()</span></code></a> for more information.</p>
+<dl class="py attribute">
+<dt id="zensols.deepnlp.layer.embed.EmbeddingNetworkModule.MODULE_NAME">
+<code class="sig-name descname">MODULE_NAME</code><em class="property"> = 'emb'</em><a class="headerlink" href="#zensols.deepnlp.layer.embed.EmbeddingNetworkModule.MODULE_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.layer.embed.EmbeddingNetworkModule.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">net_settings</span></em>, <em class="sig-param"><span class="n">module_logger</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">filter_attrib_fn</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/layer/embed.html#EmbeddingNetworkModule.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.layer.embed.EmbeddingNetworkModule.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the embedding layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>net_settings</strong> (<a class="reference internal" href="#zensols.deepnlp.layer.embed.EmbeddingNetworkSettings" title="zensols.deepnlp.layer.embed.EmbeddingNetworkSettings"><code class="xref py py-class docutils literal notranslate"><span class="pre">EmbeddingNetworkSettings</span></code></a>) – the embedding layer configuration</p></li>
+<li><p><strong>logger</strong> – the logger to use for the forward process in this layer</p></li>
+<li><p><strong>filter_attrib_fn</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.batch.html#zensols.deeplearn.batch.meta.BatchFieldMetadata" title="(in DeepZensols Deep Learning Framework v0.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BatchFieldMetadata</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>]]) – if provided, called with a <code class="xref py py-class docutils literal notranslate"><span class="pre">BatchFieldMetadata</span></code> for each
+field returning <code class="docutils literal notranslate"><span class="pre">True</span></code> if the batch field should be retained and
+used in the embedding layer (see class docs); if <code class="docutils literal notranslate"><span class="pre">None</span></code> all
+fields are considered</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.layer.embed.EmbeddingNetworkModule.embedding_dimension">
+<em class="property">property </em><code class="sig-name descname">embedding_dimension</code><a class="headerlink" href="#zensols.deepnlp.layer.embed.EmbeddingNetworkModule.embedding_dimension" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dimension of the embeddings, which doesn’t include any additional
+token or document features potentially added.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.layer.embed.EmbeddingNetworkModule.forward_document_features">
+<code class="sig-name descname">forward_document_features</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">batch</span></em>, <em class="sig-param"><span class="n">x</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">include_fn</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/layer/embed.html#EmbeddingNetworkModule.forward_document_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.layer.embed.EmbeddingNetworkModule.forward_document_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenate any document features given by the vectorizer configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+3c48255 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.layer.embed.EmbeddingNetworkModule.forward_embedding_features">
+<code class="sig-name descname">forward_embedding_features</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">batch</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/layer/embed.html#EmbeddingNetworkModule.forward_embedding_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.layer.embed.EmbeddingNetworkModule.forward_embedding_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use the embedding layer return the word embedding tensors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+3c48255 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.layer.embed.EmbeddingNetworkModule.forward_token_features">
+<code class="sig-name descname">forward_token_features</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">batch</span></em>, <em class="sig-param"><span class="n">x</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/layer/embed.html#EmbeddingNetworkModule.forward_token_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.layer.embed.EmbeddingNetworkModule.forward_token_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenate any token features given by the vectorizer configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+3c48255 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.layer.embed.EmbeddingNetworkModule.training">
+<code class="sig-name descname">training</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#zensols.deepnlp.layer.embed.EmbeddingNetworkModule.training" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="zensols.deepnlp.layer.embed.EmbeddingNetworkSettings">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.layer.embed.</code><code class="sig-name descname">EmbeddingNetworkSettings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">batch_metadata_factory</span></em>, <em class="sig-param"><span class="n">embedding_layer</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/layer/embed.html#EmbeddingNetworkSettings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.layer.embed.EmbeddingNetworkSettings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.batch.html#zensols.deeplearn.batch.meta.MetadataNetworkSettings" title="(in DeepZensols Deep Learning Framework v0.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deeplearn.batch.meta.MetadataNetworkSettings</span></code></a></p>
+<p>A utility container settings class for models that use an embedding input
+layer that inherit from <a class="reference internal" href="#zensols.deepnlp.layer.embed.EmbeddingNetworkModule" title="zensols.deepnlp.layer.embed.EmbeddingNetworkModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">EmbeddingNetworkModule</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>embedding_layer</strong> (<a class="reference internal" href="zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.EmbeddingLayer" title="zensols.deepnlp.vectorize.layer.EmbeddingLayer"><code class="xref py py-class docutils literal notranslate"><span class="pre">EmbeddingLayer</span></code></a>) – the word embedding layer used to vectorize</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="zensols.deepnlp.layer.embed.EmbeddingNetworkSettings.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">batch_metadata_factory</span></em>, <em class="sig-param"><span class="n">embedding_layer</span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.layer.embed.EmbeddingNetworkSettings.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.layer.embed.EmbeddingNetworkSettings.embedding_layer">
+<code class="sig-name descname">embedding_layer</code><em class="property">: <a class="reference internal" href="zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.EmbeddingLayer" title="zensols.deepnlp.vectorize.layer.EmbeddingLayer">zensols.deepnlp.vectorize.layer.EmbeddingLayer</a></em><a class="headerlink" href="#zensols.deepnlp.layer.embed.EmbeddingNetworkSettings.embedding_layer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.layer.embed.EmbeddingNetworkSettings.get_module_class_name">
+<code class="sig-name descname">get_module_class_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/layer/embed.html#EmbeddingNetworkSettings.get_module_class_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.layer.embed.EmbeddingNetworkSettings.get_module_class_name" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-zensols.deepnlp.layer.embrecurcrf">
+<span id="zensols-deepnlp-layer-embrecurcrf-module"></span><h2>zensols.deepnlp.layer.embrecurcrf module<a class="headerlink" href="#module-zensols.deepnlp.layer.embrecurcrf" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRF">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.layer.embrecurcrf.</code><code class="sig-name descname">EmbeddedRecurrentCRF</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">net_settings</span></em>, <em class="sig-param"><span class="n">sub_logger</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/layer/embrecurcrf.html#EmbeddedRecurrentCRF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.layer.embed.EmbeddingNetworkModule" title="zensols.deepnlp.layer.embed.EmbeddingNetworkModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deepnlp.layer.embed.EmbeddingNetworkModule</span></code></a>, <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.model.html#zensols.deeplearn.model.module.ScoredNetworkModule" title="(in DeepZensols Deep Learning Framework v0.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deeplearn.model.module.ScoredNetworkModule</span></code></a></p>
+<p>A recurrent neural network composed of an embedding input, an recurrent
+network, and a linear conditional random field output layer.  When
+configured with an LSTM, this becomes a (Bi)LSTM CRF.</p>
+<dl class="py attribute">
+<dt id="zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRF.MODULE_NAME">
+<code class="sig-name descname">MODULE_NAME</code><em class="property"> = 'emb recur crf'</em><a class="headerlink" href="#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRF.MODULE_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRF.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">net_settings</span></em>, <em class="sig-param"><span class="n">sub_logger</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/layer/embrecurcrf.html#EmbeddedRecurrentCRF.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRF.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the embedding layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>net_settings</strong> (<a class="reference internal" href="#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings" title="zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings"><code class="xref py py-class docutils literal notranslate"><span class="pre">EmbeddedRecurrentCRFSettings</span></code></a>) – the embedding layer configuration</p></li>
+<li><p><strong>logger</strong> – the logger to use for the forward process in this layer</p></li>
+<li><p><strong>filter_attrib_fn</strong> – if provided, called with a <code class="xref py py-class docutils literal notranslate"><span class="pre">BatchFieldMetadata</span></code> for each
+field returning <code class="docutils literal notranslate"><span class="pre">True</span></code> if the batch field should be retained and
+used in the embedding layer (see class docs); if <code class="docutils literal notranslate"><span class="pre">None</span></code> all
+fields are considered</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRF.deallocate">
+<code class="sig-name descname">deallocate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/layer/embrecurcrf.html#EmbeddedRecurrentCRF.deallocate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRF.deallocate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deallocate all resources for this instance.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRF.training">
+<code class="sig-name descname">training</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRF.training" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.layer.embrecurcrf.</code><code class="sig-name descname">EmbeddedRecurrentCRFSettings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">batch_metadata_factory</span></em>, <em class="sig-param"><span class="n">embedding_layer</span></em>, <em class="sig-param"><span class="n">recurrent_crf_settings</span></em>, <em class="sig-param"><span class="n">mask_attribute</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/layer/embrecurcrf.html#EmbeddedRecurrentCRFSettings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.layer.embed.EmbeddingNetworkSettings" title="zensols.deepnlp.layer.embed.EmbeddingNetworkSettings"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deepnlp.layer.embed.EmbeddingNetworkSettings</span></code></a></p>
+<p>A utility container settings class for convulsion network models.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>embedding_settings</strong> – the configured embedded layer</p></li>
+<li><p><strong>recurrent_crf_settings</strong> (<a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.layer.html#zensols.deeplearn.layer.recurcrf.RecurrentCRFNetworkSettings" title="(in DeepZensols Deep Learning Framework v0.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RecurrentCRFNetworkSettings</span></code></a>) – the RNN settings (configure this with an
+LSTM for (Bi)LSTM CRFs)</p></li>
+<li><p><strong>add_attributes</strong> – any additionl attributes to be concatenated with the
+embedded layer before feeding in to the RNN/LSTM/GRU</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">batch_metadata_factory</span></em>, <em class="sig-param"><span class="n">embedding_layer</span></em>, <em class="sig-param"><span class="n">recurrent_crf_settings</span></em>, <em class="sig-param"><span class="n">mask_attribute</span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings.get_module_class_name">
+<code class="sig-name descname">get_module_class_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/layer/embrecurcrf.html#EmbeddedRecurrentCRFSettings.get_module_class_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings.get_module_class_name" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings.mask_attribute">
+<code class="sig-name descname">mask_attribute</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></em><a class="headerlink" href="#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings.mask_attribute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings.recurrent_crf_settings">
+<code class="sig-name descname">recurrent_crf_settings</code><em class="property">: <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.layer.html#zensols.deeplearn.layer.recurcrf.RecurrentCRFNetworkSettings" title="(in DeepZensols Deep Learning Framework v0.1.1)">zensols.deeplearn.layer.recurcrf.RecurrentCRFNetworkSettings</a></em><a class="headerlink" href="#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings.recurrent_crf_settings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-zensols.deepnlp.layer">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-zensols.deepnlp.layer" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="zensols.deepnlp.model.html" class="btn btn-neutral float-right" title="zensols.deepnlp.model package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="zensols.deepnlp.index.html" class="btn btn-neutral float-left" title="zensols.deepnlp.index package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Paul Landes
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

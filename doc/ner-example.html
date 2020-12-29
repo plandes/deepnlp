@@ -1,0 +1,347 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>NER Example &mdash; DeepZensols Natural Language Processing 0.0.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Vectorizers" href="vectorizers.html" />
+    <link rel="prev" title="Movie Review Sentiment Example" href="movie-example.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../top.html" class="icon icon-home" alt="Documentation Home"> DeepZensols Natural Language Processing
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="movie-example.html">Movie Review Sentiment Example</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">NER Example</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#configuration-files">Configuration Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bilstm-crf">BiLSTM-CRF</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mask">Mask</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scored-batch-iteration">Scored Batch Iteration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#code">Code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#corpus-install">Corpus Install</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#command-line">Command Line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#jupyter-notebook">Jupyter Notebook</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="vectorizers.html">Vectorizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../top.html">DeepZensols Natural Language Processing</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../top.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>NER Example</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/doc/ner-example.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ner-example">
+<h1>NER Example<a class="headerlink" href="#ner-example" title="Permalink to this headline">¶</a></h1>
+<p>This document describes the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/ner">named entity task example</a> to demonstrate
+conditional random field and other features in the DeepZenols NLP framework.
+Before working through this example, please first read through the
+<a class="reference external" href="movie-example.html">movie review example</a>.</p>
+<p>The first thing you’ll notice is that there is not one single configuration
+file like there is for the <a class="reference external" href="movie-example.html">movie review example</a> or any test project in the
+<a class="reference external" href="https://plandes.github.io/deeplearn/index.html">deeplearn API</a>.  Instead, all the files in this directory are read as one
+contiguous configuration, which is done by giving a directory instead of file
+path as the <code class="docutils literal notranslate"><span class="pre">config_file</span></code> parameter to the <a class="reference external" href="https://plandes.github.io/util/api/zensols.config.html#zensols.config.iniconfig.IniConfig.__init__">IniConfig initializer</a> (see the
+<a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/ner/src/ner/config.py">config.py</a> source file).</p>
+<div class="section" id="configuration-files">
+<h2>Configuration Files<a class="headerlink" href="#configuration-files" title="Permalink to this headline">¶</a></h2>
+<p>Most of the configuration is similar to the <a class="reference external" href="movie-example.html">movie review example</a> and is
+summarized below:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/ner/resources/conf/main.conf">main.conf</a>: contains what’s usually at the top of a configuration file,
+which are root paths the rest of the configuration builds on, GPU settings
+and some model defaults</p></li>
+<li><p><a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/ner/resources/conf/lang.conf">lang.conf</a>: has the linguistic vectorizers, managers and embeddings just as
+before</p></li>
+<li><p><a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/ner/resources/conf/vectorizer.conf">vectorizer.conf</a>: contains the one hot encoded vectorizers for the features
+given in the <a class="reference external" href="https://www.clips.uantwerpen.be/conll2003/ner/">CoNLL 2003 data set</a>; something to note in this configuration
+file is the <code class="docutils literal notranslate"><span class="pre">mask_vectorizer</span></code> configuration entry (see the <a class="reference external" href="#mask">Mask</a>
+section)</p></li>
+<li><p><a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/ner/resources/conf/batch.conf">batch.conf</a>: has the batch configuration and settings, such as batch size</p></li>
+<li><p><a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/ner/resources/conf/corpus.conf">corpus.conf</a>: configuration for the code that parses the CoNNL formatted
+corpus</p></li>
+<li><p><a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/ner/resources/conf/model.conf">model.conf</a>: contains the network and model configuration.</p></li>
+</ul>
+<div class="section" id="bilstm-crf">
+<h3>BiLSTM-CRF<a class="headerlink" href="#bilstm-crf" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/ner/resources/conf/model.conf">model.conf</a> is the more interesting file for this project as it defines
+a <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.layer.html#zensols.deeplearn.layer.crf.CRF">CRF</a> used to for sequencing over the NER tags.  For our example, we
+configure a BiLSTM-CRF, which is a bi-directional LSTM with a decoding layer
+connected to a CRF terminal layer.  This network learns sequences of nominal
+labels, which in our case, are the NER tags.  The <code class="docutils literal notranslate"><span class="pre">recurrent_crf_settings</span></code>
+entry contains the configuration for this BiLSTM-CRF.</p>
+<p>The <a class="reference external" href="../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings">EmbeddedRecurrentCRFSettings</a> given in the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/ner/resources/conf/model.conf">model.conf</a> shows how
+to configure the BiLSTM-CRF with an input embedded layer.  With the reference
+to the <code class="docutils literal notranslate"><span class="pre">recurrent_crf_settings</span></code> entry, which uses an instance
+<a class="reference external" href="../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRF">EmbeddedRecurrentCRF</a>, we have a complete neural network without having
+to write any code for it.</p>
+</div>
+<div class="section" id="mask">
+<h3>Mask<a class="headerlink" href="#mask" title="Permalink to this headline">¶</a></h3>
+<p>As mentioned in the <a class="reference external" href="#configuration-files">Configuration Files</a> section, as
+mask vectorizer is specified.  This is needed for the <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.layer.html#zensols.deeplearn.layer.crf.CRF">CRF</a> to mask out blank
+tokens for sentences shorter than a max length.  Usually, zeroed tensors are
+used for token slots not used, for example in the word embedding layer for deep
+learning networks.  This is because the zero vectors are learned for sentences
+are shorter.  However, the CRF layer needs to block these as valid state
+transitions during training and testing.</p>
+</div>
+<div class="section" id="scored-batch-iteration">
+<h3>Scored Batch Iteration<a class="headerlink" href="#scored-batch-iteration" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.model.html#zensols.deeplearn.model.batchiter.ScoredBatchIterator">ScoredBatchIterator</a> configured in the <code class="docutils literal notranslate"><span class="pre">model_settings</span></code> in <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/ner/resources/conf/model.conf">model.conf</a>
+indicates to use a different scoring method.  This class is used in the
+framework to calculate a different loss and produce the output, which must be
+treated differently than neural float tensor output.  This is because the
+Viterbi algorithm is used to determine the lowest cost path through the
+elements.  The sum of this path is used as the cost instead of a differential
+optimization function.</p>
+<p>Because we use a <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.layer.html#zensols.deeplearn.layer.crf.CRF">CRF</a> as the output layer for <a class="reference external" href="../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRF">EmbeddedRecurrentCRF</a>, our
+output are the NER labels.  Therefore, must also set <code class="docutils literal notranslate"><span class="pre">reduce_outcomes</span> <span class="pre">=</span> <span class="pre">none</span></code>
+to pass the <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.layer.html#zensols.deeplearn.layer.crf.CRF">CRF</a> output through unaltered.</p>
+</div>
+</div>
+<div class="section" id="code">
+<h2>Code<a class="headerlink" href="#code" title="Permalink to this headline">¶</a></h2>
+<p>As mentioned, no code is necessary for the model is it is already provided in
+configuration using the framework.  The code that is necessary includes:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/ner/src/ner/corpus.py">corpus.py</a> to parse the <a class="reference external" href="https://www.clips.uantwerpen.be/conll2003/ner/">CoNLL 2003 data set</a></p></li>
+<li><p><a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/ner/src/ner/batch.py">batch.py</a> defines data point and batch classes just as seen in the <a class="reference external" href="movie-example.html">movie
+review example</a></p></li>
+<li><p><a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/ner/src/ner/facade.py">facade.py</a> defines and wires the batch mappings just as seen in the <a class="reference external" href="movie-example.html">movie
+review example</a></p></li>
+</ul>
+<div class="section" id="corpus-install">
+<h3>Corpus Install<a class="headerlink" href="#corpus-install" title="Permalink to this headline">¶</a></h3>
+<p>To install the corpus:</p>
+<ol class="simple">
+<li><p>Install <a class="reference external" href="https://www.gnu.org/software/make/">GNU make</a></p></li>
+<li><p>Change the working directory to the example: <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">examples/ner</span></code></p></li>
+<li><p>Download and install the corpora: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">corpus</span></code>.  This should download all
+the necessary corpora and <a class="reference external" href="https://nlp.stanford.edu/projects/glove/">Glove</a> and <a class="reference external" href="https://code.google.com/archive/p/word2vec/">Word2Vec</a> word embeddings.</p></li>
+<li><p>Confirm there are no errors and the corpus directories exist:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">corpus/stanfordSentimentTreebank/datasetSentences.txt</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">corpus/rt-polaritydata/rt-polarity.{pos,neg}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">corpus/glove/glove.6B.300d.txt</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">corpus/word2vec/GoogleNews-vectors-negative300.bin.gz</span></code></p></li>
+</ul>
+</li>
+</ol>
+</div>
+<div class="section" id="command-line">
+<h3>Command Line<a class="headerlink" href="#command-line" title="Permalink to this headline">¶</a></h3>
+<p>To train and test the model invoke: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">modeltraintest</span></code>.</p>
+</div>
+<div class="section" id="jupyter-notebook">
+<h3>Jupyter Notebook<a class="headerlink" href="#jupyter-notebook" title="Permalink to this headline">¶</a></h3>
+<p>To run the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/ner/notebook/ner.ipynb">Jupyter NER notebook</a>:</p>
+<ol class="simple">
+<li><p>Pip install: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">notebook</span></code></p></li>
+<li><p>Go to the notebook directory: <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">examples/ner/notebook</span></code></p></li>
+<li><p>Start the notebook: <code class="docutils literal notranslate"><span class="pre">jupyter</span> <span class="pre">notebook</span></code></p></li>
+<li><p>Start the execution in the notebook with <code class="docutils literal notranslate"><span class="pre">Cell</span> <span class="pre">&gt;</span> <span class="pre">Run</span> <span class="pre">All</span></code>.</p></li>
+</ol>
+<!-- links --></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="vectorizers.html" class="btn btn-neutral float-right" title="Vectorizers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="movie-example.html" class="btn btn-neutral float-left" title="Movie Review Sentiment Example" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Paul Landes
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

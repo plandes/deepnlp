@@ -1,0 +1,486 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>zensols.deepnlp.layer.conv &mdash; DeepZensols Natural Language Processing 0.0.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../top.html" class="icon icon-home" alt="Documentation Home"> DeepZensols Natural Language Processing
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc/movie-example.html">Movie Review Sentiment Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc/ner-example.html">NER Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc/vectorizers.html">Vectorizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CONTRIBUTING.html">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../top.html">DeepZensols Natural Language Processing</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../top.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>zensols.deepnlp.layer.conv</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for zensols.deepnlp.layer.conv</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Contains convolution functionality useful for NLP tasks.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;Paul Landes&#39;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">asdict</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">copy</span> <span class="k">as</span> <span class="nn">cp</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">TextIOBase</span>
+<span class="kn">from</span> <span class="nn">zensols.config</span> <span class="kn">import</span> <span class="n">Writable</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">from</span> <span class="nn">zensols.persist</span> <span class="kn">import</span> <span class="n">persisted</span>
+<span class="kn">from</span> <span class="nn">zensols.deeplearn</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ActivationNetworkSettings</span><span class="p">,</span>
+    <span class="n">DropoutNetworkSettings</span><span class="p">,</span>
+    <span class="n">BatchNormNetworkSettings</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">zensols.deeplearn.layer</span> <span class="kn">import</span> <span class="n">ConvolutionLayerFactory</span><span class="p">,</span> <span class="n">MaxPool1dFactory</span>
+<span class="kn">from</span> <span class="nn">zensols.deeplearn.model</span> <span class="kn">import</span> <span class="n">BaseNetworkModule</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">EmbeddingNetworkModule</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="DeepConvolution1dNetworkSettings"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">DeepConvolution1dNetworkSettings</span><span class="p">(</span><span class="n">ActivationNetworkSettings</span><span class="p">,</span>
+                                       <span class="n">DropoutNetworkSettings</span><span class="p">,</span>
+                                       <span class="n">Writable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Configurable repeated series of 1-dimension convolution, pooling, batch norm</span>
+<span class="sd">    and activation layers.  This layer is specifically designed for natural</span>
+<span class="sd">    language processing task, which is why this configuration includes</span>
+<span class="sd">    parameters for token counts.</span>
+
+<span class="sd">    Each layer repeat consists of::</span>
+<span class="sd">      1. convolution</span>
+<span class="sd">      2. max pool</span>
+<span class="sd">      3. batch (optional)</span>
+<span class="sd">      4. activation</span>
+
+<span class="sd">    This class is used directly after embedding (and in conjuction with) a</span>
+<span class="sd">    layer class that extends :class:`.EmbeddingNetworkModule`.  The lifecycle</span>
+<span class="sd">    of this class starts with being instantiated (usually configured using a</span>
+<span class="sd">    :class:`~zensols.config.factory.ImportConfigFactory`), then cloned with</span>
+<span class="sd">    :meth:`clone` during the initialization on the layer from which it&#39;s used.</span>
+
+<span class="sd">    :param token_length: the number of tokens processed through the layer (used</span>
+<span class="sd">                         as the width kernel parameter ``W``)</span>
+
+<span class="sd">    :param embedding_dimension: the dimension of the embedding (word vector)</span>
+<span class="sd">                                layer (height dimension ``H`` and the kernel</span>
+<span class="sd">                                parameter ``F``)</span>
+
+<span class="sd">    :param token_kernel: the size of the kernel in number of tokens (width</span>
+<span class="sd">                         dimension of kernel parameter ``F``)</span>
+
+<span class="sd">    :param n_filters: number of filters to use, aka filter depth/volume (``K``)</span>
+
+<span class="sd">    :param stride: the stride, which is the number of cells to skip for each</span>
+<span class="sd">                   convolution (``S``)</span>
+
+<span class="sd">    :param padding: the zero&#39;d number of cells on the ends of tokens X</span>
+<span class="sd">                    embedding neurons (``P``)</span>
+
+<span class="sd">    :param pool_token_kernel: like ``token_length`` but in the pooling layer</span>
+
+<span class="sd">    :param pool_stride: like ``stride`` but in the pooling layer</span>
+
+<span class="sd">    :param pool_padding: like ``padding`` but in the pooling layer</span>
+
+<span class="sd">    :param repeats: number of times the convolution, max pool, batch,</span>
+<span class="sd">                    activation layers are repeated</span>
+
+<span class="sd">    :param batch_norm_d: the dimension of the batch norm (should be ``1``) or</span>
+<span class="sd">                         ``None`` to disable</span>
+
+<span class="sd">    :see: :class:`.DeepConvolution1d`</span>
+
+<span class="sd">    :see :class:`.EmbeddingNetworkModule`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">token_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">embedding_dimension</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">token_kernel</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">stride</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">n_filters</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">padding</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">pool_token_kernel</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">pool_stride</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">pool_padding</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">repeats</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">batch_norm_d</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_assert_module</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Raise an exception if we don&#39;t have an embedding module configured.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;module&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;not created with embedding module&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@persisted</span><span class="p">(</span><span class="s1">&#39;_layer_factory&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">layer_factory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ConvolutionLayerFactory</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the factory used to create convolution layers.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assert_module</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">ConvolutionLayerFactory</span><span class="p">(</span>
+            <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">token_length</span><span class="p">,</span>
+            <span class="n">height</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">embedding_dimension</span><span class="p">,</span>
+            <span class="n">n_filters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_filters</span><span class="p">,</span>
+            <span class="n">kernel_filter</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">token_kernel</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding_dimension</span><span class="p">),</span>
+            <span class="n">stride</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stride</span><span class="p">,</span>
+            <span class="n">padding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">padding</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@persisted</span><span class="p">(</span><span class="s1">&#39;_pool_factory&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">pool_factory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MaxPool1dFactory</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the factory used to create max 1D pool layers.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assert_module</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">MaxPool1dFactory</span><span class="p">(</span>
+            <span class="n">layer_factory</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">layer_factory</span><span class="p">,</span>
+            <span class="n">kernel_filter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pool_token_kernel</span><span class="p">,</span>
+            <span class="n">stride</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pool_stride</span><span class="p">,</span>
+            <span class="n">padding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pool_padding</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DeepConvolution1dNetworkSettings.clone"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.clone">[docs]</a>    <span class="k">def</span> <span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="n">EmbeddingNetworkModule</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Clone this network settings configuration with a different embedding</span>
+<span class="sd">        settings.</span>
+
+<span class="sd">        :param module: the embedding settings to use in the clone</span>
+
+<span class="sd">        :param kwargs: arguments as attributes on the clone</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;cloning module from module with </span><span class="si">{</span><span class="n">kwargs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;module&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;not nascent: module already set&#39;</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;token_length&#39;</span><span class="p">:</span> <span class="n">module</span><span class="o">.</span><span class="n">embedding</span><span class="o">.</span><span class="n">token_length</span><span class="p">,</span>
+            <span class="s1">&#39;embedding_dimension&#39;</span><span class="p">:</span> <span class="n">module</span><span class="o">.</span><span class="n">embedding_output_size</span><span class="p">,</span>
+            <span class="s1">&#39;module&#39;</span><span class="p">:</span> <span class="n">module</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">clone</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">clone</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">clone</span></div>
+
+<div class="viewcode-block" id="DeepConvolution1dNetworkSettings.write"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">writer</span><span class="p">:</span> <span class="n">TextIOBase</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_line</span><span class="p">(</span><span class="s1">&#39;embedding layer factory:&#39;</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">writer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_dict</span><span class="p">(</span><span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">writer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_line</span><span class="p">(</span><span class="s1">&#39;convolution layer factory:&#39;</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">writer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_dict</span><span class="p">(</span><span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">create_layer_factory</span><span class="p">()),</span>
+                         <span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">writer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DeepConvolution1dNetworkSettings.get_module_class_name"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.get_module_class_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_module_class_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;.DeepConvolution1d&#39;</span></div></div>
+
+
+<div class="viewcode-block" id="DeepConvolution1d"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1d">[docs]</a><span class="k">class</span> <span class="nc">DeepConvolution1d</span><span class="p">(</span><span class="n">BaseNetworkModule</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Configurable repeated series of 1-dimension convolution, pooling, batch norm</span>
+<span class="sd">    and activation layers. See :meth:`get_layers`.</span>
+
+<span class="sd">    :see: :class:`.DeepConvolution1dNetworkSettings`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">MODULE_NAME</span> <span class="o">=</span> <span class="s1">&#39;conv&#39;</span>
+
+<div class="viewcode-block" id="DeepConvolution1d.__init__"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1d.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">net_settings</span><span class="p">:</span> <span class="n">DeepConvolution1dNetworkSettings</span><span class="p">,</span>
+                 <span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the deep convolution layer.</span>
+
+<span class="sd">        *Implementation note*: all layers are stored sequentially using a</span>
+<span class="sd">         :class:`torch.nn.Sequential` to get normal weight persistance on torch</span>
+<span class="sd">         save/loads.</span>
+
+<span class="sd">        :param net_settings: the deep convolution layer configuration</span>
+
+<span class="sd">        :param logger: the logger to use for the forward process in this layer</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">net_settings</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
+        <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer_sets</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_layers</span><span class="p">(</span><span class="n">layers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_sets</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seq_layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="o">*</span><span class="n">layers</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_create_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">],</span>
+                       <span class="n">layer_sets</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]]):</span>
+        <span class="sd">&quot;&quot;&quot;Create the convolution, max pool and batch norm layers used to forward</span>
+<span class="sd">        through.</span>
+
+<span class="sd">        :param layers: the layers to populate used in an</span>
+<span class="sd">                       :class:`torch.nn.Sequential`</span>
+
+<span class="sd">        :param layer_sets: tuples of (conv, pool, batch_norm) layers</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pool_factory</span><span class="p">:</span> <span class="n">MaxPool1dFactory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">net_settings</span><span class="o">.</span><span class="n">pool_factory</span>
+        <span class="n">conv_factory</span><span class="p">:</span> <span class="n">ConvolutionLayerFactory</span> <span class="o">=</span> <span class="n">pool_factory</span><span class="o">.</span><span class="n">layer_factory</span>
+        <span class="n">repeats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">net_settings</span><span class="o">.</span><span class="n">repeats</span>
+        <span class="k">for</span> <span class="n">n_set</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">repeats</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;conv_factory: </span><span class="si">{</span><span class="n">conv_factory</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;pool factory: </span><span class="si">{</span><span class="n">pool_factory</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">pool</span> <span class="o">=</span> <span class="n">pool_factory</span><span class="o">.</span><span class="n">create_pool</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;pool: </span><span class="si">{</span><span class="n">pool</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">conv</span> <span class="o">=</span> <span class="n">conv_factory</span><span class="o">.</span><span class="n">conv1d</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;conv: </span><span class="si">{</span><span class="n">conv</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">net_settings</span><span class="o">.</span><span class="n">batch_norm_d</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">batch_norm</span> <span class="o">=</span> <span class="n">BatchNormNetworkSettings</span><span class="o">.</span><span class="n">create_batch_norm_layer</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">net_settings</span><span class="o">.</span><span class="n">batch_norm_d</span><span class="p">,</span> <span class="n">pool_factory</span><span class="o">.</span><span class="n">out_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">batch_norm</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;batch_norm: </span><span class="si">{</span><span class="n">batch_norm</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">layer_set</span> <span class="o">=</span> <span class="p">(</span><span class="n">conv</span><span class="p">,</span> <span class="n">pool</span><span class="p">,</span> <span class="n">batch_norm</span><span class="p">)</span>
+            <span class="n">layer_sets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">layer_set</span><span class="p">)</span>
+            <span class="n">layers</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">layer_set</span><span class="p">)</span>
+            <span class="n">pool_out</span> <span class="o">=</span> <span class="n">pool_factory</span><span class="o">.</span><span class="n">flatten_dim</span>
+            <span class="k">if</span> <span class="n">n_set</span> <span class="o">&lt;</span> <span class="n">repeats</span><span class="p">:</span>
+                <span class="n">conv_factory</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">pool_out</span>
+                <span class="n">conv_factory</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">conv_factory</span><span class="o">.</span><span class="n">kernel_filter</span> <span class="o">=</span> <span class="p">(</span><span class="n">conv_factory</span><span class="o">.</span><span class="n">kernel_filter</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;pool out: </span><span class="si">{</span><span class="n">pool_out</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_features</span> <span class="o">=</span> <span class="n">pool_out</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;out features: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">out_features</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DeepConvolution1d.deallocate"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1d.deallocate">[docs]</a>    <span class="k">def</span> <span class="nf">deallocate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">deallocate</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_deallocate_attribute</span><span class="p">(</span><span class="s1">&#39;seq_layers&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DeepConvolution1d.get_layers"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1d.get_layers">[docs]</a>    <span class="k">def</span> <span class="nf">get_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Return a tuple of layer sets, with each having the form: ``(convolution, max</span>
+<span class="sd">        pool, batch_norm)``.  The ``batch_norm`` norm is ``None`` if not</span>
+<span class="sd">        configured.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seq_layers</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">layer_sets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_sets</span>
+        <span class="n">ls_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">layer_sets</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">conv</span><span class="p">,</span> <span class="n">pool</span><span class="p">,</span> <span class="n">batch_norm</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">layer_sets</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;layer set iter: </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shape_debug</span><span class="p">(</span><span class="s1">&#39;conv&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shape_debug</span><span class="p">(</span><span class="s1">&#39;flatten&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+            <span class="n">x</span> <span class="o">=</span> <span class="n">pool</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shape_debug</span><span class="p">(</span><span class="s1">&#39;pool&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_forward_dropout</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">batch_norm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;batch norm: </span><span class="si">{</span><span class="n">batch_norm</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">batch_norm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_forward_activation</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">ls_len</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_shape_debug</span><span class="p">(</span><span class="s1">&#39;unsqueeze&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">x</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Paul Landes
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

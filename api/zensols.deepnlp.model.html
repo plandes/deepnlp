@@ -1,0 +1,388 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>zensols.deepnlp.model package &mdash; DeepZensols Natural Language Processing 0.0.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="zensols.deepnlp.vectorize package" href="zensols.deepnlp.vectorize.html" />
+    <link rel="prev" title="zensols.deepnlp.layer package" href="zensols.deepnlp.layer.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../top.html" class="icon icon-home" alt="Documentation Home"> DeepZensols Natural Language Processing
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/movie-example.html">Movie Review Sentiment Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/ner-example.html">NER Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/vectorizers.html">Vectorizers</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="zensols.deepnlp.html">zensols.deepnlp package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="zensols.deepnlp.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="zensols.deepnlp.batch.html">zensols.deepnlp.batch package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="zensols.deepnlp.embed.html">zensols.deepnlp.embed package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="zensols.deepnlp.feature.html">zensols.deepnlp.feature package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="zensols.deepnlp.index.html">zensols.deepnlp.index package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="zensols.deepnlp.layer.html">zensols.deepnlp.layer package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">zensols.deepnlp.model package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="zensols.deepnlp.vectorize.html">zensols.deepnlp.vectorize package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="zensols.deepnlp.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zensols.deepnlp.html#module-zensols.deepnlp.domain">zensols.deepnlp.domain module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zensols.deepnlp.html#module-zensols.deepnlp.parse">zensols.deepnlp.parse module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zensols.deepnlp.html#module-zensols.deepnlp">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.batch.html">zensols.deepnlp.batch package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.embed.html">zensols.deepnlp.embed package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.feature.html">zensols.deepnlp.feature package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.index.html">zensols.deepnlp.index package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.layer.html">zensols.deepnlp.layer package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">zensols.deepnlp.model package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-zensols.deepnlp.model.facade">zensols.deepnlp.model.facade module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-zensols.deepnlp.model">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.vectorize.html">zensols.deepnlp.vectorize package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../top.html">DeepZensols Natural Language Processing</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../top.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../api.html">API Reference</a> &raquo;</li>
+        
+          <li><a href="zensols.deepnlp.html">zensols.deepnlp package</a> &raquo;</li>
+        
+      <li>zensols.deepnlp.model package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/zensols.deepnlp.model.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="zensols-deepnlp-model-package">
+<h1>zensols.deepnlp.model package<a class="headerlink" href="#zensols-deepnlp-model-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-zensols.deepnlp.model.facade">
+<span id="zensols-deepnlp-model-facade-module"></span><h2>zensols.deepnlp.model.facade module<a class="headerlink" href="#module-zensols.deepnlp.model.facade" title="Permalink to this headline">¶</a></h2>
+<p>A facade that supports natural language model feature updating through a
+facade.</p>
+<dl class="py class">
+<dt id="zensols.deepnlp.model.facade.LanguageModelFacade">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.model.facade.</code><code class="sig-name descname">LanguageModelFacade</code><span class="sig-paren">(</span><em class="sig-param">config</em>, <em class="sig-param">progress_bar=True</em>, <em class="sig-param">progress_bar_cols=79</em>, <em class="sig-param">executor_name='executor'</em>, <em class="sig-param">writer=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='utf-8'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/model/facade.html#LanguageModelFacade"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.model.facade.LanguageModelFacade" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.model.html#zensols.deeplearn.model.facade.ModelFacade" title="(in DeepZensols Deep Learning Framework v0.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deeplearn.model.facade.ModelFacade</span></code></a></p>
+<p>A facade that supports natural language model feature updating through a
+facade.  This facade also provides logging configuration for NLP domains
+for this package.</p>
+<dl class="py method">
+<dt id="zensols.deepnlp.model.facade.LanguageModelFacade.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">config</em>, <em class="sig-param">progress_bar=True</em>, <em class="sig-param">progress_bar_cols=79</em>, <em class="sig-param">executor_name='executor'</em>, <em class="sig-param">writer=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='utf-8'&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.model.facade.LanguageModelFacade.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.model.facade.LanguageModelFacade.config">
+<code class="sig-name descname">config</code><em class="property">: <a class="reference external" href="https://plandes.github.io/util/api/zensols.config.html#zensols.config.configbase.Configurable" title="(in Zensols Utilities v1.3.0)">zensols.config.configbase.Configurable</a></em><a class="headerlink" href="#zensols.deepnlp.model.facade.LanguageModelFacade.config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.model.facade.LanguageModelFacade.count_feature_ids">
+<em class="property">property </em><code class="sig-name descname">count_feature_ids</code><a class="headerlink" href="#zensols.deepnlp.model.facade.LanguageModelFacade.count_feature_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>The spacy token features are used in the join layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Set" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Set</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.model.facade.LanguageModelFacade.embedding">
+<em class="property">property </em><code class="sig-name descname">embedding</code><a class="headerlink" href="#zensols.deepnlp.model.facade.LanguageModelFacade.embedding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configure the embedding layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.model.facade.LanguageModelFacade.enum_feature_ids">
+<em class="property">property </em><code class="sig-name descname">enum_feature_ids</code><a class="headerlink" href="#zensols.deepnlp.model.facade.LanguageModelFacade.enum_feature_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Spacy enumeration encodings used to token wise to widen the input
+embeddings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Set" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Set</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.model.facade.LanguageModelFacade.language_attributes">
+<em class="property">property </em><code class="sig-name descname">language_attributes</code><a class="headerlink" href="#zensols.deepnlp.model.facade.LanguageModelFacade.language_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>The language attributes to be used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Set" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Set</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.model.facade.LanguageModelFacade.language_vectorizer_manager">
+<em class="property">property </em><code class="sig-name descname">language_vectorizer_manager</code><a class="headerlink" href="#zensols.deepnlp.model.facade.LanguageModelFacade.language_vectorizer_manager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the language vectorizer manager for the class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.vectorize.html#zensols.deeplearn.vectorize.manager.FeatureVectorizerManager" title="(in DeepZensols Deep Learning Framework v0.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">FeatureVectorizerManager</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="zensols.deepnlp.model.facade.LanguageModelFacadeConfig">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.model.facade.</code><code class="sig-name descname">LanguageModelFacadeConfig</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">manager_name</span></em>, <em class="sig-param"><span class="n">attribs</span></em>, <em class="sig-param"><span class="n">embedding_attribs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/model/facade.html#LanguageModelFacadeConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.model.facade.LanguageModelFacadeConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Configuration that defines how and what to access language configuration
+data.  Note that this data reflects how you have the model configured per
+the configuration file.  Parameter examples are given per the Movie Review
+example.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>manager_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – the name of the language based feature vectorizer,
+such as <code class="docutils literal notranslate"><span class="pre">language_feature_manager</span></code></p></li>
+<li><p><strong>attribs</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Set" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Set</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – the language attributes (all levels: token, document etc),
+such as <code class="docutils literal notranslate"><span class="pre">enum</span></code>, <code class="docutils literal notranslate"><span class="pre">count</span></code>, <code class="docutils literal notranslate"><span class="pre">dep</span></code> etc</p></li>
+<li><p><strong>embedding_attribs</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Set" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Set</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – all embedding attributes using in the
+configuration, such as <code class="docutils literal notranslate"><span class="pre">glove_50_embedding</span></code>,
+<code class="docutils literal notranslate"><span class="pre">word2vec_300</span></code>, <code class="docutils literal notranslate"><span class="pre">bert_embedding</span></code>, etc</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="zensols.deepnlp.model.facade.LanguageModelFacadeConfig.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">manager_name</span></em>, <em class="sig-param"><span class="n">attribs</span></em>, <em class="sig-param"><span class="n">embedding_attribs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.model.facade.LanguageModelFacadeConfig.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.model.facade.LanguageModelFacadeConfig.attribs">
+<code class="sig-name descname">attribs</code><em class="property">: Set<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></em><a class="headerlink" href="#zensols.deepnlp.model.facade.LanguageModelFacadeConfig.attribs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.model.facade.LanguageModelFacadeConfig.embedding_attribs">
+<code class="sig-name descname">embedding_attribs</code><em class="property">: Set<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></em><a class="headerlink" href="#zensols.deepnlp.model.facade.LanguageModelFacadeConfig.embedding_attribs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.model.facade.LanguageModelFacadeConfig.manager_name">
+<code class="sig-name descname">manager_name</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></em><a class="headerlink" href="#zensols.deepnlp.model.facade.LanguageModelFacadeConfig.manager_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-zensols.deepnlp.model">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-zensols.deepnlp.model" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="zensols.deepnlp.vectorize.html" class="btn btn-neutral float-right" title="zensols.deepnlp.vectorize package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="zensols.deepnlp.layer.html" class="btn btn-neutral float-left" title="zensols.deepnlp.layer package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Paul Landes
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

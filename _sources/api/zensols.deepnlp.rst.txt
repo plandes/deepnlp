@@ -1,0 +1,43 @@
+zensols.deepnlp package
+=======================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   zensols.deepnlp.batch
+   zensols.deepnlp.embed
+   zensols.deepnlp.feature
+   zensols.deepnlp.index
+   zensols.deepnlp.layer
+   zensols.deepnlp.model
+   zensols.deepnlp.vectorize
+
+Submodules
+----------
+
+zensols.deepnlp.domain module
+-----------------------------
+
+.. automodule:: zensols.deepnlp.domain
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.parse module
+----------------------------
+
+.. automodule:: zensols.deepnlp.parse
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: zensols.deepnlp
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,351 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>zensols.deepnlp.vectorize.manager &mdash; DeepZensols Natural Language Processing 0.0.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../top.html" class="icon icon-home" alt="Documentation Home"> DeepZensols Natural Language Processing
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc/movie-example.html">Movie Review Sentiment Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc/ner-example.html">NER Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc/vectorizers.html">Vectorizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CONTRIBUTING.html">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../top.html">DeepZensols Natural Language Processing</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../top.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>zensols.deepnlp.vectorize.manager</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for zensols.deepnlp.vectorize.manager</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;An extension of a feature vectorizer manager that parses and vectorized</span>
+<span class="sd">natural language.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;Paul Landes&#39;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">abstractmethod</span><span class="p">,</span> <span class="n">ABCMeta</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">from</span> <span class="nn">zensols.persist</span> <span class="kn">import</span> <span class="n">persisted</span>
+<span class="kn">from</span> <span class="nn">zensols.nlp</span> <span class="kn">import</span> <span class="n">LanguageResource</span>
+<span class="kn">from</span> <span class="nn">zensols.deeplearn.vectorize</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">FeatureContext</span><span class="p">,</span>
+    <span class="n">EncodableFeatureVectorizer</span><span class="p">,</span>
+    <span class="n">FeatureVectorizerManager</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">zensols.deepnlp</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">FeatureDocument</span><span class="p">,</span>
+    <span class="n">TokensContainer</span><span class="p">,</span>
+    <span class="n">FeatureDocumentParser</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">SpacyFeatureVectorizer</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="TokenContainerFeatureType"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.index.lda.TokenContainerFeatureType">[docs]</a><span class="k">class</span> <span class="nc">TokenContainerFeatureType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The type of :class:`TokenContainerFeatureVectorizer`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">TOKEN</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="sd">&quot;&quot;&quot;token level with a shape congruent with the number of tokens, typically</span>
+<span class="sd">    concatenated with the ebedding layer</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">DOCUMENT</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="sd">&quot;&quot;&quot;document level, typically added to a join layer</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">EMBEDDING</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="sd">&quot;&quot;&quot;embedding layer, typically used as the input layer</span>
+
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="TokenContainerFeatureVectorizer"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.index.lda.TokenContainerFeatureVectorizer">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TokenContainerFeatureVectorizer</span><span class="p">(</span><span class="n">EncodableFeatureVectorizer</span><span class="p">,</span>
+                                      <span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates document or sentence level features using instances of</span>
+<span class="sd">    ``TokensContainer``.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container</span><span class="p">:</span> <span class="n">TokensContainer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FeatureContext</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">feature_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TokenContainerFeatureType</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">FEATURE_TYPE</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">token_length</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">token_length</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span><span class="si">}</span><span class="s1">, &#39;</span> <span class="o">+</span>
+                <span class="sa">f</span><span class="s1">&#39;feature type: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_type</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">, &#39;</span> <span class="o">+</span>
+                <span class="sa">f</span><span class="s1">&#39;token length: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">token_length</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TokenContainerFeatureVectorizerManager"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.index.lda.TokenContainerFeatureVectorizerManager">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TokenContainerFeatureVectorizerManager</span><span class="p">(</span><span class="n">FeatureVectorizerManager</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates and manages instances of ``TokenContainerFeatureVectorizer`` and</span>
+<span class="sd">    parses text in to feature based document.</span>
+
+<span class="sd">    This is used to manage the relationship of a given set of parsed features</span>
+<span class="sd">    keeping in mind that parsing will usually happen as a preprocessing step.</span>
+<span class="sd">    A second step is the vectorization of those features, which can be any</span>
+<span class="sd">    proper subset of those features parsed in the previous step.  However,</span>
+<span class="sd">    these checks, of course, are not necessary if pickling isn&#39;t used across</span>
+<span class="sd">    the parse and vectorization steps.</span>
+
+<span class="sd">    :see TokenContainerFeatureVectorizer:</span>
+<span class="sd">    :see parse:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">doc_parser</span><span class="p">:</span> <span class="n">FeatureDocumentParser</span>
+    <span class="n">token_length</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">token_feature_ids</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">FeatureDocumentParser</span><span class="o">.</span><span class="n">TOKEN_FEATURE_IDS</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">()</span>
+        <span class="n">feat_diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_feature_ids</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc_parser</span><span class="o">.</span><span class="n">token_feature_ids</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">feat_diff</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">fdiffs</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">feat_diff</span><span class="p">)</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;parser token features do not exist in vectorizer: </span><span class="si">{</span><span class="n">fdiffs</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TokenContainerFeatureVectorizerManager.parse"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.index.lda.TokenContainerFeatureVectorizerManager.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FeatureDocument</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Parse text or a text as a list of sentences.</span>
+
+<span class="sd">        *Important:* Parsing documents through this manager instance is better</span>
+<span class="sd">        since safe checks are made that features are available from those used</span>
+<span class="sd">        when documents are parsed before pickling.</span>
+
+<span class="sd">        :param text: either a string or a list of strings; if the former a</span>
+<span class="sd">                     document with one sentence will be created, otherwise a</span>
+<span class="sd">                     document is returned with a sentence for each string in</span>
+<span class="sd">                     the list</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc_parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">langres</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LanguageResource</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc_parser</span><span class="o">.</span><span class="n">langres</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@persisted</span><span class="p">(</span><span class="s1">&#39;_spacy_vectorizers&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">spacy_vectorizers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SpacyFeatureVectorizer</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return vectorizers based on the ``token_feature_ids`` configured on this</span>
+<span class="sd">        instance.  Keys are token level feature ids found in</span>
+<span class="sd">        ``SpacyFeatureVectorizer.VECTORIZERS``.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">token_feature_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">SpacyFeatureVectorizer</span><span class="o">.</span><span class="n">VECTORIZERS</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">token_feature_ids</span> <span class="o">=</span> <span class="n">token_feature_ids</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_feature_ids</span>
+        <span class="n">token_feature_ids</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">token_feature_ids</span><span class="p">)</span>
+        <span class="n">vectorizers</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">feature_id</span> <span class="ow">in</span> <span class="n">token_feature_ids</span><span class="p">:</span>
+            <span class="bp">cls</span> <span class="o">=</span> <span class="n">SpacyFeatureVectorizer</span><span class="o">.</span><span class="n">VECTORIZERS</span><span class="p">[</span><span class="n">feature_id</span><span class="p">]</span>
+            <span class="n">inst</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;spacy vectorizer: </span><span class="si">{</span><span class="n">feature_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                       <span class="n">config_factory</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config_factory</span><span class="p">,</span>
+                       <span class="n">feature_id</span><span class="o">=</span><span class="n">feature_id</span><span class="p">,</span>
+                       <span class="n">torch_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">torch_config</span><span class="p">,</span>
+                       <span class="n">vocab</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">langres</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">vocab</span><span class="p">)</span>
+            <span class="n">vectorizers</span><span class="p">[</span><span class="n">feature_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">inst</span>
+        <span class="k">return</span> <span class="n">vectorizers</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Paul Landes
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,684 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>zensols.deepnlp package &mdash; DeepZensols Natural Language Processing 0.0.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="zensols.deepnlp.batch package" href="zensols.deepnlp.batch.html" />
+    <link rel="prev" title="API Reference" href="../api.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../top.html" class="icon icon-home" alt="Documentation Home"> DeepZensols Natural Language Processing
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/movie-example.html">Movie Review Sentiment Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/ner-example.html">NER Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/vectorizers.html">Vectorizers</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">zensols.deepnlp package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="zensols.deepnlp.batch.html">zensols.deepnlp.batch package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="zensols.deepnlp.embed.html">zensols.deepnlp.embed package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="zensols.deepnlp.feature.html">zensols.deepnlp.feature package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="zensols.deepnlp.index.html">zensols.deepnlp.index package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="zensols.deepnlp.layer.html">zensols.deepnlp.layer package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="zensols.deepnlp.model.html">zensols.deepnlp.model package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="zensols.deepnlp.vectorize.html">zensols.deepnlp.vectorize package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-zensols.deepnlp.domain">zensols.deepnlp.domain module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-zensols.deepnlp.parse">zensols.deepnlp.parse module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-zensols.deepnlp">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.batch.html">zensols.deepnlp.batch package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.embed.html">zensols.deepnlp.embed package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.feature.html">zensols.deepnlp.feature package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.index.html">zensols.deepnlp.index package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.layer.html">zensols.deepnlp.layer package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.model.html">zensols.deepnlp.model package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.vectorize.html">zensols.deepnlp.vectorize package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../top.html">DeepZensols Natural Language Processing</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../top.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../api.html">API Reference</a> &raquo;</li>
+        
+      <li>zensols.deepnlp package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/zensols.deepnlp.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="zensols-deepnlp-package">
+<h1>zensols.deepnlp package<a class="headerlink" href="#zensols-deepnlp-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="zensols.deepnlp.batch.html">zensols.deepnlp.batch package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.batch.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.batch.html#module-zensols.deepnlp.batch.domain">zensols.deepnlp.batch.domain module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.batch.html#module-zensols.deepnlp.batch">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="zensols.deepnlp.embed.html">zensols.deepnlp.embed package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.embed.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.embed.html#module-zensols.deepnlp.embed.bert">zensols.deepnlp.embed.bert module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.embed.html#module-zensols.deepnlp.embed.domain">zensols.deepnlp.embed.domain module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.embed.html#module-zensols.deepnlp.embed.fasttext">zensols.deepnlp.embed.fasttext module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.embed.html#module-zensols.deepnlp.embed.glove">zensols.deepnlp.embed.glove module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.embed.html#module-zensols.deepnlp.embed.word2vec">zensols.deepnlp.embed.word2vec module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.embed.html#module-zensols.deepnlp.embed.wordtext">zensols.deepnlp.embed.wordtext module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.embed.html#module-zensols.deepnlp.embed">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="zensols.deepnlp.feature.html">zensols.deepnlp.feature package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.feature.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.feature.html#module-zensols.deepnlp.feature.stash">zensols.deepnlp.feature.stash module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.feature.html#module-zensols.deepnlp.feature">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="zensols.deepnlp.index.html">zensols.deepnlp.index package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.index.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.index.html#module-zensols.deepnlp.index.domain">zensols.deepnlp.index.domain module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.index.html#module-zensols.deepnlp.index.lda">zensols.deepnlp.index.lda module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.index.html#module-zensols.deepnlp.index.lsi">zensols.deepnlp.index.lsi module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.index.html#module-zensols.deepnlp.index">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="zensols.deepnlp.layer.html">zensols.deepnlp.layer package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.layer.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.layer.html#module-zensols.deepnlp.layer.conv">zensols.deepnlp.layer.conv module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.layer.html#module-zensols.deepnlp.layer.embed">zensols.deepnlp.layer.embed module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.layer.html#module-zensols.deepnlp.layer.embrecurcrf">zensols.deepnlp.layer.embrecurcrf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.layer.html#module-zensols.deepnlp.layer">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="zensols.deepnlp.model.html">zensols.deepnlp.model package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.model.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.model.html#module-zensols.deepnlp.model.facade">zensols.deepnlp.model.facade module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.model.html#module-zensols.deepnlp.model">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="zensols.deepnlp.vectorize.html">zensols.deepnlp.vectorize package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.vectorize.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.vectorize.html#module-zensols.deepnlp.vectorize.layer">zensols.deepnlp.vectorize.layer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.vectorize.html#module-zensols.deepnlp.vectorize.manager">zensols.deepnlp.vectorize.manager module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.vectorize.html#module-zensols.deepnlp.vectorize.spacy">zensols.deepnlp.vectorize.spacy module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.vectorize.html#module-zensols.deepnlp.vectorize.vectorizers">zensols.deepnlp.vectorize.vectorizers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.vectorize.html#module-zensols.deepnlp.vectorize">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-zensols.deepnlp.domain">
+<span id="zensols-deepnlp-domain-module"></span><h2>zensols.deepnlp.domain module<a class="headerlink" href="#module-zensols.deepnlp.domain" title="Permalink to this headline">¶</a></h2>
+<p>Domain objects that define features associated with text.</p>
+<dl class="py class">
+<dt id="zensols.deepnlp.domain.FeatureDocument">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.domain.</code><code class="sig-name descname">FeatureDocument</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sents</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/domain.html#FeatureDocument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.domain.FeatureDocument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.domain.TokensContainer" title="zensols.deepnlp.domain.TokensContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deepnlp.domain.TokensContainer</span></code></a></p>
+<p>A container class of tokens that make a document.  This class contains a one
+to many of sentences.  However, it can be treated like any
+<a class="reference internal" href="#zensols.deepnlp.domain.TokensContainer" title="zensols.deepnlp.domain.TokensContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">TokensContainer</span></code></a> to fetch tokens.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sents</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="#zensols.deepnlp.domain.FeatureSentence" title="zensols.deepnlp.domain.FeatureSentence"><code class="xref py py-class docutils literal notranslate"><span class="pre">FeatureSentence</span></code></a>]) – the sentences defined for this document</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="zensols.deepnlp.domain.FeatureDocument.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sents</span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.domain.FeatureDocument.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.domain.FeatureDocument.get_text">
+<code class="sig-name descname">get_text</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/domain.html#FeatureDocument.get_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.domain.FeatureDocument.get_text" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.domain.FeatureDocument.sent_iter">
+<code class="sig-name descname">sent_iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/domain.html#FeatureDocument.sent_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.domain.FeatureDocument.sent_iter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.domain.FeatureDocument.sents">
+<code class="sig-name descname">sents</code><em class="property">: List<span class="p">[</span><a class="reference internal" href="#zensols.deepnlp.domain.FeatureSentence" title="zensols.deepnlp.domain.FeatureSentence">zensols.deepnlp.domain.FeatureSentence</a><span class="p">]</span></em><a class="headerlink" href="#zensols.deepnlp.domain.FeatureDocument.sents" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.domain.FeatureDocument.text">
+<em class="property">property </em><code class="sig-name descname">text</code><a class="headerlink" href="#zensols.deepnlp.domain.FeatureDocument.text" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.domain.FeatureDocument.to_sentence">
+<code class="sig-name descname">to_sentence</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/domain.html#FeatureDocument.to_sentence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.domain.FeatureDocument.to_sentence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coerce this instance to a single sentence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#zensols.deepnlp.domain.FeatureSentence" title="zensols.deepnlp.domain.FeatureSentence"><code class="xref py py-class docutils literal notranslate"><span class="pre">FeatureSentence</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an instance of <code class="docutils literal notranslate"><span class="pre">FeatureSentence</span></code> that represents this token
+sequence</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.domain.FeatureDocument.token_iter">
+<code class="sig-name descname">token_iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/domain.html#FeatureDocument.token_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.domain.FeatureDocument.token_iter" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[<a class="reference external" href="https://plandes.github.io/nlparse/api/zensols.nlp.html#zensols.nlp.feature.TokenFeatures" title="(in Zensols Natural Language Parsing v0.0.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TokenFeatures</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.domain.FeatureDocument.write">
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param">depth=0</em>, <em class="sig-param">writer=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='utf-8'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/domain.html#FeatureDocument.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.domain.FeatureDocument.write" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="zensols.deepnlp.domain.FeatureSentence">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.domain.</code><code class="sig-name descname">FeatureSentence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sent_tokens</span></em>, <em class="sig-param"><span class="n">text</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/domain.html#FeatureSentence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.domain.FeatureSentence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.domain.TokensContainer" title="zensols.deepnlp.domain.TokensContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deepnlp.domain.TokensContainer</span></code></a></p>
+<p>A container class of tokens that make a sentence.</p>
+<dl class="py method">
+<dt id="zensols.deepnlp.domain.FeatureSentence.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sent_tokens</span></em>, <em class="sig-param"><span class="n">text</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.domain.FeatureSentence.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.domain.FeatureSentence.sent_tokens">
+<code class="sig-name descname">sent_tokens</code><em class="property">: Tuple<span class="p">[</span><a class="reference internal" href="#zensols.deepnlp.domain.FeatureToken" title="zensols.deepnlp.domain.FeatureToken">zensols.deepnlp.domain.FeatureToken</a><span class="p">]</span></em><a class="headerlink" href="#zensols.deepnlp.domain.FeatureSentence.sent_tokens" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.domain.FeatureSentence.text">
+<code class="sig-name descname">text</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></em><em class="property"> = None</em><a class="headerlink" href="#zensols.deepnlp.domain.FeatureSentence.text" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.domain.FeatureSentence.to_sentence">
+<code class="sig-name descname">to_sentence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">limit</span><span class="o">=</span><span class="default_value">9223372036854775807</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/domain.html#FeatureSentence.to_sentence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.domain.FeatureSentence.to_sentence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coerce this instance to a single sentence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an instance of <code class="docutils literal notranslate"><span class="pre">FeatureSentence</span></code> that represents this token
+sequence</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.domain.FeatureSentence.token_iter">
+<code class="sig-name descname">token_iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/domain.html#FeatureSentence.token_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.domain.FeatureSentence.token_iter" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[<a class="reference external" href="https://plandes.github.io/nlparse/api/zensols.nlp.html#zensols.nlp.feature.TokenFeatures" title="(in Zensols Natural Language Parsing v0.0.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TokenFeatures</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.domain.FeatureSentence.token_len">
+<em class="property">property </em><code class="sig-name descname">token_len</code><a class="headerlink" href="#zensols.deepnlp.domain.FeatureSentence.token_len" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.domain.FeatureSentence.tokens">
+<em class="property">property </em><code class="sig-name descname">tokens</code><a class="headerlink" href="#zensols.deepnlp.domain.FeatureSentence.tokens" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://plandes.github.io/nlparse/api/zensols.nlp.html#zensols.nlp.feature.TokenFeatures" title="(in Zensols Natural Language Parsing v0.0.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TokenFeatures</span></code></a>]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>rtype</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="zensols.deepnlp.domain.FeatureToken">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.domain.</code><code class="sig-name descname">FeatureToken</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">features</span></em>, <em class="sig-param"><span class="n">feature_ids</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/domain.html#FeatureToken"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.domain.FeatureToken" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.domain.TextContainer" title="zensols.deepnlp.domain.TextContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deepnlp.domain.TextContainer</span></code></a></p>
+<p>A container class for features about a token.  This extracts only a subset
+of features from the heavy object <code class="docutils literal notranslate"><span class="pre">TokenFeatures</span></code>, which contains Spacy C
+data structures and is hard/expensive to pickle.</p>
+<dl class="py attribute">
+<dt id="zensols.deepnlp.domain.FeatureToken.TOKEN_FEATURE_IDS">
+<code class="sig-name descname">TOKEN_FEATURE_IDS</code><em class="property"> = frozenset({'children', 'dep', 'dep_', 'ent', 'ent_', 'i', 'idx', 'index', 'is_contraction', 'is_ent', 'is_pronoun', 'is_punctuation', 'is_space', 'is_stop', 'is_superlative', 'is_wh', 'lemma', 'norm', 'shape', 'shape_', 'tag', 'tag_'})</em><a class="headerlink" href="#zensols.deepnlp.domain.FeatureToken.TOKEN_FEATURE_IDS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.domain.FeatureToken.TOKEN_FEATURE_IDS_BY_TYPE">
+<code class="sig-name descname">TOKEN_FEATURE_IDS_BY_TYPE</code><em class="property"> = {'bool': frozenset({'is_contraction', 'is_ent', 'is_pronoun', 'is_space', 'is_stop', 'is_superlative', 'is_wh'}), 'int': frozenset({'dep', 'ent', 'i', 'idx', 'index', 'is_punctuation', 'shape', 'tag'}), 'list': frozenset({'children'}), 'str': frozenset({'dep_', 'ent_', 'lemma', 'norm', 'shape_', 'tag_'})}</em><a class="headerlink" href="#zensols.deepnlp.domain.FeatureToken.TOKEN_FEATURE_IDS_BY_TYPE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.domain.FeatureToken.TYPES_BY_TOKEN_FEATURE_ID">
+<code class="sig-name descname">TYPES_BY_TOKEN_FEATURE_ID</code><em class="property"> = {'children': 'list', 'dep': 'int', 'dep_': 'str', 'ent': 'int', 'ent_': 'str', 'i': 'int', 'idx': 'int', 'index': 'int', 'is_contraction': 'bool', 'is_ent': 'bool', 'is_pronoun': 'bool', 'is_punctuation': 'int', 'is_space': 'bool', 'is_stop': 'bool', 'is_superlative': 'bool', 'is_wh': 'bool', 'lemma': 'str', 'norm': 'str', 'shape': 'int', 'shape_': 'str', 'tag': 'int', 'tag_': 'str'}</em><a class="headerlink" href="#zensols.deepnlp.domain.FeatureToken.TYPES_BY_TOKEN_FEATURE_ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.domain.FeatureToken.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">features</span></em>, <em class="sig-param"><span class="n">feature_ids</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/domain.html#FeatureToken.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.domain.FeatureToken.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>features</strong> (<a class="reference external" href="https://plandes.github.io/nlparse/api/zensols.nlp.html#zensols.nlp.feature.TokenFeatures" title="(in Zensols Natural Language Parsing v0.0.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TokenFeatures</span></code></a>) – the features that describes a token</p></li>
+<li><p><strong>feature_id</strong> – a string identifying the type of feature that will</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.domain.FeatureToken.text">
+<em class="property">property </em><code class="sig-name descname">text</code><a class="headerlink" href="#zensols.deepnlp.domain.FeatureToken.text" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.domain.FeatureToken.to_vector">
+<code class="sig-name descname">to_vector</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">feature_ids</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/domain.html#FeatureToken.to_vector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.domain.FeatureToken.to_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an iterable of feature data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.domain.FeatureToken.write">
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param">depth=0</em>, <em class="sig-param">writer=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='utf-8'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/domain.html#FeatureToken.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.domain.FeatureToken.write" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="zensols.deepnlp.domain.TextContainer">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.domain.</code><code class="sig-name descname">TextContainer</code><a class="reference internal" href="../_modules/zensols/deepnlp/domain.html#TextContainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.domain.TextContainer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
+<p>A class that has a <code class="docutils literal notranslate"><span class="pre">text</span></code> property or attribute.  The class also provides
+pretty print utility.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attribute text</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="zensols.deepnlp.domain.TextContainer.write">
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param">depth=0</em>, <em class="sig-param">writer=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='utf-8'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/domain.html#TextContainer.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.domain.TextContainer.write" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="zensols.deepnlp.domain.TokensContainer">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.domain.</code><code class="sig-name descname">TokensContainer</code><a class="reference internal" href="../_modules/zensols/deepnlp/domain.html#TokensContainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.domain.TokensContainer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://plandes.github.io/util/api/zensols.persist.html#zensols.persist.annotation.PersistableContainer" title="(in Zensols Utilities v1.3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.persist.annotation.PersistableContainer</span></code></a>, <a class="reference internal" href="#zensols.deepnlp.domain.TextContainer" title="zensols.deepnlp.domain.TextContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deepnlp.domain.TextContainer</span></code></a></p>
+<p>Each instance has the following attributes:</p>
+<dl class="py method">
+<dt id="zensols.deepnlp.domain.TokensContainer.lemmas">
+<em class="property">property </em><code class="sig-name descname">lemmas</code><a class="headerlink" href="#zensols.deepnlp.domain.TokensContainer.lemmas" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.domain.TokensContainer.norm_token_iter">
+<code class="sig-name descname">norm_token_iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/domain.html#TokensContainer.norm_token_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.domain.TokensContainer.norm_token_iter" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.domain.TokensContainer.norms">
+<em class="property">property </em><code class="sig-name descname">norms</code><a class="headerlink" href="#zensols.deepnlp.domain.TokensContainer.norms" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.domain.TokensContainer.to_sentence">
+<em class="property">abstract </em><code class="sig-name descname">to_sentence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">limit</span><span class="o">=</span><span class="default_value">9223372036854775807</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/domain.html#TokensContainer.to_sentence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.domain.TokensContainer.to_sentence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coerce this instance to a single sentence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an instance of <code class="docutils literal notranslate"><span class="pre">FeatureSentence</span></code> that represents this token
+sequence</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.domain.TokensContainer.token_iter">
+<em class="property">abstract </em><code class="sig-name descname">token_iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/domain.html#TokensContainer.token_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.domain.TokensContainer.token_iter" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[<a class="reference external" href="https://plandes.github.io/nlparse/api/zensols.nlp.html#zensols.nlp.feature.TokenFeatures" title="(in Zensols Natural Language Parsing v0.0.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TokenFeatures</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.domain.TokensContainer.token_len">
+<em class="property">property </em><code class="sig-name descname">token_len</code><a class="headerlink" href="#zensols.deepnlp.domain.TokensContainer.token_len" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.domain.TokensContainer.tokens">
+<em class="property">property </em><code class="sig-name descname">tokens</code><a class="headerlink" href="#zensols.deepnlp.domain.TokensContainer.tokens" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.domain.TokensContainer.write">
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param">depth=0</em>, <em class="sig-param">writer=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='utf-8'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/domain.html#TokensContainer.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.domain.TokensContainer.write" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-zensols.deepnlp.parse">
+<span id="zensols-deepnlp-parse-module"></span><h2>zensols.deepnlp.parse module<a class="headerlink" href="#module-zensols.deepnlp.parse" title="Permalink to this headline">¶</a></h2>
+<p>Parse documents and generate features in an organized taxonomy.</p>
+<dl class="py class">
+<dt id="zensols.deepnlp.parse.FeatureDocumentParser">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.parse.</code><code class="sig-name descname">FeatureDocumentParser</code><span class="sig-paren">(</span><em class="sig-param">langres</em>, <em class="sig-param">token_feature_ids=&lt;factory&gt;</em>, <em class="sig-param">doc_class=&lt;class 'zensols.deepnlp.domain.FeatureDocument'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/parse.html#FeatureDocumentParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.parse.FeatureDocumentParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>This class parses text in to instances of <code class="docutils literal notranslate"><span class="pre">FeatureDocument</span></code>.</p>
+<dl class="simple">
+<dt><em>Important:</em> It is better to use <code class="docutils literal notranslate"><span class="pre">TokenContainerFeatureVectorizerManager</span></code></dt><dd><p>instead of this class.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">See TokenContainerFeatureVectorizerManager</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<dl class="py attribute">
+<dt id="zensols.deepnlp.parse.FeatureDocumentParser.TOKEN_FEATURE_IDS">
+<code class="sig-name descname">TOKEN_FEATURE_IDS</code><em class="property"> = frozenset({'children', 'dep', 'dep_', 'ent', 'ent_', 'i', 'idx', 'index', 'is_contraction', 'is_ent', 'is_pronoun', 'is_punctuation', 'is_space', 'is_stop', 'is_superlative', 'is_wh', 'lemma', 'norm', 'shape', 'shape_', 'tag', 'tag_'})</em><a class="headerlink" href="#zensols.deepnlp.parse.FeatureDocumentParser.TOKEN_FEATURE_IDS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.parse.FeatureDocumentParser.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">langres</em>, <em class="sig-param">token_feature_ids=&lt;factory&gt;</em>, <em class="sig-param">doc_class=&lt;class 'zensols.deepnlp.domain.FeatureDocument'&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.parse.FeatureDocumentParser.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.parse.FeatureDocumentParser.doc_class">
+<code class="sig-name descname">doc_class</code><a class="headerlink" href="#zensols.deepnlp.parse.FeatureDocumentParser.doc_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#zensols.deepnlp.domain.FeatureDocument" title="zensols.deepnlp.domain.FeatureDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deepnlp.domain.FeatureDocument</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.parse.FeatureDocumentParser.from_list">
+<code class="sig-name descname">from_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/parse.html#FeatureDocumentParser.from_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.parse.FeatureDocumentParser.from_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse a document from a list of strings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="#zensols.deepnlp.domain.FeatureSentence" title="zensols.deepnlp.domain.FeatureSentence"><code class="xref py py-class docutils literal notranslate"><span class="pre">FeatureSentence</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.parse.FeatureDocumentParser.from_string">
+<code class="sig-name descname">from_string</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/parse.html#FeatureDocumentParser.from_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.parse.FeatureDocumentParser.from_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse a document from a string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="#zensols.deepnlp.domain.FeatureSentence" title="zensols.deepnlp.domain.FeatureSentence"><code class="xref py py-class docutils literal notranslate"><span class="pre">FeatureSentence</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.parse.FeatureDocumentParser.langres">
+<code class="sig-name descname">langres</code><em class="property">: <a class="reference external" href="https://plandes.github.io/nlparse/api/zensols.nlp.html#zensols.nlp.lang.LanguageResource" title="(in Zensols Natural Language Parsing v0.0.12)">zensols.nlp.lang.LanguageResource</a></em><a class="headerlink" href="#zensols.deepnlp.parse.FeatureDocumentParser.langres" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.parse.FeatureDocumentParser.parse">
+<code class="sig-name descname">parse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/parse.html#FeatureDocumentParser.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.parse.FeatureDocumentParser.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse text or a text as a list of sentences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]) – either a string or a list of strings; if the former a
+document with one sentence will be created, otherwise a
+document is returned with a sentence for each string in
+the list</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#zensols.deepnlp.domain.FeatureDocument" title="zensols.deepnlp.domain.FeatureDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">FeatureDocument</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.parse.FeatureDocumentParser.token_feature_ids">
+<code class="sig-name descname">token_feature_ids</code><em class="property">: Set<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></em><a class="headerlink" href="#zensols.deepnlp.parse.FeatureDocumentParser.token_feature_ids" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-zensols.deepnlp">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-zensols.deepnlp" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="zensols.deepnlp.batch.html" class="btn btn-neutral float-right" title="zensols.deepnlp.batch package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../api.html" class="btn btn-neutral float-left" title="API Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Paul Landes
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

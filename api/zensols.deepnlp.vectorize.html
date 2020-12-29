@@ -1,0 +1,1201 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>zensols.deepnlp.vectorize package &mdash; DeepZensols Natural Language Processing 0.0.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Contributing" href="../CONTRIBUTING.html" />
+    <link rel="prev" title="zensols.deepnlp.model package" href="zensols.deepnlp.model.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../top.html" class="icon icon-home" alt="Documentation Home"> DeepZensols Natural Language Processing
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/movie-example.html">Movie Review Sentiment Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/ner-example.html">NER Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/vectorizers.html">Vectorizers</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="zensols.deepnlp.html">zensols.deepnlp package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="zensols.deepnlp.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="zensols.deepnlp.batch.html">zensols.deepnlp.batch package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="zensols.deepnlp.embed.html">zensols.deepnlp.embed package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="zensols.deepnlp.feature.html">zensols.deepnlp.feature package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="zensols.deepnlp.index.html">zensols.deepnlp.index package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="zensols.deepnlp.layer.html">zensols.deepnlp.layer package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="zensols.deepnlp.model.html">zensols.deepnlp.model package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">zensols.deepnlp.vectorize package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="zensols.deepnlp.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zensols.deepnlp.html#module-zensols.deepnlp.domain">zensols.deepnlp.domain module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zensols.deepnlp.html#module-zensols.deepnlp.parse">zensols.deepnlp.parse module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zensols.deepnlp.html#module-zensols.deepnlp">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.batch.html">zensols.deepnlp.batch package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.embed.html">zensols.deepnlp.embed package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.feature.html">zensols.deepnlp.feature package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.index.html">zensols.deepnlp.index package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.layer.html">zensols.deepnlp.layer package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.model.html">zensols.deepnlp.model package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">zensols.deepnlp.vectorize package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-zensols.deepnlp.vectorize.layer">zensols.deepnlp.vectorize.layer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-zensols.deepnlp.vectorize.manager">zensols.deepnlp.vectorize.manager module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-zensols.deepnlp.vectorize.spacy">zensols.deepnlp.vectorize.spacy module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-zensols.deepnlp.vectorize.vectorizers">zensols.deepnlp.vectorize.vectorizers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-zensols.deepnlp.vectorize">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../top.html">DeepZensols Natural Language Processing</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../top.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../api.html">API Reference</a> &raquo;</li>
+        
+          <li><a href="zensols.deepnlp.html">zensols.deepnlp package</a> &raquo;</li>
+        
+      <li>zensols.deepnlp.vectorize package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/zensols.deepnlp.vectorize.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="zensols-deepnlp-vectorize-package">
+<h1>zensols.deepnlp.vectorize package<a class="headerlink" href="#zensols-deepnlp-vectorize-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-zensols.deepnlp.vectorize.layer">
+<span id="zensols-deepnlp-vectorize-layer-module"></span><h2>zensols.deepnlp.vectorize.layer module<a class="headerlink" href="#module-zensols.deepnlp.vectorize.layer" title="Permalink to this headline">¶</a></h2>
+<p>This file contains a stash used to load an embedding layer.  It creates
+features in batches of matrices and persists matrix only (sans features) for
+efficient retrival.</p>
+<dl class="py class">
+<dt id="zensols.deepnlp.vectorize.layer.BertEmbeddingLayer">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.vectorize.layer.</code><code class="sig-name descname">BertEmbeddingLayer</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">embed_model</span></em>, <em class="sig-param"><span class="n">max_pool</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/layer.html#BertEmbeddingLayer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.BertEmbeddingLayer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.vectorize.layer.EmbeddingLayer" title="zensols.deepnlp.vectorize.layer.EmbeddingLayer"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deepnlp.vectorize.layer.EmbeddingLayer</span></code></a></p>
+<p>A BERT embedding layer.</p>
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.layer.BertEmbeddingLayer.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">embed_model</span></em>, <em class="sig-param"><span class="n">max_pool</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/layer.html#BertEmbeddingLayer.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.BertEmbeddingLayer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.layer.BertEmbeddingLayer.deallocate">
+<code class="sig-name descname">deallocate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/layer.html#BertEmbeddingLayer.deallocate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.BertEmbeddingLayer.deallocate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deallocate all resources for this instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.layer.BertEmbeddingLayer.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/layer.html#BertEmbeddingLayer.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.BertEmbeddingLayer.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+3c48255 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.layer.BertEmbeddingLayer.training">
+<code class="sig-name descname">training</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.BertEmbeddingLayer.training" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="zensols.deepnlp.vectorize.layer.BertFeatureContext">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.vectorize.layer.</code><code class="sig-name descname">BertFeatureContext</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">sentences</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/layer.html#BertFeatureContext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.BertFeatureContext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.vectorize.html#zensols.deeplearn.vectorize.domain.FeatureContext" title="(in DeepZensols Deep Learning Framework v0.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deeplearn.vectorize.domain.FeatureContext</span></code></a></p>
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.layer.BertFeatureContext.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">sentences</span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.BertFeatureContext.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.layer.BertFeatureContext.sentences">
+<code class="sig-name descname">sentences</code><em class="property">: Tuple<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></em><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.BertFeatureContext.sentences" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="zensols.deepnlp.vectorize.layer.BertSentenceFeatureVectorizer">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.vectorize.layer.</code><code class="sig-name descname">BertSentenceFeatureVectorizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">manager</span></em>, <em class="sig-param"><span class="n">embed_model</span></em>, <em class="sig-param"><span class="n">as_document</span></em>, <em class="sig-param"><span class="n">decode_embedding</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/layer.html#BertSentenceFeatureVectorizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.BertSentenceFeatureVectorizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.vectorize.layer.SentenceFeatureVectorizer" title="zensols.deepnlp.vectorize.layer.SentenceFeatureVectorizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deepnlp.vectorize.layer.SentenceFeatureVectorizer</span></code></a></p>
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.layer.BertSentenceFeatureVectorizer.DESCRIPTION">
+<code class="sig-name descname">DESCRIPTION</code><em class="property"> = 'bert vector sentence'</em><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.BertSentenceFeatureVectorizer.DESCRIPTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.layer.BertSentenceFeatureVectorizer.FEATURE_TYPE">
+<code class="sig-name descname">FEATURE_TYPE</code><em class="property"> = 2</em><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.BertSentenceFeatureVectorizer.FEATURE_TYPE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.layer.BertSentenceFeatureVectorizer.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">manager</span></em>, <em class="sig-param"><span class="n">embed_model</span></em>, <em class="sig-param"><span class="n">as_document</span></em>, <em class="sig-param"><span class="n">decode_embedding</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.BertSentenceFeatureVectorizer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.layer.BertSentenceFeatureVectorizer.as_document">
+<code class="sig-name descname">as_document</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.BertSentenceFeatureVectorizer.as_document" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.layer.BertSentenceFeatureVectorizer.embed_model">
+<code class="sig-name descname">embed_model</code><em class="property">: Union<span class="p">[</span><a class="reference internal" href="zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel" title="zensols.deepnlp.embed.domain.WordEmbedModel">zensols.deepnlp.embed.domain.WordEmbedModel</a><span class="p">, </span><a class="reference internal" href="zensols.deepnlp.embed.html#zensols.deepnlp.embed.bert.BertEmbeddingModel" title="zensols.deepnlp.embed.bert.BertEmbeddingModel">zensols.deepnlp.embed.bert.BertEmbeddingModel</a><span class="p">]</span></em><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.BertSentenceFeatureVectorizer.embed_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="zensols.deepnlp.vectorize.layer.EmbeddingLayer">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.vectorize.layer.</code><code class="sig-name descname">EmbeddingLayer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">feature_vectorizer</span></em>, <em class="sig-param"><span class="n">embedding_dim</span></em>, <em class="sig-param"><span class="n">trainable</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/layer.html#EmbeddingLayer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.EmbeddingLayer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code>, <a class="reference external" href="https://plandes.github.io/util/api/zensols.persist.html#zensols.persist.dealloc.Deallocatable" title="(in Zensols Utilities v1.3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.persist.dealloc.Deallocatable</span></code></a></p>
+<p>A class used as an input layer to provide word embeddings to a deep neural
+network.</p>
+<p><strong>Important</strong>: you must always check for attributes in
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">Deallocatable.deallocate()</span></code> since it might be called more than once
+(i.e. from directly deallocating and then from the factory).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>embedding_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the vector dimension of the embedding</p></li>
+<li><p><strong>token_length</strong> – the length of the sentence for the embedding</p></li>
+<li><p><strong>torch_config</strong> – the CUDA configuration</p></li>
+<li><p><strong>trainable</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> if the embedding layer is to be trained</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.layer.EmbeddingLayer.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">feature_vectorizer</span></em>, <em class="sig-param"><span class="n">embedding_dim</span></em>, <em class="sig-param"><span class="n">trainable</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/layer.html#EmbeddingLayer.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.EmbeddingLayer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.layer.EmbeddingLayer.training">
+<code class="sig-name descname">training</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.EmbeddingLayer.training" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="zensols.deepnlp.vectorize.layer.SentenceFeatureVectorizer">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.vectorize.layer.</code><code class="sig-name descname">SentenceFeatureVectorizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">manager</span></em>, <em class="sig-param"><span class="n">embed_model</span></em>, <em class="sig-param"><span class="n">as_document</span></em>, <em class="sig-param"><span class="n">decode_embedding</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/layer.html#SentenceFeatureVectorizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.SentenceFeatureVectorizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer" title="zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer</span></code></a>, <a class="reference external" href="https://plandes.github.io/util/api/zensols.persist.html#zensols.persist.domain.Primeable" title="(in Zensols Utilities v1.3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.persist.domain.Primeable</span></code></a></p>
+<p>Vectorize a <a class="reference internal" href="zensols.deepnlp.html#zensols.deepnlp.domain.TokensContainer" title="zensols.deepnlp.domain.TokensContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">TokensContainer</span></code></a> as a vector of embedding indexes.
+Later, these indexes are used in a <code class="xref py py-class docutils literal notranslate"><span class="pre">WordEmbeddingLayer</span></code> to create
+the input word embedding during execution of the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>embed_model</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference internal" href="zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel" title="zensols.deepnlp.embed.domain.WordEmbedModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">WordEmbedModel</span></code></a>, <a class="reference internal" href="zensols.deepnlp.embed.html#zensols.deepnlp.embed.bert.BertEmbeddingModel" title="zensols.deepnlp.embed.bert.BertEmbeddingModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">BertEmbeddingModel</span></code></a>]) – contains the word vector model</p></li>
+<li><p><strong>as_document</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> treat the embedding as a document, so use
+all tokens as one long stream; otherwise, stack each
+index as a row iteration of the container, which would
+be sentences of given a document</p></li>
+<li><p><strong>decode_embedding</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – whether or not to decode the embedding during the
+decode phase, which is helpful when caching
+batches; otherwise, the data is decoded from
+indexes to embeddings each epoch</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.layer.SentenceFeatureVectorizer.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">manager</span></em>, <em class="sig-param"><span class="n">embed_model</span></em>, <em class="sig-param"><span class="n">as_document</span></em>, <em class="sig-param"><span class="n">decode_embedding</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.SentenceFeatureVectorizer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.layer.SentenceFeatureVectorizer.as_document">
+<code class="sig-name descname">as_document</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.SentenceFeatureVectorizer.as_document" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.layer.SentenceFeatureVectorizer.decode_embedding">
+<code class="sig-name descname">decode_embedding</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><em class="property"> = False</em><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.SentenceFeatureVectorizer.decode_embedding" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.layer.SentenceFeatureVectorizer.embed_model">
+<code class="sig-name descname">embed_model</code><em class="property">: Union<span class="p">[</span><a class="reference internal" href="zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel" title="zensols.deepnlp.embed.domain.WordEmbedModel">zensols.deepnlp.embed.domain.WordEmbedModel</a><span class="p">, </span><a class="reference internal" href="zensols.deepnlp.embed.html#zensols.deepnlp.embed.bert.BertEmbeddingModel" title="zensols.deepnlp.embed.bert.BertEmbeddingModel">zensols.deepnlp.embed.bert.BertEmbeddingModel</a><span class="p">]</span></em><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.SentenceFeatureVectorizer.embed_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.layer.SentenceFeatureVectorizer.prime">
+<code class="sig-name descname">prime</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/layer.html#SentenceFeatureVectorizer.prime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.SentenceFeatureVectorizer.prime" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="zensols.deepnlp.vectorize.layer.WordVectorEmbeddingLayer">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.vectorize.layer.</code><code class="sig-name descname">WordVectorEmbeddingLayer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">embed_model</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/layer.html#WordVectorEmbeddingLayer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.WordVectorEmbeddingLayer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.vectorize.layer.EmbeddingLayer" title="zensols.deepnlp.vectorize.layer.EmbeddingLayer"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deepnlp.vectorize.layer.EmbeddingLayer</span></code></a></p>
+<p>An input embedding layer.  This uses an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">WordEmbedModel</span></code>
+to compose the word embeddings from indexes.  Each index is that of word
+vector, which is stacked to create the embedding.  This happens in the
+PyTorch framework, and is fast.</p>
+<p>This class overrides PyTorch methods that disable persistance of the
+embedding weights when configured to be frozen (not trainable).  Otherwise,
+the entire embedding model is saved <em>every</em> time the model is saved for
+each epoch, which is both unecessary, but costs in terms of time and
+memory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>embed_model</strong> (<a class="reference internal" href="zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel" title="zensols.deepnlp.embed.domain.WordEmbedModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">WordEmbedModel</span></code></a>) – contains the word embedding model, such as <code class="docutils literal notranslate"><span class="pre">glove</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">word2vec</span></code></p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.layer.WordVectorEmbeddingLayer.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">embed_model</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/layer.html#WordVectorEmbeddingLayer.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.WordVectorEmbeddingLayer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.layer.WordVectorEmbeddingLayer.deallocate">
+<code class="sig-name descname">deallocate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/layer.html#WordVectorEmbeddingLayer.deallocate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.WordVectorEmbeddingLayer.deallocate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deallocate all resources for this instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.layer.WordVectorEmbeddingLayer.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/layer.html#WordVectorEmbeddingLayer.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.WordVectorEmbeddingLayer.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+3c48255 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.layer.WordVectorEmbeddingLayer.reset_parameters">
+<code class="sig-name descname">reset_parameters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/layer.html#WordVectorEmbeddingLayer.reset_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.WordVectorEmbeddingLayer.reset_parameters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.layer.WordVectorEmbeddingLayer.state_dict">
+<code class="sig-name descname">state_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">destination</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/layer.html#WordVectorEmbeddingLayer.state_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.WordVectorEmbeddingLayer.state_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary containing a whole state of the module.</p>
+<p>Both parameters and persistent buffers (e.g. running averages) are
+included. Keys are corresponding parameter and buffer names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a dictionary containing a whole state of the module</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)">dict</a></p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">module</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<span class="go">[&#39;bias&#39;, &#39;weight&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.layer.WordVectorEmbeddingLayer.training">
+<code class="sig-name descname">training</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.WordVectorEmbeddingLayer.training" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="zensols.deepnlp.vectorize.layer.WordVectorSentenceFeatureVectorizer">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.vectorize.layer.</code><code class="sig-name descname">WordVectorSentenceFeatureVectorizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">manager</span></em>, <em class="sig-param"><span class="n">embed_model</span></em>, <em class="sig-param"><span class="n">as_document</span></em>, <em class="sig-param"><span class="n">decode_embedding</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/layer.html#WordVectorSentenceFeatureVectorizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.WordVectorSentenceFeatureVectorizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.vectorize.layer.SentenceFeatureVectorizer" title="zensols.deepnlp.vectorize.layer.SentenceFeatureVectorizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deepnlp.vectorize.layer.SentenceFeatureVectorizer</span></code></a></p>
+<p>Vectorize sentences using an embedding model with <a class="reference internal" href="zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel" title="zensols.deepnlp.embed.domain.WordEmbedModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">WordEmbedModel</span></code></a>.</p>
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.layer.WordVectorSentenceFeatureVectorizer.DESCRIPTION">
+<code class="sig-name descname">DESCRIPTION</code><em class="property"> = 'word vector sentence'</em><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.WordVectorSentenceFeatureVectorizer.DESCRIPTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.layer.WordVectorSentenceFeatureVectorizer.FEATURE_TYPE">
+<code class="sig-name descname">FEATURE_TYPE</code><em class="property"> = 2</em><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.WordVectorSentenceFeatureVectorizer.FEATURE_TYPE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.layer.WordVectorSentenceFeatureVectorizer.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">manager</span></em>, <em class="sig-param"><span class="n">embed_model</span></em>, <em class="sig-param"><span class="n">as_document</span></em>, <em class="sig-param"><span class="n">decode_embedding</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.WordVectorSentenceFeatureVectorizer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.layer.WordVectorSentenceFeatureVectorizer.as_document">
+<code class="sig-name descname">as_document</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.WordVectorSentenceFeatureVectorizer.as_document" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.layer.WordVectorSentenceFeatureVectorizer.embed_model">
+<code class="sig-name descname">embed_model</code><em class="property">: Union<span class="p">[</span><a class="reference internal" href="zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel" title="zensols.deepnlp.embed.domain.WordEmbedModel">zensols.deepnlp.embed.domain.WordEmbedModel</a><span class="p">, </span><a class="reference internal" href="zensols.deepnlp.embed.html#zensols.deepnlp.embed.bert.BertEmbeddingModel" title="zensols.deepnlp.embed.bert.BertEmbeddingModel">zensols.deepnlp.embed.bert.BertEmbeddingModel</a><span class="p">]</span></em><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.WordVectorSentenceFeatureVectorizer.embed_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.layer.WordVectorSentenceFeatureVectorizer.vectors">
+<em class="property">property </em><code class="sig-name descname">vectors</code><a class="headerlink" href="#zensols.deepnlp.vectorize.layer.WordVectorSentenceFeatureVectorizer.vectors" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-zensols.deepnlp.vectorize.manager">
+<span id="zensols-deepnlp-vectorize-manager-module"></span><h2>zensols.deepnlp.vectorize.manager module<a class="headerlink" href="#module-zensols.deepnlp.vectorize.manager" title="Permalink to this headline">¶</a></h2>
+<p>An extension of a feature vectorizer manager that parses and vectorized
+natural language.</p>
+<dl class="py class">
+<dt id="zensols.deepnlp.vectorize.manager.TokenContainerFeatureType">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.vectorize.manager.</code><code class="sig-name descname">TokenContainerFeatureType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/manager.html#TokenContainerFeatureType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
+<p>The type of <a class="reference internal" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer" title="zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">TokenContainerFeatureVectorizer</span></code></a>.</p>
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.manager.TokenContainerFeatureType.DOCUMENT">
+<code class="sig-name descname">DOCUMENT</code><em class="property"> = 1</em><a class="headerlink" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureType.DOCUMENT" title="Permalink to this definition">¶</a></dt>
+<dd><p>document level, typically added to a join layer</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.manager.TokenContainerFeatureType.EMBEDDING">
+<code class="sig-name descname">EMBEDDING</code><em class="property"> = 2</em><a class="headerlink" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureType.EMBEDDING" title="Permalink to this definition">¶</a></dt>
+<dd><p>embedding layer, typically used as the input layer</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.manager.TokenContainerFeatureType.TOKEN">
+<code class="sig-name descname">TOKEN</code><em class="property"> = 0</em><a class="headerlink" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureType.TOKEN" title="Permalink to this definition">¶</a></dt>
+<dd><p>token level with a shape congruent with the number of tokens, typically
+concatenated with the ebedding layer</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.vectorize.manager.</code><code class="sig-name descname">TokenContainerFeatureVectorizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">manager</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/manager.html#TokenContainerFeatureVectorizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.vectorize.html#zensols.deeplearn.vectorize.manager.EncodableFeatureVectorizer" title="(in DeepZensols Deep Learning Framework v0.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deeplearn.vectorize.manager.EncodableFeatureVectorizer</span></code></a></p>
+<p>Creates document or sentence level features using instances of
+<code class="docutils literal notranslate"><span class="pre">TokensContainer</span></code>.</p>
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">manager</span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer.feature_type">
+<em class="property">property </em><code class="sig-name descname">feature_type</code><a class="headerlink" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer.feature_type" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureType" title="zensols.deepnlp.vectorize.manager.TokenContainerFeatureType"><code class="xref py py-class docutils literal notranslate"><span class="pre">TokenContainerFeatureType</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>rtype</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer.manager">
+<code class="sig-name descname">manager</code><em class="property">: Any</em><a class="headerlink" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer.manager" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer.token_length">
+<em class="property">property </em><code class="sig-name descname">token_length</code><a class="headerlink" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer.token_length" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>rtype</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizerManager">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.vectorize.manager.</code><code class="sig-name descname">TokenContainerFeatureVectorizerManager</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">config_factory</em>, <em class="sig-param">torch_config</em>, <em class="sig-param">configured_vectorizers</em>, <em class="sig-param">doc_parser</em>, <em class="sig-param">token_length</em>, <em class="sig-param">token_feature_ids=&lt;factory&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/manager.html#TokenContainerFeatureVectorizerManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizerManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.vectorize.html#zensols.deeplearn.vectorize.manager.FeatureVectorizerManager" title="(in DeepZensols Deep Learning Framework v0.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deeplearn.vectorize.manager.FeatureVectorizerManager</span></code></a></p>
+<p>Creates and manages instances of <code class="docutils literal notranslate"><span class="pre">TokenContainerFeatureVectorizer</span></code> and
+parses text in to feature based document.</p>
+<p>This is used to manage the relationship of a given set of parsed features
+keeping in mind that parsing will usually happen as a preprocessing step.
+A second step is the vectorization of those features, which can be any
+proper subset of those features parsed in the previous step.  However,
+these checks, of course, are not necessary if pickling isn’t used across
+the parse and vectorization steps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">See TokenContainerFeatureVectorizer</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">See parse</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizerManager.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">config_factory</em>, <em class="sig-param">torch_config</em>, <em class="sig-param">configured_vectorizers</em>, <em class="sig-param">doc_parser</em>, <em class="sig-param">token_length</em>, <em class="sig-param">token_feature_ids=&lt;factory&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizerManager.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizerManager.doc_parser">
+<code class="sig-name descname">doc_parser</code><em class="property">: <a class="reference internal" href="zensols.deepnlp.html#zensols.deepnlp.parse.FeatureDocumentParser" title="zensols.deepnlp.parse.FeatureDocumentParser">zensols.deepnlp.parse.FeatureDocumentParser</a></em><a class="headerlink" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizerManager.doc_parser" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizerManager.langres">
+<em class="property">property </em><code class="sig-name descname">langres</code><a class="headerlink" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizerManager.langres" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://plandes.github.io/nlparse/api/zensols.nlp.html#zensols.nlp.lang.LanguageResource" title="(in Zensols Natural Language Parsing v0.0.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">LanguageResource</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>rtype</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizerManager.parse">
+<code class="sig-name descname">parse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/manager.html#TokenContainerFeatureVectorizerManager.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizerManager.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse text or a text as a list of sentences.</p>
+<p><em>Important:</em> Parsing documents through this manager instance is better
+since safe checks are made that features are available from those used
+when documents are parsed before pickling.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]) – either a string or a list of strings; if the former a
+document with one sentence will be created, otherwise a
+document is returned with a sentence for each string in
+the list</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="zensols.deepnlp.html#zensols.deepnlp.domain.FeatureDocument" title="zensols.deepnlp.domain.FeatureDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">FeatureDocument</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizerManager.spacy_vectorizers">
+<em class="property">property </em><code class="sig-name descname">spacy_vectorizers</code><a class="headerlink" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizerManager.spacy_vectorizers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizerManager.token_feature_ids">
+<code class="sig-name descname">token_feature_ids</code><em class="property">: Set<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></em><a class="headerlink" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizerManager.token_feature_ids" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizerManager.token_length">
+<code class="sig-name descname">token_length</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></em><a class="headerlink" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizerManager.token_length" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-zensols.deepnlp.vectorize.spacy">
+<span id="zensols-deepnlp-vectorize-spacy-module"></span><h2>zensols.deepnlp.vectorize.spacy module<a class="headerlink" href="#module-zensols.deepnlp.vectorize.spacy" title="Permalink to this headline">¶</a></h2>
+<p>Feature (ID) normalization.</p>
+<dl class="py class">
+<dt id="zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.vectorize.spacy.</code><code class="sig-name descname">DependencyFeatureVectorizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">torch_config</span></em>, <em class="sig-param"><span class="n">vocab</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/spacy.html#DependencyFeatureVectorizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer" title="zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer</span></code></a></p>
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer.DESCRIPTION">
+<code class="sig-name descname">DESCRIPTION</code><em class="property"> = 'dependency'</em><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer.DESCRIPTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer.FEATURE_ID">
+<code class="sig-name descname">FEATURE_ID</code><em class="property"> = 'dep'</em><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer.FEATURE_ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer.LANG">
+<code class="sig-name descname">LANG</code><em class="property"> = 'en'</em><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer.LANG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer.SYMBOLS">
+<code class="sig-name descname">SYMBOLS</code><em class="property"> = 'acl acomp advcl advmod agent amod appos attr aux auxpass case cc ccomp clf\ncomplm compound conj cop csubj csubjpass dative dep det discourse dislocated\ndobj expl fixed flat goeswith hmod hyph infmod intj iobj list mark meta neg\nnmod nn npadvmod nsubj nsubjpass nounmod npmod num number nummod oprd obj obl\norphan parataxis partmod pcomp pobj poss possessive preconj prep prt punct\nquantmod rcmod relcl reparandum root vocative xcomp ROOT'</em><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer.SYMBOLS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">torch_config</span></em>, <em class="sig-param"><span class="n">vocab</span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer.torch_config">
+<code class="sig-name descname">torch_config</code><em class="property">: <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.html#zensols.deeplearn.torchconfig.TorchConfig" title="(in DeepZensols Deep Learning Framework v0.1.1)">zensols.deeplearn.torchconfig.TorchConfig</a></em><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer.torch_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer.vocab">
+<code class="sig-name descname">vocab</code><em class="property">: spacy.vocab.Vocab</em><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer.vocab" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.vectorize.spacy.</code><code class="sig-name descname">NamedEntityRecognitionFeatureVectorizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">torch_config</span></em>, <em class="sig-param"><span class="n">vocab</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/spacy.html#NamedEntityRecognitionFeatureVectorizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer" title="zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer</span></code></a></p>
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer.DESCRIPTION">
+<code class="sig-name descname">DESCRIPTION</code><em class="property"> = 'named entity recognition'</em><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer.DESCRIPTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer.FEATURE_ID">
+<code class="sig-name descname">FEATURE_ID</code><em class="property"> = 'ent'</em><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer.FEATURE_ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer.LANG">
+<code class="sig-name descname">LANG</code><em class="property"> = 'en'</em><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer.LANG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer.SYMBOLS">
+<code class="sig-name descname">SYMBOLS</code><em class="property"> = 'PERSON NORP FACILITY FAC ORG GPE LOC PRODUCT EVENT WORK_OF_ART LAW LANGUAGE\n    DATE TIME PERCENT MONEY QUANTITY ORDINAL CARDINAL PER MISC'</em><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer.SYMBOLS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">torch_config</span></em>, <em class="sig-param"><span class="n">vocab</span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer.torch_config">
+<code class="sig-name descname">torch_config</code><em class="property">: <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.html#zensols.deeplearn.torchconfig.TorchConfig" title="(in DeepZensols Deep Learning Framework v0.1.1)">zensols.deeplearn.torchconfig.TorchConfig</a></em><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer.torch_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer.vocab">
+<code class="sig-name descname">vocab</code><em class="property">: spacy.vocab.Vocab</em><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer.vocab" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.vectorize.spacy.</code><code class="sig-name descname">PartOfSpeechFeatureVectorizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">torch_config</span></em>, <em class="sig-param"><span class="n">vocab</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/spacy.html#PartOfSpeechFeatureVectorizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer" title="zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer</span></code></a></p>
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer.DESCRIPTION">
+<code class="sig-name descname">DESCRIPTION</code><em class="property"> = 'part of speech'</em><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer.DESCRIPTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer.FEATURE_ID">
+<code class="sig-name descname">FEATURE_ID</code><em class="property"> = 'tag'</em><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer.FEATURE_ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer.LANG">
+<code class="sig-name descname">LANG</code><em class="property"> = 'en'</em><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer.LANG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer.SYMBOLS">
+<code class="sig-name descname">SYMBOLS</code><em class="property"> = 'ADJ ADP ADV AUX CONJ CCONJ DET INTJ NOUN NUM PART PRON PROPN PUNCT SCONJ SYM\nVERB X EOL SPACE . , -LRB- -RRB- `` &quot; \' $ # AFX CC CD DT EX FW HYPH IN JJ JJR\nJJS LS MD NIL NN NNP NNPS NNS PDT POS PRP PRP$ RB RBR RBS RP TO UH VB VBD VBG\nVBN VBP VBZ WDT WP WP$ WRB SP ADD NFP GW XX BES HVS NP PP VP ADVP ADJP SBAR PRT\nPNP'</em><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer.SYMBOLS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">torch_config</span></em>, <em class="sig-param"><span class="n">vocab</span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer.torch_config">
+<code class="sig-name descname">torch_config</code><em class="property">: <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.html#zensols.deeplearn.torchconfig.TorchConfig" title="(in DeepZensols Deep Learning Framework v0.1.1)">zensols.deeplearn.torchconfig.TorchConfig</a></em><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer.torch_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer.vocab">
+<code class="sig-name descname">vocab</code><em class="property">: spacy.vocab.Vocab</em><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer.vocab" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.vectorize.spacy.</code><code class="sig-name descname">SpacyFeatureVectorizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">torch_config</span></em>, <em class="sig-param"><span class="n">vocab</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/spacy.html#SpacyFeatureVectorizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.vectorize.html#zensols.deeplearn.vectorize.domain.FeatureVectorizer" title="(in DeepZensols Deep Learning Framework v0.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deeplearn.vectorize.domain.FeatureVectorizer</span></code></a></p>
+<p>This normalizes feature IDs of parsed token features in to a number between
+[0, 1].  This is useful for normalized feature vectors as input to neural
+networks.  Input to this would be strings like <code class="docutils literal notranslate"><span class="pre">token.ent_</span></code> found on a
+<code class="docutils literal notranslate"><span class="pre">TokenAttributes</span></code> instance.</p>
+<p>The class is also designed to create features using indexes, so there are
+methods to resolve to a unique ID from an identifier.</p>
+<p>Instances of this class behave like a <code class="docutils literal notranslate"><span class="pre">dict</span></code>.</p>
+<p>All symbols are taken from spacy.glossary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>vocab</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Vocab</span></code>) – the vocabulary used for <code class="docutils literal notranslate"><span class="pre">from_spacy</span></code> to compute the
+normalized feature from the spacy ID (i.e. <code class="docutils literal notranslate"><span class="pre">token.ent_</span></code>,
+<code class="docutils literal notranslate"><span class="pre">token.tag_</span></code> etc.)</p>
+</dd>
+<dt class="field-even">See</dt>
+<dd class="field-even"><p>spacy.glossary</p>
+</dd>
+<dt class="field-odd">See</dt>
+<dd class="field-odd"><p>feature.TokenAttributes</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.VECTORIZERS">
+<code class="sig-name descname">VECTORIZERS</code><em class="property"> = {'dep': &lt;class 'zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer'&gt;, 'ent': &lt;class 'zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer'&gt;, 'tag': &lt;class 'zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer'&gt;}</em><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.VECTORIZERS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">torch_config</span></em>, <em class="sig-param"><span class="n">vocab</span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.dist">
+<code class="sig-name descname">dist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">symbol</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/spacy.html#SpacyFeatureVectorizer.dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a normalized feature float if <code class="docutils literal notranslate"><span class="pre">symbol</span></code> is found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a normalized value between [0 - 1] or <code class="docutils literal notranslate"><span class="pre">None</span></code> if the symbol
+isn’t found</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.from_spacy">
+<code class="sig-name descname">from_spacy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/spacy.html#SpacyFeatureVectorizer.from_spacy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.from_spacy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a binary feature from a Spacy ID or <code class="docutils literal notranslate"><span class="pre">None</span></code> if it doesn’t have a
+mapping the ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+3c48255 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.id_from_spacy">
+<code class="sig-name descname">id_from_spacy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span></em>, <em class="sig-param"><span class="n">default</span><span class="o">=</span><span class="default_value">- 1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/spacy.html#SpacyFeatureVectorizer.id_from_spacy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.id_from_spacy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the ID of this vectorizer for the Spacy ID or -1 if not found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.id_from_spacy_symbol">
+<code class="sig-name descname">id_from_spacy_symbol</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span></em>, <em class="sig-param"><span class="n">default</span><span class="o">=</span><span class="default_value">- 1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/spacy.html#SpacyFeatureVectorizer.id_from_spacy_symbol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.id_from_spacy_symbol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the Spacy text symbol for it’s ID (<code class="docutils literal notranslate"><span class="pre">token.ent</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">token.ent_</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.torch_config">
+<code class="sig-name descname">torch_config</code><em class="property">: <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.html#zensols.deeplearn.torchconfig.TorchConfig" title="(in DeepZensols Deep Learning Framework v0.1.1)">zensols.deeplearn.torchconfig.TorchConfig</a></em><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.torch_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">symbol</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/spacy.html#SpacyFeatureVectorizer.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform <code class="docutils literal notranslate"><span class="pre">data</span></code> to a tensor data format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+3c48255 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.vocab">
+<code class="sig-name descname">vocab</code><em class="property">: spacy.vocab.Vocab</em><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.vocab" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.write">
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param">writer=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='utf-8'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/spacy.html#SpacyFeatureVectorizer.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pretty print a human readable representation of this feature vectorizer.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-zensols.deepnlp.vectorize.vectorizers">
+<span id="zensols-deepnlp-vectorize-vectorizers-module"></span><h2>zensols.deepnlp.vectorize.vectorizers module<a class="headerlink" href="#module-zensols.deepnlp.vectorize.vectorizers" title="Permalink to this headline">¶</a></h2>
+<p>Generate and vectorize language features.</p>
+<dl class="py class">
+<dt id="zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.vectorize.vectorizers.</code><code class="sig-name descname">CountEnumContainerFeatureVectorizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">manager</span></em>, <em class="sig-param"><span class="n">decoded_feature_ids</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/vectorizers.html#CountEnumContainerFeatureVectorizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer" title="zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer</span></code></a></p>
+<p>Return the count of all tokens as a 1 X M * N tensor where M is the number
+of token feature ids and N is the columns of the output of the
+<a class="reference internal" href="#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer" title="zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpacyFeatureVectorizer</span></code></a> vectorizer.  Each column position’s
+count represents the number of counts for that spacy symol for that index
+position in the output of <a class="reference internal" href="#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer" title="zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpacyFeatureVectorizer</span></code></a>.</p>
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer.ATTR_EXP_META">
+<code class="sig-name descname">ATTR_EXP_META</code><em class="property"> = ('decoded_feature_ids',)</em><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer.ATTR_EXP_META" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer.DESCRIPTION">
+<code class="sig-name descname">DESCRIPTION</code><em class="property"> = 'token level feature counts'</em><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer.DESCRIPTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer.FEATURE_TYPE">
+<code class="sig-name descname">FEATURE_TYPE</code><em class="property"> = 1</em><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer.FEATURE_TYPE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">manager</span></em>, <em class="sig-param"><span class="n">decoded_feature_ids</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer.decoded_feature_ids">
+<code class="sig-name descname">decoded_feature_ids</code><em class="property">: Set<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer.decoded_feature_ids" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer.get_feature_counts">
+<code class="sig-name descname">get_feature_counts</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">container</span></em>, <em class="sig-param"><span class="n">fvec</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/vectorizers.html#CountEnumContainerFeatureVectorizer.get_feature_counts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer.get_feature_counts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the count of all tokens as a 1 X N tensor where N is the columns of
+the <code class="docutils literal notranslate"><span class="pre">fvec</span></code> vectorizer.  Each column position’s count represents the
+number of counts for that spacy symol for that index position in the
+<code class="docutils literal notranslate"><span class="pre">fvec</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+3c48255 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="zensols.deepnlp.vectorize.vectorizers.DepthTokenContainerFeatureVectorizer">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.vectorize.vectorizers.</code><code class="sig-name descname">DepthTokenContainerFeatureVectorizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">manager</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/vectorizers.html#DepthTokenContainerFeatureVectorizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.DepthTokenContainerFeatureVectorizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer" title="zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer</span></code></a></p>
+<p>Return the depths of tokens based on how deep they are in a head dependency
+tree.</p>
+<p>Even though this is a document level vectorizer and is usually added in a
+join layer rather than stacked on to the embedded layer, it still assumes
+congruence with the token length, which is used in its shape.</p>
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.vectorizers.DepthTokenContainerFeatureVectorizer.DESCRIPTION">
+<code class="sig-name descname">DESCRIPTION</code><em class="property"> = 'head depth'</em><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.DepthTokenContainerFeatureVectorizer.DESCRIPTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.vectorizers.DepthTokenContainerFeatureVectorizer.FEATURE_TYPE">
+<code class="sig-name descname">FEATURE_TYPE</code><em class="property"> = 1</em><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.DepthTokenContainerFeatureVectorizer.FEATURE_TYPE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.vectorizers.DepthTokenContainerFeatureVectorizer.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">manager</span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.DepthTokenContainerFeatureVectorizer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.vectorizers.DepthTokenContainerFeatureVectorizer.manager">
+<code class="sig-name descname">manager</code><em class="property">: Any</em><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.DepthTokenContainerFeatureVectorizer.manager" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.vectorize.vectorizers.</code><code class="sig-name descname">EnumContainerFeatureVectorizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">manager</span></em>, <em class="sig-param"><span class="n">decoded_feature_ids</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/vectorizers.html#EnumContainerFeatureVectorizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer" title="zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer</span></code></a></p>
+<p>Encode tokens found in the container by aggregating the SpaCy vectorizers
+output.  The results is a concatenated binary representation of all
+configured token level features for each token.  This adds only token
+vectorizer features generated by the SpaCy vectorizers, and not the
+features themselves (such as <code class="docutils literal notranslate"><span class="pre">is_stop</span></code> etc).</p>
+<p>Rows are tokens, columns intervals are features.  The encoded matrix is
+sparse, and decoded as a dense matrix.</p>
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer.ATTR_EXP_META">
+<code class="sig-name descname">ATTR_EXP_META</code><em class="property"> = ('decoded_feature_ids',)</em><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer.ATTR_EXP_META" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer.DESCRIPTION">
+<code class="sig-name descname">DESCRIPTION</code><em class="property"> = 'spacy feature vectorizer'</em><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer.DESCRIPTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer.FEATURE_TYPE">
+<code class="sig-name descname">FEATURE_TYPE</code><em class="property"> = 0</em><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer.FEATURE_TYPE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">manager</span></em>, <em class="sig-param"><span class="n">decoded_feature_ids</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer.decoded_feature_ids">
+<code class="sig-name descname">decoded_feature_ids</code><em class="property">: Set<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer.decoded_feature_ids" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.vectorize.vectorizers.</code><code class="sig-name descname">MutualFeaturesContainerFeatureVectorizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">manager</span></em>, <em class="sig-param"><span class="n">count_vectorizer_feature_id</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/vectorizers.html#MutualFeaturesContainerFeatureVectorizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer" title="zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer</span></code></a></p>
+<p>Return the shared count of all tokens as a 1 X M * N tensor where M is the
+number of token feature ids and N is the columns of the output of the
+<a class="reference internal" href="#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer" title="zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpacyFeatureVectorizer</span></code></a> vectorizer.</p>
+<p>This uses an instance of <a class="reference internal" href="#zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer" title="zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">CountEnumContainerFeatureVectorizer</span></code></a> to
+compute across each spacy feature and then sums them up for only those
+features shared.  If at least one shared document has a zero count, the
+features is zeroed.</p>
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer.DESCRIPTION">
+<code class="sig-name descname">DESCRIPTION</code><em class="property"> = 'mutual feature counts'</em><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer.DESCRIPTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer.FEATURE_TYPE">
+<code class="sig-name descname">FEATURE_TYPE</code><em class="property"> = 1</em><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer.FEATURE_TYPE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">manager</span></em>, <em class="sig-param"><span class="n">count_vectorizer_feature_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer.count_vectorizer">
+<em class="property">property </em><code class="sig-name descname">count_vectorizer</code><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer.count_vectorizer" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer" title="zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">CountEnumContainerFeatureVectorizer</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>rtype</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer.count_vectorizer_feature_id">
+<code class="sig-name descname">count_vectorizer_feature_id</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></em><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer.count_vectorizer_feature_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer.ones">
+<em class="property">property </em><code class="sig-name descname">ones</code><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer.ones" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+3c48255 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>rtype</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="zensols.deepnlp.vectorize.vectorizers.OverlappingTokenContainerFeatureVectorizer">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.vectorize.vectorizers.</code><code class="sig-name descname">OverlappingTokenContainerFeatureVectorizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">manager</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/vectorizers.html#OverlappingTokenContainerFeatureVectorizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.OverlappingTokenContainerFeatureVectorizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer" title="zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer</span></code></a></p>
+<p>Return the number of normalized and lemmatized tokens across multiple
+documents.</p>
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.vectorizers.OverlappingTokenContainerFeatureVectorizer.DESCRIPTION">
+<code class="sig-name descname">DESCRIPTION</code><em class="property"> = 'overlapping token counts'</em><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.OverlappingTokenContainerFeatureVectorizer.DESCRIPTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.vectorizers.OverlappingTokenContainerFeatureVectorizer.FEATURE_TYPE">
+<code class="sig-name descname">FEATURE_TYPE</code><em class="property"> = 1</em><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.OverlappingTokenContainerFeatureVectorizer.FEATURE_TYPE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.vectorizers.OverlappingTokenContainerFeatureVectorizer.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">manager</span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.OverlappingTokenContainerFeatureVectorizer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.vectorizers.OverlappingTokenContainerFeatureVectorizer.manager">
+<code class="sig-name descname">manager</code><em class="property">: Any</em><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.OverlappingTokenContainerFeatureVectorizer.manager" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="zensols.deepnlp.vectorize.vectorizers.StatisticsTokenContainerFeatureVectorizer">
+<em class="property">class </em><code class="sig-prename descclassname">zensols.deepnlp.vectorize.vectorizers.</code><code class="sig-name descname">StatisticsTokenContainerFeatureVectorizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">manager</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/vectorize/vectorizers.html#StatisticsTokenContainerFeatureVectorizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.StatisticsTokenContainerFeatureVectorizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer" title="zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer</span></code></a></p>
+<p>Return basic statics including: token count, sentence count (for
+FeatureDocuments).</p>
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.vectorizers.StatisticsTokenContainerFeatureVectorizer.DESCRIPTION">
+<code class="sig-name descname">DESCRIPTION</code><em class="property"> = 'statistics'</em><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.StatisticsTokenContainerFeatureVectorizer.DESCRIPTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.vectorizers.StatisticsTokenContainerFeatureVectorizer.FEATURE_TYPE">
+<code class="sig-name descname">FEATURE_TYPE</code><em class="property"> = 1</em><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.StatisticsTokenContainerFeatureVectorizer.FEATURE_TYPE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="zensols.deepnlp.vectorize.vectorizers.StatisticsTokenContainerFeatureVectorizer.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">config_factory</span></em>, <em class="sig-param"><span class="n">feature_id</span></em>, <em class="sig-param"><span class="n">manager</span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.StatisticsTokenContainerFeatureVectorizer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="zensols.deepnlp.vectorize.vectorizers.StatisticsTokenContainerFeatureVectorizer.manager">
+<code class="sig-name descname">manager</code><em class="property">: Any</em><a class="headerlink" href="#zensols.deepnlp.vectorize.vectorizers.StatisticsTokenContainerFeatureVectorizer.manager" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-zensols.deepnlp.vectorize">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-zensols.deepnlp.vectorize" title="Permalink to this headline">¶</a></h2>
+<p>This module vecorizes natural language features in to PyTorch tensors.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../CONTRIBUTING.html" class="btn btn-neutral float-right" title="Contributing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="zensols.deepnlp.model.html" class="btn btn-neutral float-left" title="zensols.deepnlp.model package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Paul Landes
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

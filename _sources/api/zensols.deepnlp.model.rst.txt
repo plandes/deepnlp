@@ -1,0 +1,21 @@
+zensols.deepnlp.model package
+=============================
+
+Submodules
+----------
+
+zensols.deepnlp.model.facade module
+-----------------------------------
+
+.. automodule:: zensols.deepnlp.model.facade
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: zensols.deepnlp.model
+   :members:
+   :undoc-members:
+   :show-inheritance:

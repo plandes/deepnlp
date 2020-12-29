@@ -1,0 +1,493 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>zensols.deepnlp.vectorize.layer &mdash; DeepZensols Natural Language Processing 0.0.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../top.html" class="icon icon-home" alt="Documentation Home"> DeepZensols Natural Language Processing
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc/movie-example.html">Movie Review Sentiment Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc/ner-example.html">NER Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc/vectorizers.html">Vectorizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CONTRIBUTING.html">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../top.html">DeepZensols Natural Language Processing</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../top.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>zensols.deepnlp.vectorize.layer</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for zensols.deepnlp.vectorize.layer</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;This file contains a stash used to load an embedding layer.  It creates</span>
+<span class="sd">features in batches of matrices and persists matrix only (sans features) for</span>
+<span class="sd">efficient retrival.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;Paul Landes&#39;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">from</span> <span class="nn">zensols.persist</span> <span class="kn">import</span> <span class="n">persisted</span><span class="p">,</span> <span class="n">Deallocatable</span><span class="p">,</span> <span class="n">Primeable</span>
+<span class="kn">from</span> <span class="nn">zensols.deeplearn.model</span> <span class="kn">import</span> <span class="n">BaseNetworkModule</span>
+<span class="kn">from</span> <span class="nn">zensols.deeplearn.layer</span> <span class="kn">import</span> <span class="n">MaxPool1dFactory</span>
+<span class="kn">from</span> <span class="nn">zensols.deeplearn.vectorize</span> <span class="kn">import</span> <span class="n">FeatureContext</span><span class="p">,</span> <span class="n">TensorFeatureContext</span>
+<span class="kn">from</span> <span class="nn">zensols.deepnlp</span> <span class="kn">import</span> <span class="n">TokensContainer</span><span class="p">,</span> <span class="n">FeatureSentence</span><span class="p">,</span> <span class="n">FeatureDocument</span>
+<span class="kn">from</span> <span class="nn">zensols.deepnlp.embed</span> <span class="kn">import</span> <span class="n">WordEmbedModel</span><span class="p">,</span> <span class="n">BertEmbeddingModel</span>
+<span class="kn">from</span> <span class="nn">zensols.deepnlp.vectorize</span> <span class="kn">import</span> <span class="n">TokenContainerFeatureType</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">TokenContainerFeatureVectorizer</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="c1"># no datacasses are usable since pytorch is picky about initialization order</span>
+<div class="viewcode-block" id="EmbeddingLayer"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.EmbeddingLayer">[docs]</a><span class="k">class</span> <span class="nc">EmbeddingLayer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">Deallocatable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A class used as an input layer to provide word embeddings to a deep neural</span>
+<span class="sd">    network.</span>
+
+<span class="sd">    **Important**: you must always check for attributes in</span>
+<span class="sd">    :meth:`.Deallocatable.deallocate` since it might be called more than once</span>
+<span class="sd">    (i.e. from directly deallocating and then from the factory).</span>
+
+
+<span class="sd">    :param embedding_dim: the vector dimension of the embedding</span>
+
+<span class="sd">    :param token_length: the length of the sentence for the embedding</span>
+
+<span class="sd">    :param torch_config: the CUDA configuration</span>
+
+<span class="sd">    :param trainable: ``True`` if the embedding layer is to be trained</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="EmbeddingLayer.__init__"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.EmbeddingLayer.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_vectorizer</span><span class="p">:</span> <span class="n">TokenContainerFeatureVectorizer</span><span class="p">,</span>
+                 <span class="n">embedding_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">trainable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding_dim</span> <span class="o">=</span> <span class="n">embedding_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token_length</span> <span class="o">=</span> <span class="n">feature_vectorizer</span><span class="o">.</span><span class="n">token_length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">torch_config</span> <span class="o">=</span> <span class="n">feature_vectorizer</span><span class="o">.</span><span class="n">torch_config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trainable</span> <span class="o">=</span> <span class="n">trainable</span></div>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;layers should not be pickeled&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WordVectorEmbeddingLayer"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.WordVectorEmbeddingLayer">[docs]</a><span class="k">class</span> <span class="nc">WordVectorEmbeddingLayer</span><span class="p">(</span><span class="n">EmbeddingLayer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An input embedding layer.  This uses an instance of :class:`WordEmbedModel`</span>
+<span class="sd">    to compose the word embeddings from indexes.  Each index is that of word</span>
+<span class="sd">    vector, which is stacked to create the embedding.  This happens in the</span>
+<span class="sd">    PyTorch framework, and is fast.</span>
+
+<span class="sd">    This class overrides PyTorch methods that disable persistance of the</span>
+<span class="sd">    embedding weights when configured to be frozen (not trainable).  Otherwise,</span>
+<span class="sd">    the entire embedding model is saved *every* time the model is saved for</span>
+<span class="sd">    each epoch, which is both unecessary, but costs in terms of time and</span>
+<span class="sd">    memory.</span>
+
+<span class="sd">    :param embed_model: contains the word embedding model, such as ``glove``,</span>
+<span class="sd">                        and ``word2vec``</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="WordVectorEmbeddingLayer.__init__"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.WordVectorEmbeddingLayer.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embed_model</span><span class="p">:</span> <span class="n">WordEmbedModel</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="o">=</span><span class="n">embed_model</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embed_model</span> <span class="o">=</span> <span class="n">embed_model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_embeddings</span> <span class="o">=</span> <span class="n">embed_model</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vecs</span> <span class="o">=</span> <span class="n">embed_model</span><span class="o">.</span><span class="n">to_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">torch_config</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainable</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;cloning embedding for trainability&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vecs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vecs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;layer is not trainable&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;setting tensors: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">vecs</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">, &#39;</span> <span class="o">+</span>
+                     <span class="sa">f</span><span class="s1">&#39;device=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">vecs</span><span class="o">.</span><span class="n">device</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">emb</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vecs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">emb</span><span class="o">.</span><span class="n">freeze</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainable</span></div>
+
+<div class="viewcode-block" id="WordVectorEmbeddingLayer.reset_parameters"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.WordVectorEmbeddingLayer.reset_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">reset_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainable</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">emb</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">({</span><span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vecs</span><span class="p">})</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_emb_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s1">emb.weight&#39;</span>
+
+<div class="viewcode-block" id="WordVectorEmbeddingLayer.state_dict"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.WordVectorEmbeddingLayer.state_dict">[docs]</a>    <span class="k">def</span> <span class="nf">state_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(</span><span class="n">destination</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;state_dict: trainable: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">trainable</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainable</span><span class="p">:</span>
+            <span class="n">emb_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_emb_key</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;state_dict: embedding key: </span><span class="si">{</span><span class="n">emb_key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">emb_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">arr</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="n">emb_key</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">arr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;state_dict: emb state: </span><span class="si">{</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="k">assert</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed_model</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">shape</span>
+                <span class="n">state</span><span class="p">[</span><span class="n">emb_key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">state</span></div>
+
+    <span class="k">def</span> <span class="nf">_load_from_state_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_dict</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainable</span><span class="p">:</span>
+            <span class="n">emb_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_emb_key</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;load_state_dict: </span><span class="si">{</span><span class="n">emb_key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">emb_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">state_dict</span><span class="p">[</span><span class="n">emb_key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vecs</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_load_from_state_dict</span><span class="p">(</span><span class="n">state_dict</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="WordVectorEmbeddingLayer.deallocate"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.WordVectorEmbeddingLayer.deallocate">[docs]</a>    <span class="k">def</span> <span class="nf">deallocate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">deallocate</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;emb&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                <span class="n">em</span> <span class="o">=</span> <span class="s1">&#39;&lt;deallocated&gt;&#39;</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;embed_model&#39;</span><span class="p">):</span>
+                    <span class="n">em</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed_model</span><span class="o">.</span><span class="n">name</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;deallocating: </span><span class="si">{</span><span class="n">em</span><span class="si">}</span><span class="s1"> and </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">emb</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">emb</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed_model</span></div>
+
+<div class="viewcode-block" id="WordVectorEmbeddingLayer.forward"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.WordVectorEmbeddingLayer.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;forward: </span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">, device: </span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="si">}</span><span class="s1"> = &#39;</span> <span class="o">+</span>
+                         <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">BaseNetworkModule</span><span class="o">.</span><span class="n">device_from_module</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">emb</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">emb</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="BertEmbeddingLayer"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.BertEmbeddingLayer">[docs]</a><span class="k">class</span> <span class="nc">BertEmbeddingLayer</span><span class="p">(</span><span class="n">EmbeddingLayer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A BERT embedding layer.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="BertEmbeddingLayer.__init__"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.BertEmbeddingLayer.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">embed_model</span><span class="p">:</span> <span class="n">BertEmbeddingModel</span><span class="p">,</span>
+                 <span class="n">max_pool</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="o">=</span><span class="n">embed_model</span><span class="o">.</span><span class="n">vector_dimension</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embed_model</span> <span class="o">=</span> <span class="n">embed_model</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;config pool: </span><span class="si">{</span><span class="n">max_pool</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">max_pool</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fac</span> <span class="o">=</span> <span class="n">MaxPool1dFactory</span><span class="p">(</span><span class="n">W</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">embedding_dim</span><span class="p">,</span> <span class="o">**</span><span class="n">max_pool</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pool</span> <span class="o">=</span> <span class="n">fac</span><span class="o">.</span><span class="n">max_pool1d</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">embedding_dim</span> <span class="o">=</span> <span class="n">fac</span><span class="o">.</span><span class="n">W_out</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pool</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="BertEmbeddingLayer.deallocate"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.BertEmbeddingLayer.deallocate">[docs]</a>    <span class="k">def</span> <span class="nf">deallocate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">deallocate</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;embed_model&#39;</span><span class="p">):</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed_model</span></div>
+
+<div class="viewcode-block" id="BertEmbeddingLayer.forward"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.BertEmbeddingLayer.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;forward: </span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pool</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pool</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span></div></div>
+
+
+<div class="viewcode-block" id="SentenceFeatureVectorizer"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.SentenceFeatureVectorizer">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">SentenceFeatureVectorizer</span><span class="p">(</span><span class="n">TokenContainerFeatureVectorizer</span><span class="p">,</span> <span class="n">Primeable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Vectorize a :class:`.TokensContainer` as a vector of embedding indexes.</span>
+<span class="sd">    Later, these indexes are used in a :class:`WordEmbeddingLayer` to create</span>
+<span class="sd">    the input word embedding during execution of the model.</span>
+
+<span class="sd">    :param embed_model: contains the word vector model</span>
+
+<span class="sd">    :param as_document: if ``True`` treat the embedding as a document, so use</span>
+<span class="sd">                        all tokens as one long stream; otherwise, stack each</span>
+<span class="sd">                        index as a row iteration of the container, which would</span>
+<span class="sd">                        be sentences of given a document</span>
+
+<span class="sd">    :param decode_embedding: whether or not to decode the embedding during the</span>
+<span class="sd">                             decode phase, which is helpful when caching</span>
+<span class="sd">                             batches; otherwise, the data is decoded from</span>
+<span class="sd">                             indexes to embeddings each epoch</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">embed_model</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">WordEmbedModel</span><span class="p">,</span> <span class="n">BertEmbeddingModel</span><span class="p">]</span>
+    <span class="n">as_document</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">decode_embedding</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">token_length</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed_model</span><span class="o">.</span><span class="n">vector_dimension</span>
+
+<div class="viewcode-block" id="SentenceFeatureVectorizer.prime"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.SentenceFeatureVectorizer.prime">[docs]</a>    <span class="k">def</span> <span class="nf">prime</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_model</span><span class="p">,</span> <span class="n">Primeable</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">embed_model</span><span class="o">.</span><span class="n">prime</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="WordVectorSentenceFeatureVectorizer"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.WordVectorSentenceFeatureVectorizer">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">WordVectorSentenceFeatureVectorizer</span><span class="p">(</span><span class="n">SentenceFeatureVectorizer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Vectorize sentences using an embedding model with :class:`.WordEmbedModel`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DESCRIPTION</span> <span class="o">=</span> <span class="s1">&#39;word vector sentence&#39;</span>
+    <span class="n">FEATURE_TYPE</span> <span class="o">=</span> <span class="n">TokenContainerFeatureType</span><span class="o">.</span><span class="n">EMBEDDING</span>
+
+    <span class="k">def</span> <span class="nf">_encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container</span><span class="p">:</span> <span class="n">TokensContainer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FeatureContext</span><span class="p">:</span>
+        <span class="n">emodel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed_model</span>
+        <span class="n">tw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">token_length</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_document</span><span class="p">:</span>
+            <span class="n">containers</span> <span class="o">=</span> <span class="p">[</span><span class="n">container</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">containers</span> <span class="o">=</span> <span class="n">container</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">containers</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">torch_config</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="n">container</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">containers</span><span class="p">):</span>
+            <span class="n">tokens</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">tw</span><span class="p">]</span>
+            <span class="n">slen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">norm</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)))</span>
+            <span class="n">tokens</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">norm</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">slen</span> <span class="o">&lt;</span> <span class="n">tw</span><span class="p">:</span>
+                <span class="n">tokens</span> <span class="o">+=</span> <span class="p">[</span><span class="n">WordEmbedModel</span><span class="o">.</span><span class="n">ZERO</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">tw</span> <span class="o">-</span> <span class="n">slen</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">tok</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tokens</span><span class="p">):</span>
+                <span class="n">arr</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">emodel</span><span class="o">.</span><span class="n">word2idx_or_unk</span><span class="p">(</span><span class="n">tok</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">TensorFeatureContext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_id</span><span class="p">,</span> <span class="n">arr</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@persisted</span><span class="p">(</span><span class="s1">&#39;_vectors&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">vectors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">torch_config</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_model</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">FeatureContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_decode</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">decode_embedding</span><span class="p">:</span>
+            <span class="n">src_vecs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vectors</span>
+            <span class="n">batches</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">vecs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">batch_idx</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">idxt</span> <span class="ow">in</span> <span class="n">batch_idx</span><span class="p">:</span>
+                    <span class="n">idx</span> <span class="o">=</span> <span class="n">idxt</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+                    <span class="n">vecs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">src_vecs</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+                <span class="n">batches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">vecs</span><span class="p">))</span>
+                <span class="n">vecs</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">batches</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span></div>
+
+
+<div class="viewcode-block" id="BertFeatureContext"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.BertFeatureContext">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">BertFeatureContext</span><span class="p">(</span><span class="n">FeatureContext</span><span class="p">):</span>
+    <span class="n">sentences</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="BertSentenceFeatureVectorizer"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.BertSentenceFeatureVectorizer">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">BertSentenceFeatureVectorizer</span><span class="p">(</span><span class="n">SentenceFeatureVectorizer</span><span class="p">):</span>
+    <span class="n">DESCRIPTION</span> <span class="o">=</span> <span class="s1">&#39;bert vector sentence&#39;</span>
+    <span class="n">FEATURE_TYPE</span> <span class="o">=</span> <span class="n">TokenContainerFeatureType</span><span class="o">.</span><span class="n">EMBEDDING</span>
+
+    <span class="k">def</span> <span class="nf">_encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container</span><span class="p">:</span> <span class="n">TokensContainer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FeatureContext</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_document</span><span class="p">:</span>
+            <span class="n">sent</span><span class="p">:</span> <span class="n">FeatureSentence</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">to_sentence</span><span class="p">()</span>
+            <span class="n">sents</span> <span class="o">=</span> <span class="p">[</span><span class="n">sent</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">doc</span><span class="p">:</span> <span class="n">FeatureDocument</span> <span class="o">=</span> <span class="n">container</span>
+            <span class="n">sents</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">sents</span>
+        <span class="n">sent_strs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">sents</span><span class="p">))</span>
+        <span class="c1"># batch = self.layer_config.layer.doc_to_batch([sent.text])[0]</span>
+        <span class="k">return</span> <span class="n">BertFeatureContext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_id</span><span class="p">,</span> <span class="n">sent_strs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">BertFeatureContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">mats</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">sentences</span><span class="p">:</span>
+            <span class="n">text</span><span class="p">,</span> <span class="n">emb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed_model</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">sent</span><span class="p">)</span>
+            <span class="n">diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_length</span> <span class="o">-</span> <span class="n">emb</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">diff</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">zeros</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed_model</span><span class="o">.</span><span class="n">zeros</span>
+                <span class="n">emb</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">zeros</span><span class="p">]</span> <span class="o">*</span> <span class="n">diff</span><span class="p">),</span> <span class="n">emb</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">diff</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">emb</span> <span class="o">=</span> <span class="n">emb</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">diff</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;text: </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;diff: </span><span class="si">{</span><span class="n">diff</span><span class="si">}</span><span class="s1">, emb shape: </span><span class="si">{</span><span class="n">emb</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">mats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">emb</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">mats</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Paul Landes
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

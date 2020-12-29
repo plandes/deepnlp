@@ -1,0 +1,426 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>zensols.deepnlp.model.facade &mdash; DeepZensols Natural Language Processing 0.0.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../top.html" class="icon icon-home" alt="Documentation Home"> DeepZensols Natural Language Processing
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc/movie-example.html">Movie Review Sentiment Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc/ner-example.html">NER Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc/vectorizers.html">Vectorizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CONTRIBUTING.html">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../top.html">DeepZensols Natural Language Processing</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../top.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>zensols.deepnlp.model.facade</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for zensols.deepnlp.model.facade</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;A facade that supports natural language model feature updating through a</span>
+<span class="sd">facade.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;Paul Landes&#39;</span>
+
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Set</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">zensols.deeplearn</span> <span class="kn">import</span> <span class="n">NetworkSettings</span><span class="p">,</span> <span class="n">ModelSettings</span>
+<span class="kn">from</span> <span class="nn">zensols.deeplearn.vectorize</span> <span class="kn">import</span> <span class="n">FeatureVectorizerManager</span>
+<span class="kn">from</span> <span class="nn">zensols.deeplearn.model</span> <span class="kn">import</span> <span class="n">ModelFacade</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="LanguageModelFacadeConfig"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacadeConfig">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">LanguageModelFacadeConfig</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Configuration that defines how and what to access language configuration</span>
+<span class="sd">    data.  Note that this data reflects how you have the model configured per</span>
+<span class="sd">    the configuration file.  Parameter examples are given per the Movie Review</span>
+<span class="sd">    example.</span>
+
+<span class="sd">    :param manager_name: the name of the language based feature vectorizer,</span>
+<span class="sd">                         such as ``language_feature_manager``</span>
+
+<span class="sd">    :param attribs: the language attributes (all levels: token, document etc),</span>
+<span class="sd">                    such as ``enum``, ``count``, ``dep`` etc</span>
+
+<span class="sd">    :param embedding_attribs: all embedding attributes using in the</span>
+<span class="sd">                              configuration, such as ``glove_50_embedding``,</span>
+<span class="sd">                              ``word2vec_300``, ``bert_embedding``, etc</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">manager_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">attribs</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">embedding_attribs</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="LanguageModelFacade"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacade">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">LanguageModelFacade</span><span class="p">(</span><span class="n">ModelFacade</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A facade that supports natural language model feature updating through a</span>
+<span class="sd">    facade.  This facade also provides logging configuration for NLP domains</span>
+<span class="sd">    for this package.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_get_language_model_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LanguageModelFacadeConfig</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the langauge model configuration.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_create_facade_explorer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">zensols.deepnlp.vectorize</span> <span class="kn">import</span> <span class="n">SentenceFeatureVectorizer</span>
+        <span class="n">ce</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_create_facade_explorer</span><span class="p">()</span>
+        <span class="n">ce</span><span class="o">.</span><span class="n">include_classes</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">NetworkSettings</span><span class="p">,</span> <span class="n">ModelSettings</span><span class="p">})</span>
+        <span class="n">ce</span><span class="o">.</span><span class="n">exclude_classes</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">SentenceFeatureVectorizer</span><span class="p">})</span>
+        <span class="n">ce</span><span class="o">.</span><span class="n">dictify_dataclasses</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">ce</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">enum_feature_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Spacy enumeration encodings used to token wise to widen the input</span>
+<span class="sd">        embeddings.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_vectorizer_feature_ids</span><span class="p">(</span><span class="s1">&#39;enum&#39;</span><span class="p">)</span>
+
+    <span class="nd">@enum_feature_ids</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">enum_feature_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_ids</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;Spacy enumeration encodings used to token wise to widen the input</span>
+<span class="sd">        embeddings.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_vectorizer_feature_ids</span><span class="p">(</span><span class="s1">&#39;enum&#39;</span><span class="p">,</span> <span class="n">feature_ids</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">count_feature_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;The spacy token features are used in the join layer.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_vectorizer_feature_ids</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">)</span>
+
+    <span class="nd">@count_feature_ids</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">count_feature_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_ids</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;The spacy token features are used in the join layer.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_vectorizer_feature_ids</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">feature_ids</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">language_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;The language attributes to be used.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_language_model_config</span><span class="p">()</span>
+        <span class="n">stash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_stash</span>
+        <span class="k">return</span> <span class="n">stash</span><span class="o">.</span><span class="n">decoded_attributes</span> <span class="o">&amp;</span> <span class="n">lc</span><span class="o">.</span><span class="n">attribs</span>
+
+    <span class="nd">@language_attributes</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">language_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attributes</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;The language attributes to be used.</span>
+
+<span class="sd">        :param attributes: the set of attributes to use, which is any</span>
+<span class="sd">                           combination of: &#39;enums&#39;, &#39;stats&#39;, &#39;counts&#39;,</span>
+<span class="sd">                           &#39;dependencies&#39;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_stash</span>
+        <span class="n">lc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_language_model_config</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;all language attributes: </span><span class="si">{</span><span class="n">lc</span><span class="o">.</span><span class="n">attribs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">non_existant</span> <span class="o">=</span> <span class="n">attributes</span> <span class="o">-</span> <span class="n">lc</span><span class="o">.</span><span class="n">attribs</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">non_existant</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;no such langauge attributes: </span><span class="si">{</span><span class="n">non_existant</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">cur_attribs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_stash</span><span class="o">.</span><span class="n">decoded_attributes</span>
+        <span class="n">to_set</span> <span class="o">=</span> <span class="p">(</span><span class="n">cur_attribs</span> <span class="o">-</span> <span class="n">lc</span><span class="o">.</span><span class="n">attribs</span><span class="p">)</span> <span class="o">|</span> <span class="n">attributes</span>
+        <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;settings decoded batch stash attribs: </span><span class="si">{</span><span class="n">to_set</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cur_attribs</span> <span class="o">==</span> <span class="n">to_set</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;no attribute changes--skipping&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">stash</span><span class="o">.</span><span class="n">decoded_attributes</span> <span class="o">=</span> <span class="n">to_set</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_get_default_token_length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embedding</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_option_int</span><span class="p">(</span><span class="s1">&#39;token_length&#39;</span><span class="p">,</span> <span class="s1">&#39;language_defaults&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">embedding</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Configure the embedding layer.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_stash</span>
+        <span class="n">cur_attribs</span> <span class="o">=</span> <span class="n">stash</span><span class="o">.</span><span class="n">decoded_attributes</span>
+        <span class="n">lang_attribs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_language_model_config</span><span class="p">()</span>
+        <span class="n">emb</span> <span class="o">=</span> <span class="n">lang_attribs</span><span class="o">.</span><span class="n">embedding_attribs</span> <span class="o">&amp;</span> <span class="n">cur_attribs</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">emb</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">emb</span><span class="p">))</span>
+
+    <span class="nd">@embedding</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">embedding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embedding</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Configure the embedding layer.</span>
+
+<span class="sd">        :param embedding: the kind of embedding, which is one of ``glove_50``</span>
+<span class="sd">                          for glove 50 dimension, ``glove_300`` for glove 300</span>
+<span class="sd">                          dimension or ``bert`` for BERT embeddings</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_embedding</span><span class="p">(</span><span class="n">embedding</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_set_embedding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embedding</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">lang_attribs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_language_model_config</span><span class="p">()</span>
+        <span class="n">emb_sec</span> <span class="o">=</span> <span class="n">embedding</span>
+        <span class="k">if</span> <span class="n">emb_sec</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">lang_attribs</span><span class="o">.</span><span class="n">embedding_attribs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;no such embedding attribute: </span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">stash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_stash</span>
+        <span class="n">cur_attribs</span> <span class="o">=</span> <span class="n">stash</span><span class="o">.</span><span class="n">decoded_attributes</span>
+        <span class="n">attribs</span> <span class="o">=</span> <span class="p">(</span><span class="n">cur_attribs</span> <span class="o">-</span> <span class="n">lang_attribs</span><span class="o">.</span><span class="n">embedding_attribs</span><span class="p">)</span> <span class="o">|</span> <span class="p">{</span><span class="n">emb_sec</span><span class="p">}</span>
+        <span class="n">needs_change</span> <span class="o">=</span> <span class="n">cur_attribs</span> <span class="o">==</span> <span class="n">attribs</span>
+        <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;decoded batch stash attribs: </span><span class="si">{</span><span class="n">attribs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;embedding layer: </span><span class="si">{</span><span class="n">emb_sec</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">needs_change</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;no attribute changes--skipping&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">vec_mng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">language_vectorizer_manager</span>
+            <span class="n">old_emb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span>
+            <span class="n">old_layer</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">old_emb</span><span class="si">}</span><span class="s1">_layer&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_deallocate_config_instance</span><span class="p">(</span><span class="n">old_layer</span><span class="p">)</span>
+            <span class="n">stash</span><span class="o">.</span><span class="n">decoded_attributes</span> <span class="o">=</span> <span class="n">attribs</span>
+            <span class="n">elayer</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;instance: </span><span class="si">{</span><span class="n">emb_sec</span><span class="si">}</span><span class="s1">_layer&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="o">.</span><span class="n">net_settings</span><span class="o">.</span><span class="n">embedding_layer</span> <span class="o">=</span> <span class="n">elayer</span>
+            <span class="n">vec_mng</span><span class="o">.</span><span class="n">token_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_default_token_length</span><span class="p">(</span><span class="n">embedding</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">needs_change</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">language_vectorizer_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FeatureVectorizerManager</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the language vectorizer manager for the class.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_language_model_config</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vectorizer_manager_set</span><span class="p">[</span><span class="n">lc</span><span class="o">.</span><span class="n">manager_name</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_get_vectorizer_feature_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="n">lang_vec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">language_vectorizer_manager</span><span class="o">.</span><span class="n">vectorizers</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">lang_vec</span><span class="o">.</span><span class="n">decoded_feature_ids</span>
+
+    <span class="k">def</span> <span class="nf">_set_vectorizer_feature_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">feature_ids</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="n">lang_vec_mng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">language_vectorizer_manager</span>
+        <span class="n">lang_vec</span> <span class="o">=</span> <span class="n">lang_vec_mng</span><span class="o">.</span><span class="n">vectorizers</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="n">spacy_feat_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">lang_vec_mng</span><span class="o">.</span><span class="n">spacy_vectorizers</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">non_existant</span> <span class="o">=</span> <span class="n">feature_ids</span> <span class="o">-</span> <span class="n">spacy_feat_ids</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">non_existant</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;no such spacy feature IDs: </span><span class="si">{</span><span class="n">non_existant</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;settings </span><span class="si">{</span><span class="n">feature_ids</span><span class="si">}</span><span class="s1"> on </span><span class="si">{</span><span class="n">lang_vec</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">lang_vec</span><span class="o">.</span><span class="n">decoded_feature_ids</span> <span class="o">=</span> <span class="n">feature_ids</span>
+
+    <span class="k">def</span> <span class="nf">_configure_debug_logging</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_configure_debug_logging</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;zensols.deeplearn.layer.linear&#39;</span><span class="p">,</span>
+                     <span class="vm">__name__</span><span class="p">]:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;zensols.deepnlp.vectorize.vectorizers&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;zensols.deepnlp.model.module&#39;</span><span class="p">]:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_configure_cli_logging</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info_loggers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                               <span class="n">debug_loggers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_configure_cli_logging</span><span class="p">(</span><span class="n">info_loggers</span><span class="p">,</span> <span class="n">debug_loggers</span><span class="p">)</span>
+        <span class="n">info_loggers</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
+            <span class="c1"># show (slow) embedding loading</span>
+            <span class="s1">&#39;zensols.deepnlp.embed&#39;</span><span class="p">,</span>
+            <span class="c1"># LSI/LDA indexing</span>
+            <span class="s1">&#39;zensols.deepnlp.index&#39;</span><span class="p">])</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Paul Landes
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

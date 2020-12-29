@@ -1,0 +1,431 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>zensols.deepnlp.layer.embed &mdash; DeepZensols Natural Language Processing 0.0.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../top.html" class="icon icon-home" alt="Documentation Home"> DeepZensols Natural Language Processing
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc/movie-example.html">Movie Review Sentiment Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc/ner-example.html">NER Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc/vectorizers.html">Vectorizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CONTRIBUTING.html">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../top.html">DeepZensols Natural Language Processing</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../top.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>zensols.deepnlp.layer.embed</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for zensols.deepnlp.layer.embed</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;An embedding layer module useful for models that use embeddings as input.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;Paul Landes&#39;</span>
+
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">zensols.deeplearn.vectorize</span> <span class="kn">import</span> <span class="n">FeatureVectorizer</span>
+<span class="kn">from</span> <span class="nn">zensols.deeplearn.model</span> <span class="kn">import</span> <span class="n">BaseNetworkModule</span>
+<span class="kn">from</span> <span class="nn">zensols.deeplearn.batch</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Batch</span><span class="p">,</span>
+    <span class="n">BatchMetadata</span><span class="p">,</span>
+    <span class="n">BatchFieldMetadata</span><span class="p">,</span>
+    <span class="n">MetadataNetworkSettings</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">zensols.deepnlp.vectorize</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">EmbeddingLayer</span><span class="p">,</span>
+    <span class="n">TokenContainerFeatureType</span><span class="p">,</span>
+    <span class="n">TokenContainerFeatureVectorizer</span><span class="p">,</span>
+    <span class="n">SentenceFeatureVectorizer</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="EmbeddingNetworkSettings"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.EmbeddingNetworkSettings">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">EmbeddingNetworkSettings</span><span class="p">(</span><span class="n">MetadataNetworkSettings</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A utility container settings class for models that use an embedding input</span>
+<span class="sd">    layer that inherit from :class:`.EmbeddingNetworkModule`.</span>
+
+<span class="sd">    :param embedding_layer: the word embedding layer used to vectorize</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">embedding_layer</span><span class="p">:</span> <span class="n">EmbeddingLayer</span>
+
+<div class="viewcode-block" id="EmbeddingNetworkSettings.get_module_class_name"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.EmbeddingNetworkSettings.get_module_class_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_module_class_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;.EmbeddingNetworkModule&#39;</span></div></div>
+
+
+<div class="viewcode-block" id="EmbeddingNetworkModule"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.EmbeddingNetworkModule">[docs]</a><span class="k">class</span> <span class="nc">EmbeddingNetworkModule</span><span class="p">(</span><span class="n">BaseNetworkModule</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An module that uses an embedding as the input layer.  This class uses an</span>
+<span class="sd">    instance of :class:`.EmbeddingLayer` provided by the network settings</span>
+<span class="sd">    configuration for resolving the embedding during the *forward* phase.</span>
+
+<span class="sd">    The following attributes are created and/or set during initialization:</span>
+
+<span class="sd">      * ``embedding`` the :class:`.EmbeddingLayer` instance used get the input</span>
+<span class="sd">        embedding tensors</span>
+
+<span class="sd">      * ``embedding_attribute_name`` the name of the word embedding</span>
+<span class="sd">        vectorized feature attribute name</span>
+
+<span class="sd">      * ``embedding_output_size`` the outpu size of the embedding layer, note</span>
+<span class="sd">        this includes any features layered/concated given in all token level</span>
+<span class="sd">        vectorizer&#39;s configuration</span>
+
+<span class="sd">      * ``join_size`` if a join layer is to be used, this has the size of the</span>
+<span class="sd">        part of the join layer that will have the document level features</span>
+
+<span class="sd">      * ``token_attribs`` the token level feature names (see</span>
+<span class="sd">        :meth:`forward_token_features`)</span>
+
+<span class="sd">      * ``doc_attribs`` the doc level feature names (see</span>
+<span class="sd">        :meth:`forward_document_features`)</span>
+
+<span class="sd">    The initializer adds additional attributes conditional on the</span>
+<span class="sd">    :class:`.EmbeddingNetworkSettings` instance&#39;s</span>
+<span class="sd">    :obj:`~zensols.deeplearn.batch.meta.MetadataNetworkSettings.batch_metadata`</span>
+<span class="sd">    property (type :class:`~zensols.deeplearn.batch.meta.BatchMetadata`).  For</span>
+<span class="sd">    each meta data field&#39;s vectorizer that extends class</span>
+<span class="sd">    :class:`.TokenContainerFeatureVectorizer` the following is set on this</span>
+<span class="sd">    instance based on the value of ``feature_type`` (of type</span>
+<span class="sd">    :class:`.TokenContainerFeatureType`):</span>
+
+<span class="sd">      * :obj:`~.TokenContainerFeatureType.TOKEN`: ``embedding_output_size`` is</span>
+<span class="sd">        increased by the vectorizer&#39;s shape</span>
+
+<span class="sd">      * :obj:`~.TokenContainerFeatureType.DOCUMENT`: ``join_size`` is increased</span>
+<span class="sd">        by the vectorizer&#39;s shape</span>
+
+<span class="sd">      * :obj:`~.TokenContainerFeatureType.EMBEDDING`:</span>
+<span class="sd">        ``embedding_attribute_name`` is set to the name field&#39;s attribute and</span>
+<span class="sd">        ``embedding_vectorizer`` set to the field&#39;s vectorizer</span>
+
+<span class="sd">    Fields can be filtered by passing a filter function to the initializer.</span>
+<span class="sd">    See :meth:`__init__` for more information.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">MODULE_NAME</span> <span class="o">=</span> <span class="s1">&#39;emb&#39;</span>
+
+<div class="viewcode-block" id="EmbeddingNetworkModule.__init__"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.EmbeddingNetworkModule.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">net_settings</span><span class="p">:</span> <span class="n">EmbeddingNetworkSettings</span><span class="p">,</span>
+                 <span class="n">module_logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">filter_attrib_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">BatchFieldMetadata</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the embedding layer.</span>
+
+<span class="sd">        :param net_settings: the embedding layer configuration</span>
+
+<span class="sd">        :param logger: the logger to use for the forward process in this layer</span>
+
+<span class="sd">        :param filter_attrib_fn:</span>
+
+<span class="sd">            if provided, called with a :class:`.BatchFieldMetadata` for each</span>
+<span class="sd">            field returning ``True`` if the batch field should be retained and</span>
+<span class="sd">            used in the embedding layer (see class docs); if ``None`` all</span>
+<span class="sd">            fields are considered</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">net_settings</span><span class="p">,</span> <span class="n">module_logger</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">net_settings</span><span class="o">.</span><span class="n">embedding_layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding_output_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="o">.</span><span class="n">embedding_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">join_size</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">meta</span><span class="p">:</span> <span class="n">BatchMetadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">net_settings</span><span class="o">.</span><span class="n">batch_metadata</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token_attribs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">doc_attribs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">embedding_attribs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">field</span><span class="p">:</span> <span class="n">BatchFieldMetadata</span>
+        <span class="n">fba</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">fields_by_attribute</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fba</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="n">field_meta</span><span class="p">:</span> <span class="n">BatchFieldMetadata</span> <span class="o">=</span> <span class="n">fba</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">filter_attrib_fn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> \
+               <span class="ow">not</span> <span class="n">filter_attrib_fn</span><span class="p">(</span><span class="n">field_meta</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">_debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;skipping: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="n">vec</span><span class="p">:</span> <span class="n">FeatureVectorizer</span> <span class="o">=</span> <span class="n">field_meta</span><span class="o">.</span><span class="n">vectorizer</span>
+            <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">_debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> -&gt; </span><span class="si">{</span><span class="n">field_meta</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">TokenContainerFeatureVectorizer</span><span class="p">):</span>
+                <span class="n">attr</span> <span class="o">=</span> <span class="n">field_meta</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">attr</span>
+                <span class="k">if</span> <span class="n">vec</span><span class="o">.</span><span class="n">feature_type</span> <span class="o">==</span> <span class="n">TokenContainerFeatureType</span><span class="o">.</span><span class="n">TOKEN</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">_debug</span><span class="p">(</span><span class="s1">&#39;adding embedding_output_size: &#39;</span> <span class="o">+</span>
+                                      <span class="nb">str</span><span class="p">(</span><span class="n">vec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">embedding_output_size</span> <span class="o">+=</span> <span class="n">vec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">token_attribs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">vec</span><span class="o">.</span><span class="n">feature_type</span> <span class="o">==</span> <span class="n">TokenContainerFeatureType</span><span class="o">.</span><span class="n">DOCUMENT</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">_debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;adding join size for </span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s1">: &#39;</span> <span class="o">+</span>
+                                      <span class="nb">str</span><span class="p">(</span><span class="n">field_meta</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">join_size</span> <span class="o">+=</span> <span class="n">field_meta</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">doc_attribs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">vec</span><span class="o">.</span><span class="n">feature_type</span> <span class="o">==</span> <span class="n">TokenContainerFeatureType</span><span class="o">.</span><span class="n">EMBEDDING</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">_debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;adding embedding: </span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">embedding_attribs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">embedding_vectorizer</span> <span class="o">=</span> <span class="n">vec</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">embedding_attribs</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;expecting exactly one embedding vectorizer &#39;</span> <span class="o">+</span>
+                <span class="sa">f</span><span class="s1">&#39;feature type, but got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">embedding_attribs</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding_attribute_name</span> <span class="o">=</span> <span class="n">embedding_attribs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">embedding_dimension</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the dimension of the embeddings, which doesn&#39;t include any additional</span>
+<span class="sd">        token or document features potentially added.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="o">.</span><span class="n">embedding_dim</span>
+
+    <span class="k">def</span> <span class="nf">_get_embedding_attribute_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">Batch</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;batch: </span><span class="si">{</span><span class="n">batch</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_embedding_features</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_token_features</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_document_features</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+<div class="viewcode-block" id="EmbeddingNetworkModule.forward_embedding_features"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.EmbeddingNetworkModule.forward_embedding_features">[docs]</a>    <span class="k">def</span> <span class="nf">forward_embedding_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">Batch</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Use the embedding layer return the word embedding tensors.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">decoded</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">embedding_attribute_name</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shape_debug</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embedding_vectorizer</span><span class="p">,</span> <span class="n">SentenceFeatureVectorizer</span><span class="p">):</span>
+            <span class="n">decoded</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding_vectorizer</span><span class="o">.</span><span class="n">decode_embedding</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;is embedding already decoded: </span><span class="si">{</span><span class="n">decoded</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">decoded</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shape_debug</span><span class="p">(</span><span class="s1">&#39;decoded embedding&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span></div>
+
+<div class="viewcode-block" id="EmbeddingNetworkModule.forward_token_features"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.EmbeddingNetworkModule.forward_token_features">[docs]</a>    <span class="k">def</span> <span class="nf">forward_token_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">Batch</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
+            <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Concatenate any token features given by the vectorizer configuration.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">arrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">arrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">attrib</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_attribs</span><span class="p">:</span>
+            <span class="n">feats</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="n">attrib</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shape_debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;token attrib </span><span class="si">{</span><span class="n">attrib</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">feats</span><span class="p">)</span>
+            <span class="n">arrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">feats</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arrs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">arrs</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shape_debug</span><span class="p">(</span><span class="s1">&#39;token concat&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span></div>
+
+<div class="viewcode-block" id="EmbeddingNetworkModule.forward_document_features"><a class="viewcode-back" href="../../../../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.EmbeddingNetworkModule.forward_document_features">[docs]</a>    <span class="k">def</span> <span class="nf">forward_document_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">Batch</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                  <span class="n">include_fn</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Concatenate any document features given by the vectorizer configuration.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">arrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">arrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">attrib</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc_attribs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">include_fn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">include_fn</span><span class="p">(</span><span class="n">attrib</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">st</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="n">attrib</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shape_debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;doc attrib </span><span class="si">{</span><span class="n">attrib</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">st</span><span class="p">)</span>
+            <span class="n">arrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arrs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">arrs</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shape_debug</span><span class="p">(</span><span class="s1">&#39;doc concat&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Paul Landes
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

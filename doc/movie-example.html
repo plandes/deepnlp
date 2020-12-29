@@ -1,0 +1,669 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Movie Review Sentiment Example &mdash; DeepZensols Natural Language Processing 0.0.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="NER Example" href="ner-example.html" />
+    <link rel="prev" title="Layers" href="layers.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../top.html" class="icon icon-home" alt="Documentation Home"> DeepZensols Natural Language Processing
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layers.html">Layers</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Movie Review Sentiment Example</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#embedding">Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linguistic-configuration">Linguistic Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#natural-language-parsing">Natural Language Parsing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vectorizer-configuration">Vectorizer Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#project-specific">Project Specific</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-set-and-corpus">Data Set and Corpus</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#feature-stash">Feature Stash</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-frame-stash">Data Frame Stash</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-point">Data Point</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#feature-vectorizer-to-batch-mapping">Feature Vectorizer to Batch Mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#batch-stash">Batch Stash</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#facade">Facade</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running">Running</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#corpus-install">Corpus Install</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#command-line">Command Line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#jupyter-notebook">Jupyter Notebook</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ner-example.html">NER Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vectorizers.html">Vectorizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../top.html">DeepZensols Natural Language Processing</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../top.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Movie Review Sentiment Example</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/doc/movie-example.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="movie-review-sentiment-example">
+<h1>Movie Review Sentiment Example<a class="headerlink" href="#movie-review-sentiment-example" title="Permalink to this headline">¶</a></h1>
+<p>This document describes the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie">movie review task example</a> to demonstrate the
+DeepZenols NLP framework on the sentiment analysis task using the <a class="reference external" href="https://ai.stanford.edu/~amaas/data/sentiment/">Stanford
+movie review</a> and <a class="reference external" href="https://www.cs.cornell.edu/people/pabo/movie-review-data/">Cornell sentiment polarity</a> data sets.</p>
+<p>As before, we’ll incrementally go through the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie/resources/movie.conf">configuration file</a> section by
+section skipping those we have already covered in the <a class="reference external" href="https://plandes.github.io/deeplearn/index.html">deeplearn API</a> and <a class="reference external" href="https://plandes.github.io/deepnlp/index.html">deep
+NLP</a> APIs.  It is assumed you have read the <a class="reference external" href="https://plandes.github.io/deeplearn/index.html">deeplearn API</a> documentation and
+are reading this in parallel with the <a class="reference external" href="https://plandes.github.io/deepnlp/index.html">deep NLP</a> documentation.</p>
+<p>Note that there is quite a bit of inline documentation in the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie/resources/movie.conf">configuration
+file</a> so it is recommended the reader follow it while reading this tutorial.</p>
+<div class="section" id="embedding">
+<h2>Embedding<a class="headerlink" href="#embedding" title="Permalink to this headline">¶</a></h2>
+<p>The Zensols <a class="reference external" href="https://plandes.github.io/deepnlp/index.html">deep NLP</a> library supports word embeddings for <a class="reference external" href="https://nlp.stanford.edu/projects/glove/">Glove</a>,
+<a class="reference external" href="https://code.google.com/archive/p/word2vec/">Word2Vec</a>, <a class="reference external" href="https://fasttext.cc">fastText</a> and <a class="reference external" href="https://huggingface.co/transformers/model_doc/bert.html">BERT</a>.  The <code class="docutils literal notranslate"><span class="pre">embedding</span></code> section of the
+<a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie/resources/movie.conf">configuration file</a> specifies which word vector models and layers that use
+them.  This defines the 6 billion token (400K vocab) 50 dimension <a class="reference external" href="https://nlp.stanford.edu/projects/glove/">Glove</a> model
+with a <a class="reference external" href="../api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.glove.GloveWordEmbedModel">GloveWordEmbedModel</a> instance:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="c1"># glove embeddding model (not layer)</span>
+<span class="k">[glove_50_embedding]</span>
+<span class="na">class_name</span> <span class="o">=</span> <span class="s">zensols.deepnlp.embed.GloveWordEmbedModel</span>
+<span class="na">path</span> <span class="o">=</span> <span class="s">path: ${default:corpus_dir}/glove</span>
+<span class="na">desc</span> <span class="o">=</span> <span class="s">6B</span>
+<span class="na">dimension</span> <span class="o">=</span> <span class="s">50</span>
+<span class="na">lowercase</span> <span class="o">=</span> <span class="s">True</span>
+</pre></div>
+</div>
+<p>with the <code class="docutils literal notranslate"><span class="pre">lowercase</span></code> property telling the framework to down case all queries to
+the model since the word vectors were trained on a down cased corpus.</p>
+<p>Next, the feature vectorizer <a class="reference external" href="../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.WordVectorSentenceFeatureVectorizer">WordVectorSentenceFeatureVectorizer</a> that uses
+the above embedding is defined.  This converts the word vector indexes
+(depending on the configuration) to a tensor of the word embedding representing
+the corresponding sentence:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="c1"># a vectorizer that turns tokens (TokensContainer) in to indexes given to the</span>
+<span class="c1"># embedding layer</span>
+<span class="k">[glove_50_feature_vectorizer]</span>
+<span class="na">class_name</span> <span class="o">=</span> <span class="s">zensols.deepnlp.vectorize.WordVectorSentenceFeatureVectorizer</span>
+<span class="c1"># the feature id is used to connect instance data with the vectorizer used to</span>
+<span class="c1"># generate the feature at run time</span>
+<span class="na">feature_id</span> <span class="o">=</span> <span class="s">wvglove50</span>
+<span class="na">embed_model</span> <span class="o">=</span> <span class="s">instance: glove_50_embedding</span>
+<span class="c1"># treat the document as a stream of tokens generating a flat set of indexes</span>
+<span class="na">as_document</span> <span class="o">=</span> <span class="s">True</span>
+</pre></div>
+</div>
+<p>Finally, the last step is to define a <a class="reference external" href="../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.WordVectorEmbeddingLayer">WordVectorEmbeddingLayer</a>, which extends
+a <code class="docutils literal notranslate"><span class="pre">torch.nn.Module</span></code>, and used by the <a class="reference external" href="https://pytorch.org">PyTorch</a> framework to utilize the word
+embedding:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="c1"># a torch.nn.Module implementation that uses the an embedding model</span>
+<span class="k">[glove_50_embedding_layer]</span>
+<span class="na">class_name</span> <span class="o">=</span> <span class="s">zensols.deepnlp.vectorize.WordVectorEmbeddingLayer</span>
+<span class="na">embed_model</span> <span class="o">=</span> <span class="s">instance: glove_50_embedding</span>
+<span class="na">feature_vectorizer</span> <span class="o">=</span> <span class="s">instance: language_feature_manager</span>
+</pre></div>
+</div>
+<p>This module uses the glove embedding model to forward using a
+<code class="docutils literal notranslate"><span class="pre">torch.nn.Embedding</span></code> as input at the beginning of the forward <a class="reference external" href="https://pytorch.org">PyTorch</a> process.
+The reference to <code class="docutils literal notranslate"><span class="pre">language_feature_manager</span></code> is covered later.</p>
+<p>The next three entries have similar definitions for <a class="reference external" href="https://nlp.stanford.edu/projects/glove/">Glove</a> 300 dimension,
+Google’s pre-trained 300 dimension word2vec, and <a class="reference external" href="https://huggingface.co/transformers/model_doc/bert.html">BERT</a> embeddings.  The
+<code class="docutils literal notranslate"><span class="pre">as_document</span></code>, when true, parameter tells the framework to treat the embedding
+as a document using all tokens as one long stream as apposed to “stacking” each
+as a sentence.  When <code class="docutils literal notranslate"><span class="pre">decode_embedding</span></code> is set to true, the embedding is
+created during decode time, rather than at the time the batch is processed.
+The <code class="docutils literal notranslate"><span class="pre">model_name</span></code> for the <a class="reference external" href="https://huggingface.co/transformers/model_doc/bert.html">BERT</a> embeddings tells it which model to use, which
+can be <code class="docutils literal notranslate"><span class="pre">bert</span></code>, <code class="docutils literal notranslate"><span class="pre">distilbert</span></code>, <code class="docutils literal notranslate"><span class="pre">roberta</span></code> as defined by the <a class="reference external" href="https://github.com/huggingface/transformers">huggingface</a>
+transformers API.</p>
+</div>
+<div class="section" id="linguistic-configuration">
+<h2>Linguistic Configuration<a class="headerlink" href="#linguistic-configuration" title="Permalink to this headline">¶</a></h2>
+<p>Linguistic features are vectorized at one of the following levels:</p>
+<ul class="simple">
+<li><p><strong>token</strong>: token level with a shape congruent with the number of tokens,
+typically concatenated with the ebedding layer</p></li>
+<li><p><strong>document</strong>: document level, typically added to a join layer</p></li>
+<li><p><strong>embedding</strong>: embedding layer, typically used as the input layer</p></li>
+</ul>
+<p>Each <a class="reference external" href="../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer">TokenContainerFeatureVectorizer</a>, which extends the <a class="reference external" href="https://plandes.github.io/deeplearn/index.html">deeplearn API</a>
+<a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.vectorize.html#zensols.deeplearn.vectorize.manager.EncodableFeatureVectorizer">EncodableFeatureVectorizer</a> class defines a <code class="docutils literal notranslate"><span class="pre">FEATURE_TYPE</span></code> of type
+<a class="reference external" href="../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.TokenContainerFeatureType">TokenContainerFeatureType</a> that indicates this level.  We’ll see examples of
+these later in the configuration.  See the <a class="reference external" href="https://plandes.github.io/deeplearn/index.html">deeplearn API</a> for more information
+on the base class <a class="reference external" href="https://plandes.github.io/deeplearn/doc/preprocess.html#vectorizers">deeplearn vectorizers</a>.</p>
+<div class="section" id="natural-language-parsing">
+<h3>Natural Language Parsing<a class="headerlink" href="#natural-language-parsing" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">language_defaults</span></code> section is a shared configuration.  The
+<code class="docutils literal notranslate"><span class="pre">lower_case_token_mapper</span></code> to <code class="docutils literal notranslate"><span class="pre">langres</span></code> sections describe how to parse the
+natural language text with <a class="reference external" href="https://spacy.io">spaCy</a> and pertain to the <a class="reference external" href="https://github.com/plandes/nlparse">nlparse</a> API (see that
+API for more information).</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">doc_parser</span></code> is used by the deep NLP framework code to parse the text in to
+<a class="reference external" href="../api/zensols.deepnlp.html#zensols.deepnlp.domain.FeatureDocument">FeatureDocument</a> instances:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="c1"># creates features from documents by invoking by using SpaCy to parse the text</span>
+<span class="k">[doc_parser]</span>
+<span class="na">class_name</span> <span class="o">=</span> <span class="s">zensols.deepnlp.FeatureDocumentParser</span>
+<span class="na">langres</span> <span class="o">=</span> <span class="s">instance: langres</span>
+<span class="na">token_feature_ids</span> <span class="o">=</span> <span class="s">eval: set(&#39;norm ent dep tag children i dep_ is_punctuation&#39;.split())</span>
+</pre></div>
+</div>
+<p>Note that the configuration indicates a <code class="docutils literal notranslate"><span class="pre">LanguageResource</span></code> to use, which was
+defined above this configuration using the <a class="reference external" href="https://github.com/plandes/nlparse">nlparse</a> API.  The
+<code class="docutils literal notranslate"><span class="pre">token_feature_ids</span></code> tell the parser which token level features to keep.</p>
+</div>
+<div class="section" id="vectorizer-configuration">
+<h3>Vectorizer Configuration<a class="headerlink" href="#vectorizer-configuration" title="Permalink to this headline">¶</a></h3>
+<p>The next configuration defines an <a class="reference external" href="../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer">EnumContainerFeatureVectorizer</a>, which
+vectorizes <a class="reference external" href="https://spacy.io">spaCy</a> features in to one hot encoded vectors at the <em>token</em> level.
+In this example, POS tags, NER tags and dependency head tree is vectorized.
+See <a class="reference external" href="../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer">SpacyFeatureVectorizer</a> for more information.</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[enum_feature_vectorizer]</span>
+<span class="na">class_name</span> <span class="o">=</span> <span class="s">zensols.deepnlp.vectorize.EnumContainerFeatureVectorizer</span>
+<span class="na">feature_id</span> <span class="o">=</span> <span class="s">enum</span>
+<span class="c1"># train time tweakable</span>
+<span class="na">decoded_feature_ids</span> <span class="o">=</span> <span class="s">eval: set(&#39;ent tag dep&#39;.split())</span>
+</pre></div>
+</div>
+<p>Similarly, the <a class="reference external" href="../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer">CountEnumContainerFeatureVectorizer</a> encodes counts of each
+feature in the text at the <em>document</em> level.</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[count_feature_vectorizer]</span>
+<span class="na">class_name</span> <span class="o">=</span> <span class="s">zensols.deepnlp.vectorize.CountEnumContainerFeatureVectorizer</span>
+<span class="na">feature_id</span> <span class="o">=</span> <span class="s">count</span>
+<span class="na">decoded_feature_ids</span> <span class="o">=</span> <span class="s">eval: set(&#39;ent tag dep&#39;.split())</span>
+</pre></div>
+</div>
+<p>Several other linguistic feature vectorizers are defined until we get to the
+<code class="docutils literal notranslate"><span class="pre">language_feature_manager</span></code> entry:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[language_feature_manager]</span>
+<span class="na">class_name</span> <span class="o">=</span> <span class="s">zensols.deepnlp.vectorize.TokenContainerFeatureVectorizerManager</span>
+<span class="na">torch_config</span> <span class="o">=</span> <span class="s">instance: torch_config</span>
+<span class="c1"># word embedding vectorizers can not be class level since each instance is</span>
+<span class="c1"># configured</span>
+<span class="na">configured_vectorizers</span> <span class="o">=</span> <span class="s">eval: [</span>
+<span class="s">  &#39;word2vec_300_feature_vectorizer&#39;,</span>
+<span class="s">  &#39;glove_50_feature_vectorizer&#39;,</span>
+<span class="s">  &#39;glove_300_feature_vectorizer&#39;,</span>
+<span class="s">  &#39;bert_feature_vectorizer&#39;,</span>
+<span class="s">  &#39;enum_feature_vectorizer&#39;,</span>
+<span class="s">  &#39;count_feature_vectorizer&#39;,</span>
+<span class="s">  &#39;language_stats_feature_vectorizer&#39;,</span>
+<span class="s">  &#39;depth_token_feature_vectorizer&#39;]</span>
+<span class="c1"># used for parsing `FeatureDocument` instances</span>
+<span class="na">doc_parser</span> <span class="o">=</span> <span class="s">instance: doc_parser</span>
+<span class="c1"># the number of tokens in the document to use</span>
+<span class="na">token_length</span> <span class="o">=</span> <span class="s">${language_defaults:token_length}</span>
+<span class="c1"># features to use</span>
+<span class="na">token_feature_ids</span> <span class="o">=</span> <span class="s">${doc_parser:token_feature_ids}</span>
+</pre></div>
+</div>
+<p>This configuration creates a <a class="reference external" href="../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizerManager">TokenContainerFeatureVectorizerManager</a>, which is
+a language specific vectorizer manager that uses the <a class="reference external" href="../api/zensols.deepnlp.html#zensols.deepnlp.parse.FeatureDocumentParser">FeatureDocumentParser</a> we
+defined earlier with the <code class="docutils literal notranslate"><span class="pre">doc_parser</span></code> entry.  This class extends from
+<a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.vectorize.html?highlight=featurevectorizermanager#zensols.deeplearn.vectorize.manager.FeatureVectorizerManager">FeatureVectorizerManager</a> as an NLP specific manager that creates and encodes
+the word embeddings and the other linguistic feature vectorizers configured.
+The <code class="docutils literal notranslate"><span class="pre">token_length</span></code> parameter are the lengths of sentences or documents in numbers of
+tokens.</p>
+</div>
+</div>
+<div class="section" id="project-specific">
+<h2>Project Specific<a class="headerlink" href="#project-specific" title="Permalink to this headline">¶</a></h2>
+<p>The next configuration set defines the vectorizer for the label itself, which
+is a binary either <em>positive</em> or <em>negative</em> review of the movie:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="c1"># vectorize the labels from text to PyTorch tensors</span>
+<span class="k">[label_vectorizer]</span>
+<span class="na">class_name</span> <span class="o">=</span> <span class="s">zensols.deeplearn.vectorize.NominalEncodedEncodableFeatureVectorizer</span>
+<span class="na">categories</span> <span class="o">=</span> <span class="s">eval: &#39;${class:labels}&#39;.split()</span>
+<span class="na">feature_id</span> <span class="o">=</span> <span class="s">rvlabel</span>
+</pre></div>
+</div>
+<p>We define a manager and manager set separate from the linguistic configuration
+since the package space is different:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[label_vectorizer_manager]</span>
+<span class="na">class_name</span> <span class="o">=</span> <span class="s">zensols.deeplearn.vectorize.FeatureVectorizerManager</span>
+<span class="na">torch_config</span> <span class="o">=</span> <span class="s">instance: torch_config</span>
+<span class="na">configured_vectorizers</span> <span class="o">=</span> <span class="s">eval: &#39;label_vectorizer&#39;.split()</span>
+
+<span class="k">[vectorizer_manager_set]</span>
+<span class="na">class_name</span> <span class="o">=</span> <span class="s">zensols.deeplearn.vectorize.FeatureVectorizerManagerSet</span>
+<span class="na">names</span> <span class="o">=</span> <span class="s">eval: &#39;language_feature_manager label_vectorizer_manager&#39;.split()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="data-set-and-corpus">
+<h2>Data Set and Corpus<a class="headerlink" href="#data-set-and-corpus" title="Permalink to this headline">¶</a></h2>
+<p>This example utilizes much of the <a class="reference external" href="https://plandes.github.io/deeplearn/index.html">deeplearn API</a> framework code.  The main
+thrust is to create a <a class="reference external" href="https://pandas.pydata.org">Pandas</a> data frame, which is then used to provide the
+natural language text and labels.  All features are taken only from the text.</p>
+<div class="section" id="feature-stash">
+<h3>Feature Stash<a class="headerlink" href="#feature-stash" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie/src/movie/dataset.py">dataset.py</a> file provides a class that merges the Stanford movie review
+corpus with the Cornell labels.  The <code class="docutils literal notranslate"><span class="pre">dataset</span></code> property is called by the
+framework to get a <a class="reference external" href="https://pandas.pydata.org">Pandas</a> data frame that is used by <code class="docutils literal notranslate"><span class="pre">ReviewRowStash</span></code>, which
+inherits and gets it’s functionality from a <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.dataframe.html#zensols.dataframe.stash.DataframeStash">DataframeStash</a>.  This dataframe
+contains the label and the natural language text used to test and train the
+model.  The <code class="docutils literal notranslate"><span class="pre">dataset_factory</span></code> entry in the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie/resources/movie.conf">configuration file</a> configures this
+class.  However, since this is very implementation specific to the movie review
+corpus, we will not cover it in this tutorial.</p>
+<p>The <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie/src/movie/domain.py">domain.py</a> file defines a <code class="docutils literal notranslate"><span class="pre">Review</span></code> domain container class that has the
+polarity positive or negative feed back for each review.  All we need to do is
+to extend <a class="reference external" href="../api/zensols.deepnlp.html#zensols.deepnlp.domain.FeatureDocument">FeatureDocument</a> and add the label to get the complete domain
+feature document for our application.</p>
+<p>Also defined in this file is the <code class="docutils literal notranslate"><span class="pre">ReviewFeatureStash</span></code>, which extends a
+<a class="reference external" href="../api/zensols.deepnlp.feature.html#zensols.deepnlp.feature.stash.DocumentFeatureStash">DocumentFeatureStash</a> that handles the work of parsing the text.  In the
+initializer, we have to tell the framework which class to create
+(i.e. instances of <code class="docutils literal notranslate"><span class="pre">Review</span></code> rather than the default <code class="docutils literal notranslate"><span class="pre">FeatureDocument</span></code>) for each
+document parsed:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vec_manager</span><span class="o">.</span><span class="n">doc_parser</span><span class="o">.</span><span class="n">doc_class</span> <span class="o">=</span> <span class="n">Review</span>
+</pre></div>
+</div>
+<p>Next we override a method invoke the parsing with the text and set the label
+from the <a class="reference external" href="https://pandas.pydata.org">Pandas</a> data frame:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">_parse_document</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Review</span><span class="p">:</span>
+        <span class="c1"># text to parse with SpaCy</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;sentence&#39;</span><span class="p">]</span>
+        <span class="c1"># the class label</span>
+        <span class="n">polarity</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;polarity&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vec_manager</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">polarity</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note the <code class="docutils literal notranslate"><span class="pre">parse</span></code> call is on the vectorizer manager we configured in the
+<a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie/resources/movie.conf">configuration file</a> <code class="docutils literal notranslate"><span class="pre">language_feature_manager</span></code> entry we saw in the <a class="reference external" href="#linguistic-configuration">Linguistic
+Configuration</a> section.</p>
+</div>
+<div class="section" id="data-frame-stash">
+<h3>Data Frame Stash<a class="headerlink" href="#data-frame-stash" title="Permalink to this headline">¶</a></h3>
+<p>So far in this section we’ve only covered the implementation.  Here is the
+configuration for the data frame stash:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[dataframe_stash]</span>
+<span class="na">class_name</span> <span class="o">=</span> <span class="s">movie.ReviewRowStash</span>
+<span class="na">dataset_factory</span> <span class="o">=</span> <span class="s">instance: dataset_factory</span>
+<span class="c1"># location of pickled cache data to avoid recreating the dataframe each time</span>
+<span class="na">dataframe_path</span> <span class="o">=</span> <span class="s">path: ${default:data_dir}/df.dat</span>
+<span class="na">split_col</span> <span class="o">=</span> <span class="s">${dataset_factory:split_col}</span>
+<span class="na">key_path</span> <span class="o">=</span> <span class="s">path: ${default:data_dir}/keys.dat</span>
+</pre></div>
+</div>
+<p>See the <a class="reference external" href="https://plandes.github.io/deeplearn/index.html">deeplearn API</a> more documentation on <a class="reference external" href="https://plandes.github.io/deeplearn/doc/preprocess.html#data-as-a-pandas-data-frame">data frame stashes</a>.</p>
+</div>
+<div class="section" id="data-point">
+<h3>Data Point<a class="headerlink" href="#data-point" title="Permalink to this headline">¶</a></h3>
+<p>So far we’ve defined that base feature class <code class="docutils literal notranslate"><span class="pre">Review</span></code>, the stash that keeps
+track of them, <code class="docutils literal notranslate"><span class="pre">ReviewFeatureStash</span></code>.  Now we need to extend the <a class="reference external" href="https://plandes.github.io/deeplearn/doc/preprocess.html#batches">deeplearn API
+batch</a> classes.  We’ll start with the data point class:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">ReviewDataPoint</span><span class="p">(</span><span class="n">FeatureDocumentDataPoint</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">label</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">polarity</span>
+</pre></div>
+</div>
+<p>which extends from the linguistic specific data point class
+<a class="reference external" href="../api/zensols.deepnlp.batch.html#zensols.deepnlp.batch.domain.FeatureDocumentDataPoint">FeatureDocumentDataPoint</a>.  There’s not much more to this than returning the
+label from the <code class="docutils literal notranslate"><span class="pre">Review</span></code> class that’s retrieved from the <code class="docutils literal notranslate"><span class="pre">ReviewFeatureStash</span></code>
+that’s set as the <code class="docutils literal notranslate"><span class="pre">doc</span></code> attribute on the <a class="reference external" href="../api/zensols.deepnlp.batch.html#zensols.deepnlp.batch.domain.FeatureDocumentDataPoint">FeatureDocumentDataPoint</a> by
+<code class="docutils literal notranslate"><span class="pre">ReviewFeatureStash</span></code> (via the super class <a class="reference external" href="../api/zensols.deepnlp.feature.html#zensols.deepnlp.feature.stash.DocumentFeatureStash">DocumentFeatureStash</a>).</p>
+</div>
+<div class="section" id="feature-vectorizer-to-batch-mapping">
+<h3>Feature Vectorizer to Batch Mapping<a class="headerlink" href="#feature-vectorizer-to-batch-mapping" title="Permalink to this headline">¶</a></h3>
+<p>The last bit of implementation that’s needed is the binding between the domain
+classes and the vectorizers.  First we define constants of the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie/resources/movie.conf">configuration
+file</a> entries in the <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.batch.html#zensols.deeplearn.batch.domain.Batch">Batch</a> class <code class="docutils literal notranslate"><span class="pre">ReviewBatch</span></code> to reduce duplication in our
+code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">ReviewBatch</span><span class="p">(</span><span class="n">Batch</span><span class="p">):</span>
+    <span class="n">LANGUAGE_FEATURE_MANAGER_NAME</span> <span class="o">=</span> <span class="s1">&#39;language_feature_manager&#39;</span>
+    <span class="n">GLOVE_50_EMBEDDING</span> <span class="o">=</span> <span class="s1">&#39;glove_50_embedding&#39;</span>
+    <span class="n">GLOVE_300_EMBEDDING</span> <span class="o">=</span> <span class="s1">&#39;glove_300_embedding&#39;</span>
+    <span class="n">WORD2VEC_300_EMBEDDING</span> <span class="o">=</span> <span class="s1">&#39;word2vec_300_embedding&#39;</span>
+    <span class="n">BERT_EMBEDDING</span> <span class="o">=</span> <span class="s1">&#39;bert_embedding&#39;</span>
+    <span class="n">EMBEDDING_ATTRIBUTES</span> <span class="o">=</span> <span class="p">{</span><span class="n">GLOVE_50_EMBEDDING</span><span class="p">,</span> <span class="n">GLOVE_300_EMBEDDING</span><span class="p">,</span>
+                            <span class="n">WORD2VEC_300_EMBEDDING</span><span class="p">,</span> <span class="n">BERT_EMBEDDING</span><span class="p">}</span>
+    <span class="n">STATS_ATTRIBUTE</span> <span class="o">=</span> <span class="s1">&#39;stats&#39;</span>
+    <span class="n">ENUMS_ATTRIBUTE</span> <span class="o">=</span> <span class="s1">&#39;enums&#39;</span>
+    <span class="n">COUNTS_ATTRIBUTE</span> <span class="o">=</span> <span class="s1">&#39;counts&#39;</span>
+    <span class="n">DEPENDENCIES_ATTRIBUTE</span> <span class="o">=</span> <span class="s1">&#39;dependencies&#39;</span>
+    <span class="n">LANGUAGE_ATTRIBUTES</span> <span class="o">=</span> <span class="p">{</span><span class="n">STATS_ATTRIBUTE</span><span class="p">,</span> <span class="n">ENUMS_ATTRIBUTE</span><span class="p">,</span> <span class="n">COUNTS_ATTRIBUTE</span><span class="p">,</span>
+                           <span class="n">DEPENDENCIES_ATTRIBUTE</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Next we define the mapping of the label class and vectorizer of the label:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="n">MAPPINGS</span> <span class="o">=</span> <span class="n">BatchFeatureMapping</span><span class="p">(</span>
+        <span class="s1">&#39;label&#39;</span><span class="p">,</span>
+        <span class="p">[</span><span class="n">ManagerFeatureMapping</span><span class="p">(</span>
+            <span class="s1">&#39;label_vectorizer_manager&#39;</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">FieldFeatureMapping</span><span class="p">(</span><span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="s1">&#39;rvlabel&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">),)),</span>
+</pre></div>
+</div>
+<p>Now we provide the linguistic feature mapping to vectorizers, again using the
+<code class="docutils literal notranslate"><span class="pre">feature_id</span></code> given in the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie/resources/movie.conf">configuration file</a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>         <span class="n">ManagerFeatureMapping</span><span class="p">(</span>
+             <span class="n">LANGUAGE_FEATURE_MANAGER_NAME</span><span class="p">,</span>
+             <span class="p">(</span><span class="n">FieldFeatureMapping</span><span class="p">(</span><span class="n">GLOVE_50_EMBEDDING</span><span class="p">,</span> <span class="s1">&#39;wvglove50&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;doc&#39;</span><span class="p">),</span>
+              <span class="n">FieldFeatureMapping</span><span class="p">(</span><span class="n">GLOVE_300_EMBEDDING</span><span class="p">,</span> <span class="s1">&#39;wvglove300&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;doc&#39;</span><span class="p">),</span>
+              <span class="n">FieldFeatureMapping</span><span class="p">(</span><span class="n">WORD2VEC_300_EMBEDDING</span><span class="p">,</span> <span class="s1">&#39;w2v300&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;doc&#39;</span><span class="p">),</span>
+              <span class="n">FieldFeatureMapping</span><span class="p">(</span><span class="n">BERT_EMBEDDING</span><span class="p">,</span> <span class="s1">&#39;bert&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;doc&#39;</span><span class="p">),</span>
+              <span class="n">FieldFeatureMapping</span><span class="p">(</span><span class="n">STATS_ATTRIBUTE</span><span class="p">,</span> <span class="s1">&#39;stats&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;doc&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+              <span class="n">FieldFeatureMapping</span><span class="p">(</span><span class="n">ENUMS_ATTRIBUTE</span><span class="p">,</span> <span class="s1">&#39;enum&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;doc&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+              <span class="n">FieldFeatureMapping</span><span class="p">(</span><span class="n">COUNTS_ATTRIBUTE</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;doc&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+              <span class="n">FieldFeatureMapping</span><span class="p">(</span><span class="n">DEPENDENCIES_ATTRIBUTE</span><span class="p">,</span> <span class="s1">&#39;dep&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;doc&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))])</span>
+</pre></div>
+</div>
+<p>Finally, we return the given <code class="docutils literal notranslate"><span class="pre">MAPPINGS</span></code> class level constant in our class as
+the single abstract method of the <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.batch.html#zensols.deeplearn.batch.domain.Batch">Batch</a> super class:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">_get_batch_feature_mappings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BatchFeatureMapping</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAPPINGS</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="batch-stash">
+<h3>Batch Stash<a class="headerlink" href="#batch-stash" title="Permalink to this headline">¶</a></h3>
+<p>The batch stash configuration should look familiar if you have read through the
+<a class="reference external" href="https://plandes.github.io/deeplearn/doc/preprocess.html#batch-stash">deeplearn API batch stash</a> documentation.  It bears mention the utility of the
+<a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.batch.html?highlight=batchdirectorycompositestash#zensols.deeplearn.batch.stash.BatchDirectoryCompositeStash">BatchDirectoryCompositeStash</a> configuration that splits data in separate files
+across features for each batch.</p>
+<p>In this configuration, we split the label, embeddings, and linguistic features
+in their own groups so that we can experiment using different embeddings for
+each test.  Using BERT will take the longest since each sentence will be
+computed during decoding.</p>
+<p>However, a much faster set, will be <a class="reference external" href="https://nlp.stanford.edu/projects/glove/">Glove</a> 50D embeddings as only the indexes
+are stored and quickly retrieved in the <a class="reference external" href="https://pytorch.org">PyTorch</a> API on demand.  Our caching
+strategy also changes as we can (with most graphics cards) fit the entire
+<a class="reference external" href="https://nlp.stanford.edu/projects/glove/">Glove</a> 50D embedding in GPU memory.  Our composition stash configuration
+follows:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[batch_dir_stash]</span>
+<span class="na">class_name</span> <span class="o">=</span> <span class="s">zensols.deeplearn.batch.BatchDirectoryCompositeStash</span>
+<span class="c1"># top level directory to store each feature sub directory</span>
+<span class="na">path</span> <span class="o">=</span> <span class="s">path: ${default:batch_dir}/data</span>
+<span class="na">groups</span> <span class="o">=</span> <span class="s">eval: (</span>
+<span class="s">       # there will be N (batch_stash:batch_size) batch labels in one file in a</span>
+<span class="s">       # directory of just label files</span>
+<span class="s">       set(&#39;label&#39;.split()),</span>
+<span class="s">       # because we might want to switch between embeddings, separate them</span>
+<span class="s">       set(&#39;glove_50_embedding&#39;.split()),</span>
+<span class="s">       set(&#39;glove_300_embedding&#39;.split()),</span>
+<span class="s">       set(&#39;word2vec_300_embedding&#39;.split()),</span>
+<span class="s">       set(&#39;bert_embedding&#39;.split()),</span>
+<span class="s">       # however, natural language features are optional for this task</span>
+<span class="s">       set(&#39;enums stats counts dependencies&#39;.split()))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="facade">
+<h2>Facade<a class="headerlink" href="#facade" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie/src/movie/facade.py">facade.py</a> file contains the implementation of the facade used for the
+movie reviews.  This extends from <a class="reference external" href="../api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacade">LanguageModelFacade</a>, which supports natural
+language model feature updating and sets up logging.  This class is used both
+from the <a class="reference external" href="#command-line">command line interface</a> and from the <a class="reference external" href="#jupyter-notebook">Jupyter
+notebook</a>.</p>
+<p>The feature updating wiring happens with the <a class="reference external" href="../api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacadeConfig">LanguageModelFacadeConfig</a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">ReviewModelFacade</span><span class="p">(</span><span class="n">LanguageModelFacade</span><span class="p">):</span>
+    <span class="n">LANGUAGE_MODEL_CONFIG</span> <span class="o">=</span> <span class="n">LanguageModelFacadeConfig</span><span class="p">(</span>
+        <span class="n">manager_name</span><span class="o">=</span><span class="n">ReviewBatch</span><span class="o">.</span><span class="n">LANGUAGE_FEATURE_MANAGER_NAME</span><span class="p">,</span>
+        <span class="n">attribs</span><span class="o">=</span><span class="n">ReviewBatch</span><span class="o">.</span><span class="n">LANGUAGE_ATTRIBUTES</span><span class="p">,</span>
+        <span class="n">embedding_attribs</span><span class="o">=</span><span class="n">ReviewBatch</span><span class="o">.</span><span class="n">EMBEDDING_ATTRIBUTES</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and used by the framework by overriding:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">_get_language_model_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LanguageModelFacadeConfig</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">LANGUAGE_MODEL_CONFIG</span>
+</pre></div>
+</div>
+<p>Setting the dropout triggers property setters to propagate (linear and
+recurrent layers) the setting when set on the facade:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="o">.</span><span class="n">net_settings</span><span class="o">.</span><span class="n">dropout</span>
+</pre></div>
+</div>
+<p>We also override the embeddings setter so we get a long stream of tokens for
+BERT embeddings:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">_set_embedding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embedding</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">needs_change</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_set_embedding</span><span class="p">(</span><span class="n">embedding</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">needs_change</span> <span class="ow">and</span> <span class="n">embedding</span> <span class="o">==</span> <span class="s1">&#39;bert&#39;</span><span class="p">:</span>
+            <span class="c1"># m/m F1 814, 811</span>
+            <span class="n">vec_mng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">language_vectorizer_manager</span>
+            <span class="n">vec_mng</span><span class="o">.</span><span class="n">token_length</span> <span class="o">=</span> <span class="mi">100</span>
+</pre></div>
+</div>
+<p>We can also override the <code class="docutils literal notranslate"><span class="pre">get_predictions</span></code> method to include the review text
+and it’s length when creating the data frame and respective CSV export:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">get_predictions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_predictions</span><span class="p">(</span>
+            <span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s1">&#39;len&#39;</span><span class="p">),</span>
+            <span class="k">lambda</span> <span class="n">dp</span><span class="p">:</span> <span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">review</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">review</span><span class="o">.</span><span class="n">text</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="running">
+<h2>Running<a class="headerlink" href="#running" title="Permalink to this headline">¶</a></h2>
+<p>The movie review data set example can be run from the command line or as a
+Jupyter notebook.  First you must download and install the corpus.</p>
+<div class="section" id="corpus-install">
+<h3>Corpus Install<a class="headerlink" href="#corpus-install" title="Permalink to this headline">¶</a></h3>
+<p>To install the corpus:</p>
+<ol class="simple">
+<li><p>Install <a class="reference external" href="https://www.gnu.org/software/make/">GNU make</a></p></li>
+<li><p>Change the working directory to the example: <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">examples/movie</span></code></p></li>
+<li><p>Download and install the corpora: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">corpus</span></code>.  This should download all
+the necessary corpora and <a class="reference external" href="https://nlp.stanford.edu/projects/glove/">Glove</a> and <a class="reference external" href="https://code.google.com/archive/p/word2vec/">Word2Vec</a> word embeddings.</p></li>
+<li><p>Confirm there are no errors and the corpus directories exist:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">corpus/stanfordSentimentTreebank/datasetSentences.txt</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">corpus/rt-polaritydata/rt-polarity.{pos,neg}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">corpus/glove/glove.6B.300d.txt</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">corpus/word2vec/GoogleNews-vectors-negative300.bin.gz</span></code></p></li>
+</ul>
+</li>
+</ol>
+</div>
+<div class="section" id="command-line">
+<h3>Command Line<a class="headerlink" href="#command-line" title="Permalink to this headline">¶</a></h3>
+<p>To train and test the model invoke: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">modeltraintest</span></code>.</p>
+</div>
+<div class="section" id="jupyter-notebook">
+<h3>Jupyter Notebook<a class="headerlink" href="#jupyter-notebook" title="Permalink to this headline">¶</a></h3>
+<p>To run the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie/notebook/movie.ipynb">Jupyter movie notebook</a>:</p>
+<ol class="simple">
+<li><p>Pip install: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">notebook</span></code></p></li>
+<li><p>Go to the notebook directory: <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">examples/movie/notebook</span></code></p></li>
+<li><p>Start the notebook: <code class="docutils literal notranslate"><span class="pre">jupyter</span> <span class="pre">notebook</span></code></p></li>
+<li><p>Start the execution in the notebook with <code class="docutils literal notranslate"><span class="pre">Cell</span> <span class="pre">&gt;</span> <span class="pre">Run</span> <span class="pre">All</span></code>.</p></li>
+</ol>
+<!-- links --></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ner-example.html" class="btn btn-neutral float-right" title="NER Example" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="layers.html" class="btn btn-neutral float-left" title="Layers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Paul Landes
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
