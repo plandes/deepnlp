@@ -43,7 +43,7 @@ testenum:
 exampleclean:
 		@for i in example/* ; do \
 			make -C $$i clean ; \
-		done
+		done || true
 
 .PHONY:		cleancorpus
 cleancorpus:
