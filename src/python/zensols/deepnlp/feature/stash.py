@@ -3,7 +3,6 @@ from typing import Iterable, List, Tuple, Any
 from dataclasses import dataclass
 from abc import abstractmethod, ABCMeta
 import itertools as it
-from zensols.config import Configurable
 from zensols.persist import Stash, PrimeableStash
 from zensols.multi import MultiProcessStash
 from zensols.deepnlp import FeatureDocument
@@ -20,7 +19,6 @@ class DocumentFeatureStash(MultiProcessStash, metaclass=ABCMeta):
     """
     ATTR_EXP_META = ('document_limit',)
 
-    config: Configurable
     name: str
     factory: Stash
     vec_manager: TokenContainerFeatureVectorizerManager
