@@ -73,6 +73,7 @@ class TopicModelDocumentIndexerVectorizer(DocumentIndexVectorizer):
 
         :param tokens: the string list of tokens to use for inferencing in the
                        model
+
         :return: a list of tuples in the form ``(topic_id, probability)``
 
         """

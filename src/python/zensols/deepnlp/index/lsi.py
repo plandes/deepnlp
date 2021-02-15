@@ -25,6 +25,8 @@ class LatentSemanticDocumentIndexerVectorizer(DocumentIndexVectorizer):
     R. 1990.  Indexing by Latent Semantic Analysis. Journal of the American
     Society for Information Science; New York, N.Y. 41, 6, 391–407.
 
+    :shape: ``(1,)``
+
     :see: :class:`sklearn.decomposition.TruncatedSVD`
 
     """
@@ -41,6 +43,10 @@ class LatentSemanticDocumentIndexerVectorizer(DocumentIndexVectorizer):
         return 1,
 
     def _create_model(self, docs: Iterable[FeatureDocument]) -> Any:
+        """Train using a singular value decomposition, then truncate to get the most
+        salient terms in a document/term matrics.
+
+        """
         vectorizer = TfidfVectorizer(
             lowercase=False,
             tokenizer=self.feat_to_tokens
@@ -58,7 +64,8 @@ class LatentSemanticDocumentIndexerVectorizer(DocumentIndexVectorizer):
                         f'over {self.iterations} iterations with ' +
                         f'TF/IDF matrix shape: {X_train_tfidf.shape}, ' +
                         f'SVD matrix shape: {X_train_lsa.shape}')
-        return {'vectorizer': vectorizer, 'lsa': lsa}
+        return {'vectorizer': vectorizer,
+                'lsa': lsa}
 
     def _transform_doc(self, doc: FeatureDocument, vectorizer: TfidfVectorizer,
                        lsa: Pipeline) -> np.ndarray:
@@ -67,6 +74,9 @@ class LatentSemanticDocumentIndexerVectorizer(DocumentIndexVectorizer):
         return X_test_lsa
 
     def similarity(self, a: FeatureDocument, b: FeatureDocument) -> float:
+        """Return the semantic similarity between two documents.
+
+        """
         model = self.model
         vectorizer = model['vectorizer']
         lsa = model['lsa']

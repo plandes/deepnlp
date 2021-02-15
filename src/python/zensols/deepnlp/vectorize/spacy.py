@@ -4,7 +4,7 @@
 __author__ = 'Paul Landes'
 
 from typing import Tuple, Any
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import sys
 import math
 import itertools as it
@@ -19,25 +19,33 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
     """This normalizes feature IDs of parsed token features in to a number between
     [0, 1].  This is useful for normalized feature vectors as input to neural
     networks.  Input to this would be strings like ``token.ent_`` found on a
-    ``TokenAttributes`` instance.
+    :class:`zensols.nlp.feature.TokenAttributes` instance.
 
     The class is also designed to create features using indexes, so there are
     methods to resolve to a unique ID from an identifier.
 
     Instances of this class behave like a ``dict``.
 
-    All symbols are taken from spacy.glossary.
+    All symbols are taken from :obj:`spacy.glossary.GLOSSARY`.
 
     :param vocab: the vocabulary used for ``from_spacy`` to compute the
                   normalized feature from the spacy ID (i.e. ``token.ent_``,
                   ``token.tag_`` etc.)
 
-    :see: spacy.glossary
-    :see: feature.TokenAttributes
+    :see: :obj:`spacy.glossary.GLOSSARY`
+
+    :see: :class:`zensols.nlp.feature.TokenAttributes`
 
     """
-    torch_config: TorchConfig
-    vocab: Vocab
+    torch_config: TorchConfig = field()
+    """The torch configuration used to create tensors."""
+
+    vocab: Vocab = field()
+    """The spaCy vocabulary used to create IDs from strings.
+
+    :see meth:`id_from_spacy_symbol`
+
+    """
 
     def __post_init__(self):
         super().__post_init__()
@@ -123,6 +131,11 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
 
 @dataclass
 class NamedEntityRecognitionFeatureVectorizer(SpacyFeatureVectorizer):
+    """A feature vectorizor for NER tags.
+
+    :see: :class:`.SpacyFeatureVectorizer`
+
+    """
     DESCRIPTION = 'named entity recognition'
     LANG = 'en'
     FEATURE_ID = 'ent'
@@ -132,6 +145,11 @@ class NamedEntityRecognitionFeatureVectorizer(SpacyFeatureVectorizer):
 
 @dataclass
 class DependencyFeatureVectorizer(SpacyFeatureVectorizer):
+    """A feature vectorizor for dependency head trees.
+
+    :see: :class:`.SpacyFeatureVectorizer`
+
+    """
     DESCRIPTION = 'dependency'
     LANG = 'en'
     FEATURE_ID = 'dep'
@@ -145,6 +163,11 @@ quantmod rcmod relcl reparandum root vocative xcomp ROOT"""
 
 @dataclass
 class PartOfSpeechFeatureVectorizer(SpacyFeatureVectorizer):
+    """A feature vectorizor for POS tags.
+
+    :see: :class:`.SpacyFeatureVectorizer`
+
+    """
     DESCRIPTION = 'part of speech'
     LANG = 'en'
     FEATURE_ID = 'tag'
@@ -159,3 +182,6 @@ SpacyFeatureVectorizer.VECTORIZERS = \
     {cls.FEATURE_ID: cls for cls in (NamedEntityRecognitionFeatureVectorizer,
                                      DependencyFeatureVectorizer,
                                      PartOfSpeechFeatureVectorizer)}
+"""The default set of spaCy feature vectorizers.
+
+"""

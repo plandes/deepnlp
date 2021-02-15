@@ -92,7 +92,7 @@ class DocumentIndexVectorizer(TokenContainerFeatureVectorizer,
     @abstractmethod
     def _create_model(self, docs: Iterable[FeatureDocument]) -> Any:
         """Create the model for this indexer.  The model is implementation specific.
-        The model must be pickelabel and is cached in as :obj:`model.
+        The model must be pickelabel and is cached in as :obj:`model`.
 
         """
         pass

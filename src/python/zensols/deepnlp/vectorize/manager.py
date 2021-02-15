@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 
 class TokenContainerFeatureType(Enum):
-    """The type of :class:`TokenContainerFeatureVectorizer`.
+    """The type of :class:`.TokenContainerFeatureVectorizer`.
 
     """
     TOKEN = 0
@@ -52,7 +52,7 @@ class TokenContainerFeatureType(Enum):
 class TokenContainerFeatureVectorizer(EncodableFeatureVectorizer,
                                       metaclass=ABCMeta):
     """Creates document or sentence level features using instances of
-    ``TokensContainer``.
+    :class:`.TokensContainer`.
 
     """
     @abstractmethod
@@ -75,8 +75,8 @@ class TokenContainerFeatureVectorizer(EncodableFeatureVectorizer,
 
 @dataclass
 class TokenContainerFeatureVectorizerManager(FeatureVectorizerManager):
-    """Creates and manages instances of ``TokenContainerFeatureVectorizer`` and
-    parses text in to feature based document.
+    """Creates and manages instances of :class:`.TokenContainerFeatureVectorizer`
+    and parses text in to feature based document.
 
     This is used to manage the relationship of a given set of parsed features
     keeping in mind that parsing will usually happen as a preprocessing step.
@@ -85,14 +85,30 @@ class TokenContainerFeatureVectorizerManager(FeatureVectorizerManager):
     these checks, of course, are not necessary if pickling isn't used across
     the parse and vectorization steps.
 
-    :see TokenContainerFeatureVectorizer:
-    :see parse:
+    :see: :class:`.TokenContainerFeatureVectorizer`
+
+    :see :meth:`parse`
 
     """
-    doc_parser: FeatureDocumentParser
-    token_length: int
+    doc_parser: FeatureDocumentParser = field()
+    """Used to :meth:`parse` documents."""
+
+    token_length: int = field()
+    """The length of tokens used in fixed length features.  This is used as a
+    dimension in decoded tensors.
+
+    """
+
     token_feature_ids: Set[str] = field(
         default_factory=lambda: FeatureDocumentParser.TOKEN_FEATURE_IDS)
+    """Indicates which spaCy parsed features to generate in the vectorizers held in
+    this instance.  Examples include ``norm``, ``ent``, ``dep``, ``tag``.
+
+    :see: :obj:`.FeatureDocumentParser.TOKEN_FEATURE_IDS`
+
+    :see: :obj:`.SpacyFeatureVectorizer.VECTORIZERS`
+
+    """
 
     def __post_init__(self):
         super().__post_init__()
@@ -102,12 +118,13 @@ class TokenContainerFeatureVectorizerManager(FeatureVectorizerManager):
             s = f'parser token features do not exist in vectorizer: {fdiffs}'
             raise ValueError(s)
 
-    def parse(self, text: Union[str, List[str]], *args, **kwargs) -> FeatureDocument:
+    def parse(self, text: Union[str, List[str]], *args, **kwargs) -> \
+            FeatureDocument:
         """Parse text or a text as a list of sentences.
 
-        *Important:* Parsing documents through this manager instance is better
-        since safe checks are made that features are available from those used
-        when documents are parsed before pickling.
+        **Important**: Parsing documents through this manager instance is
+        better since safe checks are made that features are available from
+        those used when documents are parsed before pickling.
 
         :param text: either a string or a list of strings; if the former a
                      document with one sentence will be created, otherwise a
@@ -119,14 +136,17 @@ class TokenContainerFeatureVectorizerManager(FeatureVectorizerManager):
 
     @property
     def langres(self) -> LanguageResource:
+        """Used to create spaCy documents.
+
+        """
         return self.doc_parser.langres
 
     @property
     @persisted('_spacy_vectorizers')
     def spacy_vectorizers(self) -> Dict[str, SpacyFeatureVectorizer]:
-        """Return vectorizers based on the ``token_feature_ids`` configured on this
+        """Return vectorizers based on the :obj:`token_feature_ids` configured on this
         instance.  Keys are token level feature ids found in
-        ``SpacyFeatureVectorizer.VECTORIZERS``.
+        :obj:`.SpacyFeatureVectorizer.VECTORIZERS`.
 
         """
         token_feature_ids = set(SpacyFeatureVectorizer.VECTORIZERS.keys())

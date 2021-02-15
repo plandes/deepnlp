@@ -22,7 +22,6 @@ from . import TokenContainerFeatureVectorizer
 logger = logging.getLogger(__name__)
 
 
-# no datacasses are usable since pytorch is picky about initialization order
 class EmbeddingLayer(nn.Module, Deallocatable):
     """A class used as an input layer to provide word embeddings to a deep neural
     network.
@@ -31,18 +30,22 @@ class EmbeddingLayer(nn.Module, Deallocatable):
     :meth:`.Deallocatable.deallocate` since it might be called more than once
     (i.e. from directly deallocating and then from the factory).
 
-
-    :param embedding_dim: the vector dimension of the embedding
-
-    :param token_length: the length of the sentence for the embedding
-
-    :param torch_config: the CUDA configuration
-
-    :param trainable: ``True`` if the embedding layer is to be trained
+    **Implementation note**: No datacasses are usable since pytorch is picky
+      about initialization order.
 
     """
     def __init__(self, feature_vectorizer: TokenContainerFeatureVectorizer,
                  embedding_dim: int, trainable: bool = False):
+        """Initialize.
+
+        :param feature_vectorizer: the feature vectorizer that manages this
+                                   instance
+
+        :param embedding_dim: the vector dimension of the embedding
+
+        :param trainable: ``True`` if the embedding layer is to be trained
+
+        """
         super().__init__()
         self.embedding_dim = embedding_dim
         self.token_length = feature_vectorizer.token_length
@@ -65,11 +68,14 @@ class WordVectorEmbeddingLayer(EmbeddingLayer):
     each epoch, which is both unecessary, but costs in terms of time and
     memory.
 
-    :param embed_model: contains the word embedding model, such as ``glove``,
-                        and ``word2vec``
-
     """
     def __init__(self, embed_model: WordEmbedModel, *args, **kwargs):
+        """Initialize
+
+        :param embed_model: contains the word embedding model, such as
+                            ``glove``, and ``word2vec``
+
+        """
         super().__init__(*args, embedding_dim=embed_model.matrix.shape[1],
                          **kwargs)
         self.embed_model = embed_model
@@ -138,11 +144,17 @@ class WordVectorEmbeddingLayer(EmbeddingLayer):
 
 
 class BertEmbeddingLayer(EmbeddingLayer):
-    """A BERT embedding layer.
+    """A BERT embedding layer.  This class generates BERT embeddings on a per
+    sentence basis.
 
     """
     def __init__(self, *args, embed_model: BertEmbeddingModel,
                  max_pool: dict = None, **kwargs):
+        """Initialize.
+
+        :param embed_model: used to generate the BERT embeddings
+
+        """
         super().__init__(
             *args, embedding_dim=embed_model.vector_dimension, **kwargs)
         self.embed_model = embed_model
@@ -173,22 +185,23 @@ class SentenceFeatureVectorizer(TokenContainerFeatureVectorizer, Primeable):
     Later, these indexes are used in a :class:`WordEmbeddingLayer` to create
     the input word embedding during execution of the model.
 
-    :param embed_model: contains the word vector model
+    """
+    embed_model: Union[WordEmbedModel, BertEmbeddingModel] = field()
+    """Contains the word vector model."""
 
-    :param as_document: if ``True`` treat the embedding as a document, so use
-                        all tokens as one long stream; otherwise, stack each
-                        index as a row iteration of the container, which would
-                        be sentences of given a document
-
-    :param decode_embedding: whether or not to decode the embedding during the
-                             decode phase, which is helpful when caching
-                             batches; otherwise, the data is decoded from
-                             indexes to embeddings each epoch
+    as_document: bool = field()
+    """If ``True`` treat the embedding as a document, so use all tokens as one
+    long stream; otherwise, stack each index as a row iteration of the
+    container, which would be sentences of given a document.
 
     """
-    embed_model: Union[WordEmbedModel, BertEmbeddingModel]
-    as_document: bool
+
     decode_embedding: bool = field(default=False)
+    """Whether or not to decode the embedding during the decode phase, which is
+    helpful when caching batches; otherwise, the data is decoded from indexes
+    to embeddings each epoch.
+
+    """
 
     def _get_shape(self) -> Tuple[int, int]:
         return self.manager.token_length, self.embed_model.vector_dimension
@@ -200,7 +213,8 @@ class SentenceFeatureVectorizer(TokenContainerFeatureVectorizer, Primeable):
 
 @dataclass
 class WordVectorSentenceFeatureVectorizer(SentenceFeatureVectorizer):
-    """Vectorize sentences using an embedding model with :class:`.WordEmbedModel`.
+    """Vectorize sentences using an embedding model (:obj:`embed_model`) of type
+    :class:`.WordEmbedModel`.
 
     """
     DESCRIPTION = 'word vector sentence'
@@ -250,11 +264,22 @@ class WordVectorSentenceFeatureVectorizer(SentenceFeatureVectorizer):
 
 @dataclass
 class BertFeatureContext(FeatureContext):
-    sentences: Tuple[str]
+    """A vectorizer feature contex used with
+    :class:`.BertSentenceFeatureVectorizer`.
+
+    """
+    sentences: Tuple[str] = field()
+    """The sentences used to create the BERT embeddings.
+
+    """
 
 
 @dataclass
 class BertSentenceFeatureVectorizer(SentenceFeatureVectorizer):
+    """A feature vectorizer used to create BERT embeddings.  The class uses the
+    :obj:`.embed_model`, which is of type :class:`.BertEmbeddingModel`
+
+    """
     DESCRIPTION = 'bert vector sentence'
     FEATURE_TYPE = TokenContainerFeatureType.EMBEDDING
 
