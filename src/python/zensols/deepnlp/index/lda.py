@@ -16,6 +16,16 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class TopicModelDocumentIndexerVectorizer(DocumentIndexVectorizer):
+    """Train a model using LDA for topic modeling.
+
+    Citation:
+
+    Hoffman, M., Bach, F., and Blei, D. 2010. Online Learning for Latent
+    Dirichlet Allocation. Advances in Neural Information Processing Systems 23.
+
+    :see: :class:`gensim.models.ldamodel.LdaModel`
+
+    """
     DESCRIPTION = 'latent semantic indexing'
     FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
 

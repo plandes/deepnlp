@@ -4,8 +4,8 @@ facade.
 """
 __author__ = 'Paul Landes'
 
-from dataclasses import dataclass
 from typing import Set, List
+from dataclasses import dataclass, field
 from abc import ABCMeta, abstractmethod
 import logging
 from zensols.deeplearn import NetworkSettings, ModelSettings
@@ -22,20 +22,24 @@ class LanguageModelFacadeConfig(object):
     the configuration file.  Parameter examples are given per the Movie Review
     example.
 
-    :param manager_name: the name of the language based feature vectorizer,
-                         such as ``language_feature_manager``
-
-    :param attribs: the language attributes (all levels: token, document etc),
-                    such as ``enum``, ``count``, ``dep`` etc
-
-    :param embedding_attribs: all embedding attributes using in the
-                              configuration, such as ``glove_50_embedding``,
-                              ``word2vec_300``, ``bert_embedding``, etc
+    """
+    manager_name: str = field()
+    """The name of the language based feature vectorizer, such as
+    ``language_feature_manager``.
 
     """
-    manager_name: str
-    attribs: Set[str]
-    embedding_attribs: Set[str]
+
+    attribs: Set[str] = field()
+    """The language attributes (all levels: token, document etc), such as
+    ``enum``, ``count``, ``dep`` etc.
+
+    """
+
+    embedding_attribs: Set[str] = field()
+    """All embedding attributes using in the configuration, such as
+    ``glove_50_embedding``, ``word2vec_300``, ``bert_embedding``, etc.
+
+    """
 
 
 @dataclass

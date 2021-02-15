@@ -17,11 +17,25 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class LatentSemanticDocumentIndexerVectorizer(DocumentIndexVectorizer):
+    """Train a latent semantic indexing (LSI, aka LSA) model.
+
+    Citation:
+
+    Deerwester, S., Dumais, S.T., Furnas, G.W., Landauer, T.K., and Harshman,
+    R. 1990.  Indexing by Latent Semantic Analysis. Journal of the American
+    Society for Information Science; New York, N.Y. 41, 6, 391–407.
+
+    :see: :class:`sklearn.decomposition.TruncatedSVD`
+
+    """
     DESCRIPTION = 'latent semantic indexing'
     FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
 
     components: int = field(default=100)
+    """The number of components for the output."""
+
     iterations: int = field(default=10)
+    """Number of iterations for randomized SVD solver."""
 
     def _get_shape(self) -> Tuple[int, int]:
         return 1,

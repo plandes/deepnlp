@@ -4,8 +4,8 @@
 __author__ = 'Paul Landes'
 
 from typing import Tuple, Iterable, Any
-from dataclasses import dataclass
-from abc import ABC, abstractmethod
+from abc import ABC, ABCMeta, abstractmethod
+from dataclasses import dataclass, field
 import logging
 from itertools import chain
 from pathlib import Path
@@ -27,6 +27,8 @@ class IndexedDocumentFactory(ABC):
     """Creates training documents used to generate indexed features (i.e. latent
     dirichlet allocation, latent semantic indexing etc).
 
+    :see: :class:`.DocumentIndexVectorizer`
+
     """
     @abstractmethod
     def create_training_docs(self) -> Tuple[FeatureDocument]:
@@ -38,15 +40,34 @@ class IndexedDocumentFactory(ABC):
 
 @dataclass
 class DocumentIndexVectorizer(TokenContainerFeatureVectorizer,
-                              PersistableContainer, Primeable):
+                              PersistableContainer, Primeable,
+                              metaclass=ABCMeta):
     """A vectorizer that generates vectorized features based on the index documents
     of the training set.  For example, latent dirichlet allocation maybe be
     used to generated a distrubiton of likelihood a document belongs to a
     topic.
 
+    Subclasses of this abstract class are both vectorizers and models.  The
+    model created once, and then cached.  To clear the cache and force it to be
+    retrained, use :meth:`clear`.
+
+    The method :meth:`_create_model` must be implemented.
+
+    :see: :class:`.TopicModelDocumentIndexerVectorizer`
+
+    .. document private functions
+    .. automethod:: _create_model
+
     """
-    doc_factory: IndexedDocumentFactory
-    index_path: Path
+    doc_factory: IndexedDocumentFactory = field()
+    """The document factor used to create training documents for the model
+    vectorizer.
+
+    """
+    index_path: Path = field()
+    """The path to the pickeled cache file of the trained model.
+
+    """
 
     def __post_init__(self):
         PersistableContainer.__init__(self)
@@ -70,7 +91,8 @@ class DocumentIndexVectorizer(TokenContainerFeatureVectorizer,
 
     @abstractmethod
     def _create_model(self, docs: Iterable[FeatureDocument]) -> Any:
-        """
+        """Create the model for this indexer.  The model is implementation specific.
+        The model must be pickelabel and is cached in as :obj:`model.
 
         """
         pass
@@ -78,6 +100,10 @@ class DocumentIndexVectorizer(TokenContainerFeatureVectorizer,
     @property
     @persisted('_model_pw')
     def model(self):
+        """Return the trained model for this vectorizer.  See the class docs on how it
+        is cached and cleared.
+
+        """
         with time('created training documents'):
             docs = self.doc_factory.create_training_docs()
         with time('trained model'):
@@ -86,7 +112,6 @@ class DocumentIndexVectorizer(TokenContainerFeatureVectorizer,
             return self._create_model(docs)
 
     def __getstate__(self):
-        print('IN DOC INDX VEC GETSTS')
         return self.__dict__
 
     def prime(self):
