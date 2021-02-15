@@ -36,11 +36,6 @@ class FastTextEmbedModel(TextWordEmbedModel):
             vocab_size, dim = map(int, f.readline().split())
         return TextWordModelMetadata(name, desc, dim, vocab_size, path)
 
-    # def _get_model_id(self) -> str:
-    #     meta = self.metadata
-    #     return (f'{meta.name}: corpus={self.corpus}, ' +
-    #             f'description={meta.desc}, dim={meta.dimension}')
-
     def _populate_vec_lines(self, words: List[str], word2idx: Dict[str, int],
                             vectors: bcolz.carray):
         meta = self.metadata
