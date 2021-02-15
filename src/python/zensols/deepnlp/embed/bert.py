@@ -26,24 +26,28 @@ logger = logging.getLogger(__name__)
 class BertEmbeddingModel(object):
     """An model for BERT embeddings that wraps the HuggingFace transformms API.
 
-    :param torch_config: the config device used to copy the embedding data
-
-    :param size: the model size, which is either ``base`` (default), ``small``
-                 or ``large``; if ``small`` is used, then use DistilBert
-
-    :param cache_dir: the directory that is contains the BERT model(s)
-
-    :param model: the type of model (currently only ``bert`` is supported)
-
-    :param case: ``True`` for the case sensitive, ``False`` (default) otherwise
+    """
+    name: str = field()
+    """The name of the model given by the configuration.  Used for debugging.
 
     """
-    name: str
-    torch_config: TorchConfig
+
+    torch_config: TorchConfig = field()
+    """The config device used to copy the embedding data."""
+
     cache_dir: Path = field(default=Path('.'))
+    """The directory that is contains the BERT model(s)."""
+
     size: str = field(default='base')
+    """The model size, which is either ``base`` (default), ``small`` or
+    ``large``; if ``small`` is used, then use DistilBert.
+
+    """
+
     model_name: InitVar[str] = field(default='bert')
     case: InitVar[bool] = field(default=False)
+    """``True`` for the case sensitive, ``False`` (default) otherwise."""
+
     token_length: int = field(default=512)
 
     def __post_init__(self, model_name: str, case: bool):
@@ -130,8 +134,10 @@ class BertEmbeddingModel(object):
         if logger.isEnabledFor(logging.DEBUG):
             tl = len(indexed_tokens)
             si = len(segments_ids)
-            logger.debug(Writable._trunc(f'indexed tokens: ({tl}) {indexed_tokens}'))
-            logger.debug(Writable._trunc(f'segments IDS: ({si}) {segments_ids}'))
+            logger.debug(Writable._trunc(
+                f'indexed tokens: ({tl}) {indexed_tokens}'))
+            logger.debug(Writable._trunc(
+                f'segments IDS: ({si}) {segments_ids}'))
         tokens_tensor = torch_config.singleton(indexed_tokens, dtype=torch.long)
         segments_tensors = torch_config.singleton(segments_ids, dtype=torch.long)
         if logger.isEnabledFor(logging.DEBUG):

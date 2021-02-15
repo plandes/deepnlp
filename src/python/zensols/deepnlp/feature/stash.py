@@ -19,7 +19,6 @@ class DocumentFeatureStash(MultiProcessStash, metaclass=ABCMeta):
     """
     ATTR_EXP_META = ('document_limit',)
 
-    name: str
     factory: Stash
     vec_manager: TokenContainerFeatureVectorizerManager
     document_limit: int

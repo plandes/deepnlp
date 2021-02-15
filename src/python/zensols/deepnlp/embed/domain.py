@@ -19,19 +19,18 @@ logger = logging.getLogger(__name__)
 class WordVectorModel(object):
     """Vector data from the model
 
-    :param vectors: are the word vectors
-
-    :param word2vec: is the word to word vector mapping
-
-    :param words: are the string vocabulary
-
-    :param word2idx: is the word to word vector index mapping
-
     """
-    vectors: np.ndarray
-    word2vec: List[str]
-    words: Dict[str, int]
-    word2idx: Dict[str, np.ndarray]
+    vectors: np.ndarray = field()
+    """Are the word vectors."""
+
+    word2vec: List[str] = field()
+    """Is the word to word vector mapping."""
+
+    words: Dict[str, int] = field()
+    """Are the string vocabulary."""
+
+    word2idx: Dict[str, np.ndarray] = field()
+    """Is the word to word vector index mapping."""
 
     def __post_init__(self):
         self.tensors = {}
@@ -55,36 +54,43 @@ class WordEmbedModel(ABC):
     """This is an abstract base class that represents a set of word vectors
     (i.e. GloVe).
 
-    :param name: the name of the model given by the configuration and must be
-                 unique across word vector type and dimension
-
-    :param path: the path to the model file(s)
-
-    :param cache: if ``True`` globally cache all data strucures, which should
-                  be ``False`` if more than one embedding across a model type
-                  is used.
-
-    :param lowercase: if ``True``, downcase each word for all methods that take
-                      a word as input
-
     """
     UNKNOWN = '<unk>'
-    ZERO = UNKNOWN
-    CACHE = {}
+    """The unknown symbol used for out of vocabulary words."""
 
-    name: str
-    path: Path
+    ZERO = UNKNOWN
+    """The zero vector symbol used for padding vectors."""
+
+    CACHE = {}
+    """Contains cached embedding model that point to the same source."""
+
+    name: str = field()
+    """The name of the model given by the configuration and must be unique
+    across word vector type and dimension.
+
+    """
+
+    path: Path = field()
+    """The path to the model file(s)."""
+
     cache: bool = field(default=True)
+    """If ``True`` globally cache all data strucures, which should be ``False``
+    if more than one embedding across a model type is used.
+
+    """
+
     lowercase: bool = field(default=False)
+    """If ``True``, downcase each word for all methods that take a word as
+    input.
+
+    """
 
     @abstractmethod
     def _get_model_id(self) -> str:
         """Return a string that uniquely identifies this instance of the embedding
         model.  This should have the type, size and dimension of the embedding.
 
-        This string is used to cache models in both CPU and GPU memory so the
-        layers can have the benefit of reusing the same in memeory word
-        embedding matrix.
+        :see: :obj:`model_id`
 
         """
         pass
@@ -105,6 +111,14 @@ class WordEmbedModel(ABC):
 
     @property
     def model_id(self) -> str:
+        """Return a string that uniquely identifies this instance of the embedding
+        model.  This should have the type, size and dimension of the embedding.
+
+        This string is used to cache models in both CPU and GPU memory so the
+        layers can have the benefit of reusing the same in memeory word
+        embedding matrix.
+
+        """
         return self._get_model_id()
 
     def _data(self) -> Tuple[np.ndarray, List[str],
@@ -130,6 +144,11 @@ class WordEmbedModel(ABC):
         return self._data().vectors
 
     def to_matrix(self, torch_config: TorchConfig) -> torch.Tensor:
+        """Return a matrix the represents the entire vector embedding as a tensor.
+
+        :param torch_config: indicates where to load the new tensor
+
+        """
         return self._data().to_matrix(torch_config)
 
     @property
@@ -147,6 +166,9 @@ class WordEmbedModel(ABC):
         return self.matrix.shape[1]
 
     def word2idx_or_unk(self, word: str) -> int:
+        """Return the index of ``word`` or :obj:UNKONWN if not indexed.
+
+        """
         if self.lowercase:
             word = word.lower()
         word2idx = self._data().word2idx

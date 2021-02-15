@@ -20,7 +20,10 @@ class Word2VecModel(WordEmbedModel):
 
     """
     dimension: int = field(default=300)
+    """The dimension of the word embedding."""
+
     model_type: str = field(default='keyed')
+    """The type of the embeddings, which is either ``keyed`` or ``gensim``."""
 
     def _get_model_id(self) -> str:
         return f'word2vec: type={self.model_type}, dim={self.dimension}'

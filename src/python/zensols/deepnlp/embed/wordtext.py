@@ -5,7 +5,7 @@ vectors from text files.
 __author__ = 'Paul Landes'
 
 from typing import List, Dict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from abc import abstractmethod, ABCMeta
 import logging
 from pathlib import Path
@@ -25,22 +25,21 @@ class TextWordModelMetadata(object):
     class is used to construct paths both text source vector file and all
     generated binary files
 
-    :param name: the name of the word vector set (i.e. glove)
-    :param desc: a descriptor about this particular word vector set (i.e. 6B)
-    :param dimension: the dimension of the word vectors
-    :param n_vocab: the number of words in the vocabulary
-    :param source_path: the path to the text file
-    :param bin_dir: binary vectors directory
-    :param bin_file: the binary vector file for the current configuration
-    :param words_file: the binary vocabulary file
-    :param idx_file: the binary vocabulary to vector index mapping file
-
     """
-    name: str
-    desc: str
-    dimension: int
-    n_vocab: int
-    source_path: Path
+    name: str = field()
+    """The name of the word vector set (i.e. glove)."""
+
+    desc: str = field()
+    """A descriptor about this particular word vector set (i.e. 6B)."""
+
+    dimension: int = field()
+    """The dimension of the word vectors."""
+
+    n_vocab: int = field()
+    """The number of words in the vocabulary."""
+
+    source_path: Path = field()
+    """The path to the text file."""
 
     def __post_init__(self):
         sub_dir = Path('bin', f'{self.desc}.{self.dimension}')

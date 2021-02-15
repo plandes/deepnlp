@@ -26,19 +26,17 @@ class GloveWordEmbedModel(TextWordEmbedModel):
         desc = 6B
         dimension = 50
 
-
-    :param path: the directory path to where the unziped GloVE
-                 embedding text vector files and binary representation
-                 files subdirectory lives
-    :param desc: the size description (i.e. 6B for the six billion word trained
-                 vectors)
-    :param dimension: the word vector dimension
-    :param vocab_size: vocabulary size
-
     """
     desc: str = field(default='6B')
+    """The size description (i.e. 6B for the six billion word trained vectors).
+
+    """
+
     dimension: str = field(default=300)
+    """The word vector dimension."""
+
     vocab_size: int = field(default=400000)
+    """Vocabulary size."""
 
     def _get_metadata(self) -> TextWordModelMetadata:
         name = 'glove'
