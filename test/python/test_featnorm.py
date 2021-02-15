@@ -24,7 +24,7 @@ class TestFeatureVectorizationParse(TestFeatureVectorization):
         self.assertEqual(7, len(fdoc.tokens))
         self.assertEqual(7, len(fdoc.sents[0].tokens))
         self.assertEqual(self.def_parse,
-                          tuple((map(lambda f: f.norm, fdoc.tokens))))
+                         tuple((map(lambda f: f.norm, fdoc.tokens))))
 
     def test_torch_config(self):
         self.assertEqual(torch.float64, self.vmng.torch_config.data_type)
