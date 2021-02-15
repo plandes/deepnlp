@@ -12,6 +12,10 @@ GLOVE_DIR =	$(CORPUS_DIR)/glove
 # glove
 GLOVE_SRC_URL =	http://downloads.cs.stanford.edu/nlp/data/glove.6B.zip
 
+## documentation
+# must locally install zensols.deeplearn and build under linux and bcolz no
+# longer builds under macOS
+
 
 ## targets
 
@@ -26,18 +30,6 @@ $(GLOVE_DIR):
 
 .PHONY:		corpus
 corpus:		$(GLOVE_DIR)
-
-.PHONY:		testparse
-testparse:
-		make PY_SRC_TEST_PAT=test_parse.py test
-
-.PHONY:		testfeatnorm
-testfeatnorm:
-		make PY_SRC_TEST_PAT=test_featnorm.py test
-
-.PHONY:		testenum
-testenum:
-		make PY_SRC_TEST_PAT=test_enum.py test
 
 .PHONY:		exampleclean
 exampleclean:

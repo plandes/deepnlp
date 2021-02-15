@@ -1,2 +1,4 @@
-{"includes": {"named": ["numpy", "pandas", "torch", "zensols.util", "zensols.nlp"],
-	      "mapped": [["zensols.deeplearn", "{url}/deeplearn/"]]}}
+{"includes": {"named": ["numpy", "sklearn", "pandas", "torch",
+			"zensols.util", "zensols.nlp"],
+	      "mapped": [["zensols.deeplearn", "{url}/deeplearn/"],
+			 ["gensim", "https://radimrehurek.com/gensim"]]}}
