@@ -23,6 +23,9 @@ class TopicModelDocumentIndexerVectorizer(DocumentIndexVectorizer):
     Hoffman, M., Bach, F., and Blei, D. 2010. Online Learning for Latent
     Dirichlet Allocation. Advances in Neural Information Processing Systems 23.
 
+    :shape: ``(topics, )`` when ``decode_as_flat`` is ``True,
+            otherwise, ``(, topics)``
+
     :see: :class:`gensim.models.ldamodel.LdaModel`
 
     """
@@ -30,19 +33,20 @@ class TopicModelDocumentIndexerVectorizer(DocumentIndexVectorizer):
     FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
 
     topics: int = field(default=20)
+    """The number of topics (usually denoted ``K``)."""
+
     decode_as_flat: bool = field(default=True)
-    n_containers: int = field(default=1)
+    """If ``True``, flatten the tensor after decoding."""
 
     def _get_shape(self) -> Tuple[int, int]:
         if self.decode_as_flat:
-            return self.n_containers * self.topics,
+            return self.topics,
         else:
-            return self.n_containers, self.topics
+            return 1, self.topics
 
     def _create_model(self, docs: Iterable[FeatureDocument]) -> Any:
         if logger.isEnabledFor(logging.INFO):
-            logger.info(f'creating {self.topics} topics with ' +
-                        f'{self.n_containers} containers')
+            logger.info(f'creating {self.topics} topics')
         docs = tuple(map(lambda doc: self.feat_to_tokens(doc), docs))
         id2word = corpora.Dictionary(docs)
         corpus = tuple(map(lambda doc: id2word.doc2bow(doc), docs))
