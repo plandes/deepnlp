@@ -21,16 +21,16 @@ class WordVectorModel(object):
 
     """
     vectors: np.ndarray = field()
-    """Are the word vectors."""
+    """The word vectors."""
 
     word2vec: List[str] = field()
-    """Is the word to word vector mapping."""
+    """The word to word vector mapping."""
 
     words: Dict[str, int] = field()
-    """Are the string vocabulary."""
+    """The string vocabulary."""
 
     word2idx: Dict[str, np.ndarray] = field()
-    """Is the word to word vector index mapping."""
+    """The word to word vector index mapping."""
 
     def __post_init__(self):
         self.tensors = {}
