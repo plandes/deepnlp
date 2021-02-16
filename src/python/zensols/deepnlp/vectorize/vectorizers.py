@@ -358,7 +358,7 @@ class OverlappingTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer
     :class:`.TokenContainer` instances.
 
     :shape: ``(2,)``
-a
+
     """
     DESCRIPTION = 'overlapping token counts'
     FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
