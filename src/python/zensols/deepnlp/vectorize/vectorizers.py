@@ -444,7 +444,7 @@ class MutualFeaturesContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
             return arrs[0]
         else:
             arrs = torch.stack(arrs, axis=0)
-            cnts = torch.tensor(arrs)
+            cnts = self.torch_config.clone(arrs)
             mask = torch.min(torch.cat((cnts.prod(axis=0).unsqueeze(0), ones)),
                              axis=0)[0]
             return (cnts * mask).sum(axis=0)
