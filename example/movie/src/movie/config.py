@@ -12,4 +12,4 @@ class AppConfig(ExtendedInterpolationEnvConfig):
             kwargs['config_file'] = 'resources/movie.conf'
         if 'env' not in kwargs:
             kwargs['env'] = {'app_root': '.'}
-        super().__init__(*args, default_expect=True, **kwargs)
+        super().__init__(*args, **kwargs)

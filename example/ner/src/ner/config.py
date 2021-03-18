@@ -23,4 +23,4 @@ class AppConfig(ExtendedInterpolationEnvConfig):
                 if logger.isEnabledFor(logging.INFO):
                     logger.info(f'using default {k} = {v}')
                 env[k] = v
-        super().__init__(*args, default_expect=True, **kwargs)
+        super().__init__(*args, **kwargs)
