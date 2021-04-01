@@ -3,20 +3,12 @@
 """
 __author__ = 'Paul Landes'
 
+from typing import Type
 from dataclasses import dataclass, field, InitVar
 import logging
-import torch
 from pathlib import Path
-from transformers import (
-    BertTokenizer,
-    BertModel,
-    DistilBertTokenizer,
-    DistilBertModel,
-    RobertaTokenizer,
-    RobertaModel,
-)
-from transformers.modeling_outputs import BaseModelOutputWithPoolingAndCrossAttentions
-from zensols.config import Writable
+from transformers import BertTokenizer
+from zensols.introspect import ClassImporter
 from zensols.persist import persisted, PersistedWork
 from zensols.deeplearn import TorchConfig
 
@@ -24,8 +16,58 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class BertEmbeddingModel(object):
-    """An model for BERT embeddings that wraps the HuggingFace transformms API.
+class ModelFactory(object):
+    PREFIXES = {'distilbert': 'DistilBert'}
+
+    model_name: str = field()
+    """The name of the model as given in :obj:`BertModel.model_name`."""
+
+    model_type: str = field()
+    """The postfix name of the model (e.g. ``Model`` for the pretrained vector
+    model) and used for :obj:`BertModel.model_type`.
+
+    """
+
+    tokenizer_class_name: str = field(default=None)
+    """The sans-module sans ``Tokenzier`` class name (i.e. ``Bert`` or
+    ``DistilBertTokenizer```).
+
+    """
+
+    def __post_init__(self):
+        if self.tokenizer_class_name is None:
+            self.tokenizer_class_name = self._create_class_name('Tokenizer')
+
+    def _create_class_name(self, postfix: str):
+        prefix = self.PREFIXES.get(self.model_name)
+        if prefix is None:
+            prefix = self.model_name.capitalize()
+        return f'{prefix}{postfix}'
+
+    @property
+    def tokenizer_class(self) -> Type[BertTokenizer]:
+        class_name = f'transformers.{self.tokenizer_class_name}'
+        ci = ClassImporter(class_name, reload=False)
+        cls = ci.get_class()
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'resolved tokenizer class: {cls}')
+        return cls
+
+    @property
+    def model_class(self) -> Type:
+        model_type = self._create_class_name(self.model_type)
+        class_name = f'transformers.{model_type}'
+        ci = ClassImporter(class_name, reload=False)
+        cls = ci.get_class()
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'resolved model class: {cls}')
+        return cls
+
+
+@dataclass
+class BertModel(object):
+    """A utility base class that allows configuration and creates various
+    huggingface models.
 
     """
     name: str = field()
@@ -60,6 +102,12 @@ class BertEmbeddingModel(object):
 
     """
 
+    model_type: str = field(default='Model')
+    """The model type, which is used as the class to call the static method
+    ``from_pretrained``.
+
+    """
+
     cased: InitVar[bool] = field(default=False)
     """``True`` for the case sensitive, ``False`` (default) otherwise.  The negated
     value of it is also used as the ``do_lower_case`` parameter in the
@@ -67,13 +115,6 @@ class BertEmbeddingModel(object):
 
     """
 
-    token_length: int = field(default=512)
-    """The default token length to truncate before converting to IDs.  If this
-    isn't done, the following error is raised:
-
-      ``error: CUDA error: device-side assert triggered``
-
-    """
     cache: InitVar[bool] = field(default=False)
     """When set to ``True`` cache a global space model using the parameters from
     the first instance creation.
@@ -98,16 +139,12 @@ class BertEmbeddingModel(object):
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'id: {self.model_id}, name: {self.model_name}, ' +
                          f'lower case: {self.lower_case}')
-
-    def _get_model_cnf(self):
-        return {'bert': (BertTokenizer, BertModel),
-                'distilbert': (DistilBertTokenizer, DistilBertModel),
-                'roberta': (RobertaTokenizer, RobertaModel)}[self.model_name]
+        self._model_factory = ModelFactory(self.model_name, self.model_type)
 
     @property
     @persisted('_tokenizer')
     def tokenizer(self):
-        cls = self._get_model_cnf()[0]
+        cls = self._model_factory.tokenizer_class
         params = {'do_lower_case': self.lower_case}
         if self.cache_dir is not None:
             params['cache_dir'] = str(self.cache_dir.absolute())
@@ -119,7 +156,7 @@ class BertEmbeddingModel(object):
         # load pre-trained model (weights)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'loading model of size {self.size}: {self.model_id}')
-        cls = self._get_model_cnf()[1]
+        cls = self._model_factory.model_class
         params = {}
         if self.cache_dir is not None:
             params['cache_dir'] = str(self.cache_dir.absolute())
@@ -141,84 +178,3 @@ class BertEmbeddingModel(object):
     @persisted('_zeros')
     def zeros(self):
         return self.torch_config.zeros(self.vector_dimension)
-
-    def transform(self, sentence: str) -> torch.Tensor:
-        torch_config = self.torch_config
-        tokenizer = self.tokenizer
-        model = self.model
-
-        if self.model_name == 'roberta':
-            sentence = ' ' + sentence
-        else:
-            # add the special tokens.
-            sentence = '[CLS] ' + sentence + ' [SEP]'
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'sent: {sentence}')
-
-        # split the sentence into tokens.
-        tokenized_text = tokenizer.tokenize(sentence)
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'tokenized: {tokenized_text}')
-
-        # truncate, otherwise error: CUDA error: device-side assert triggered
-        tokenized_text = tokenized_text[:self.token_length]
-
-        # map the token strings to their vocabulary indeces.
-        indexed_tokens = tokenizer.convert_tokens_to_ids(tokenized_text)
-
-        # mark each of the tokens as belonging to sentence `1`.
-        segments_ids = [1] * len(tokenized_text)
-
-        # convert to GPU tensors
-        if logger.isEnabledFor(logging.DEBUG):
-            tl = len(indexed_tokens)
-            si = len(segments_ids)
-            logger.debug(Writable._trunc(
-                f'indexed tokens: ({tl}) {indexed_tokens}'))
-            logger.debug(Writable._trunc(
-                f'segments IDS: ({si}) {segments_ids}'))
-        tokens_tensor = torch_config.singleton(indexed_tokens, dtype=torch.long)
-        tokens_tensor = tokens_tensor.unsqueeze(0)
-        segments_tensors = torch_config.singleton(segments_ids, dtype=torch.long)
-        segments_tensors = segments_tensors.unsqueeze(0)
-
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'toks/seg shapes: {tokens_tensor.shape}' +
-                         f'/{segments_tensors.shape}')
-            logger.debug(f'toks/set dtypes: toks={tokens_tensor.dtype}' +
-                         f'/{segments_tensors.dtype}')
-            logger.debug(f'toks/set devices: toks={tokens_tensor.device}' +
-                         f'/{segments_tensors.device}')
-
-        # put the model in `evaluation` mode, meaning feed-forward operation.
-        model.eval()
-        model = torch_config.to(model)
-
-        if 1:
-            # a bug in transformers 4.4.2 requires this
-            # https://github.com/huggingface/transformers/issues/2952
-            seq_length = tokens_tensor.size()[1]
-            position_ids = model.embeddings.position_ids
-            position_ids = position_ids[:, 0: seq_length].to(torch.long)
-
-        # predict hidden states features for each layer
-        with torch.no_grad():
-            output: BaseModelOutputWithPoolingAndCrossAttentions = \
-                model(input_ids=tokens_tensor,
-                      attention_mask=segments_tensors,
-                      position_ids=position_ids)
-            emb = output.last_hidden_state
-            if 0:
-                attns = output.attentions
-                from zensols.deeplearn import printopts
-                with printopts():
-                    print('A', attns[-1])
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'embedding dim: {emb.size()} ({type(emb)})')
-
-        # remove dimension 1, the `batches`
-        emb = torch.squeeze(emb, dim=0)
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'after remove: {emb.size()}')
-
-        return tokenized_text, emb

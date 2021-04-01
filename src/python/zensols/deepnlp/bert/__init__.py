@@ -3,3 +3,4 @@ deeplearning framework.
 
 """
 from .base import *
+from .embed import *
