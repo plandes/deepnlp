@@ -15,7 +15,8 @@ from zensols.deeplearn.model import BaseNetworkModule
 from zensols.deeplearn.layer import MaxPool1dFactory
 from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
 from zensols.deepnlp import TokensContainer, FeatureSentence, FeatureDocument
-from zensols.deepnlp.embed import WordEmbedModel, BertEmbeddingModel
+from zensols.deepnlp.embed import WordEmbedModel
+from zensols.deepnlp.bert import BertEmbeddingModel
 from zensols.deepnlp.vectorize import TokenContainerFeatureType
 from . import TokenContainerFeatureVectorizer
 

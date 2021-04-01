@@ -120,7 +120,7 @@ class BertEmbeddingModel(object):
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'loading model of size {self.size}: {self.model_id}')
         cls = self._get_model_cnf()[1]
-        params = {}#'return_dict': True}
+        params = {}
         if self.cache_dir is not None:
             params['cache_dir'] = str(self.cache_dir.absolute())
         if 0:
