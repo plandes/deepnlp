@@ -2,5 +2,6 @@
 deeplearning framework.
 
 """
+from .domain import *
 from .base import *
 from .embed import *
