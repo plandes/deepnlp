@@ -292,7 +292,8 @@ class BertSentenceFeatureVectorizer(SentenceFeatureVectorizer):
             doc: FeatureDocument = container
             sents = doc.sents
         sent_strs = tuple(map(lambda s: s.text, sents))
-        # batch = self.layer_config.layer.doc_to_batch([sent.text])[0]
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'encoded {len(sent_strs)} sentence(s)')
         return BertFeatureContext(self.feature_id, sent_strs)
 
     def _decode(self, context: BertFeatureContext) -> torch.Tensor:
