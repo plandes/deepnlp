@@ -5,31 +5,29 @@ __author__ = 'Paul Landes'
 
 from typing import List, Tuple, Set, Iterable, Any
 from dataclasses import dataclass, field
-from abc import ABC, ABCMeta, abstractmethod
+from abc import ABCMeta, abstractmethod
 import sys
 import logging
+from io import TextIOBase
 from itertools import chain
 import itertools as it
 from zensols.persist import PersistableContainer, persisted
+from zensols.config import Writable
 from zensols.nlp import TokenAttributes, TokenFeatures
 
 logger = logging.getLogger(__name__)
 
 
-class TextContainer(ABC):
+class TextContainer(Writable, metaclass=ABCMeta):
     """A class that has a ``text`` property or attribute.  The class also provides
     pretty print utility.
 
     :attribute text: str
 
     """
-    @staticmethod
-    def _indspc(depth: int):
-        return ' ' * (depth * 2)
-
-    def write(self, depth: int = 0, writer=sys.stdout):
-        writer.write(f"{self._indspc(depth)}{self.__class__.__name__}: " +
-                     f"<{self.text}>\n")
+    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
+        self._write_line(f'{self.__class__.__name__}: <{self.text}>',
+                         depth, writer)
 
 
 class FeatureToken(TextContainer):
@@ -65,13 +63,13 @@ class FeatureToken(TextContainer):
         """
         return map(lambda a: getattr(self, a), feature_ids)
 
-    def write(self, depth: int = 0, writer=sys.stdout):
-        s2 = self._indspc(depth + 1)
+    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
         super().write(depth, writer)
+        self._write_line('attributes:', depth, writer)
         for k, v in self.__dict__.items():
             ptype = self.TYPES_BY_TOKEN_FEATURE_ID.get(k)
             ptype = 'missing type' if ptype is None else ptype
-            writer.write(f'{s2}{k}={v} ({ptype})\n')
+            self._write_line(f'{k}={v} ({ptype})', depth + 1, writer)
 
     def __str__(self):
         attrs = []
@@ -90,25 +88,37 @@ class TokensContainer(PersistableContainer, TextContainer, metaclass=ABCMeta):
 
     """
     @abstractmethod
-    def token_iter(self, *args) -> Iterable[TokenFeatures]:
+    def token_iter(self, *args) -> Iterable[FeatureToken]:
+        """Return an iterator over the token features.
+
+        """
         pass
 
     def norm_token_iter(self, *args) -> Iterable[str]:
+        """Return a list of normalized tokens.
+
+        """
         return map(lambda t: t.norm, self.token_iter(*args))
 
     @property
     @persisted('_tokens', transient=True)
-    def tokens(self) -> Tuple[TokenFeatures]:
+    def tokens(self) -> Tuple[FeatureToken]:
+        """Return the token features as a tuple.
+
+        """
         return tuple(self.token_iter())
 
     @property
     @persisted('_token_len', transient=True)
     def token_len(self):
+        """Return the number of tokens."""
         return sum(1 for i in self.token_iter())
 
     @abstractmethod
-    def to_sentence(self, limit=sys.maxsize) -> Any:
+    def to_sentence(self, limit: int = sys.maxsize) -> Any:
         """Coerce this instance to a single sentence.
+
+        :param limit: the limit in the number of chunks to return
 
         :return: an instance of ``FeatureSentence`` that represents this token
                  sequence
@@ -128,8 +138,9 @@ class TokensContainer(PersistableContainer, TextContainer, metaclass=ABCMeta):
                        filter(lambda t: not t.is_punctuation and not t.is_stop,
                               self.tokens)))
 
-    def write(self, depth: int = 0, writer=sys.stdout):
+    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
         super().write(depth, writer)
+        self._write_line('tokens:', depth, writer)
         for t in self.token_iter():
             t.write(depth + 1, writer)
 
@@ -147,14 +158,14 @@ class FeatureSentence(TokensContainer):
         if self.text is None:
             self.text = ' '.join(map(lambda t: t.text, self.sent_tokens))
 
-    def token_iter(self, *args) -> Iterable[TokenFeatures]:
+    def token_iter(self, *args) -> Iterable[FeatureToken]:
         if len(args) == 0:
             return iter(self.sent_tokens)
         else:
             return it.islice(self.sent_tokens, *args)
 
     @property
-    def tokens(self) -> Tuple[TokenFeatures]:
+    def tokens(self) -> Tuple[FeatureToken]:
         return self.sent_tokens
 
     @property
@@ -164,7 +175,7 @@ class FeatureSentence(TokensContainer):
     def __getitem__(self, key):
         return self.tokens[key]
 
-    def to_sentence(self, limit=sys.maxsize) -> Any:
+    def to_sentence(self, limit: int = sys.maxsize) -> Any:
         return self
 
     def __len__(self):
@@ -191,7 +202,7 @@ class FeatureDocument(TokensContainer):
     """
     sents: List[FeatureSentence]
 
-    def token_iter(self, *args) -> Iterable[TokenFeatures]:
+    def token_iter(self, *args) -> Iterable[FeatureToken]:
         sent_toks = chain.from_iterable(map(lambda s: s.tokens, self.sents))
         if len(args) == 0:
             return sent_toks
@@ -217,8 +228,9 @@ class FeatureDocument(TokensContainer):
     def text(self):
         return self.get_text()
 
-    def write(self, depth=0, writer=sys.stdout, ):
+    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
         TextContainer.write(self, depth, writer)
+        self._write_line('sentences:', depth, writer)
         for s in self.sents:
             s.write(depth + 1, writer)
 
