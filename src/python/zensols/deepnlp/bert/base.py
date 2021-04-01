@@ -75,11 +75,11 @@ class BertModel(object):
 
     """
 
-    tokenize_torch_config: TorchConfig = field()
+    torch_config: TorchConfig = field()
     """The config device used to copy the embedding data."""
 
-    transform_torch_config: TorchConfig = field()
-    """The config device used to copy the embedding data."""
+    # transform_torch_config: TorchConfig = field()
+    # """The config device used to copy the embedding data."""
 
     cache_dir: Path = field(default=None)
     """The directory that is contains the BERT model(s)."""
@@ -170,14 +170,3 @@ class BertModel(object):
     def clear(self):
         self._tokenizer.clear()
         self._model.clear()
-
-    @property
-    @persisted('_vec_dim')
-    def vector_dimension(self):
-        emb = self.transform('the')[1]
-        return emb.shape[1]
-
-    # @property
-    # @persisted('_zeros')
-    # def zeros(self):
-    #     return self.torch_config.zeros(self.vector_dimension)

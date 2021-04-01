@@ -44,6 +44,7 @@ class FeatureToken(TextContainer):
         """Initialize.
 
         :param features: the features that describes a token
+
         :param feature_id: a string identifying the type of feature that will
 
         """

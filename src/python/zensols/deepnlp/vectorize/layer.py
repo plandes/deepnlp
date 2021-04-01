@@ -5,10 +5,11 @@ efficient retrival.
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, Union
+from typing import Tuple, Union, List
 from dataclasses import dataclass, field
 import logging
 import torch
+from torch import Tensor
 from torch import nn
 from zensols.persist import persisted, Deallocatable, Primeable
 from zensols.deeplearn.model import BaseNetworkModule
@@ -16,7 +17,7 @@ from zensols.deeplearn.layer import MaxPool1dFactory
 from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
 from zensols.deepnlp import TokensContainer, FeatureSentence, FeatureDocument
 from zensols.deepnlp.embed import WordEmbedModel
-from zensols.deepnlp.bert import BertEmbeddingModel
+from zensols.deepnlp.bert import BertEmbeddingModel, Tokenization
 from zensols.deepnlp.vectorize import TokenContainerFeatureType
 from . import TokenContainerFeatureVectorizer
 
@@ -137,7 +138,7 @@ class WordVectorEmbeddingLayer(EmbeddingLayer):
             del self.emb
             del self.embed_model
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def forward(self, x: Tensor) -> Tensor:
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'forward: {x.shape}, device: {x.device} = ' +
                          f'{BaseNetworkModule.device_from_module(self.emb)}')
@@ -172,7 +173,7 @@ class BertEmbeddingLayer(EmbeddingLayer):
         if hasattr(self, 'embed_model'):
             del self.embed_model
 
-    def forward(self, x: Tuple[str]) -> torch.Tensor:
+    def forward(self, x: Tuple[str]) -> Tensor:
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'forward: {x.shape}')
         if self.pool is not None:
@@ -247,7 +248,7 @@ class WordVectorSentenceFeatureVectorizer(SentenceFeatureVectorizer):
     def vectors(self):
         return self.torch_config.from_numpy(self.embed_model.matrix)
 
-    def _decode(self, context: FeatureContext) -> torch.Tensor:
+    def _decode(self, context: FeatureContext) -> Tensor:
         x = super()._decode(context)
         if self.decode_embedding:
             src_vecs = self.vectors
@@ -269,7 +270,7 @@ class BertFeatureContext(FeatureContext):
     :class:`.BertSentenceFeatureVectorizer`.
 
     """
-    sentences: Tuple[str] = field()
+    sentences: Tuple[Tokenization] = field()
     """The sentences used to create the BERT embeddings.
 
     """
@@ -284,30 +285,42 @@ class BertSentenceFeatureVectorizer(SentenceFeatureVectorizer):
     DESCRIPTION = 'bert vector sentence'
     FEATURE_TYPE = TokenContainerFeatureType.EMBEDDING
 
+    @property
+    @persisted('_zeros')
+    def zeros(self):
+        return self.torch_config.zeros(self.embed_model.vector_dimension)
+
     def _encode(self, container: TokensContainer) -> FeatureContext:
+        sents: List[FeatureSentence]
         if self.as_document:
             sent: FeatureSentence = container.to_sentence()
             sents = [sent]
         else:
             doc: FeatureDocument = container
             sents = doc.sents
-        sent_strs = tuple(map(lambda s: s.text, sents))
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'encoded {len(sent_strs)} sentence(s)')
-        return BertFeatureContext(self.feature_id, sent_strs)
+        # sent_strs = tuple(map(lambda s: s.text, sents))
+        # if logger.isEnabledFor(logging.DEBUG):
+        #     logger.debug(f'encoded {len(sent_strs)} sentence(s)')
+        # return BertFeatureContext(self.feature_id, sent_strs)
 
-    def _decode(self, context: BertFeatureContext) -> torch.Tensor:
+        sent_toks = tuple(map(self.embed_model.tokenize, sents))
+
+        return BertFeatureContext(self.feature_id, sent_toks)
+
+    def _decode(self, context: BertFeatureContext) -> Tensor:
         mats = []
+        sent: Tokenization
         for sent in context.sentences:
-            text, emb = self.embed_model.transform(sent)
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'decoding {sent} ({type(sent)})')
+            emb = self.embed_model.transform(sent)
             diff = self.token_length - emb.shape[0]
             if diff > 0:
-                zeros = self.embed_model.zeros
+                zeros = self.zeros
                 emb = torch.cat((torch.stack([zeros] * diff), emb))
             elif diff < 0:
                 emb = emb[0:diff]
             if logger.isEnabledFor(logging.DEBUG):
-                logger.debug(f'text: {text}')
                 logger.debug(f'diff: {diff}, emb shape: {emb.shape}')
             mats.append(emb)
         return torch.stack(mats)

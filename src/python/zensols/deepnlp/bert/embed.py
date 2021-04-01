@@ -3,12 +3,14 @@
 """
 __author__ = 'Paul Landes'
 
+from typing import Tuple
 from dataclasses import dataclass, field
 import logging
 from itertools import chain
 import torch
 from torch import Tensor
 from transformers.modeling_outputs import BaseModelOutputWithPoolingAndCrossAttentions
+from zensols.persist import persisted
 from zensols.config import Writable
 from zensols.deepnlp import FeatureSentence
 from . import BertModel, WordPiece, WordPieceSentence, Tokenization
@@ -36,33 +38,18 @@ class BertEmbeddingModel(BertModel):
 
     """
 
-    def tokenize(self, sentence: FeatureSentence) -> torch.Tensor:
-        torch_config = self.tokenize_torch_config
+    @property
+    @persisted('_vec_dim')
+    def vector_dimension(self):
+        tok: Tokenization = self._create_tokenization(['the'], None)
+        emb = self.transform(tok)
+        return emb.shape[1]
+
+    def _create_tokenization(self, tokenized_text: Tuple[str],
+                             piece_list: WordPieceSentence) -> Tokenization:
         tokenizer = self.tokenizer
+        torch_config = self.torch_config
         model = self.model
-        # roberta doesn't use classification or sep tokens
-        add_cls_sep = self.model_name != 'roberta'
-
-        # split the sentence into tokens.
-        trans_toks = map(lambda t: WordPiece(
-            tokenizer.tokenize(t.text), t), sentence.token_iter())
-        if add_cls_sep:
-            trans_toks = chain.from_iterable([
-                [WordPiece(['CLS'], None)],
-                trans_toks,
-                [WordPiece(['SEP'], None)]])
-        trans_toks = tuple(trans_toks)
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'bert tokens: {trans_toks}')
-
-        # create the word pieces data structure
-        piece_list = WordPieceSentence(trans_toks)
-
-        # form the tokenized text from the word pieces
-        piece_list = piece_list.truncate(self.word_piece_length)
-        tokenized_text = piece_list.word_piece_tokens
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'tokenized: {tokenized_text}')
 
         # truncate, otherwise error: CUDA error: device-side assert triggered
         if len(tokenized_text) > self.max_token_length:
@@ -110,8 +97,36 @@ class BertEmbeddingModel(BertModel):
 
         return output
 
+    def tokenize(self, sentence: FeatureSentence) -> Tokenization:
+        tokenizer = self.tokenizer
+        # roberta doesn't use classification or sep tokens
+        add_cls_sep = self.model_name != 'roberta'
+
+        # split the sentence into tokens.
+        trans_toks = map(lambda t: WordPiece(
+            tokenizer.tokenize(t.text), t), sentence.token_iter())
+        if add_cls_sep:
+            trans_toks = chain.from_iterable([
+                [WordPiece(['CLS'], None)],
+                trans_toks,
+                [WordPiece(['SEP'], None)]])
+        trans_toks = tuple(trans_toks)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'bert tokens: {trans_toks}')
+
+        # create the word pieces data structure
+        piece_list = WordPieceSentence(trans_toks)
+
+        # form the tokenized text from the word pieces
+        piece_list = piece_list.truncate(self.word_piece_length)
+        tokenized_text: Tuple[str] = piece_list.word_piece_tokens
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'tokenized: {tokenized_text}')
+
+        return self._create_tokenization(tokenized_text, piece_list)
+
     def transform(self, tokenization: Tokenization) -> Tensor:
-        torch_config = self.transform_torch_config
+        torch_config = self.torch_config
         model = self.model
         params = tokenization.params()
 

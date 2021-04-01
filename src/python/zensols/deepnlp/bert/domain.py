@@ -7,19 +7,22 @@ __author__ = 'Paul Landes'
 from typing import Tuple, Dict, Any, List
 from dataclasses import dataclass, field
 import logging
+import copy as cp
 import sys
 from io import TextIOBase
 from itertools import chain
 import itertools as it
 from torch import Tensor
 from zensols.config import Dictable
+from zensols.persist import PersistableContainer
+from zensols.deeplearn import TorchConfig
 from zensols.deepnlp import FeatureToken
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass
-class WordPiece(Dictable):
+class WordPiece(PersistableContainer, Dictable):
     """The output of a word piece tokenization algorithm for whole token parsed
     (i.e. by spaCy's tokenizer).  A word/token can be broken up in to several
     word pieces.  For this reason, the number for tokens is never greater than
@@ -48,7 +51,7 @@ class WordPiece(Dictable):
 
 
 @dataclass
-class WordPieceSentence(Dictable):
+class WordPieceSentence(PersistableContainer, Dictable):
     """A sentence made up of word piece tokens.
 
     """
@@ -90,9 +93,13 @@ class WordPieceSentence(Dictable):
         """The length of this sentence in word pieces."""
         return sum(map(len, self.pieces))
 
+    def __str__(self):
+        return '|'.join(chain.from_iterable(
+            map(lambda w: w.tokens, self.pieces)))
+
 
 @dataclass
-class Tokenization(Dictable):
+class Tokenization(PersistableContainer, Dictable):
     """The output of the model tokenization.
 
     """
@@ -113,12 +120,20 @@ class Tokenization(Dictable):
     :see: `HF Issue <https://github.com/huggingface/transformers/issues/2952>`_
 
     """
-
     def __post_init__(self):
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'tokens: {len(self.piece_list)}, ' +
-                         f'shape: {self.input_ids.shape}')
-        assert len(self.piece_list) == self.input_ids.size(1)
+        if self.piece_list is not None:
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'tokens: {len(self.piece_list)}, ' +
+                             f'shape: {self.input_ids.shape}')
+            assert len(self.piece_list) == self.input_ids.size(1)
+
+    # def to(self, torch_config: TorchConfig) -> Tokenization:
+    #     clone = cp.copy(self)
+    #     clone.input_ids = torch_config.to(self.input_ids)
+    #     clone.attention_mask = torch_config.to(self.attention_mask)
+    #     if self.position_ids is not None:
+    #         clone.position_ids = torch_config.to(self.position_ids)
+    #     return clone
 
     def params(self) -> Dict[str, Any]:
         dct = {}
@@ -128,3 +143,6 @@ class Tokenization(Dictable):
         for att in atts.split():
             dct[att] = getattr(self, att)
         return dct
+
+    def __str__(self) -> str:
+        return self.piece_list.__str__()
