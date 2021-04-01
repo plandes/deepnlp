@@ -38,11 +38,14 @@ class FeatureDocumentParser(object):
         """
         lr = self.langres
         doc = lr.parse(text)
-        sent_feats = []
+        sents = []
+        toks = tuple(lr.features(doc))
         for sent in doc.sents:
-            feats = tuple(map(self._create_token, lr.features(sent)))
-            sent_feats.append(FeatureSentence(feats, sent.text))
-        return sent_feats
+            sent_feats = toks[sent[0].i:sent[-1].i+1]
+            if len(sent_feats) > 0:
+                feats = tuple(map(self._create_token, sent_feats))
+                sents.append(FeatureSentence(feats, sent.text))
+        return sents
 
     def from_list(self, text: List[str]) -> List[FeatureSentence]:
         """Parse a document from a list of strings.
@@ -50,6 +53,7 @@ class FeatureDocumentParser(object):
         """
         lr = self.langres
         sent_feats = []
+        sent: str
         for sent in text:
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'sentence: {sent}')
@@ -57,7 +61,8 @@ class FeatureDocumentParser(object):
             sent_feats.append(FeatureSentence(feats, sent))
         return sent_feats
 
-    def parse(self, text: Union[str, List[str]], *args, **kwargs) -> FeatureDocument:
+    def parse(self, text: Union[str, List[str]], *args, **kwargs) -> \
+            FeatureDocument:
         """Parse text or a text as a list of sentences.
 
         :param text: either a string or a list of strings; if the former a
