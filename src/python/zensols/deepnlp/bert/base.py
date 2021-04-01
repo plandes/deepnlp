@@ -75,7 +75,10 @@ class BertModel(object):
 
     """
 
-    torch_config: TorchConfig = field()
+    tokenize_torch_config: TorchConfig = field()
+    """The config device used to copy the embedding data."""
+
+    transform_torch_config: TorchConfig = field()
     """The config device used to copy the embedding data."""
 
     cache_dir: Path = field(default=None)
@@ -174,7 +177,7 @@ class BertModel(object):
         emb = self.transform('the')[1]
         return emb.shape[1]
 
-    @property
-    @persisted('_zeros')
-    def zeros(self):
-        return self.torch_config.zeros(self.vector_dimension)
+    # @property
+    # @persisted('_zeros')
+    # def zeros(self):
+    #     return self.torch_config.zeros(self.vector_dimension)
