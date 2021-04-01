@@ -15,8 +15,9 @@ from transformers import (
     RobertaTokenizer,
     RobertaModel,
 )
+from transformers.modeling_outputs import BaseModelOutputWithPoolingAndCrossAttentions
 from zensols.config import Writable
-from zensols.persist import persisted
+from zensols.persist import persisted, PersistedWork
 from zensols.deeplearn import TorchConfig
 
 logger = logging.getLogger(__name__)
@@ -35,7 +36,7 @@ class BertEmbeddingModel(object):
     torch_config: TorchConfig = field()
     """The config device used to copy the embedding data."""
 
-    cache_dir: Path = field(default=Path('.'))
+    cache_dir: Path = field(default=None)
     """The directory that is contains the BERT model(s)."""
 
     size: str = field(default='base')
@@ -44,52 +45,90 @@ class BertEmbeddingModel(object):
 
     """
 
-    model_name: InitVar[str] = field(default='bert')
-    case: InitVar[bool] = field(default=False)
-    """``True`` for the case sensitive, ``False`` (default) otherwise."""
+    model_id: str = field(default=None)
+    """The ID of the model (i.e. ``bert-base-uncased``).  If this is not set, is
+    derived from the ``model_name`` and ``case``.
+
+    """
+
+    model_name: str = field(default='bert')
+    """The name of the model which is used to identify the model
+    when ``model_id`` is not set.
+
+    This parameter can take (not limited to) the following values: ``bert``,
+    ``roberta``, ``distilbert``.
+
+    """
+
+    cased: InitVar[bool] = field(default=False)
+    """``True`` for the case sensitive, ``False`` (default) otherwise.  The negated
+    value of it is also used as the ``do_lower_case`` parameter in the
+    ``*.from_pretrained`` calls to huggingface transformers.
+
+    """
 
     token_length: int = field(default=512)
+    """The default token length to truncate before converting to IDs.  If this
+    isn't done, the following error is raised:
 
-    def __post_init__(self, model_name: str, case: bool):
-        self.lower_case = not case
-        self.model_id = f'{model_name}-{self.size}'
-        self.model_desc = model_name
-        if model_name != 'roberta':
-            self.model_id += f'-{"" if case else "un"}cased'
-        if not self.cache_dir.exists():
+      ``error: CUDA error: device-side assert triggered``
+
+    """
+    cache: InitVar[bool] = field(default=False)
+    """When set to ``True`` cache a global space model using the parameters from
+    the first instance creation.
+
+    """
+
+    def __post_init__(self, cased: bool, cache: bool):
+        self.lower_case = not cased
+        model_id_not_set = self.model_id is None
+        if model_id_not_set:
+            self.model_id = f'{self.model_name}-{self.size}'
+        if model_id_not_set and (self.model_name != 'roberta'):
+            self.model_id += f'-{"" if cased else "un"}cased'
+        if self.cache_dir is not None and not self.cache_dir.exists():
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.info(f'creating cache directory: {self.cache_dir}')
             self.cache_dir.mkdir(parents=True, exist_ok=True)
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'model name/desc: {self.model_name}' +
-                         f'/{self.model_desc}')
+            logger.debug(f'model name: {self.model_name}')
+        self._tokenizer = PersistedWork('_tokenzier', self, cache)
+        self._model = PersistedWork('_model', self, cache)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'id: {self.model_id}, name: {self.model_name}, ' +
+                         f'lower case: {self.lower_case}')
 
     def _get_model_cnf(self):
         return {'bert': (BertTokenizer, BertModel),
                 'distilbert': (DistilBertTokenizer, DistilBertModel),
-                'roberta': (RobertaTokenizer, RobertaModel)}[self.model_desc]
+                'roberta': (RobertaTokenizer, RobertaModel)}[self.model_name]
 
     @property
-    @persisted('_tokenizer', cache_global=True)
+    @persisted('_tokenizer')
     def tokenizer(self):
         cls = self._get_model_cnf()[0]
-        return cls.from_pretrained(
-            self.model_id,
-            cache_dir=str(self.cache_dir.absolute()),
-            do_lower_case=self.lower_case)
+        params = {'do_lower_case': self.lower_case}
+        if self.cache_dir is not None:
+            params['cache_dir'] = str(self.cache_dir.absolute())
+        return cls.from_pretrained(self.model_id, **params)
 
     @property
-    @persisted('_model', cache_global=True)
+    @persisted('_model')
     def model(self):
         # load pre-trained model (weights)
-        logger.debug(f'loading model of size {self.size}: {self.model_id}')
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'loading model of size {self.size}: {self.model_id}')
         cls = self._get_model_cnf()[1]
-        return cls.from_pretrained(
-            self.model_id,
-            cache_dir=str(self.cache_dir.absolute()))
+        params = {}#'return_dict': True}
+        if self.cache_dir is not None:
+            params['cache_dir'] = str(self.cache_dir.absolute())
+        if 0:
+            params['output_attentions'] = True
+        return cls.from_pretrained(self.model_id, **params)
 
     def clear(self):
-        self.tokenizer
         self._tokenizer.clear()
-        self.model
         self._model.clear()
 
     @property
@@ -108,7 +147,7 @@ class BertEmbeddingModel(object):
         tokenizer = self.tokenizer
         model = self.model
 
-        if self.model_desc == 'roberta':
+        if self.model_name == 'roberta':
             sentence = ' ' + sentence
         else:
             # add the special tokens.
@@ -139,20 +178,41 @@ class BertEmbeddingModel(object):
             logger.debug(Writable._trunc(
                 f'segments IDS: ({si}) {segments_ids}'))
         tokens_tensor = torch_config.singleton(indexed_tokens, dtype=torch.long)
+        tokens_tensor = tokens_tensor.unsqueeze(0)
         segments_tensors = torch_config.singleton(segments_ids, dtype=torch.long)
+        segments_tensors = segments_tensors.unsqueeze(0)
+
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'toks/seg shapes: {tokens_tensor.shape}' +
                          f'/{segments_tensors.shape}')
-        tokens_tensor = tokens_tensor.unsqueeze(0)
-        segments_tensors = segments_tensors.unsqueeze(0)
+            logger.debug(f'toks/set dtypes: toks={tokens_tensor.dtype}' +
+                         f'/{segments_tensors.dtype}')
+            logger.debug(f'toks/set devices: toks={tokens_tensor.device}' +
+                         f'/{segments_tensors.device}')
 
         # put the model in `evaluation` mode, meaning feed-forward operation.
         model.eval()
         model = torch_config.to(model)
 
+        if 1:
+            # a bug in transformers 4.4.2 requires this
+            # https://github.com/huggingface/transformers/issues/2952
+            seq_length = tokens_tensor.size()[1]
+            position_ids = model.embeddings.position_ids
+            position_ids = position_ids[:, 0: seq_length].to(torch.long)
+
         # predict hidden states features for each layer
         with torch.no_grad():
-            emb = model(tokens_tensor, segments_tensors)[0]
+            output: BaseModelOutputWithPoolingAndCrossAttentions = \
+                model(input_ids=tokens_tensor,
+                      attention_mask=segments_tensors,
+                      position_ids=position_ids)
+            emb = output.last_hidden_state
+            if 0:
+                attns = output.attentions
+                from zensols.deeplearn import printopts
+                with printopts():
+                    print('A', attns[-1])
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'embedding dim: {emb.size()} ({type(emb)})')
 
