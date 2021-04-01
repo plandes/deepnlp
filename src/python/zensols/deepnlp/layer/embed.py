@@ -122,28 +122,28 @@ class EmbeddingNetworkModule(BaseNetworkModule):
             if filter_attrib_fn is not None and \
                not filter_attrib_fn(field_meta):
                 if logger.isEnabledFor(logging.DEBUG):
-                    logger._debug(f'skipping: {name}')
+                    self._debug(f'skipping: {name}')
                 continue
             vec: FeatureVectorizer = field_meta.vectorizer
             if logger.isEnabledFor(logging.DEBUG):
-                logger._debug(f'{name} -> {field_meta}')
+                self._debug(f'{name} -> {field_meta}')
             if isinstance(vec, TokenContainerFeatureVectorizer):
                 attr = field_meta.field.attr
                 if vec.feature_type == TokenContainerFeatureType.TOKEN:
                     if logger.isEnabledFor(logging.DEBUG):
-                        logger._debug('adding embedding_output_size: ' +
-                                      str(vec.shape[1]))
+                        self._debug('adding embedding_output_size: ' +
+                                    str(vec.shape[1]))
                     self.embedding_output_size += vec.shape[1]
                     self.token_attribs.append(attr)
                 elif vec.feature_type == TokenContainerFeatureType.DOCUMENT:
                     if logger.isEnabledFor(logging.DEBUG):
-                        logger._debug(f'adding join size for {attr}: ' +
-                                      str(field_meta.shape[0]))
+                        self._debug(f'adding join size for {attr}: ' +
+                                    str(field_meta.shape[0]))
                     self.join_size += field_meta.shape[0]
                     self.doc_attribs.append(attr)
                 elif vec.feature_type == TokenContainerFeatureType.EMBEDDING:
                     if logger.isEnabledFor(logging.DEBUG):
-                        logger._debug(f'adding embedding: {attr}')
+                        self._debug(f'adding embedding: {attr}')
                     embedding_attribs.append(attr)
                     self.embedding_vectorizer = vec
         if len(embedding_attribs) != 1:
