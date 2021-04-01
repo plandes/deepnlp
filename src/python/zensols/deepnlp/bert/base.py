@@ -8,6 +8,7 @@ from dataclasses import dataclass, field, InitVar
 import logging
 from pathlib import Path
 from transformers import BertTokenizer
+from zensols.util.time import time
 from zensols.introspect import ClassImporter
 from zensols.persist import persisted, PersistedWork
 from zensols.deeplearn import TorchConfig
@@ -165,7 +166,9 @@ class BertModel(object):
             params['cache_dir'] = str(self.cache_dir.absolute())
         if 0:
             params['output_attentions'] = True
-        return cls.from_pretrained(self.model_id, **params)
+        with time(f'loaded model from pretrained {self.model_id}'):
+            model = cls.from_pretrained(self.model_id, **params)
+        return model
 
     def clear(self):
         self._tokenizer.clear()
