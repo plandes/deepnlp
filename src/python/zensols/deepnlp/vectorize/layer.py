@@ -324,7 +324,6 @@ class BertSentenceFeatureVectorizer(SentenceFeatureVectorizer):
         return BertFeatureContext(self.feature_id, sent_toks)
 
     def _decode(self, context: BertFeatureContext) -> Tensor:
-        print('DECO-----')
         mats = []
         sent: Tokenization
         for sent in context.sentences:
@@ -332,15 +331,3 @@ class BertSentenceFeatureVectorizer(SentenceFeatureVectorizer):
                 logger.debug(f'decoding {sent} ({type(sent)})')
             mats.append(sent.tensor)
         return torch.stack(mats)
-
-        #     emb = self.embed_model.transform(sent)
-        #     diff = self.token_length - emb.shape[0]
-        #     if diff > 0:
-        #         zeros = self.zeros
-        #         emb = torch.cat((torch.stack([zeros] * diff), emb))
-        #     elif diff < 0:
-        #         emb = emb[0:diff]
-        #     if logger.isEnabledFor(logging.DEBUG):
-        #         logger.debug(f'diff: {diff}, emb shape: {emb.shape}')
-        #     mats.append(emb)
-        # return torch.stack(mats)
