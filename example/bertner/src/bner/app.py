@@ -32,14 +32,16 @@ class NERFacadeApplication(FacadeApplication):
             sents = facade.doc_parser.parse(text)
             from zensols.util.log import loglevel
             with loglevel(['zensols.deepnlp.bert'], logging.INFO):
-                for sent in sents:
+                for sent in sents[0:1]:
                     tsent = model.tokenize(sent)
-                    print(tsent.input_ids.shape)
-                    print(tsent.attention_mask.shape)
-                    print(tsent.position_ids.shape)
+                    tsent.write()
+                    print(model.transform(tsent))
                     print('-' * 20)
-                    #out.write()
-                    #print(model.transform(tsent).shape)
+
+    def _test_decode(self):
+        with dealloc(self._create_facade()) as facade:
+            vec = facade.bert_vectorizer
+            print(type(vec))
 
     def _test_batch_write(self):
         if 0:
@@ -53,3 +55,4 @@ class NERFacadeApplication(FacadeApplication):
 
     def tmp(self):
         self._test_transform()
+        #self._test_decode()

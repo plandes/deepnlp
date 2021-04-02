@@ -41,6 +41,13 @@ class NERModelFacade(LanguageModelFacade):
         return self.LANGUAGE_MODEL_CONFIG
 
     @property
+    def bert_vectorizer(self) -> BertEmbeddingModel:
+        mng: TokenContainerFeatureVectorizerManager = \
+            self.language_vectorizer_manager
+        name: str = NERBatch.BERT_MODEL_NAME
+        return mng.vectorizers[name]
+
+    @property
     def bert_embedding_model(self) -> BertEmbeddingModel:
         mng: TokenContainerFeatureVectorizerManager = \
             self.language_vectorizer_manager
@@ -63,6 +70,7 @@ class NERModelFacade(LanguageModelFacade):
     def _configure_debug_logging(self):
         super()._configure_debug_logging()
         for name in ['bner',
+                     'zensols.deepnlp.vectorize.layer',
                      'zensols.deeplearn.model.module']:
             logging.getLogger(name).setLevel(logging.DEBUG)
 
