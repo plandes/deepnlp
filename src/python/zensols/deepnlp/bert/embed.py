@@ -11,7 +11,6 @@ import torch
 from torch import Tensor
 from transformers.modeling_outputs import BaseModelOutputWithPoolingAndCrossAttentions
 from zensols.persist import persisted
-from zensols.config import Writable
 from zensols.deepnlp import FeatureSentence
 from . import BertModel, WordPiece, WordPieceSentence, Tokenization
 
@@ -41,10 +40,9 @@ class BertEmbeddingModel(BertModel):
     @property
     @persisted('_vec_dim')
     def vector_dimension(self) -> int:
-        return 768 # ----------trash
         tok: Tokenization = self._create_tokenization(['the'], None)
         emb = self.transform(tok)
-        return emb.size(1)
+        return emb.size(2)
 
     def _create_tokenization(self, tokenized_text: Tuple[str],
                              piece_list: WordPieceSentence) -> Tokenization:
@@ -116,13 +114,12 @@ class BertEmbeddingModel(BertModel):
         return self._create_tokenization(tokenized_text, piece_list)
 
     def transform(self, tokenization: Tokenization) -> Tensor:
-        torch_config = self.torch_config
         model = self.model
         params = tokenization.params()
 
         # put the model in `evaluation` mode, meaning feed-forward operation.
         model.eval()
-        model = torch_config.to(model)
+        model = self.torch_config.to(model)
 
         # predict hidden states features for each layer
         with torch.no_grad():
@@ -133,7 +130,7 @@ class BertEmbeddingModel(BertModel):
             logger.debug(f'embedding dim: {emb.size()} ({type(emb)})')
 
         # remove dimension 1, the `batches`
-        emb = torch.squeeze(emb, dim=0)
+        #emb = torch.squeeze(emb, dim=0)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'after remove: {emb.size()}')
 

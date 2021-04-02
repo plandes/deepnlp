@@ -116,15 +116,23 @@ class Tokenization(PersistableContainer, Dictable):
         else:
             return super()._format(obj)
 
+    @classmethod
+    def get_input_ids(cls, tensor: Tensor) -> Tensor:
+        return tensor[0]
+
+    @classmethod
+    def get_attention_mask(cls, tensor: Tensor) -> Tensor:
+        return tensor[1]
+
     @property
     def input_ids(self) -> Tensor:
         """The token IDs as the output from the tokenizer."""
-        return self.tensor[0]
+        return self.get_input_ids(self.tensor)
 
     @property
     def attention_mask(self) -> Tensor:
         """The attention mask (0/1s)."""
-        return self.tensor[1]
+        return self.get_attention_mask(self.tensor)
 
     def params(self) -> Dict[str, Any]:
         dct = {}

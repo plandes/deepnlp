@@ -11,6 +11,7 @@ import logging
 import torch
 from torch import Tensor
 from torch import nn
+from transformers.modeling_outputs import BaseModelOutputWithPoolingAndCrossAttentions
 from zensols.persist import persisted, Deallocatable, Primeable
 from zensols.deeplearn.model import BaseNetworkModule, DebugModule
 from zensols.deeplearn.layer import MaxPool1dFactory
@@ -150,6 +151,8 @@ class BertEmbeddingLayer(EmbeddingLayer):
     sentence basis.
 
     """
+    MODULE_NAME = 'bert embedding'
+
     def __init__(self, *args, embed_model: BertEmbeddingModel,
                  max_pool: dict = None, **kwargs):
         """Initialize.
@@ -160,6 +163,7 @@ class BertEmbeddingLayer(EmbeddingLayer):
         super().__init__(
             *args, embedding_dim=embed_model.vector_dimension, **kwargs)
         self.embed_model = embed_model
+        self.transformer = embed_model.model
         self._debug(f'config pool: {max_pool}')
         if max_pool is not None:
             fac = MaxPool1dFactory(W=self.embedding_dim, **max_pool)
@@ -174,23 +178,28 @@ class BertEmbeddingLayer(EmbeddingLayer):
             del self.embed_model
 
     def forward(self, sents: Tensor) -> Tensor:
+        trans = self.transformer
+
         if logger.isEnabledFor(logging.DEBUG):
             self._shape_debug('forward', sents)
 
-        self._bail()
-        emb = self.embed_model.transform(sents)
-        diff = self.token_length - emb.shape[0]
-        if diff > 0:
-            zeros = self.zeros
-            emb = torch.cat((torch.stack([zeros] * diff), emb))
-        elif diff < 0:
-            emb = emb[0:diff]
+        # batch, input/mask, tok_len
+        input_ids = sents[:, 0, :]
+        attention_mask = sents[:, 1, :]
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'diff: {diff}, emb shape: {emb.shape}')
-        mats.append(emb)
+            self._shape_debug('input ids', input_ids)
+            self._shape_debug('attn mask', attention_mask)
+
+        output: BaseModelOutputWithPoolingAndCrossAttentions = trans(
+            input_ids=input_ids, attention_mask=attention_mask)
+        x = output.last_hidden_state
+
+        if logger.isEnabledFor(logging.DEBUG):
+            self._shape_debug('embedding', x)
 
         if self.pool is not None:
             x = self.pool(x)
+
         return x
 
 
@@ -321,7 +330,7 @@ class BertSentenceFeatureVectorizer(SentenceFeatureVectorizer):
         for sent in context.sentences:
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'decoding {sent} ({type(sent)})')
-            #mats.append(sent.to_tensor())
+            mats.append(sent.tensor)
         return torch.stack(mats)
 
         #     emb = self.embed_model.transform(sent)
