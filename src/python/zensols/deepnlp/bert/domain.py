@@ -7,7 +7,6 @@ __author__ = 'Paul Landes'
 from typing import Tuple, Dict, Any, List
 from dataclasses import dataclass, field
 import logging
-import copy as cp
 import sys
 from io import TextIOBase
 from itertools import chain
@@ -15,8 +14,8 @@ import itertools as it
 from torch import Tensor
 from zensols.config import Dictable
 from zensols.persist import PersistableContainer
-from zensols.deeplearn import TorchConfig
 from zensols.deepnlp import FeatureToken
+#from zensols.deeplearn.vectorize import TensorFeatureContext
 
 logger = logging.getLogger(__name__)
 
@@ -108,40 +107,42 @@ class Tokenization(PersistableContainer, Dictable):
     piece_list: WordPieceSentence = field()
     """The transformer tokens paired with features."""
 
-    input_ids: Tensor = field()
-    """The token IDs as the output from the tokenizer."""
+    tensor: Tensor = field()
+    """The vectorized tokenized data."""
 
-    attention_mask: Tensor = field()
-    """The attention mask (0/1s)."""
+    # def __post_init__(self):
+    #     if self.piece_list is not None:
+    #         if logger.isEnabledFor(logging.DEBUG):
+    #             logger.debug(f'tokens: {len(self.piece_list)}, ' +
+    #                          f'shape: {self.input_ids.shape}')
+    #         assert len(self.piece_list) == self.input_ids.size(1)
 
-    position_ids: Tensor = field(default=None)
-    """The position IDs (only given for Bert currently for huggingface bug.
+    @property
+    def input_ids(self) -> Tensor:
+        """The token IDs as the output from the tokenizer."""
+        return self.tensor[0]
 
-    :see: `HF Issue <https://github.com/huggingface/transformers/issues/2952>`_
+    @property
+    def attention_mask(self) -> Tensor:
+        """The attention mask (0/1s)."""
+        return self.tensor[1]
 
-    """
-    def __post_init__(self):
-        if self.piece_list is not None:
-            if logger.isEnabledFor(logging.DEBUG):
-                logger.debug(f'tokens: {len(self.piece_list)}, ' +
-                             f'shape: {self.input_ids.shape}')
-            assert len(self.piece_list) == self.input_ids.size(1)
+    @property
+    def position_ids(self) -> Tensor:
+        """The position IDs (only given for Bert currently for huggingface bug.
 
-    # def to(self, torch_config: TorchConfig) -> Tokenization:
-    #     clone = cp.copy(self)
-    #     clone.input_ids = torch_config.to(self.input_ids)
-    #     clone.attention_mask = torch_config.to(self.attention_mask)
-    #     if self.position_ids is not None:
-    #         clone.position_ids = torch_config.to(self.position_ids)
-    #     return clone
+        :see: `HF Issue <https://github.com/huggingface/transformers/issues/2952>`_
+
+        """
+        return self.tensor[2]
 
     def params(self) -> Dict[str, Any]:
         dct = {}
         atts = 'input_ids attention_mask'
-        if self.position_ids is not None:
+        if self.tensor.size(0) >= 3:
             atts += ' position_ids'
         for att in atts.split():
-            dct[att] = getattr(self, att)
+            dct[att] = getattr(self, att).unsqueeze(1)
         return dct
 
     def __str__(self) -> str:

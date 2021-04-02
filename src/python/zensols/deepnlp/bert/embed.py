@@ -40,16 +40,22 @@ class BertEmbeddingModel(BertModel):
 
     @property
     @persisted('_vec_dim')
-    def vector_dimension(self):
+    def vector_dimension(self) -> int:
+        return 768 # ----------trash
         tok: Tokenization = self._create_tokenization(['the'], None)
         emb = self.transform(tok)
-        return emb.shape[1]
+        return emb.size(1)
 
     def _create_tokenization(self, tokenized_text: Tuple[str],
                              piece_list: WordPieceSentence) -> Tokenization:
         tokenizer = self.tokenizer
         torch_config = self.torch_config
         model = self.model
+        tlen = len(tokenized_text)
+        wp_len = self.word_piece_length
+        # a bug in transformers 4.4.2 requires this
+        # https://github.com/huggingface/transformers/issues/2952
+        add_pos_ids = (self.model_name == 'bert')
 
         # truncate, otherwise error: CUDA error: device-side assert triggered
         if len(tokenized_text) > self.max_token_length:
@@ -59,43 +65,38 @@ class BertEmbeddingModel(BertModel):
             tokenized_text = tokenized_text[:self.max_token_length]
 
         # map the token strings to their vocabulary indeces.
-        indexed_tokens = tokenizer.convert_tokens_to_ids(tokenized_text)
+        tok_ixs = tokenizer.convert_tokens_to_ids(tokenized_text)
+        assert len(tok_ixs) == tlen
+
+        rows = 2
+        if add_pos_ids:
+            rows += 1
+        arr = torch_config.zeros(rows, wp_len, dtype=torch.long)
+        arr[0, 0:tlen] = torch_config.singleton(tok_ixs, dtype=torch.long)
+        arr[1, 0:tlen] = torch_config.ones(1, tlen, dtype=torch.long)
+        if add_pos_ids:
+            # taken from the source, appears to be the same as the input_ids
+            position_ids = model.embeddings.position_ids
+            position_ids = position_ids[:, 0: tlen].to(torch.long)
+            arr[2, 0:tlen] = torch_config.singleton(tok_ixs, dtype=torch.long)
 
         # mark each of the tokens as belonging to sentence `1`.
         segments_ids = [1] * len(tokenized_text)
 
-        # convert to GPU tensors
-        if logger.isEnabledFor(logging.DEBUG):
-            tl = len(indexed_tokens)
-            si = len(segments_ids)
-            logger.debug(Writable._trunc(
-                f'indexed tokens: ({tl}) {indexed_tokens}'))
-            logger.debug(Writable._trunc(
-                f'segments IDS: ({si}) {segments_ids}'))
-        tokens_tensor = torch_config.singleton(indexed_tokens, dtype=torch.long)
-        tokens_tensor = tokens_tensor.unsqueeze(0)
-        segments_tensors = torch_config.singleton(segments_ids, dtype=torch.long)
-        segments_tensors = segments_tensors.unsqueeze(0)
+        tokens = torch_config.singleton(tok_ixs, dtype=torch.long)
+        tokens = tokens.unsqueeze(0)
+        attention = torch_config.singleton(segments_ids, dtype=torch.long)
+        attention = attention.unsqueeze(0)
 
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'toks/seg shapes: {tokens_tensor.shape}' +
-                         f'/{segments_tensors.shape}')
-            logger.debug(f'toks/set dtypes: toks={tokens_tensor.dtype}' +
-                         f'/{segments_tensors.dtype}')
-            logger.debug(f'toks/set devices: toks={tokens_tensor.device}' +
-                         f'/{segments_tensors.device}')
+            logger.debug(f'toks/seg shapes: {tokens.shape}' +
+                         f'/{attention.shape}')
+            logger.debug(f'toks/set dtypes: toks={tokens.dtype}' +
+                         f'/{attention.dtype}')
+            logger.debug(f'toks/set devices: toks={tokens.device}' +
+                         f'/{attention.device}')
 
-        output = Tokenization(piece_list, tokens_tensor, segments_tensors)
-
-        if self.model_name == 'bert':
-            # a bug in transformers 4.4.2 requires this
-            # https://github.com/huggingface/transformers/issues/2952
-            seq_length = tokens_tensor.size()[1]
-            position_ids = model.embeddings.position_ids
-            position_ids = position_ids[:, 0: seq_length].to(torch.long)
-            output.position_ids = position_ids
-
-        return output
+        return Tokenization(piece_list, arr)
 
     def tokenize(self, sentence: FeatureSentence) -> Tokenization:
         tokenizer = self.tokenizer
@@ -139,11 +140,6 @@ class BertEmbeddingModel(BertModel):
             output: BaseModelOutputWithPoolingAndCrossAttentions = \
                 model(**params)
             emb = output.last_hidden_state
-            if 0:
-                attns = output.attentions
-                from zensols.deeplearn import printopts
-                with printopts():
-                    print('A', attns[-1])
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'embedding dim: {emb.size()} ({type(emb)})')
 
