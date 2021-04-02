@@ -110,12 +110,11 @@ class Tokenization(PersistableContainer, Dictable):
     tensor: Tensor = field()
     """The vectorized tokenized data."""
 
-    # def __post_init__(self):
-    #     if self.piece_list is not None:
-    #         if logger.isEnabledFor(logging.DEBUG):
-    #             logger.debug(f'tokens: {len(self.piece_list)}, ' +
-    #                          f'shape: {self.input_ids.shape}')
-    #         assert len(self.piece_list) == self.input_ids.size(1)
+    def _format(self, obj: Any) -> str:
+        if isinstance(obj, Tensor):
+            return str(obj.shape)
+        else:
+            return super()._format(obj)
 
     @property
     def input_ids(self) -> Tensor:
@@ -127,22 +126,11 @@ class Tokenization(PersistableContainer, Dictable):
         """The attention mask (0/1s)."""
         return self.tensor[1]
 
-    @property
-    def position_ids(self) -> Tensor:
-        """The position IDs (only given for Bert currently for huggingface bug.
-
-        :see: `HF Issue <https://github.com/huggingface/transformers/issues/2952>`_
-
-        """
-        return self.tensor[2]
-
     def params(self) -> Dict[str, Any]:
         dct = {}
         atts = 'input_ids attention_mask'
-        if self.tensor.size(0) >= 3:
-            atts += ' position_ids'
         for att in atts.split():
-            dct[att] = getattr(self, att).unsqueeze(1)
+            dct[att] = getattr(self, att).unsqueeze(0)
         return dct
 
     def __str__(self) -> str:

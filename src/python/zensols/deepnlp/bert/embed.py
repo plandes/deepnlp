@@ -50,12 +50,8 @@ class BertEmbeddingModel(BertModel):
                              piece_list: WordPieceSentence) -> Tokenization:
         tokenizer = self.tokenizer
         torch_config = self.torch_config
-        model = self.model
-        tlen = len(tokenized_text)
         wp_len = self.word_piece_length
-        # a bug in transformers 4.4.2 requires this
-        # https://github.com/huggingface/transformers/issues/2952
-        add_pos_ids = (self.model_name == 'bert')
+        tlen = len(tokenized_text)
 
         # truncate, otherwise error: CUDA error: device-side assert triggered
         if len(tokenized_text) > self.max_token_length:
@@ -69,16 +65,9 @@ class BertEmbeddingModel(BertModel):
         assert len(tok_ixs) == tlen
 
         rows = 2
-        if add_pos_ids:
-            rows += 1
         arr = torch_config.zeros(rows, wp_len, dtype=torch.long)
         arr[0, 0:tlen] = torch_config.singleton(tok_ixs, dtype=torch.long)
         arr[1, 0:tlen] = torch_config.ones(1, tlen, dtype=torch.long)
-        if add_pos_ids:
-            # taken from the source, appears to be the same as the input_ids
-            position_ids = model.embeddings.position_ids
-            position_ids = position_ids[:, 0: tlen].to(torch.long)
-            arr[2, 0:tlen] = torch_config.singleton(tok_ixs, dtype=torch.long)
 
         # mark each of the tokens as belonging to sentence `1`.
         segments_ids = [1] * len(tokenized_text)
