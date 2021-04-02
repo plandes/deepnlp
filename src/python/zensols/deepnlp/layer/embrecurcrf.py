@@ -80,7 +80,7 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, ScoredNetworkModule):
         self._shape_debug('super emb', x)
 
         x, score = self.recurcrf.decode(x, mask)
-        self._shape_debug('recur', x)
+        self._debug(f'recur {len(x)}')
         self._shape_debug('score', score)
 
         return x, score
