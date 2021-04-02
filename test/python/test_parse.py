@@ -91,3 +91,18 @@ the United States of America."""
         b.seek(0)
         doc_new = pickle.load(b)
         self._test_token_iter(doc_new)
+
+    def test_sent_parsing(self):
+        text = "I'm Paul Landes and I live in the United States.  I'm done."
+        parser = self.fac('doc_parser')
+        sents = parser.parse(text)
+        self.assertEqual(3, len(sents))
+        self.assertEqual("I'm Paul Landes and", sents[0].text)
+        self.assertEqual(("I", "'m", 'Paul Landes', 'and'),
+                         tuple(sents[0].norm_token_iter()))
+        self.assertEqual('I live in the United States.  ', sents[1].text)
+        self.assertEqual(('I', 'live', 'in', 'the United States', '.'),
+                         tuple(sents[1].norm_token_iter()))
+        self.assertEqual("I'm done.", sents[2].text)
+        self.assertEqual(('I', "'m", 'done', '.'),
+                         tuple(sents[2].norm_token_iter()))
