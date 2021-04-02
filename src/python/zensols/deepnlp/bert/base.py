@@ -33,7 +33,6 @@ class ModelFactory(object):
     ``DistilBertTokenizer```).
 
     """
-
     def __post_init__(self):
         if self.tokenizer_class_name is None:
             self.tokenizer_class_name = self._create_class_name('Tokenizer')
@@ -126,7 +125,6 @@ class BertModel(object):
     :class:`~transformers.BertModel.from_pretrained` and like models.
 
     """
-
     def __post_init__(self, cased: bool, cache: bool):
         self.lower_case = not cased
         model_id_not_set = self.model_id is None

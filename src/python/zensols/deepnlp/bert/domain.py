@@ -10,12 +10,10 @@ import logging
 import sys
 from io import TextIOBase
 from itertools import chain
-import itertools as it
 from torch import Tensor
 from zensols.config import Dictable
 from zensols.persist import PersistableContainer
 from zensols.deepnlp import FeatureToken
-#from zensols.deeplearn.vectorize import TensorFeatureContext
 
 logger = logging.getLogger(__name__)
 
@@ -71,16 +69,19 @@ class WordPieceSentence(PersistableContainer, Dictable):
                  pieces
 
         """
-        trunced = WordPieceSentence
-        if limit >= len(self.pieces):
+        if len(self) <= limit:
             trunced = self
         else:
+            wp_toks = []
+            tot = 1 if self.has_cls_sep else 0
+            for p in self.pieces:
+                tot += len(p.tokens)
+                if tot > limit:
+                    break
+                wp_toks.append(p)
             if self.has_cls_sep:
-                limit = limit - 1
-            toks = list(it.islice(self.pieces, limit))
-            if self.has_cls_sep:
-                toks.append(self.pieces[-1])
-            trunced = self.__class__(tuple(toks))
+                wp_toks.append(self.pieces[-1])
+            trunced = self.__class__(tuple(wp_toks))
         return trunced
 
     @property

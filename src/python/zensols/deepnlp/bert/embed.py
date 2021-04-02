@@ -22,20 +22,26 @@ class BertEmbeddingModel(BertModel):
     """An model for BERT embeddings that wraps the HuggingFace transformms API.
 
     """
-    max_token_length: int = field(default=512)
+    MAX_TOKEN_LENGTH = 512
     """The maximum token length to truncate before converting to IDs.  If this
     isn't done, the following error is raised:
 
       ``error: CUDA error: device-side assert triggered``
 
     """
-
-    word_piece_length: int = field(default=512)
-    """The max number of word peices, which is a one-to-one with
-    :class:`.TextContainer` tokenized tokens.  You can think of this as a token
-    length since Bert uses a word peice tokenizer.
+    word_piece_token_length: int = field(default=MAX_TOKEN_LENGTH)
+    """The max number of word peice tokens.  The word piece length is always the
+    same or greater in count than linguistic tokens because the word piece
+    algorithm tokenizes on characters.
 
     """
+
+    def __post_init__(self, cased: bool, cache: bool):
+        super().__post_init__(cased, cache)
+        # truncate, otherwise error: CUDA error: device-side assert triggered
+        if self.word_piece_token_length > 512:
+            raise ValueError('word piece token length must be less than 512 ' +
+                             f'but got: {self.word_piece_token_length}')
 
     @property
     @persisted('_vec_dim')
@@ -48,22 +54,15 @@ class BertEmbeddingModel(BertModel):
                              piece_list: WordPieceSentence) -> Tokenization:
         tokenizer = self.tokenizer
         torch_config = self.torch_config
-        wp_len = self.word_piece_length
         tlen = len(tokenized_text)
-
-        # truncate, otherwise error: CUDA error: device-side assert triggered
-        if len(tokenized_text) > self.max_token_length:
-            logger.warning(
-                f'truncating tokenized text ({len(tokenized_text)}) to ' +
-                f'{self.max_token_length} to avoid CUDA deviceside errors')
-            tokenized_text = tokenized_text[:self.max_token_length]
 
         # map the token strings to their vocabulary indeces.
         tok_ixs = tokenizer.convert_tokens_to_ids(tokenized_text)
         assert len(tok_ixs) == tlen
 
         rows = 2
-        arr = torch_config.zeros(rows, wp_len, dtype=torch.long)
+        arr = torch_config.zeros(
+            rows, self.word_piece_token_length, dtype=torch.long)
         arr[0, 0:tlen] = torch_config.singleton(tok_ixs, dtype=torch.long)
         arr[1, 0:tlen] = torch_config.ones(1, tlen, dtype=torch.long)
 
@@ -106,7 +105,7 @@ class BertEmbeddingModel(BertModel):
         piece_list = WordPieceSentence(trans_toks)
 
         # form the tokenized text from the word pieces
-        piece_list = piece_list.truncate(self.word_piece_length)
+        piece_list = piece_list.truncate(self.word_piece_token_length)
         tokenized_text: Tuple[str] = piece_list.word_piece_tokens
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'tokenized: {tokenized_text}')
