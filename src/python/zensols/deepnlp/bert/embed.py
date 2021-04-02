@@ -3,12 +3,13 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple
+from typing import Tuple, Dict
 from dataclasses import dataclass, field
 import logging
 from itertools import chain
 import torch
 from torch import Tensor
+from torch import nn
 from transformers.modeling_outputs import BaseModelOutputWithPoolingAndCrossAttentions
 from zensols.persist import persisted
 from zensols.deepnlp import FeatureSentence
@@ -113,24 +114,22 @@ class BertEmbeddingModel(BertModel):
         return self._create_tokenization(tokenized_text, piece_list)
 
     def transform(self, tokenization: Tokenization) -> Tensor:
-        model = self.model
-        params = tokenization.params()
+        model: nn.Module = self.model
+        params: Dict[str, str] = tokenization.params()
+        output: BaseModelOutputWithPoolingAndCrossAttentions
 
         # put the model in `evaluation` mode, meaning feed-forward operation.
-        model.eval()
         model = self.torch_config.to(model)
 
         # predict hidden states features for each layer
-        with torch.no_grad():
-            output: BaseModelOutputWithPoolingAndCrossAttentions = \
-                model(**params)
-            emb = output.last_hidden_state
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'embedding dim: {emb.size()} ({type(emb)})')
+        if not self.trainable:
+            with torch.no_grad():
+                output = model(**params)
+        else:
+            output = model(**params)
+        emb = output.last_hidden_state
 
-        # remove dimension 1, the `batches`
-        #emb = torch.squeeze(emb, dim=0)
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'after remove: {emb.size()}')
+            logger.debug(f'embedding dim: {emb.size()}')
 
         return emb

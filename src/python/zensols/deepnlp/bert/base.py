@@ -125,6 +125,13 @@ class BertModel(object):
     :class:`~transformers.BertModel.from_pretrained` and like models.
 
     """
+
+    trainable: bool = field(default=False)
+    """If ``False`` the weights on the transformer model are frozen and the use of
+    the model (including in subclasses) turn off autograd when executing..
+
+    """
+
     def __post_init__(self, cased: bool, cache: bool):
         self.lower_case = not cased
         model_id_not_set = self.model_id is None
@@ -172,6 +179,10 @@ class BertModel(object):
             logger.debug(f'creating model using: {params}')
         with time(f'loaded model from pretrained {self.model_id}'):
             model = cls.from_pretrained(self.model_id, **params)
+        if not self.trainable:
+            model.eval()
+            for param in model.parameters():
+                param.requires_grad = False
         return model
 
     def clear(self):

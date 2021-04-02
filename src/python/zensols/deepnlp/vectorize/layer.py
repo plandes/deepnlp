@@ -190,8 +190,15 @@ class BertEmbeddingLayer(EmbeddingLayer):
             self._shape_debug('input ids', input_ids)
             self._shape_debug('attn mask', attention_mask)
 
-        output: BaseModelOutputWithPoolingAndCrossAttentions = trans(
-            input_ids=input_ids, attention_mask=attention_mask)
+        output: BaseModelOutputWithPoolingAndCrossAttentions
+        params = {'input_ids': input_ids,
+                  'attention_mask': attention_mask}
+
+        if not self.embed_model.trainable:
+            with torch.no_grad():
+                output = trans(**params)
+        else:
+            output = trans(**params)
         x = output.last_hidden_state
 
         if logger.isEnabledFor(logging.DEBUG):
