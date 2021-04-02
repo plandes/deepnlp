@@ -3,11 +3,10 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Type
+from typing import Type, Dict, Any
 from dataclasses import dataclass, field, InitVar
 import logging
 from pathlib import Path
-from transformers import BertTokenizer
 from zensols.util.time import time
 from zensols.introspect import ClassImporter
 from zensols.persist import persisted, PersistedWork
@@ -46,7 +45,7 @@ class ModelFactory(object):
         return f'{prefix}{postfix}'
 
     @property
-    def tokenizer_class(self) -> Type[BertTokenizer]:
+    def tokenizer_class(self) -> Type:
         class_name = f'transformers.{self.tokenizer_class_name}'
         ci = ClassImporter(class_name, reload=False)
         cls = ci.get_class()
@@ -78,9 +77,6 @@ class BertModel(object):
 
     torch_config: TorchConfig = field()
     """The config device used to copy the embedding data."""
-
-    # transform_torch_config: TorchConfig = field()
-    # """The config device used to copy the embedding data."""
 
     cache_dir: Path = field(default=None)
     """The directory that is contains the BERT model(s)."""
@@ -125,6 +121,12 @@ class BertModel(object):
 
     """
 
+    pretrain_args: Dict[str, Any] = field(default_factory=dict)
+    """Additional arguments to pass to
+    :class:`~transformers.BertModel.from_pretrained` and like models.
+
+    """
+
     def __post_init__(self, cased: bool, cache: bool):
         self.lower_case = not cased
         model_id_not_set = self.model_id is None
@@ -152,6 +154,7 @@ class BertModel(object):
         params = {'do_lower_case': self.lower_case}
         if self.cache_dir is not None:
             params['cache_dir'] = str(self.cache_dir.absolute())
+        params.update(self.pretrain_args)
         return cls.from_pretrained(self.model_id, **params)
 
     @property
@@ -166,6 +169,9 @@ class BertModel(object):
             params['cache_dir'] = str(self.cache_dir.absolute())
         if 0:
             params['output_attentions'] = True
+        params.update(self.pretrain_args)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'creating model using: {params}')
         with time(f'loaded model from pretrained {self.model_id}'):
             model = cls.from_pretrained(self.model_id, **params)
         return model
