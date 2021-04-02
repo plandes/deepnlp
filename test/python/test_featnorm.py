@@ -83,14 +83,14 @@ class TestFeatureVectorizationCount(TestFeatureVectorization):
         self.assertTrue(isinstance(tensor, torch.Tensor))
         self.assertEqual((174,), tensor.shape)
         should = self.vmng.torch_config.from_iterable(
-            [0., 0., 0., 0., 0., 0., 0., 2., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0.,
+            [0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0.,
              0., 0., 0., 0., 2., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
              0., 0., 0., 0., 0., 0., 2., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-             0., 0., 0., 1., 0., 0., 1., 0., 2., 0., 0., 0., 0., 0., 0., 0., 2., 0.,
+             0., 0., 0., 1., 0., 0., 1., 0., 2., 0., 0., 0., 0., 0., 0., 0., 2., 1.,
              0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
              0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
              0., 0., 0., 0., 2., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 2., 0.,
-             0., 0., 1., 0., 0., 0., 0., 0., 0., 2., 2., 0., 0., 0., 0., 1., 1., 0.,
+             0., 0., 1., 0., 0., 0., 0., 0., 0., 2., 1., 0., 0., 0., 0., 1., 1., 0.,
              0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 1., 0., 0., 0., 0., 0., 0., 0.,
              0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
         self.assertTensorEquals(should, tensor)
@@ -120,7 +120,7 @@ class TestFeatureVectorizationDepth(TestFeatureVectorization):
         tensor = tvec.transform(fdoc)
         self.assertTrue(isinstance(tensor, torch.Tensor))
         should = self.vmng.torch_config.from_iterable(
-            [0.5000, 0.5000, 0.0000, 0.5000, 0.5000, 0.0000, 0.0000, 0.0000, 0.0000,
+            [0.5000, 0.5000, 0.0000, 0.5000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
              0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 1.0000, 0.0000, 0.0000, 0.0000,
              0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
              0.0000, 0.0000, 0.0000])
@@ -143,8 +143,8 @@ class TestFeatureVectorizationStatistics(TestFeatureVectorization):
         tensor = tvec.transform(fdoc)
         self.assertTrue(isinstance(tensor, torch.Tensor))
         should = self.vmng.torch_config.from_iterable(
-            [61.0000, 13.0000,  1.0000, 28.0000,  4.6923,  2.0000,  6.5000,
-             6.0000, 7.0000])
+            [62.0000, 12.0000,  1.0000, 28.0000,  4.6923,  2.0000,  6.0000,  5.0000,
+             7.0000])
         # fix precision
         tensor[4] = 4.6923
         self.assertTensorEquals(should, tensor)
@@ -218,7 +218,7 @@ class TestFeatureVectorizationOverlap(TestFeatureVectorization):
         self.assertEqual((174,), tvec.shape)
         tensor = tvec.transform((fdoc, fdoc2))
         self.assertEqual((174,), tensor.shape)
-        ar = [0., 0., 0., 0., 0., 0., 0., 3., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        ar = [0., 0., 0., 0., 0., 0., 0., 2., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
               0., 0., 0., 0., 3., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
               0., 0., 0., 0., 0., 0., 4., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
               0., 0., 0., 0., 0., 0., 2., 0., 4., 0., 0., 0., 0., 0., 0., 0., 4., 0.,

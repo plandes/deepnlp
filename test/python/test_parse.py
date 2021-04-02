@@ -31,7 +31,7 @@ the United States of America."""
 
     def _test_token_iter(self, doc):
         should_s1 = ('I', 'am', 'a', 'citizen', 'of','the United States of America', '.')
-        should_s2 = ('My', 'name', 'is', 'Paul', 'Landes', '.')
+        should_s2 = ('My', 'name', 'is', 'Paul Landes', '.')
         should = should_s1 + should_s2
 
         self.assertEqual(2, len(doc))
@@ -74,7 +74,8 @@ the United States of America."""
         for i in range(len(should)):
             self.assertEqual(should[:i], tuple(doc.norm_token_iter(i)))
 
-        should = ('PRP', 'VBP', 'DT', 'NN', 'IN', 'DT', '.', 'PRP$', 'NN', 'VBZ', 'NNP', 'NNP', '.')
+        should = ('PRP', 'VBP', 'DT', 'NN', 'IN', 'DT', '.', 'PRP$', 'NN',
+                  'VBZ', 'NNP', '.')
         self.assertEqual(should, tuple(map(lambda t: t.tag_, doc.tokens)))
 
     def test_token_iteration(self):

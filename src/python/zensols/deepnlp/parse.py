@@ -3,9 +3,9 @@
 """
 __author__ = 'Paul Landes'
 
-import logging
-from typing import List, Union, Set, Type
+from typing import List, Union, Set, Type, Iterable
 from dataclasses import dataclass, field
+import logging
 from zensols.nlp import LanguageResource, TokenFeatures
 from . import FeatureToken, FeatureSentence, FeatureDocument
 
@@ -32,19 +32,33 @@ class FeatureDocumentParser(object):
     def _create_token(self, feature: TokenFeatures) -> FeatureToken:
         return FeatureToken(feature, self.token_feature_ids)
 
+    def _create_sent(self, stoks: Iterable[TokenFeatures], text: str) -> \
+            FeatureSentence:
+        sent = tuple(map(self._create_token, stoks))
+        sent = FeatureSentence(sent, text)
+        return sent
+
     def from_string(self, text: str) -> List[FeatureSentence]:
         """Parse a document from a string.
 
         """
         lr = self.langres
         doc = lr.parse(text)
-        sents = []
         toks = tuple(lr.features(doc))
+        ntoks = len(toks)
+        tix = 0
+        sents = []
         for sent in doc.sents:
-            sent_feats = toks[sent[0].i:sent[-1].i+1]
-            if len(sent_feats) > 0:
-                feats = tuple(map(self._create_token, sent_feats))
-                sents.append(FeatureSentence(feats, sent.text))
+            e = sent[-1].i
+            stoks = []
+            while tix < ntoks:
+                tok = toks[tix]
+                if tok.i <= e:
+                    stoks.append(tok)
+                else:
+                    break
+                tix += 1
+            sents.append(self._create_sent(stoks, sent.text))
         return sents
 
     def from_list(self, text: List[str]) -> List[FeatureSentence]:
