@@ -11,6 +11,7 @@ import logging
 from zensols.deeplearn import NetworkSettings, ModelSettings
 from zensols.deeplearn.vectorize import FeatureVectorizerManager
 from zensols.deeplearn.model import ModelFacade
+from zensols.deepnlp import FeatureDocumentParser
 
 logger = logging.getLogger(__name__)
 
@@ -188,6 +189,16 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
         """
         lc = self._get_language_model_config()
         return self.vectorizer_manager_set[lc.manager_name]
+
+    @property
+    def doc_parser(self) -> FeatureDocumentParser:
+        """Return the document parser assocated with the language vectorizer manager.
+
+        :see: obj:`language_vectorizer_manager`
+
+        """
+        mng: FeatureVectorizerManager = self.language_vectorizer_manager
+        return mng.doc_parser
 
     def _get_vectorizer_feature_ids(self, name: str) -> Set[str]:
         lang_vec = self.language_vectorizer_manager.vectorizers[name]
