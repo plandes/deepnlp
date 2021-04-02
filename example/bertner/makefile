@@ -37,8 +37,8 @@ corpus:			$(CONNL_DIR)
 env:
 			cat $(ENV_INC)
 
-.PHONY:			modeltraintest
-modeltraintest:
+.PHONY:			traintest
+traintest:
 			nohup $(ENTRY_POINT) traintest > traintest.log 2>&1 &
 
 .PHONY:			clean

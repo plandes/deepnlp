@@ -35,8 +35,7 @@ class NERFacadeApplication(FacadeApplication):
                 for sent in sents[0:1]:
                     tsent = model.tokenize(sent)
                     tsent.write()
-                    print(model.transform(tsent))
-                    print('-' * 20)
+                    print(model.transform(tsent).shape)
 
     def _test_decode(self):
         with dealloc(self._create_facade()) as facade:
