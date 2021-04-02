@@ -13,14 +13,15 @@ from torch import nn
 from transformers.modeling_outputs import BaseModelOutputWithPoolingAndCrossAttentions
 from zensols.persist import persisted
 from zensols.deepnlp import FeatureSentence
-from . import BertModel, WordPiece, WordPieceSentence, Tokenization
+from . import TransformerModel, WordPiece, WordPieceSentence, Tokenization
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass
-class BertEmbeddingModel(BertModel):
-    """An model for BERT embeddings that wraps the HuggingFace transformms API.
+class TransformerEmbeddingModel(TransformerModel):
+    """An model for transformer (i.e. Bert) embeddings that wraps the HuggingFace
+    transformms API.
 
     """
     MAX_TOKEN_LENGTH = 512

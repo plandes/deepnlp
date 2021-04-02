@@ -17,7 +17,7 @@ def main(args: List[str], **factory_kwargs):
 def proto():
     print('-->proto')
     try:
-        run = 2
+        run = 0
         {0: lambda: main('./run.py tmp'.split(), reload_factory=True),
          1: lambda: main('./run.py debug'.split(), reload_factory=True),
          2: lambda: main('./run.py train'.split(), reload_factory=True),

@@ -18,7 +18,7 @@ from zensols.deeplearn.layer import MaxPool1dFactory
 from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
 from zensols.deepnlp import TokensContainer, FeatureSentence, FeatureDocument
 from zensols.deepnlp.embed import WordEmbedModel
-from zensols.deepnlp.bert import BertEmbeddingModel, Tokenization
+from zensols.deepnlp.transformer import TransformerEmbeddingModel, Tokenization
 from zensols.deepnlp.vectorize import TokenContainerFeatureType
 from . import TokenContainerFeatureVectorizer
 
@@ -146,18 +146,18 @@ class WordVectorEmbeddingLayer(EmbeddingLayer):
         return self.emb.forward(x)
 
 
-class BertEmbeddingLayer(EmbeddingLayer):
-    """A BERT embedding layer.  This class generates BERT embeddings on a per
-    sentence basis.
+class TransformerEmbeddingLayer(EmbeddingLayer):
+    """A transformer (i.e. Bert) embedding layer.  This class generates embeddings
+    on a per sentence basis.
 
     """
-    MODULE_NAME = 'bert embedding'
+    MODULE_NAME = 'transformer embedding'
 
-    def __init__(self, *args, embed_model: BertEmbeddingModel,
+    def __init__(self, *args, embed_model: TransformerEmbeddingModel,
                  max_pool: dict = None, **kwargs):
         """Initialize.
 
-        :param embed_model: used to generate the BERT embeddings
+        :param embed_model: used to generate the transformer (i.e. Bert) embeddings
 
         """
         super().__init__(
@@ -217,7 +217,7 @@ class SentenceFeatureVectorizer(TokenContainerFeatureVectorizer, Primeable):
     the input word embedding during execution of the model.
 
     """
-    embed_model: Union[WordEmbedModel, BertEmbeddingModel] = field()
+    embed_model: Union[WordEmbedModel, TransformerEmbeddingModel] = field()
     """Contains the word vector model."""
 
     as_document: bool = field()
@@ -294,24 +294,25 @@ class WordVectorSentenceFeatureVectorizer(SentenceFeatureVectorizer):
 
 
 @dataclass
-class BertFeatureContext(FeatureContext):
+class TransformerFeatureContext(FeatureContext):
     """A vectorizer feature contex used with
-    :class:`.BertSentenceFeatureVectorizer`.
+    :class:`.TransformerSentenceFeatureVectorizer`.
 
     """
     sentences: Tuple[Tokenization] = field()
-    """The sentences used to create the BERT embeddings.
+    """The sentences used to create the transformer embeddings.
 
     """
 
 
 @dataclass
-class BertSentenceFeatureVectorizer(SentenceFeatureVectorizer):
-    """A feature vectorizer used to create BERT embeddings.  The class uses the
-    :obj:`.embed_model`, which is of type :class:`.BertEmbeddingModel`
+class TransformerSentenceFeatureVectorizer(SentenceFeatureVectorizer):
+    """A feature vectorizer used to create transformer (i.e. Bert) embeddings.  The
+    class uses the :obj:`.embed_model`, which is of type
+    :class:`.TransformerEmbeddingModel`
 
     """
-    DESCRIPTION = 'bert vector sentence'
+    DESCRIPTION = 'transformer vector sentence'
     FEATURE_TYPE = TokenContainerFeatureType.EMBEDDING
 
     @property
@@ -328,9 +329,9 @@ class BertSentenceFeatureVectorizer(SentenceFeatureVectorizer):
             doc: FeatureDocument = container
             sents = doc.sents
         sent_toks = tuple(map(self.embed_model.tokenize, sents))
-        return BertFeatureContext(self.feature_id, sent_toks)
+        return TransformerFeatureContext(self.feature_id, sent_toks)
 
-    def _decode(self, context: BertFeatureContext) -> Tensor:
+    def _decode(self, context: TransformerFeatureContext) -> Tensor:
         mats = []
         sent: Tokenization
         for sent in context.sentences:

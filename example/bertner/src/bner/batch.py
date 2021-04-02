@@ -36,9 +36,9 @@ class NERDataPoint(FeatureSentenceDataPoint):
 @dataclass
 class NERBatch(Batch):
     LANGUAGE_FEATURE_MANAGER_NAME = 'language_feature_manager'
-    BERT_MODEL_NAME = 'bert'
-    BERT_EMBEDDING = 'bert_embedding'
-    EMBEDDING_ATTRIBUTES = {BERT_EMBEDDING}
+    TRANSFORMER_MODEL_NAME = 'transformer'
+    TRANSFORMER_EMBEDDING = 'transformer_embedding'
+    EMBEDDING_ATTRIBUTES = {TRANSFORMER_EMBEDDING}
     MAPPINGS = BatchFeatureMapping(
         'ents',
         [ManagerFeatureMapping(
@@ -49,7 +49,9 @@ class NERBatch(Batch):
              FieldFeatureMapping('mask', 'mask', True, 'ents'))),
          ManagerFeatureMapping(
              LANGUAGE_FEATURE_MANAGER_NAME,
-             (FieldFeatureMapping(BERT_EMBEDDING, BERT_MODEL_NAME, False, 'sent'),),)])
+             (FieldFeatureMapping(
+                 TRANSFORMER_EMBEDDING, TRANSFORMER_MODEL_NAME,
+                 False, 'sent'),),)])
 
     def _get_batch_feature_mappings(self) -> BatchFeatureMapping:
         return self.MAPPINGS

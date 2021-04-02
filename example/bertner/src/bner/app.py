@@ -1,4 +1,4 @@
-"""Example application to demonstrate Bert sequence classification.
+"""Example application to demonstrate Transformer sequence classification.
 
 """
 __author__ = 'plandes'
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class NERFacadeApplication(FacadeApplication):
-    """Example application to demonstrate Bert sequence classification.
+    """Example application to demonstrate Transformer sequence classification.
 
     """
     CLASS_INSPECTOR = {}
@@ -28,10 +28,10 @@ class NERFacadeApplication(FacadeApplication):
     def _test_transform(self):
         text = "I'm Paul Landes.  I live in the United States."
         with dealloc(self._create_facade()) as facade:
-            model = facade.bert_embedding_model
+            model = facade.transformer_embedding_model
             sents = facade.doc_parser.parse(text)
             from zensols.util.log import loglevel
-            with loglevel(['zensols.deepnlp.bert'], logging.INFO):
+            with loglevel(['zensols.deepnlp.transformer'], logging.INFO):
                 for sent in sents[0:1]:
                     tsent = model.tokenize(sent)
                     tsent.write()
@@ -39,7 +39,7 @@ class NERFacadeApplication(FacadeApplication):
 
     def _test_decode(self):
         with dealloc(self._create_facade()) as facade:
-            vec = facade.bert_vectorizer
+            vec = facade.transformer_vectorizer
             print(type(vec))
 
     def _test_batch_write(self):
@@ -47,7 +47,7 @@ class NERFacadeApplication(FacadeApplication):
             self.sent_batch_stash.clear()
         import itertools as it
         from zensols.util.log import loglevel
-        with loglevel(['zensols.deepnlp.bert',
+        with loglevel(['zensols.deepnlp.transformer',
                        'zensols.deepnlp.vectorize.layer'], logging.DEBUG):
             for id, batch in it.islice(self.sent_batch_stash, 1):
                 batch.write()

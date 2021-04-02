@@ -11,7 +11,7 @@ from zensols.deepnlp.model import (
     LanguageModelFacadeConfig,
 )
 from zensols.deepnlp.vectorize import TokenContainerFeatureVectorizerManager
-from zensols.deepnlp.bert import BertEmbeddingModel
+from zensols.deepnlp.transformer import TransformerEmbeddingModel
 from . import NERBatch, SentenceStats
 
 logger = logging.getLogger(__name__)
@@ -41,17 +41,17 @@ class NERModelFacade(LanguageModelFacade):
         return self.LANGUAGE_MODEL_CONFIG
 
     @property
-    def bert_vectorizer(self) -> BertEmbeddingModel:
+    def transformer_vectorizer(self) -> TransformerEmbeddingModel:
         mng: TokenContainerFeatureVectorizerManager = \
             self.language_vectorizer_manager
-        name: str = NERBatch.BERT_MODEL_NAME
+        name: str = NERBatch.TRANSFORMER_MODEL_NAME
         return mng.vectorizers[name]
 
     @property
-    def bert_embedding_model(self) -> BertEmbeddingModel:
+    def transformer_embedding_model(self) -> TransformerEmbeddingModel:
         mng: TokenContainerFeatureVectorizerManager = \
             self.language_vectorizer_manager
-        name: str = NERBatch.BERT_MODEL_NAME
+        name: str = NERBatch.TRANSFORMER_MODEL_NAME
         return mng.vectorizers[name].embed_model
 
     def _set_embedding(self, embedding: str):
@@ -60,7 +60,7 @@ class NERModelFacade(LanguageModelFacade):
     def _config_model_settings(self, emb_name: str = None):
         if emb_name is None:
             emb_name = self.embedding
-        batch_settings = {'bert_embedding': ('cpu', False)}[emb_name]
+        batch_settings = {'transformer_embedding': ('cpu', False)}[emb_name]
         ms = self.executor.model_settings
         ms.batch_iteration, self.cache_batches = batch_settings
         if logger.isEnabledFor(logging.INFO):

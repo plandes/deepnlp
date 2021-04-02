@@ -64,7 +64,7 @@ class ModelFactory(object):
 
 
 @dataclass
-class BertModel(object):
+class TransformerModel(object):
     """A utility base class that allows configuration and creates various
     huggingface models.
 
