@@ -1,2 +1,2 @@
 from .domain import *
-from .parse import *
+from .docparser import *
