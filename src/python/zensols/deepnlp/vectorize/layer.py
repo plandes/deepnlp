@@ -15,7 +15,10 @@ from transformers.modeling_outputs import BaseModelOutputWithPoolingAndCrossAtte
 from zensols.persist import persisted, Deallocatable, Primeable
 from zensols.deeplearn.model import BaseNetworkModule, DebugModule
 from zensols.deeplearn.layer import MaxPool1dFactory
-from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
+from zensols.deeplearn.vectorize import (
+    VectorizerError, FeatureContext, TensorFeatureContext,
+    TransformableFeatureVectorizer
+)
 from zensols.deepnlp import TokensContainer, FeatureSentence, FeatureDocument
 from zensols.deepnlp.embed import WordEmbedModel
 from zensols.deepnlp.transformer import TransformerEmbeddingModel, Tokenization
@@ -60,7 +63,7 @@ class EmbeddingLayer(DebugModule, Deallocatable):
 
 
 class WordVectorEmbeddingLayer(EmbeddingLayer):
-    """An input embedding layer.  This uses an instance of :class:`WordEmbedModel`
+    """An input embedding layer.  This uses an instance of :class:`.WordEmbedModel`
     to compose the word embeddings from indexes.  Each index is that of word
     vector, which is stacked to create the embedding.  This happens in the
     PyTorch framework, and is fast.
@@ -157,13 +160,15 @@ class TransformerEmbeddingLayer(EmbeddingLayer):
                  max_pool: dict = None, **kwargs):
         """Initialize.
 
-        :param embed_model: used to generate the transformer (i.e. Bert) embeddings
+        :param embed_model: used to generate the transformer (i.e. Bert)
+                            embeddings
 
         """
         super().__init__(
             *args, embedding_dim=embed_model.vector_dimension, **kwargs)
         self.embed_model = embed_model
-        self.transformer = embed_model.model
+        if self.embed_model.trainable:
+            self.transformer = embed_model.model
         self._debug(f'config pool: {max_pool}')
         if max_pool is not None:
             fac = MaxPool1dFactory(W=self.embedding_dim, **max_pool)
@@ -177,8 +182,8 @@ class TransformerEmbeddingLayer(EmbeddingLayer):
         if hasattr(self, 'embed_model'):
             del self.embed_model
 
-    def forward(self, sents: Tensor) -> Tensor:
-        trans = self.transformer
+    def _forward_trainable(self, sents: Tensor) -> Tensor:
+        trans = self.embed_model.model
 
         if logger.isEnabledFor(logging.DEBUG):
             self._shape_debug('forward', sents)
@@ -191,27 +196,30 @@ class TransformerEmbeddingLayer(EmbeddingLayer):
             self._shape_debug('attn mask', attention_mask)
 
         output: BaseModelOutputWithPoolingAndCrossAttentions
-        params = {'input_ids': input_ids,
-                  'attention_mask': attention_mask}
-
-        if not self.embed_model.trainable:
-            with torch.no_grad():
-                output = trans(**params)
-        else:
-            output = trans(**params)
+        output = trans(input_ids=input_ids, attention_mask=attention_mask)
         x = output.last_hidden_state
 
         if logger.isEnabledFor(logging.DEBUG):
             self._shape_debug('embedding', x)
 
+        return x
+
+    def forward(self, x: Tensor) -> Tensor:
+        if self.embed_model.trainable:
+            x = self._forward_trainable(x)
+
         if self.pool is not None:
             x = self.pool(x)
+
+        if logger.isEnabledFor(logging.DEBUG):
+            self._shape_debug('pool', x)
 
         return x
 
 
 @dataclass
-class SentenceFeatureVectorizer(TokenContainerFeatureVectorizer, Primeable):
+class SentenceFeatureVectorizer(TransformableFeatureVectorizer,
+                                TokenContainerFeatureVectorizer, Primeable):
     """Vectorize a :class:`.TokensContainer` as a vector of embedding indexes.
     Later, these indexes are used in a :class:`WordEmbeddingLayer` to create
     the input word embedding during execution of the model.
@@ -299,7 +307,7 @@ class TransformerFeatureContext(FeatureContext):
     :class:`.TransformerSentenceFeatureVectorizer`.
 
     """
-    sentences: Tuple[Tokenization] = field()
+    sentences: Union[Tensor, Tuple[Tokenization]] = field()
     """The sentences used to create the transformer embeddings.
 
     """
@@ -315,6 +323,12 @@ class TransformerSentenceFeatureVectorizer(SentenceFeatureVectorizer):
     DESCRIPTION = 'transformer vector sentence'
     FEATURE_TYPE = TokenContainerFeatureType.EMBEDDING
 
+    def __post_init__(self):
+        super().__post_init__()
+        if self.encode_transformed and self.embed_model.trainable:
+            raise VectorizerError('a trainable model can not encode ' +
+                                  'transformed vectorized features')
+
     @property
     @persisted('_zeros')
     def zeros(self):
@@ -329,13 +343,24 @@ class TransformerSentenceFeatureVectorizer(SentenceFeatureVectorizer):
             doc: FeatureDocument = container
             sents = doc.sents
         sent_toks = tuple(map(self.embed_model.tokenize, sents))
-        return TransformerFeatureContext(self.feature_id, sent_toks)
+        if logger.isEnabledFor(logging.INFO):
+            logger.info('encoding only tokenization')
+        ctx = TransformerFeatureContext(self.feature_id, sent_toks)
+        return ctx
 
-    def _decode(self, context: TransformerFeatureContext) -> Tensor:
+    def _transform_sents(self, sentences: Tuple[Tokenization]) -> Tensor:
         mats = []
         sent: Tokenization
-        for sent in context.sentences:
-            if logger.isEnabledFor(logging.DEBUG):
-                logger.debug(f'decoding {sent} ({type(sent)})')
-            mats.append(sent.tensor)
+        for sent in sentences:
+            if logger.isEnabledFor(logging.INFO):
+                logger.info(f'transforming {sent}')
+            if self.embed_model.trainable:
+                mats.append(sent.tensor)
+            else:
+                mats.append(self.embed_model.transform(sent))
         return torch.stack(mats)
+
+    def _decode(self, context: TransformerFeatureContext) -> Tensor:
+        if logger.isEnabledFor(logging.INFO):
+            logger.info(f'decoding {type(context.sentences)}')
+        return self._transform_sents(context.sentences)
