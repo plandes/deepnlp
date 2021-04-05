@@ -33,6 +33,7 @@ class ModelFactory(object):
     ``DistilBertTokenizer```).
 
     """
+
     def __post_init__(self):
         if self.tokenizer_class_name is None:
             self.tokenizer_class_name = self._create_class_name('Tokenizer')
