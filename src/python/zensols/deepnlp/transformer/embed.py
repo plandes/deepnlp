@@ -11,7 +11,7 @@ import torch
 from torch import Tensor
 from torch import nn
 from transformers.modeling_outputs import BaseModelOutputWithPoolingAndCrossAttentions
-from zensols.persist import persisted
+from zensols.persist import persisted, PersistedWork
 from zensols.deepnlp import FeatureSentence
 from . import TransformerModel, WordPiece, WordPieceSentence, Tokenization
 
@@ -44,13 +44,14 @@ class TransformerEmbeddingModel(TransformerModel):
         if self.word_piece_token_length > 512:
             raise ValueError('word piece token length must be less than 512 ' +
                              f'but got: {self.word_piece_token_length}')
+        self._vec_dim = PersistedWork('_vec_dim', self, cache)
 
     @property
     @persisted('_vec_dim')
     def vector_dimension(self) -> int:
         tok: Tokenization = self._create_tokenization(['the'], None)
         emb = self.transform(tok)
-        return emb.size(2)
+        return emb.size(1)
 
     def _create_tokenization(self, tokenized_text: Tuple[str],
                              piece_list: WordPieceSentence) -> Tokenization:
@@ -123,12 +124,18 @@ class TransformerEmbeddingModel(TransformerModel):
         model = self.torch_config.to(model)
 
         # predict hidden states features for each layer
-        if not self.trainable:
+        if self.trainable:
+            output = model(**params)
+        else:
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug('turning off gradients since model not trainable')
+            model.eval()
             with torch.no_grad():
                 output = model(**params)
-        else:
-            output = model(**params)
         emb = output.last_hidden_state
+
+        # remove dimension 1 (the batches dimension)
+        emb = torch.squeeze(emb, dim=0)
 
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'embedding dim: {emb.size()}')
