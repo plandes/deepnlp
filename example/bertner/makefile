@@ -5,7 +5,7 @@
 MTARG =			target
 ENV_INC =		$(MTARG)/env.mk
 ENTRY_POINT =		./run.py
-LOG_DIR = 		.
+LOG_DIR = 		/d/results
 
 ## corpora and models
 CONNL_SRC_URL =		https://raw.githubusercontent.com/kyzhouhzau/BERT-NER/master/data
@@ -39,8 +39,14 @@ env:
 
 .PHONY:			traintest
 traintest:
-			nohup $(ENTRY_POINT) traintest > traintest.log 2>&1 &
+			nohup $(ENTRY_POINT) traintest > $(LOG_DIR)/traintest.log 2>&1 &
 
+.PHONY:			stop
+stop:
+			ps auwx | grep python | grep landes | grep -v grep | \
+				grep run.py | awk '{print $$2}' | xargs kill
+			ps augwx | grep python | grep landes | grep multipro \
+				| grep -v grep | awk '{print $2}' | xargs kill
 .PHONY:			clean
 clean:
 			rm -fr $(MTARG) *.log

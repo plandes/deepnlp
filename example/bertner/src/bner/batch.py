@@ -20,16 +20,19 @@ class NERDataPoint(FeatureSentenceDataPoint):
     @property
     @persisted('_tags')
     def tags(self) -> Tuple[str]:
+        """Part-of-speech (POS) tag"""
         return tuple(map(lambda t: t.tag_, self.sent.token_iter()))
 
     @property
     @persisted('_syns')
     def syns(self) -> Tuple[str]:
+        """A syntactic chunk tag."""
         return tuple(map(lambda t: t.syn_, self.sent.token_iter()))
 
     @property
     @persisted('_ents')
     def ents(self) -> Tuple[str]:
+        """The label: the fourth the named entity tag."""
         return tuple(map(lambda t: t.ent_, self.sent.token_iter()))
 
 

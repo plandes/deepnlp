@@ -47,11 +47,13 @@ class NERFacadeApplication(FacadeApplication):
             self.sent_batch_stash.clear()
         import itertools as it
         from zensols.util.log import loglevel
-        with loglevel(['zensols.deepnlp.transformer',
-                       'zensols.deepnlp.vectorize.layer'], logging.DEBUG):
-            for id, batch in it.islice(self.sent_batch_stash, 1):
-                batch.write()
+        with dealloc(self._create_facade()) as facade:
+            with loglevel(['zensols.deepnlp.transformer',
+                           'zensols.deepnlp.vectorize.layer'], logging.DEBUG):
+                for id, batch in it.islice(facade.batch_stash, 1):
+                    batch.write()
 
     def tmp(self):
-        self._test_transform()
+        #self._test_transform()
         #self._test_decode()
+        self._test_batch_write()

@@ -1,4 +1,4 @@
-from .config import *
+from .cli import *
 from .corpus import *
 from .batch import *
 from .facade import *

@@ -18,9 +18,11 @@ def proto():
     print('-->proto')
     try:
         run = 0
-        {0: lambda: main('./run.py tmp'.split(), reload_factory=True),
-         1: lambda: main('./run.py debug'.split(), reload_factory=True),
-         2: lambda: main('./run.py train'.split(), reload_factory=True),
+        reload = True
+        {0: lambda: main('./run.py tmp'.split(), reload_factory=reload),
+         1: lambda: main('./run.py debug'.split(), reload_factory=reload),
+         2: lambda: main('./run.py batch'.split(), reload_factory=reload),
+         3: lambda: main('./run.py train'.split(), reload_factory=reload),
          }[run]()
     except SystemExit as e:
         print(f'exit: {e}')
@@ -29,7 +31,12 @@ def proto():
 if (__name__ == '__main__'):
     if 0:
         import logging
-        logging.basicConfig(level=logging.DEBUG)
+        fmt = '%(asctime)-15s [%(name)s] %(message)s'
+        logging.basicConfig(format=fmt, level=logging.INFO)
+
+    from zensols.deeplearn.batch import TorchMultiProcessStash
+    TorchMultiProcessStash.init()
+
     # when running from a shell, run the CLI entry point
     import __main__ as mmod
     if hasattr(mmod, '__file__'):
