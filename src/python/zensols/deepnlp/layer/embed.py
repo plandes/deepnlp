@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from typing import Callable
 import logging
 import torch
+from torch import Tensor
 from zensols.deeplearn.vectorize import FeatureVectorizer
 from zensols.deeplearn.model import BaseNetworkModule
 from zensols.deeplearn.batch import (
@@ -163,7 +164,7 @@ class EmbeddingNetworkModule(BaseNetworkModule):
     def _get_embedding_attribute_name(self):
         return None
 
-    def _forward(self, batch: Batch) -> torch.Tensor:
+    def _forward(self, batch: Batch) -> Tensor:
         if self.logger.isEnabledFor(logging.DEBUG):
             self._debug(f'batch: {batch}')
         x = self.forward_embedding_features(batch)
@@ -171,7 +172,7 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         x = self.forward_document_features(batch, x)
         return x
 
-    def forward_embedding_features(self, batch: Batch) -> torch.Tensor:
+    def forward_embedding_features(self, batch: Batch) -> Tensor:
         """Use the embedding layer return the word embedding tensors.
 
         """
@@ -187,8 +188,7 @@ class EmbeddingNetworkModule(BaseNetworkModule):
             self._shape_debug('decoded embedding', x)
         return x
 
-    def forward_token_features(self, batch: Batch, x: torch.Tensor = None) \
-            -> torch.Tensor:
+    def forward_token_features(self, batch: Batch, x: Tensor = None) -> Tensor:
         """Concatenate any token features given by the vectorizer configuration.
 
         """
@@ -204,8 +204,8 @@ class EmbeddingNetworkModule(BaseNetworkModule):
             self._shape_debug('token concat', x)
         return x
 
-    def forward_document_features(self, batch: Batch, x: torch.Tensor = None,
-                                  include_fn: Callable = None) -> torch.Tensor:
+    def forward_document_features(self, batch: Batch, x: Tensor = None,
+                                  include_fn: Callable = None) -> Tensor:
         """Concatenate any document features given by the vectorizer configuration.
 
         """
