@@ -1,4 +1,3 @@
-from .config import *
 from .dataset import *
 from .domain import *
 from .model import *

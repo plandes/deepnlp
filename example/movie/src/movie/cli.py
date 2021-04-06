@@ -1,41 +1,23 @@
-"""Command line entrance point to the application.
+"""Application configuration class.
 
 """
-__author__ = 'plandes'
+__author__ = 'Paul Landes'
 
-from typing import Type
+from pathlib import Path
 from dataclasses import dataclass
-from zensols.deeplearn.model import ModelFacade
-from zensols.deeplearn.cli import (
-    FacadeCli,
-    EnvironmentVariable,
-    EnvironmentFormatter,
-    FacadeCommandLine,
-)
-from . import AppConfig, ReviewModelFacade
+from zensols.config import DictionaryConfig
+from zensols.cli import ApplicationFactory
 
 
 @dataclass
-class ReviewFacadeCli(FacadeCli):
-    def _create_environment_formatter(self) -> EnvironmentFormatter:
-        return EnvironmentFormatter(
-            self.config,
-            (EnvironmentVariable('corpus_dir'),
-             EnvironmentVariable('data_dir'),
-             EnvironmentVariable('path', 'glove_50_embedding', 'glove_dir'),
-             EnvironmentVariable('stanford_path', 'dataset_factory', 'stanford_dir'),
-             EnvironmentVariable('path', 'word2vec_300_embedding', 'w2v_path'),
-             EnvironmentVariable('rt_pol_path', 'dataset_factory', 'cornell_dir')))
-
-    def _get_facade_class(self) -> Type[ModelFacade]:
-        return ReviewModelFacade
-
-
-class ConfAppCommandLine(FacadeCommandLine):
-    def __init__(self):
-        super().__init__(cli_class=ReviewFacadeCli, config_type=AppConfig)
-
-
-def main():
-    cl = ConfAppCommandLine()
-    cl.invoke()
+class CliFactory(ApplicationFactory):
+    @classmethod
+    def instance(cls: type, root_dir: Path, gpu_primary_index: int = 0,
+                 **kwargs):
+        dconf = DictionaryConfig(
+            {'env': {'root_dir': str(root_dir),
+                     'gpu_primary_index': str(gpu_primary_index)}})
+        return cls(
+            package_resource='movie.facade',
+            app_config_resource=root_dir / 'resources' / 'app.conf',
+            children_configs=(dconf,), **kwargs)

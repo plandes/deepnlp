@@ -80,9 +80,9 @@ class ReviewBatch(Batch):
     GLOVE_50_EMBEDDING = 'glove_50_embedding'
     GLOVE_300_EMBEDDING = 'glove_300_embedding'
     WORD2VEC_300_EMBEDDING = 'word2vec_300_embedding'
-    BERT_EMBEDDING = 'bert_embedding'
+    TRANSFORMER_EMBEDDING = 'transformer_embedding'
     EMBEDDING_ATTRIBUTES = {GLOVE_50_EMBEDDING, GLOVE_300_EMBEDDING,
-                            WORD2VEC_300_EMBEDDING, BERT_EMBEDDING}
+                            WORD2VEC_300_EMBEDDING, TRANSFORMER_EMBEDDING}
     STATS_ATTRIBUTE = 'stats'
     ENUMS_ATTRIBUTE = 'enums'
     COUNTS_ATTRIBUTE = 'counts'
@@ -99,7 +99,7 @@ class ReviewBatch(Batch):
              (FieldFeatureMapping(GLOVE_50_EMBEDDING, 'wvglove50', False, 'doc'),
               FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', False, 'doc'),
               FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', False, 'doc'),
-              FieldFeatureMapping(BERT_EMBEDDING, 'bert', False, 'doc'),
+              FieldFeatureMapping(TRANSFORMER_EMBEDDING, 'transformer', False, 'doc'),
               FieldFeatureMapping(STATS_ATTRIBUTE, 'stats', False, 'doc', 0),
               FieldFeatureMapping(ENUMS_ATTRIBUTE, 'enum', False, 'doc', 0),
               FieldFeatureMapping(COUNTS_ATTRIBUTE, 'count', False, 'doc', 0),

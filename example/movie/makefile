@@ -4,8 +4,7 @@
 # project
 MTARG =			target
 ENV_INC =		$(MTARG)/env.mk
-MODEL_ARGS =		-p -o model_settings.epochs=50
-ENTRY_POINT =		PYTHONPATH=../../src/python python ./run.py
+ENTRY_POINT =		./run.py
 LOG_DIR = 		.
 
 ## corpora and models
@@ -25,9 +24,13 @@ include $(ENV_INC)
 
 ## targets
 
+.PHONY:			env
+env:			$(ENV_INC)
+			cat $(ENV_INC)
+
 $(ENV_INC):
 			mkdir -p $(MTARG)
-			$(ENTRY_POINT) env > $(ENV_INC)
+			$(ENTRY_POINT) export --output $(ENV_INC)
 
 .PHONY:			info
 info:
@@ -79,20 +82,20 @@ cleanstop:
 help:
 			$(ENTRY_POINT) --help
 
-.PHONY:			env
-env:
-			cat $(ENV_INC)
-
 .PHONY:			modelinfo
 modelinfo:
 			$(ENTRY_POINT) info
+
+.PHONY:			batch
+batch:
+			$(ENTRY_POINT) batch
 
 .PHONY:			modeldebug
 modeldebug:
 			$(ENTRY_POINT) debug
 
-.PHONY:			modeltraintest
-modeltraintest:
+.PHONY:			traintest
+traintest:
 			$(ENTRY_POINT) traintest $(MODEL_ARGS)
 
 .PHONY:			clean
