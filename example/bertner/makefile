@@ -17,11 +17,11 @@ include $(ENV_INC)
 
 $(ENV_INC):
 			mkdir -p $(MTARG)
-			$(ENTRY_POINT) export --output $(ENV_INC)
+			$(ENTRY_POINT) export --expfmt make --output $(ENV_INC)
 
 .PHONY:			info
 info:
-			@echo "CONNL_DIR: $(CONNL_DIR)"
+			@cat $(ENV_INC)
 
 $(CONNL_DIR):
 			@echo "downloading the CONNL 2003 corpus"
@@ -36,6 +36,11 @@ corpus:			$(CONNL_DIR)
 .PHONY:			env
 env:
 			cat $(ENV_INC)
+
+.PHONY:			rebatch
+rebatch:
+			rm -rf $(DATA_DIR)/batch
+			$(ENTRY_POINT) batch
 
 .PHONY:			traintest
 traintest:
@@ -54,7 +59,7 @@ clean:
 
 .PHONY:			cleanall
 cleanall:		clean
-			rm -fr $(MTARG) results data jupyter.log
+			rm -fr $(MTARG) results $(DATA_DIR) jupyter.log
 
 .PHONY:			cleancorpus
 cleancorpus:
@@ -62,4 +67,3 @@ cleancorpus:
 
 .PHONY:			vaporize
 vaporize:		cleanall cleancorpus
-			rm -fr $(DATA_DIR)
