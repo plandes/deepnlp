@@ -4,18 +4,12 @@
 # project
 MTARG =			target
 ENV_INC =		$(MTARG)/env.mk
-MODEL_ARGS =		$(PYTHON_BIN_ARGS) -p -o model_settings.epochs=50
-ENTRY_POINT =		PYTHONPATH=../../src/python python ./run.py
-LOG_DIR = 		.
+ENTRY =			./run.py
+MDL_DIR=		./models
+LOG_DIR = 		$(RESULTS_DIR)
 
 ## corpora and models
 CONNL_SRC_URL =		https://raw.githubusercontent.com/kyzhouhzau/BERT-NER/master/data
-# glove
-GLOVE_SRC_URL =		http://downloads.cs.stanford.edu/nlp/data/glove.6B.zip
-# google 300D word2vec
-W2V_SRC_URL = 		https://s3.amazonaws.com/dl4j-distribution/GoogleNews-vectors-negative300.bin.gz
-W2V_DIR =		$(dir $(W2V_PATH))
-W2V_FILE =		$(notdir $(W2V_PATH))
 
 include $(ENV_INC)
 
@@ -24,25 +18,11 @@ include $(ENV_INC)
 
 $(ENV_INC):
 			mkdir -p $(MTARG)
-			$(ENTRY_POINT) env > $(ENV_INC)
+			$(ENTRY) export --expfmt make --output $(ENV_INC)
 
 .PHONY:			info
 info:
-			@echo "glove-dir: $(GLOVE_DIR)"
-			@echo "w2v-dir: $(W2V_DIR)"
-
-$(GLOVE_DIR):
-			@echo "downloading glove embeddings"
-			mkdir -p $(GLOVE_DIR)
-			curl "$(GLOVE_SRC_URL)" --output $(GLOVE_DIR)/glove.zip
-			( cd $(GLOVE_DIR) ; unzip glove.zip )
-			rm $(GLOVE_DIR)/glove.zip
-
-$(W2V_PATH):
-			@echo "downloading the Google pretrained word vectors"
-			mkdir -p $(W2V_DIR)
-			curl "$(W2V_SRC_URL)" --output $(W2V_DIR)/$(W2V_FILE).gz
-			( cd $(W2V_DIR) ; gunzip $(W2V_FILE).gz )
+			@cat $(ENV_INC)
 
 $(CONNL_DIR):
 			@echo "downloading the CONNL 2003 corpus"
@@ -52,15 +32,50 @@ $(CONNL_DIR):
 			done
 
 .PHONY:			corpus
-corpus:			$(CONNL_DIR) $(GLOVE_DIR) $(W2V_PATH)
+corpus:			$(CONNL_DIR)
 
 .PHONY:			env
 env:
 			cat $(ENV_INC)
 
-.PHONY:			modeltraintest
-modeltraintest:
-			$(ENTRY_POINT) traintest $(MODEL_ARGS)
+.PHONY:			rebatch
+rebatch:
+			rm -rf $(DATA_DIR)/batch
+			$(ENTRY) batch
+
+.PHONY:			traintest
+traintest:
+			nohup $(ENTRY) traintest > $(LOG_DIR)/traintest.log 2>&1 &
+
+.PHONY:			glove50
+glove50:
+			$(ENTRY) traintest -p --override $(MDL_DIR)/glove50.conf
+
+.PHONY:			glove300
+glove300:
+			$(ENTRY) traintest -p --override $(MDL_DIR)/glove300.conf
+
+.PHONY:			word2vec
+word2vec:
+			$(ENTRY) traintest -p --override $(MDL_DIR)/word2vec.conf
+
+.PHONY:			transformer
+transformer:
+			$(ENTRY) traintest -p --override $(MDL_DIR)/transformer.conf
+
+.PHONY:			allmodels
+allmodels:		glove50 glove300 word2vec transformer
+
+.PHONY:			stop
+stop:
+			ps auwx | grep python | grep landes | grep -v grep | \
+				grep run.py | awk '{print $$2}' | xargs kill
+			ps augwx | grep python | grep landes | grep multipro \
+				| grep -v grep | awk '{print $2}' | xargs kill
+
+.PHONY:			earlystop
+earlystop:
+			$(ENTRY) earlystop --override=language_defaults.embedding=glove_50_embedding
 
 .PHONY:			clean
 clean:
@@ -69,7 +84,11 @@ clean:
 
 .PHONY:			cleanall
 cleanall:		clean
-			rm -fr $(MTARG) results data jupyter.log
+			rm -fr $(MTARG) $(RESULTS_DIR) *.log
+
+.PHONY:			cleandata
+cleandata:		clean
+			rm -fr $(DATA_DIR)
 
 .PHONY:			cleancorpus
 cleancorpus:
@@ -77,4 +96,3 @@ cleancorpus:
 
 .PHONY:			vaporize
 vaporize:		cleanall cleancorpus
-			rm -fr $(DATA_DIR)

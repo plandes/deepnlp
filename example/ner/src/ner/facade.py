@@ -1,11 +1,18 @@
-from dataclasses import dataclass
+"""Application facade.
+
+"""
+
+from typing import List
+from dataclasses import dataclass, field
 import logging
 import pandas as pd
 from zensols.deepnlp.model import (
     LanguageModelFacade,
     LanguageModelFacadeConfig,
 )
-from . import NERBatch
+from zensols.deepnlp.vectorize import TokenContainerFeatureVectorizerManager
+from zensols.deepnlp.transformer import TransformerEmbeddingModel
+from . import NERBatch, SentenceStats
 
 logger = logging.getLogger(__name__)
 
@@ -23,34 +30,54 @@ class NERModelFacade(LanguageModelFacade):
         attribs=set(),
         embedding_attribs=NERBatch.EMBEDDING_ATTRIBUTES)
 
-    def __post_init__(self, *args, **kwargs):
-        super().__post_init__(*args, **kwargs)
-        self._config_model_settings()
+    sent_stats: SentenceStats = field(default=None)
+    """Computes the corpus statistics."""
+
+    # def __post_init__(self, *args, **kwargs):
+    #     super().__post_init__(*args, **kwargs)
+    #     self._config_model_settings()
 
     def _get_language_model_config(self) -> LanguageModelFacadeConfig:
         return self.LANGUAGE_MODEL_CONFIG
 
-    def _set_embedding(self, embedding: str):
-        self._config_model_settings(embedding)
+    @property
+    def transformer_vectorizer(self) -> TransformerEmbeddingModel:
+        mng: TokenContainerFeatureVectorizerManager = \
+            self.language_vectorizer_manager
+        name: str = NERBatch.TRANSFORMER_MODEL_NAME
+        return mng.vectorizers[name]
 
-    def _config_model_settings(self, emb_name: str = None):
-        if emb_name is None:
-            emb_name = self.embedding
-        batch_settings = {'glove_50_embedding': ('gpu', True),
-                          'glove_300_embedding': ('gpu', True),
-                          'word2vec_300_embedding': ('cpu', False),
-                          'bert_embedding': ('cpu', False)}[emb_name]
-        ms = self.executor.model_settings
-        ms.batch_iteration, self.cache_batches = batch_settings
-        if logger.isEnabledFor(logging.INFO):
-            logger.info(f'updated batch iteration={ms.batch_iteration}, ' +
-                        f'cache batches={ms.cache_batches}')
+    @property
+    def transformer_embedding_model(self) -> TransformerEmbeddingModel:
+        mng: TokenContainerFeatureVectorizerManager = \
+            self.language_vectorizer_manager
+        name: str = NERBatch.TRANSFORMER_MODEL_NAME
+        return mng.vectorizers[name].embed_model
+
+    # def _set_embedding(self, embedding: str):
+    #     self._config_model_settings(embedding)
+
+    # def _config_model_settings(self, emb_name: str = None):
+    #     if emb_name is None:
+    #         emb_name = self.embedding
+    #     batch_settings = {'transformer_embedding': ('cpu', False)}[emb_name]
+    #     ms = self.executor.model_settings
+    #     ms.batch_iteration, self.cache_batches = batch_settings
+    #     if logger.isEnabledFor(logging.INFO):
+    #         logger.info(f'updated batch iteration={ms.batch_iteration}, ' +
+    #                     f'cache batches={ms.cache_batches}')
 
     def _configure_debug_logging(self):
         super()._configure_debug_logging()
-        for name in ['zensols.ner',
+        for name in ['ner',
+                     'zensols.deepnlp.vectorize.layer',
                      'zensols.deeplearn.model.module']:
             logging.getLogger(name).setLevel(logging.DEBUG)
+
+    def _configure_cli_logging(self, info_loggers: List[str],
+                               debug_loggers: List[str]):
+        super()._configure_cli_logging(info_loggers, debug_loggers)
+        info_loggers.append('ner')
 
     def get_predictions(self) -> pd.DataFrame:
         """Return a Pandas dataframe of the predictions with columns that include the
@@ -61,3 +88,7 @@ class NERModelFacade(LanguageModelFacade):
         return super().get_predictions(
             ('text', 'len'),
             lambda dp: (dp.review.text, len(dp.review.text)))
+
+    def write_corpus_stats(self):
+        """Computes the corpus statistics."""
+        self.sent_stats.write()
