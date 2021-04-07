@@ -4,8 +4,9 @@
 # project
 MTARG =			target
 ENV_INC =		$(MTARG)/env.mk
-ENTRY_POINT =		./run.py
-LOG_DIR = 		/d/results
+ENTRY =			./run.py
+MDL_DIR=		./models
+LOG_DIR = 		$(RESULTS_DIR)
 
 ## corpora and models
 CONNL_SRC_URL =		https://raw.githubusercontent.com/kyzhouhzau/BERT-NER/master/data
@@ -17,7 +18,7 @@ include $(ENV_INC)
 
 $(ENV_INC):
 			mkdir -p $(MTARG)
-			$(ENTRY_POINT) export --expfmt make --output $(ENV_INC)
+			$(ENTRY) export --expfmt make --output $(ENV_INC)
 
 .PHONY:			info
 info:
@@ -40,11 +41,27 @@ env:
 .PHONY:			rebatch
 rebatch:
 			rm -rf $(DATA_DIR)/batch
-			$(ENTRY_POINT) batch
+			$(ENTRY) batch
 
 .PHONY:			traintest
 traintest:
-			nohup $(ENTRY_POINT) traintest > $(LOG_DIR)/traintest.log 2>&1 &
+			nohup $(ENTRY) traintest > $(LOG_DIR)/traintest.log 2>&1 &
+
+.PHONY:			glove50
+glove50:
+			$(ENTRY) traintest -p --override $(MDL_DIR)/glove50.conf
+
+.PHONY:			glove300
+glove300:
+			$(ENTRY) traintest -p --override $(MDL_DIR)/glove300.conf
+
+.PHONY:			word2vec
+word2vec:
+			$(ENTRY) traintest -p --override $(MDL_DIR)/word2vec.conf
+
+.PHONY:			transformer
+transformer:
+			$(ENTRY) traintest -p --override $(MDL_DIR)/transformer.conf
 
 .PHONY:			stop
 stop:
@@ -52,6 +69,11 @@ stop:
 				grep run.py | awk '{print $$2}' | xargs kill
 			ps augwx | grep python | grep landes | grep multipro \
 				| grep -v grep | awk '{print $2}' | xargs kill
+
+.PHONY:			earlystop
+earlystop:
+			$(ENTRY) earlystop --override=language_defaults.embedding=glove_50_embedding
+
 .PHONY:			clean
 clean:
 			rm -fr $(MTARG) *.log
@@ -59,7 +81,11 @@ clean:
 
 .PHONY:			cleanall
 cleanall:		clean
-			rm -fr $(MTARG) results $(DATA_DIR) jupyter.log
+			rm -fr $(MTARG) $(RESULTS_DIR) *.log
+
+.PHONY:			cleandata
+cleandata:		clean
+			rm -fr $(DATA_DIR)
 
 .PHONY:			cleancorpus
 cleancorpus:
