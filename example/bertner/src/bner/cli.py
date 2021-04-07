@@ -19,5 +19,5 @@ class CliFactory(ApplicationFactory):
                      'gpu_primary_index': str(gpu_primary_index)}})
         return cls(
             package_resource='bner.facade',
-            app_config_resource=root_dir / 'resources' / 'conf' / 'app.conf',
+            app_config_resource=root_dir / 'resources' / 'app.conf',
             children_configs=(dconf,), **kwargs)
