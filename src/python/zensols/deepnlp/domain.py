@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Domain objects that define features associated with text.
 
 """
@@ -116,13 +117,20 @@ class TokensContainer(PersistableContainer, TextContainer, metaclass=ABCMeta):
         return sum(1 for i in self.token_iter())
 
     @abstractmethod
-    def to_sentence(self, limit: int = sys.maxsize) -> Any:
+    def to_sentence(self, limit: int = sys.maxsize) -> FeatureSentence:
         """Coerce this instance to a single sentence.
 
         :param limit: the limit in the number of chunks to return
 
         :return: an instance of ``FeatureSentence`` that represents this token
                  sequence
+
+        """
+        pass
+
+    @abstractmethod
+    def to_document(self, limit: int = sys.maxsize) -> FeatureDocument:
+        """Coerce this instance in to a document.
 
         """
         pass
@@ -148,7 +156,9 @@ class TokensContainer(PersistableContainer, TextContainer, metaclass=ABCMeta):
 
 @dataclass
 class FeatureSentence(TokensContainer):
-    """A container class of tokens that make a sentence.
+    """A container class of tokens that make a sentence.  Instances of this class
+    iterate over :class:`.FeatureToken` instances, and can create documents
+    with :meth:`to_document`.
 
     """
     sent_tokens: Tuple[FeatureToken]
@@ -176,8 +186,11 @@ class FeatureSentence(TokensContainer):
     def __getitem__(self, key):
         return self.tokens[key]
 
-    def to_sentence(self, limit: int = sys.maxsize) -> Any:
+    def to_sentence(self, limit: int = sys.maxsize) -> FeatureSentence:
         return self
+
+    def to_document(self) -> FeatureDocument:
+        return FeatureDocument([self])
 
     def __len__(self):
         return self.token_len
@@ -196,7 +209,8 @@ class FeatureSentence(TokensContainer):
 class FeatureDocument(TokensContainer):
     """A container class of tokens that make a document.  This class contains a one
     to many of sentences.  However, it can be treated like any
-    :class:`.TokensContainer` to fetch tokens.
+    :class:`.TokensContainer` to fetch tokens.  Instances of this class iterate
+    over :class:`.FeatureSentence` instances.
 
     :param sents: the sentences defined for this document
 
@@ -223,6 +237,9 @@ class FeatureDocument(TokensContainer):
         sents = self.sent_iter(*args)
         toks = chain.from_iterable(map(lambda s: s.tokens, sents))
         return FeatureSentence(tuple(toks), self.get_text(*args))
+
+    def to_document(self) -> FeatureDocument:
+        return self
 
     @property
     @persisted('_text', transient=True)
