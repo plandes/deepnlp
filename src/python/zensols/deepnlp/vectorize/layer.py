@@ -11,7 +11,8 @@ import logging
 import torch
 from torch import Tensor
 from torch import nn
-from transformers.modeling_outputs import BaseModelOutputWithPoolingAndCrossAttentions
+from transformers.modeling_outputs import \
+    BaseModelOutputWithPoolingAndCrossAttentions
 from zensols.persist import persisted, Deallocatable, Primeable
 from zensols.deeplearn.model import BaseNetworkModule, DebugModule
 from zensols.deeplearn.layer import MaxPool1dFactory
@@ -19,7 +20,7 @@ from zensols.deeplearn.vectorize import (
     VectorizerError, FeatureContext, TensorFeatureContext,
     TransformableFeatureVectorizer
 )
-from zensols.deepnlp import TokensContainer, FeatureSentence, FeatureDocument
+from zensols.deepnlp import FeatureSentence, FeatureDocument
 from zensols.deepnlp.embed import WordEmbedModel
 from zensols.deepnlp.transformer import TransformerEmbeddingModel, Tokenization
 from zensols.deepnlp.vectorize import TokenContainerFeatureType
@@ -228,13 +229,6 @@ class SentenceFeatureVectorizer(TransformableFeatureVectorizer,
     embed_model: Union[WordEmbedModel, TransformerEmbeddingModel] = field()
     """Contains the word vector model."""
 
-    as_document: bool = field()
-    """If ``True`` treat the embedding as a document, so use all tokens as one
-    long stream; otherwise, stack each index as a row iteration of the
-    container, which would be sentences of given a document.
-
-    """
-
     decode_embedding: bool = field(default=False)
     """Whether or not to decode the embedding during the decode phase, which is
     helpful when caching batches; otherwise, the data is decoded from indexes
@@ -267,16 +261,13 @@ class WordVectorSentenceFeatureVectorizer(SentenceFeatureVectorizer):
     DESCRIPTION = 'word vector sentence'
     FEATURE_TYPE = TokenContainerFeatureType.EMBEDDING
 
-    def _encode(self, container: TokensContainer) -> FeatureContext:
+    def _encode(self, doc: FeatureDocument) -> FeatureContext:
         emodel = self.embed_model
         tw = self.manager.token_length
-        if self.as_document:
-            containers = [container]
-        else:
-            containers = container
-        shape = (len(containers), self.shape[0])
+        sents: List[FeatureSentence] = doc.sents
+        shape = (len(sents), self.shape[0])
         arr = self.torch_config.empty(shape, dtype=torch.long)
-        for row, container in enumerate(containers):
+        for row, container in enumerate(sents):
             tokens = container.tokens[0:tw]
             slen = len(tokens)
             if logger.isEnabledFor(logging.DEBUG):
@@ -342,15 +333,9 @@ class TransformerSentenceFeatureVectorizer(SentenceFeatureVectorizer):
     def zeros(self):
         return self.torch_config.zeros(self.embed_model.vector_dimension)
 
-    def _encode(self, container: TokensContainer) -> FeatureContext:
+    def _encode(self, doc: FeatureDocument) -> FeatureContext:
         sents: List[FeatureSentence]
-        if self.as_document:
-            sent: FeatureSentence = container.to_sentence()
-            sents = [sent]
-        else:
-            doc: FeatureDocument = container
-            sents = doc.sents
-        sent_toks = tuple(map(self.embed_model.tokenize, sents))
+        sent_toks = tuple(map(self.embed_model.tokenize, doc.sents))
         if logger.isEnabledFor(logging.INFO):
             logger.info('encoding only tokenization')
         ctx = TransformerFeatureContext(self.feature_id, sent_toks)
@@ -369,6 +354,6 @@ class TransformerSentenceFeatureVectorizer(SentenceFeatureVectorizer):
         return torch.stack(mats)
 
     def _decode(self, context: TransformerFeatureContext) -> Tensor:
-        if logger.isEnabledFor(logging.INFO):
-            logger.info(f'decoding {type(context.sentences)}')
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'decoding {len(context.sentences)} sentences')
         return self._transform_sents(context.sentences)
