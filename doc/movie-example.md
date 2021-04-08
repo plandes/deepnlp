@@ -45,8 +45,6 @@ class_name = zensols.deepnlp.vectorize.WordVectorSentenceFeatureVectorizer
 # generate the feature at run time
 feature_id = wvglove50
 embed_model = instance: glove_50_embedding
-# treat the document as a stream of tokens generating a flat set of indexes
-as_document = True
 ```
 
 Finally, the last step is to define a [WordVectorEmbeddingLayer], which extends
@@ -64,14 +62,11 @@ This module uses the glove embedding model to forward using a
 The reference to `language_feature_manager` is covered later.
 
 The next three entries have similar definitions for [Glove] 300 dimension,
-Google's pre-trained 300 dimension word2vec, and [BERT] embeddings.  The
-`as_document`, when true, parameter tells the framework to treat the embedding
-as a document using all tokens as one long stream as apposed to "stacking" each
-as a sentence.  When `decode_embedding` is set to true, the embedding is
-created during decode time, rather than at the time the batch is processed.
-The `model_name` for the [BERT] embeddings tells it which model to use, which
-can be `bert`, `distilbert`, `roberta` as defined by the [huggingface]
-transformers API.
+Google's pre-trained 300 dimension word2vec, and [BERT] embeddings.  When
+`decode_embedding` is set to true, the embedding is created during decode time,
+rather than at the time the batch is processed.  The `model_name` for the
+[BERT] embeddings tells it which model to use, which can be `bert`,
+`distilbert`, `roberta` as defined by the [huggingface] transformers API.
 
 
 ## Linguistic Configuration
@@ -145,7 +140,7 @@ configured_vectorizers = eval: [
   'word2vec_300_feature_vectorizer',
   'glove_50_feature_vectorizer',
   'glove_300_feature_vectorizer',
-  'bert_feature_vectorizer',
+  'transformer_feature_vectorizer',
   'enum_feature_vectorizer',
   'count_feature_vectorizer',
   'language_stats_feature_vectorizer',
@@ -290,9 +285,9 @@ class ReviewBatch(Batch):
     GLOVE_50_EMBEDDING = 'glove_50_embedding'
     GLOVE_300_EMBEDDING = 'glove_300_embedding'
     WORD2VEC_300_EMBEDDING = 'word2vec_300_embedding'
-    BERT_EMBEDDING = 'bert_embedding'
+    TRANSFORMER_EMBEDDING = 'transformer_embedding'
     EMBEDDING_ATTRIBUTES = {GLOVE_50_EMBEDDING, GLOVE_300_EMBEDDING,
-                            WORD2VEC_300_EMBEDDING, BERT_EMBEDDING}
+                            WORD2VEC_300_EMBEDDING, TRANSFORMER_EMBEDDING}
     STATS_ATTRIBUTE = 'stats'
     ENUMS_ATTRIBUTE = 'enums'
     COUNTS_ATTRIBUTE = 'counts'
@@ -315,10 +310,10 @@ Now we provide the linguistic feature mapping to vectorizers, again using the
 ```python
          ManagerFeatureMapping(
              LANGUAGE_FEATURE_MANAGER_NAME,
-             (FieldFeatureMapping(GLOVE_50_EMBEDDING, 'wvglove50', False, 'doc'),
-              FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', False, 'doc'),
-              FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', False, 'doc'),
-              FieldFeatureMapping(BERT_EMBEDDING, 'bert', False, 'doc'),
+             (FieldFeatureMapping(GLOVE_50_EMBEDDING, 'wvglove50', True, 'doc'),
+              FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', True, 'doc'),
+              FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', True, 'doc'),
+              FieldFeatureMapping(TRANSFORMER_EMBEDDING, 'transformer', True, 'doc'),
               FieldFeatureMapping(STATS_ATTRIBUTE, 'stats', False, 'doc', 0),
               FieldFeatureMapping(ENUMS_ATTRIBUTE, 'enum', False, 'doc', 0),
               FieldFeatureMapping(COUNTS_ATTRIBUTE, 'count', False, 'doc', 0),
@@ -342,7 +337,7 @@ across features for each batch.
 
 In this configuration, we split the label, embeddings, and linguistic features
 in their own groups so that we can experiment using different embeddings for
-each test.  Using BERT will take the longest since each sentence will be
+each test.  Using [BERT] will take the longest since each sentence will be
 computed during decoding.
 
 However, a much faster set, will be [Glove] 50D embeddings as only the indexes
@@ -363,7 +358,7 @@ groups = eval: (
        set('glove_50_embedding'.split()),
        set('glove_300_embedding'.split()),
        set('word2vec_300_embedding'.split()),
-       set('bert_embedding'.split()),
+       set('transformer_embedding'.split()),
        # however, natural language features are optional for this task
        set('enums stats counts dependencies'.split()))
 ```
@@ -405,7 +400,7 @@ BERT embeddings:
 ```python
     def _set_embedding(self, embedding: str):
         needs_change = super()._set_embedding(embedding)
-        if needs_change and embedding == 'bert':
+        if needs_change and embedding == 'transformer':
             # m/m F1 814, 811
             vec_mng = self.language_vectorizer_manager
             vec_mng.token_length = 100

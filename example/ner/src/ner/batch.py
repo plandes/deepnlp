@@ -56,11 +56,11 @@ class NERBatch(Batch):
              FieldFeatureMapping('mask', 'mask', True, 'ents'))),
          ManagerFeatureMapping(
              LANGUAGE_FEATURE_MANAGER_NAME,
-             (FieldFeatureMapping(GLOVE_50_EMBEDDING, 'wvglove50', False, 'sent'),
-              FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', False, 'sent'),
-              FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', False, 'sent'),
+             (FieldFeatureMapping(GLOVE_50_EMBEDDING, 'wvglove50', True, 'sent'),
+              #FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', True, 'sent'),
+              #FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', True, 'sent'),
               FieldFeatureMapping(
-                  TRANSFORMER_EMBEDDING, TRANSFORMER_MODEL_NAME, False, 'sent'),),)])
+                  TRANSFORMER_EMBEDDING, TRANSFORMER_MODEL_NAME, True, 'sent'),),)])
 
     def _get_batch_feature_mappings(self) -> BatchFeatureMapping:
         return self.MAPPINGS

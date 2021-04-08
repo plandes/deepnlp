@@ -50,7 +50,7 @@ class NERFacadeApplication(FacadeApplication):
         with dealloc(self._create_facade()) as facade:
             with loglevel(['zensols.deepnlp.transformer',
                            'zensols.deepnlp.vectorize.layer'], logging.DEBUG):
-                for id, batch in it.islice(facade.batch_stash, 1):
+                for id, batch in it.islice(facade.batch_stash, 100):
                     batch.write()
 
     def tmp(self):

@@ -86,6 +86,10 @@ clean:
 cleanall:		clean
 			rm -fr $(MTARG) $(RESULTS_DIR) *.log
 
+.PHONY:			cleanbatch
+cleanbatch:		clean
+			rm -fr $(DATA_DIR)/batch
+
 .PHONY:			cleandata
 cleandata:		clean
 			rm -fr $(DATA_DIR)
