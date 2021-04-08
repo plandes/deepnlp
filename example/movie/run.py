@@ -17,7 +17,9 @@ def main(args: List[str], **factory_kwargs):
 def proto():
     print('-->proto')
     try:
-        main('./run.py tmp'.split(), reload_factory=True)
+        args = './run.py debug --override models/transformer.conf'.split()
+        #args = './run.py tmp'.split()
+        main(args, reload_factory=True)
     except SystemExit as e:
         print(f'exit: {e}')
 

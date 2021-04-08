@@ -6,11 +6,11 @@ __author__ = 'Paul Landes'
 from pathlib import Path
 from dataclasses import dataclass
 from zensols.config import DictionaryConfig
-from zensols.cli import ApplicationFactory
+from zensols.deeplearn.cli import FacadeApplicationFactory
 
 
 @dataclass
-class CliFactory(ApplicationFactory):
+class CliFactory(FacadeApplicationFactory):
     @classmethod
     def instance(cls: type, root_dir: Path, gpu_primary_index: int = 0,
                  **kwargs):

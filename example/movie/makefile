@@ -4,8 +4,9 @@
 # project
 MTARG =			target
 ENV_INC =		$(MTARG)/env.mk
-ENTRY_POINT =		./run.py
-LOG_DIR = 		.
+ENTRY =			./run.py
+MDL_DIR=		./models
+LOG_DIR = 		$(RESULTS_DIR)
 
 ## corpora and models
 # glove
@@ -24,20 +25,13 @@ include $(ENV_INC)
 
 ## targets
 
-.PHONY:			env
-env:			$(ENV_INC)
-			cat $(ENV_INC)
-
 $(ENV_INC):
 			mkdir -p $(MTARG)
-			$(ENTRY_POINT) export --output $(ENV_INC)
+			$(ENTRY) export --expfmt make --output $(ENV_INC)
 
 .PHONY:			info
 info:
-			@echo "glove-dir: $(GLOVE_DIR)"
-			@echo "stanford-dir: $(STANFORD_DIR)"
-			@echo "cornell-dir: $(CORNELL_DIR)"
-			@echo "w2v-dir: $(W2V_DIR)"
+			@cat $(ENV_INC)
 
 $(GLOVE_DIR):
 			@echo "downloading glove embeddings"
@@ -76,36 +70,59 @@ stop:
 
 .PHONY:			cleanstop
 cleanstop:
-			$(ENTRY_POINT) stop
+			$(ENTRY) stop
 
 .PHONY:			help
 help:
-			$(ENTRY_POINT) --help
+			$(ENTRY) --help
 
 .PHONY:			modelinfo
 modelinfo:
-			$(ENTRY_POINT) info
+			$(ENTRY) info
 
 .PHONY:			batch
 batch:
-			$(ENTRY_POINT) batch
+			$(ENTRY) batch
 
 .PHONY:			modeldebug
 modeldebug:
-			$(ENTRY_POINT) debug
+			$(ENTRY) debug
 
 .PHONY:			traintest
 traintest:
-			$(ENTRY_POINT) traintest $(MODEL_ARGS)
+			$(ENTRY) traintest
+
+.PHONY:			glove50
+glove50:
+			$(ENTRY) traintest -p --override $(MDL_DIR)/glove50.conf
+
+.PHONY:			glove300
+glove300:
+			$(ENTRY) traintest -p --override $(MDL_DIR)/glove300.conf
+
+.PHONY:			word2vec
+word2vec:
+			$(ENTRY) traintest -p --override $(MDL_DIR)/word2vec.conf
+
+.PHONY:			transformer
+transformer:
+			$(ENTRY) traintest -p --override $(MDL_DIR)/transformer.conf
+
+.PHONY:			allmodels
+allmodels:		glove50 glove300 word2vec transformer
 
 .PHONY:			clean
 clean:
-			rm -fr $(MTARG) *.log
+			rm -fr $(MTARG) *.log $(RESULTS_DIR)
 			find . -type d -name __pycache__ -prune -exec rm -r {} \;
+
+.PHONY:			cleanbatch
+cleanbatch:		clean
+			rm -fr $(DATA_DIR)/batch
 
 .PHONY:			cleanall
 cleanall:		clean
-			rm -fr results data
+			rm -fr $(DATA_DIR)
 
 .PHONY:			cleancorpus
 cleancorpus:
@@ -113,4 +130,3 @@ cleancorpus:
 
 .PHONY:			vaporize
 vaporize:		cleanall cleancorpus
-			rm -fr $(DATA_DIR)
