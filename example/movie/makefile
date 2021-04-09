@@ -27,7 +27,7 @@ include $(ENV_INC)
 
 $(ENV_INC):
 			mkdir -p $(MTARG)
-			$(ENTRY) export --expfmt make --output $(ENV_INC)
+			$(ENTRY) -c $(MDL_DIR)/noop.conf export --expfmt make --output $(ENV_INC)
 
 .PHONY:			info
 info:
@@ -94,19 +94,19 @@ traintest:
 
 .PHONY:			glove50
 glove50:
-			$(ENTRY) traintest -p --override $(MDL_DIR)/glove50.conf
+			$(ENTRY) traintest -p --config $(MDL_DIR)/glove50.conf
 
 .PHONY:			glove300
 glove300:
-			$(ENTRY) traintest -p --override $(MDL_DIR)/glove300.conf
+			$(ENTRY) traintest -p --config $(MDL_DIR)/glove300.conf
 
 .PHONY:			word2vec
 word2vec:
-			$(ENTRY) traintest -p --override $(MDL_DIR)/word2vec.conf
+			$(ENTRY) traintest -p --config $(MDL_DIR)/word2vec.conf
 
 .PHONY:			transformer
 transformer:
-			$(ENTRY) traintest -p --override $(MDL_DIR)/transformer.conf
+			$(ENTRY) traintest -p --config $(MDL_DIR)/transformer.conf
 
 .PHONY:			allmodels
 allmodels:		glove50 glove300 word2vec transformer

@@ -37,8 +37,7 @@ class ReviewModelFacade(LanguageModelFacade):
 
     def _set_embedding(self, embedding: str):
         needs_change = super()._set_embedding(embedding)
-        if needs_change and embedding == 'bert':
-            # m/m F1 814, 811
+        if needs_change and embedding == 'transformer':
             vec_mng = self.language_vectorizer_manager
             vec_mng.token_length = 100
 
