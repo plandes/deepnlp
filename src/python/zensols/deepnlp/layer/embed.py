@@ -179,6 +179,9 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         decoded = False
         x = batch.attributes[self.embedding_attribute_name]
         self._shape_debug('input', x)
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self._debug(f'vec type: {type(self.embedding_vectorizer)} ' +
+                        f' {isinstance(self.embedding_vectorizer, SentenceFeatureVectorizer)}')
         if isinstance(self.embedding_vectorizer, SentenceFeatureVectorizer):
             decoded = self.embedding_vectorizer.decode_embedding
             if self.logger.isEnabledFor(logging.DEBUG):

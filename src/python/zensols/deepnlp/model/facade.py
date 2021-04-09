@@ -221,7 +221,6 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
                      __name__]:
             logging.getLogger(name).setLevel(logging.DEBUG)
         for name in ['zensols.deepnlp.vectorize.vectorizers',
-                     # 'zensols.deepnlp.vectorize.layer',
                      'zensols.deepnlp.model.module']:
             logging.getLogger(name).setLevel(logging.INFO)
 
