@@ -29,14 +29,12 @@ def proto():
 
 
 if (__name__ == '__main__'):
+    from zensols.deeplearn import TorchConfig
+    TorchConfig.init()
     if 0:
         import logging
         fmt = '%(asctime)-15s [%(name)s] %(message)s'
         logging.basicConfig(format=fmt, level=logging.INFO)
-
-    from zensols.deeplearn.batch import TorchMultiProcessStash
-    TorchMultiProcessStash.init()
-
     # when running from a shell, run the CLI entry point
     import __main__ as mmod
     if hasattr(mmod, '__file__'):
