@@ -33,10 +33,6 @@ class NERModelFacade(LanguageModelFacade):
     sent_stats: SentenceStats = field(default=None)
     """Computes the corpus statistics."""
 
-    # def __post_init__(self, *args, **kwargs):
-    #     super().__post_init__(*args, **kwargs)
-    #     self._config_model_settings()
-
     def _get_language_model_config(self) -> LanguageModelFacadeConfig:
         return self.LANGUAGE_MODEL_CONFIG
 
@@ -53,19 +49,6 @@ class NERModelFacade(LanguageModelFacade):
             self.language_vectorizer_manager
         name: str = NERBatch.TRANSFORMER_MODEL_NAME
         return mng.vectorizers[name].embed_model
-
-    # def _set_embedding(self, embedding: str):
-    #     self._config_model_settings(embedding)
-
-    # def _config_model_settings(self, emb_name: str = None):
-    #     if emb_name is None:
-    #         emb_name = self.embedding
-    #     batch_settings = {'transformer_embedding': ('cpu', False)}[emb_name]
-    #     ms = self.executor.model_settings
-    #     ms.batch_iteration, self.cache_batches = batch_settings
-    #     if logger.isEnabledFor(logging.INFO):
-    #         logger.info(f'updated batch iteration={ms.batch_iteration}, ' +
-    #                     f'cache batches={ms.cache_batches}')
 
     def _configure_debug_logging(self):
         super()._configure_debug_logging()

@@ -5,13 +5,14 @@ efficient retrival.
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, Union, List
+from typing import Tuple, Union
 from dataclasses import dataclass, field
 import logging
 import torch
 from torch import Tensor
 from torch import nn
-from transformers.modeling_outputs import BaseModelOutputWithPoolingAndCrossAttentions
+from transformers.modeling_outputs import \
+    BaseModelOutputWithPoolingAndCrossAttentions
 from zensols.persist import persisted, Deallocatable, Primeable
 from zensols.deeplearn.model import BaseNetworkModule, DebugModule
 from zensols.deeplearn.layer import MaxPool1dFactory
@@ -19,7 +20,7 @@ from zensols.deeplearn.vectorize import (
     VectorizerError, FeatureContext, TensorFeatureContext,
     TransformableFeatureVectorizer
 )
-from zensols.deepnlp import TokensContainer, FeatureSentence, FeatureDocument
+from zensols.deepnlp import TokensContainer
 from zensols.deepnlp.embed import WordEmbedModel
 from zensols.deepnlp.transformer import TransformerEmbeddingModel, Tokenization
 from zensols.deepnlp.vectorize import TokenContainerFeatureType
@@ -227,13 +228,6 @@ class SentenceFeatureVectorizer(TransformableFeatureVectorizer,
     """
     embed_model: Union[WordEmbedModel, TransformerEmbeddingModel] = field()
     """Contains the word vector model."""
-
-    # as_document: bool = field()
-    # """If ``True`` treat the embedding as a document, so use all tokens as one
-    # long stream; otherwise, stack each index as a row iteration of the
-    # container, which would be sentences of given a document.
-
-    # """
 
     decode_embedding: bool = field(default=False)
     """Whether or not to decode the embedding during the decode phase, which is
