@@ -1,3 +1,4 @@
+
 """This file contains a stash used to load an embedding layer.  It creates
 features in batches of matrices and persists matrix only (sans features) for
 efficient retrival.
@@ -5,7 +6,7 @@ efficient retrival.
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, Union
+from typing import Tuple, Union, List
 from dataclasses import dataclass, field
 import logging
 import torch
@@ -22,7 +23,7 @@ from zensols.deeplearn.vectorize import (
 )
 from zensols.deepnlp import TokensContainer
 from zensols.deepnlp.embed import WordEmbedModel
-from zensols.deepnlp.transformer import TransformerEmbeddingModel, Tokenization
+from zensols.deepnlp.transformer import TransformerEmbedding, TokenizedDocument
 from zensols.deepnlp.vectorize import TokenContainerFeatureType
 from . import TokenContainerFeatureVectorizer
 
@@ -157,7 +158,7 @@ class TransformerEmbeddingLayer(EmbeddingLayer):
     """
     MODULE_NAME = 'transformer embedding'
 
-    def __init__(self, *args, embed_model: TransformerEmbeddingModel,
+    def __init__(self, *args, embed_model: TransformerEmbedding,
                  max_pool: dict = None, **kwargs):
         """Initialize.
 
@@ -219,14 +220,15 @@ class TransformerEmbeddingLayer(EmbeddingLayer):
 
 
 @dataclass
-class SentenceFeatureVectorizer(TransformableFeatureVectorizer,
-                                TokenContainerFeatureVectorizer, Primeable):
+class TokensContainerFeatureVectorizer(TransformableFeatureVectorizer,
+                                       TokenContainerFeatureVectorizer,
+                                       Primeable):
     """Vectorize a :class:`.TokensContainer` as a vector of embedding indexes.
     Later, these indexes are used in a :class:`WordEmbeddingLayer` to create
     the input word embedding during execution of the model.
 
     """
-    embed_model: Union[WordEmbedModel, TransformerEmbeddingModel] = field()
+    embed_model: Union[WordEmbedModel, TransformerEmbedding] = field()
     """Contains the word vector model."""
 
     decode_embedding: bool = field(default=False)
@@ -253,7 +255,7 @@ class SentenceFeatureVectorizer(TransformableFeatureVectorizer,
 
 
 @dataclass
-class WordVectorSentenceFeatureVectorizer(SentenceFeatureVectorizer):
+class WordVectorTokensContainerFeatureVectorizer(TokensContainerFeatureVectorizer):
     """Vectorize sentences using an embedding model (:obj:`embed_model`) of type
     :class:`.WordEmbedModel`.
 
@@ -261,12 +263,12 @@ class WordVectorSentenceFeatureVectorizer(SentenceFeatureVectorizer):
     DESCRIPTION = 'word vector sentence'
     FEATURE_TYPE = TokenContainerFeatureType.EMBEDDING
 
-    def _encode(self, container: TokensContainer) -> FeatureContext:
+    def _encode(self, containers: List[TokensContainer]) -> FeatureContext:
         emodel = self.embed_model
         tw = self.manager.token_length
-        shape = (len(container), self.shape[0])
+        shape = (len(containers), self.shape[0])
         arr = self.torch_config.empty(shape, dtype=torch.long)
-        for row, container in enumerate(container):
+        for row, container in enumerate(containers):
             tokens = container.tokens[0:tw]
             slen = len(tokens)
             if logger.isEnabledFor(logging.DEBUG):
@@ -302,20 +304,20 @@ class WordVectorSentenceFeatureVectorizer(SentenceFeatureVectorizer):
 @dataclass
 class TransformerFeatureContext(FeatureContext):
     """A vectorizer feature contex used with
-    :class:`.TransformerSentenceFeatureVectorizer`.
+    :class:`.TransformerTokensContainerFeatureVectorizer`.
 
     """
-    sentences: Union[Tensor, Tuple[Tokenization]] = field()
-    """The sentences used to create the transformer embeddings.
+    documents: Tuple[TokenizedDocument] = field()
+    """The document used to create the transformer embeddings.
 
     """
 
 
 @dataclass
-class TransformerSentenceFeatureVectorizer(SentenceFeatureVectorizer):
+class TransformerTokensContainerFeatureVectorizer(TokensContainerFeatureVectorizer):
     """A feature vectorizer used to create transformer (i.e. Bert) embeddings.  The
     class uses the :obj:`.embed_model`, which is of type
-    :class:`.TransformerEmbeddingModel`
+    :class:`.TransformerEmbedding`.
 
     """
     DESCRIPTION = 'transformer vector sentence'
@@ -332,23 +334,33 @@ class TransformerSentenceFeatureVectorizer(SentenceFeatureVectorizer):
     def zeros(self):
         return self.torch_config.zeros(self.embed_model.vector_dimension)
 
-    def _encode(self, container: TokensContainer) -> FeatureContext:
-        sent_toks = tuple(map(self.embed_model.tokenize, container))
+    def _encode(self, containers: List[TokensContainer]) -> FeatureContext:
+        emb: TransformerEmbedding = self.embed_model
+        docs = []
         if logger.isEnabledFor(logging.INFO):
-            logger.info('encoding only tokenization')
-        ctx = TransformerFeatureContext(self.feature_id, sent_toks)
-        return ctx
+            logger.info(f'encoding {len(containers)} token containers')
+        for tc in containers:
+            doc = tc.to_sentence().to_document()
+            tok_doc = emb.tokenize(doc)
+            docs.append(tok_doc.detach())
+        return TransformerFeatureContext(self.feature_id, docs)
 
     def _decode(self, context: TransformerFeatureContext) -> Tensor:
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'decoding {len(context.sentences)} sentences')
-        mats = []
-        sent: Tokenization
-        for sent in context.sentences:
+        emb: TransformerEmbedding = self.embed_model
+        mats: List[Tensor] = []
+        if logger.isEnabledFor(logging.INFO):
+            logger.info(f'decoding {len(context.documents)} documents')
+        tok_doc: TokenizedDocument
+        arr: Tensor
+        if emb.trainable:
+            mats = tuple(map(lambda td: td.tensor, context.documents))
+            arr = torch.stack(mats)
             if logger.isEnabledFor(logging.INFO):
-                logger.info(f'transforming {sent}')
-            if self.embed_model.trainable:
-                mats.append(sent.tensor)
-            else:
-                mats.append(self.embed_model.transform(sent))
-        return torch.stack(mats)
+                logger.info('passing through tensor: {arr.shape}')
+        else:
+            if logger.isEnabledFor(logging.INFO):
+                logger.info('transforming docs')
+            arr = emb.transform(context.documents).last_hidden_state
+        if logger.isEnabledFor(logging.INFO):
+            logger.info(f'decoded {arr.shape} on {arr.device}')
+        return arr

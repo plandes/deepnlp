@@ -4,143 +4,106 @@ from __future__ import annotations
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, Dict, Any, List
+from typing import List, Tuple, Dict, Any
 from dataclasses import dataclass, field
-import logging
 import sys
+import logging
 from io import TextIOBase
-from itertools import chain
 from torch import Tensor
-from zensols.config import Dictable
+from zensols.deepnlp import FeatureDocument
 from zensols.persist import PersistableContainer
+from zensols.config import Writable
 from zensols.deepnlp import FeatureToken
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass
-class WordPiece(PersistableContainer, Dictable):
-    """The output of a word piece tokenization algorithm for whole token parsed
-    (i.e. by spaCy's tokenizer).  A word/token can be broken up in to several
-    word pieces.  For this reason, the number for tokens is never greater than
-    word pieces.
-
-    """
-    WRITABLE__DESCENDANTS = True
-
-    tokens: List[str] = field()
-    """The word piece tokens for this word piece."""
-
-    feature: FeatureToken = field()
-    """The spaCy parsed token features."""
-
-    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
-        self._write_line(f'tokens: {self.tokens}', depth, writer)
-        if self.feature is not None:
-            self._write_line('feature:', depth, writer)
-            self._write_object(self.feature, depth + 1, writer)
-
-    def __len__(self) -> int:
-        return len(self.tokens)
-
-    def __str__(self) -> str:
-        return f'{self.tokens}: {self.feature}'
-
-
-@dataclass
-class WordPieceSentence(PersistableContainer, Dictable):
-    """A sentence made up of word piece tokens.
-
-    """
-    pieces: Tuple[WordPiece] = field()
-    """The tokenized data."""
+class TokenizedDocument(PersistableContainer):
+    tensor: Tensor = field()
+    """Encodes the input IDs, attention mask, and word piece offset map."""
 
     def __post_init__(self):
-        # Whether or not the [CLS] and [SEP] tokens exist.
-        self.has_cls_sep = self.pieces[0].tokens[0] == 'CLS'
-
-    def truncate(self, limit: int) -> WordPieceSentence:
-        """Return a truncated version of this sentence.
-
-        :param limit: the max number of word pieces (not to be confused with
-                      non-word piece tokens) to keep
-
-        :return: an instance of a sentence with no more than ``limit`` word
-                 pieces
-
-        """
-        if len(self) <= limit:
-            trunced = self
-        else:
-            wp_toks = []
-            tot = 1 if self.has_cls_sep else 0
-            for p in self.pieces:
-                tot += len(p.tokens)
-                if tot > limit:
-                    break
-                wp_toks.append(p)
-            if self.has_cls_sep:
-                wp_toks.append(self.pieces[-1])
-            trunced = self.__class__(tuple(wp_toks))
-        return trunced
-
-    @property
-    def word_piece_tokens(self) -> Tuple[str]:
-        """Return word piece token strings."""
-        return tuple(chain.from_iterable(map(lambda p: p.tokens, self.pieces)))
-
-    def __len__(self) -> int:
-        """The length of this sentence in word pieces."""
-        return sum(map(len, self.pieces))
-
-    def __str__(self):
-        return '|'.join(chain.from_iterable(
-            map(lambda w: w.tokens, self.pieces)))
-
-
-@dataclass
-class Tokenization(PersistableContainer, Dictable):
-    """The output of the model tokenization.
-
-    """
-    WRITABLE__DESCENDANTS = True
-
-    piece_list: WordPieceSentence = field()
-    """The transformer tokens paired with features."""
-
-    tensor: Tensor = field()
-    """The vectorized tokenized data."""
-
-    def _format(self, obj: Any) -> str:
-        if isinstance(obj, Tensor):
-            return str(obj.shape)
-        else:
-            return super()._format(obj)
-
-    @classmethod
-    def get_input_ids(cls, tensor: Tensor) -> Tensor:
-        return tensor[0]
-
-    @classmethod
-    def get_attention_mask(cls, tensor: Tensor) -> Tensor:
-        return tensor[1]
+        super().__init__()
 
     @property
     def input_ids(self) -> Tensor:
         """The token IDs as the output from the tokenizer."""
-        return self.get_input_ids(self.tensor)
+        return self.tensor[0]
 
     @property
     def attention_mask(self) -> Tensor:
         """The attention mask (0/1s)."""
-        return self.get_attention_mask(self.tensor)
+        return self.tensor[1]
+
+    @property
+    def offsets(self) -> Tensor:
+        """The offsets from word piece (transformer's tokenizer) to feature document
+        index mapping.
+
+        """
+        return self.tensor[2]
+
+    def detach(self) -> TokenizedDocument:
+        return self
 
     def params(self) -> Dict[str, Any]:
         dct = {}
         atts = 'input_ids attention_mask'
         for att in atts.split():
-            dct[att] = getattr(self, att).unsqueeze(0)
+            dct[att] = getattr(self, att)
         return dct
 
+    def map_word_pieces(self, token_offsets: List[int]) -> \
+            List[Tuple[FeatureToken, List[int]]]:
+        ftoks = []
+        n_ftok = -1
+        for wix, tix in enumerate(token_offsets):
+            if tix >= 0:
+                if tix > n_ftok:
+                    wptoks = []
+                    ftoks.append((tix, wptoks))
+                    n_ftok += 1
+                wptoks.append(wix)
+        return ftoks
+
     def __str__(self) -> str:
-        return self.piece_list.__str__()
+        return f'doc: {self.tensor.shape}'
+
+
+@dataclass
+class TokenizedFeatureDocument(TokenizedDocument, Writable):
+    """This is the tokenized document output of
+    :class:`.TransformerDocumentTokenizer`.
+
+    """
+    feature: FeatureDocument = field()
+    """The document to tokenize."""
+
+    id2tok: Dict[int, str] = field()
+    """If provided, a mapping of indexes to transformer tokens.  This attribute is
+    always nulled out after being persisted.
+
+    """
+
+    def detach(self) -> TokenizedDocument:
+        return TokenizedDocument(self.tensor)
+
+    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
+        if self.id2tok is not None:
+            def id2tok(x):
+                return self.id2tok[x]
+        else:
+            def id2tok(x):
+                return str(x)
+        input_ids = self.input_ids.cpu().numpy()
+        sent_offsets = self.offsets
+        doc = self.feature
+        for six, (sent, tok_offsets) in enumerate(zip(doc, sent_offsets)):
+            input_sent = input_ids[six]
+            wps = self.map_word_pieces(sent_offsets[six])
+            self._write_line(f'sentence: {sent}', depth, writer)
+            for tix, ixs in wps:
+                tok = sent[tix]
+                ttoks = '|'.join(map(lambda i: id2tok(input_sent[i]), ixs))
+                self._write_line(f'{tok.text} -> {ttoks}', depth + 1, writer)
