@@ -60,6 +60,10 @@ class ReviewNetwork(EmbeddingNetworkModule):
         self.fc_deep = DeepLinear(ls)
 
     def _forward(self, batch: Batch) -> torch.Tensor:
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self._debug('review batch:')
+            batch.write()
+
         x = self.forward_embedding_features(batch)
         x = self.forward_token_features(batch, x)
 

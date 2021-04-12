@@ -50,7 +50,7 @@ class Review(FeatureDocument):
 @dataclass
 class ReviewFeatureStash(DocumentFeatureStash):
     """A stash that spawns processes to parse the utterances and creates instances
-    of :class:`Review`.
+    of :class:`.Review`.
 
     """
     def __post_init__(self):
@@ -104,6 +104,6 @@ class ReviewBatch(Batch):
               FieldFeatureMapping(ENUMS_ATTRIBUTE, 'enum', False, 'doc', 0),
               FieldFeatureMapping(COUNTS_ATTRIBUTE, 'count', False, 'doc', 0),
               FieldFeatureMapping(DEPENDENCIES_ATTRIBUTE, 'dep', False, 'doc', 0)))])
-    
+
     def _get_batch_feature_mappings(self) -> BatchFeatureMapping:
         return self.MAPPINGS

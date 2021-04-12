@@ -80,17 +80,14 @@ help:
 modelinfo:
 			$(ENTRY) info
 
-.PHONY:			batch
-batch:
-			$(ENTRY) batch
+.PHONY:			rebatch
+rebatch:
+			rm -rf $(DATA_DIR)/batch
+			$(ENTRY) batch -c $(MDL_DIR)/glove50.conf
 
 .PHONY:			modeldebug
 modeldebug:
-			$(ENTRY) debug
-
-.PHONY:			traintest
-traintest:
-			$(ENTRY) traintest
+			$(ENTRY) debug -p --config $(MDL_DIR)/transformer.conf
 
 .PHONY:			glove50
 glove50:

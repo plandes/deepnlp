@@ -3,6 +3,7 @@
 from typing import List
 import sys
 from pathlib import Path
+import os
 
 
 def main(args: List[str], **factory_kwargs):
@@ -17,8 +18,8 @@ def main(args: List[str], **factory_kwargs):
 def proto():
     print('-->proto')
     try:
-        #args = './run.py debug --override models/transformer.conf'.split()
-        args = './run.py info'.split()
+        args = './run.py debug -c models/transformer.conf'.split()
+        #args = './run.py info'.split()
         main(args, reload_factory=True)
     except SystemExit as e:
         print(f'exit: {e}')
@@ -27,6 +28,7 @@ def proto():
 if (__name__ == '__main__'):
     from zensols.deeplearn import TorchConfig
     TorchConfig.init()
+    os.environ['TOKENIZERS_PARALLELISM'] = 'true'
     if 0:
         import logging
         fmt = '%(asctime)-15s [%(name)s] %(message)s'
