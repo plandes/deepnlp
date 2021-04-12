@@ -21,7 +21,7 @@ from zensols.deeplearn.vectorize import (
     VectorizerError, FeatureContext, TensorFeatureContext,
     TransformableFeatureVectorizer
 )
-from zensols.deepnlp import TokensContainer
+from zensols.deepnlp import TokensContainer, FeatureSentence, FeatureDocument
 from zensols.deepnlp.embed import WordEmbedModel
 from zensols.deepnlp.transformer import TransformerEmbedding, TokenizedDocument
 from zensols.deepnlp.vectorize import TokenContainerFeatureType
@@ -319,6 +319,15 @@ class TransformerTokensContainerFeatureVectorizer(TokensContainerFeatureVectoriz
     class uses the :obj:`.embed_model`, which is of type
     :class:`.TransformerEmbedding`.
 
+    Note the encoding input ideally are sentences shorter than 512 tokens.
+    However, this vectorizer can accommodate both :class:`.FeatureSentence` and
+    :class:`.FeatureDocument` instances.
+
+    If the input is a document, it is flattened in to one sentence.  This is
+    useful when in some cases the expected input is a single sentence, but
+    :class:`~zensols.deepnlp.FeatureDocumentParser`/spaCy parse the text in to
+    muultiple sentences.
+
     """
     DESCRIPTION = 'transformer vector sentence'
     FEATURE_TYPE = TokenContainerFeatureType.EMBEDDING
@@ -329,18 +338,17 @@ class TransformerTokensContainerFeatureVectorizer(TokensContainerFeatureVectoriz
             raise VectorizerError('a trainable model can not encode ' +
                                   'transformed vectorized features')
 
-    @property
-    @persisted('_zeros')
-    def zeros(self):
-        return self.torch_config.zeros(self.embed_model.vector_dimension)
-
     def _encode(self, containers: List[TokensContainer]) -> FeatureContext:
         emb: TransformerEmbedding = self.embed_model
         docs = []
         if logger.isEnabledFor(logging.INFO):
             logger.info(f'encoding {len(containers)} token containers')
         for tc in containers:
-            doc = tc.to_sentence().to_document()
+            # if it's a multi-sentence document, collapse it down to one long
+            # sentence; then convert that to a one sentence document to adhear
+            # to the contract
+            sent: FeatureSentence = tc.to_sentence()
+            doc: FeatureDocument = sent.to_document()
             tok_doc = emb.tokenize(doc)
             docs.append(tok_doc.detach())
         return TransformerFeatureContext(self.feature_id, docs)
