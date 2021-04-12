@@ -345,8 +345,9 @@ class TransformerTokensContainerFeatureVectorizer(TokensContainerFeatureVectoriz
             logger.info(f'encoding {len(containers)} token containers')
         for tc in containers:
             # if it's a multi-sentence document, collapse it down to one long
-            # sentence; then convert that to a one sentence document to adhear
-            # to the contract
+            # sentence so the tokenization matrix has the right dimensions;
+            # then convert that to a one sentence document to adhear to the
+            # contract
             sent: FeatureSentence = tc.to_sentence()
             doc: FeatureDocument = sent.to_document()
             tok_doc = emb.tokenize(doc)
