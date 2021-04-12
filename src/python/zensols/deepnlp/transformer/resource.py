@@ -95,8 +95,7 @@ class TransformerResource(object):
                 logger.info(f'creating cache directory: {self.cache_dir}')
             self.cache_dir.mkdir(parents=True, exist_ok=True)
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'id: {self.model_id}, name: {self.model_name}, ' +
-                         f'cased: {self.cased}')
+            logger.debug(f'id: {self.model_id}, cased: {self.cased}')
 
     def _is_roberta(self):
         return self.model_id.startswith('roberta')

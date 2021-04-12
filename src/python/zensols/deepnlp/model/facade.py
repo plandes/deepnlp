@@ -8,10 +8,22 @@ from typing import Set, List
 from dataclasses import dataclass, field
 from abc import ABCMeta, abstractmethod
 import logging
+from zensols.persist import Stash
 from zensols.deeplearn import NetworkSettings, ModelSettings
-from zensols.deeplearn.vectorize import FeatureVectorizerManager
+from zensols.deeplearn.batch import BatchMetadata, ManagerFeatureMapping
 from zensols.deeplearn.model import ModelFacade
-from zensols.deepnlp import FeatureDocumentParser
+from zensols.deeplearn.vectorize import (
+    FeatureVectorizerManagerSet,
+    FeatureVectorizerManager,
+    FeatureVectorizer,
+)
+from zensols.deepnlp import FeatureDocumentParser, FeatureDocument
+from zensols.deepnlp.vectorize import \
+    TransformerTokensContainerFeatureVectorizer
+from zensols.deepnlp.transformer import (
+    TransformerResource,
+    TransformerDocumentTokenizer,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -189,6 +201,49 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
         """
         lc = self._get_language_model_config()
         return self.vectorizer_manager_set[lc.manager_name]
+
+    def get_transformer_vectorizer(self) -> \
+            TransformerTokensContainerFeatureVectorizer:
+        """Return the first found tranformer token vectorizer.
+
+        """
+        mng_set: FeatureVectorizerManagerSet = self.vectorizer_manager_set
+        mng: FeatureVectorizerManager
+        for mng in mng_set.values():
+            vec: FeatureVectorizer
+            for vc in mng.vectorizers.values():
+                if isinstance(vc, TransformerTokensContainerFeatureVectorizer):
+                    return vc
+
+    def get_max_word_piece_len(self) -> int:
+        """
+        """
+        vec: TransformerTokensContainerFeatureVectorizer = \
+            self.get_transformer_vectorizer()
+        if vec is None:
+            raise ValueError('no transformer vectorizer found')
+        tres: TransformerResource = vec.embed_model
+        tokenizer: TransformerDocumentTokenizer = tres.tokenizer
+        meta: BatchMetadata = self.batch_metadata
+        field: ManagerFeatureMapping = \
+            meta.mapping.get_field_map_by_feature_id(vec.feature_id)[1]
+        attr_name: str = field.attr_access
+        mlen = 0
+        batch_stash: Stash = self.batch_stash
+        params = {'padding': 'longest',
+                  'truncation': False}
+        for bn, batch in enumerate(batch_stash.values()):
+            sents = map(lambda dp: getattr(dp, attr_name).to_sentence(),
+                        batch.get_data_points())
+            doc = FeatureDocument(sents)
+            tok_doc = tokenizer.tokenize(doc, params)
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'max word piece tokens for batch {bn}: ' +
+                             f'{len(tok_doc)}')
+            mlen = max(mlen, len(tok_doc))
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'max word piece token length: {mlen}')
+        return mlen
 
     @property
     def doc_parser(self) -> FeatureDocumentParser:

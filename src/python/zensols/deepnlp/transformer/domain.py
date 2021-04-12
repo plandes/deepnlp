@@ -9,6 +9,7 @@ from dataclasses import dataclass, field
 import sys
 import logging
 from io import TextIOBase
+import torch
 from torch import Tensor
 from zensols.deepnlp import FeatureDocument
 from zensols.persist import PersistableContainer
@@ -44,7 +45,17 @@ class TokenizedDocument(PersistableContainer):
         """
         return self.tensor[2]
 
+    @property
+    def shape(self) -> torch.Size:
+        """Return the shape of the vectorized document."""
+        return self.tensor.shape
+
+    def __len__(self) -> int:
+        return self.tensor.size(-1)
+
     def detach(self) -> TokenizedDocument:
+        """Return a version of the document that is pickleable.
+        """
         return self
 
     def params(self) -> Dict[str, Any]:
@@ -66,6 +77,10 @@ class TokenizedDocument(PersistableContainer):
                     n_ftok += 1
                 wptoks.append(wix)
         return ftoks
+
+    def deallocate(self):
+        super().deallocate()
+        del self.tensor
 
     def __str__(self) -> str:
         return f'doc: {self.tensor.shape}'

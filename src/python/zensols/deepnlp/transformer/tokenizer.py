@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import List, Dict
+from typing import List, Dict, Any
 from dataclasses import dataclass, field
 import logging
 import torch
@@ -41,19 +41,33 @@ class TransformerDocumentTokenizer(object):
         vocab = self.resource.tokenizer.vocab
         return {vocab[k]: k for k in vocab.keys()}
 
-    def tokenize(self, doc: FeatureDocument) -> TokenizedFeatureDocument:
+    def tokenize(self, doc: FeatureDocument,
+                 tokenizer_kwargs: Dict[str, Any] = None) -> \
+            TokenizedFeatureDocument:
+        """Tokenize a feature document in a form that's easy to inspect and provide to
+        :class:`.TransformerEmbedding` to transform.
+
+        :param doc: the document to tokenize
+
+        """
         sents = list(map(lambda sent: list(
             map(lambda tok: tok.text, sent)), doc))
-        return self._from_tokens(sents, doc)
+        return self._from_tokens(sents, doc, tokenizer_kwargs)
 
-    def _from_tokens(self, sents: List[List[str]], doc: FeatureDocument) -> \
+    def _from_tokens(self, sents: List[List[str]], doc: FeatureDocument,
+                     tokenizer_kwargs: Dict[str, Any] = None) -> \
             TokenizedFeatureDocument:
         torch_config = self.resource.torch_config
         tlen = self.word_piece_token_length
         tokenizer = self.resource.tokenizer
-        tok_dat = tokenizer(sents, return_offsets_mapping=True,
-                            is_split_into_words=True, padding='max_length',
-                            truncation=True, max_length=tlen)
+        params = {'return_offsets_mapping': True,
+                  'is_split_into_words': True,
+                  'padding': 'max_length',
+                  'truncation': True,
+                  'max_length': tlen}
+        if tokenizer_kwargs is not None:
+            params.update(tokenizer_kwargs)
+        tok_dat = tokenizer(sents, **params)
 
         offsets = tok_dat['offset_mapping']
         # roberta offsets are 1-indexed

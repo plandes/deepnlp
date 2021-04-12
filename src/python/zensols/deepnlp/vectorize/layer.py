@@ -302,7 +302,7 @@ class WordVectorTokensContainerFeatureVectorizer(TokensContainerFeatureVectorize
 
 
 @dataclass
-class TransformerFeatureContext(FeatureContext):
+class TransformerFeatureContext(FeatureContext, Deallocatable):
     """A vectorizer feature contex used with
     :class:`.TransformerTokensContainerFeatureVectorizer`.
 
@@ -311,6 +311,12 @@ class TransformerFeatureContext(FeatureContext):
     """The document used to create the transformer embeddings.
 
     """
+
+    def deallocate(self):
+        super().deallocate()
+        for doc in self.documents:
+            self.deallocate(doc)
+        del self.documents
 
 
 @dataclass
