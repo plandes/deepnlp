@@ -2,6 +2,7 @@
 
 from typing import List
 import sys
+import os
 from pathlib import Path
 
 
@@ -17,10 +18,11 @@ def main(args: List[str], **factory_kwargs):
 def proto():
     print('-->proto')
     try:
-        run = 0
+        run = 1
+        args = '-c models/transformer.conf'
         reload = True
-        {0: lambda: main('./run.py tmp'.split(), reload_factory=reload),
-         1: lambda: main('./run.py debug'.split(), reload_factory=reload),
+        {0: lambda: main(f'./run.py tmp {args}'.split(), reload_factory=reload),
+         1: lambda: main(f'./run.py debug {args}'.split(), reload_factory=reload),
          2: lambda: main('./run.py batch'.split(), reload_factory=reload),
          3: lambda: main('./run.py train'.split(), reload_factory=reload),
          }[run]()
@@ -31,6 +33,7 @@ def proto():
 if (__name__ == '__main__'):
     from zensols.deeplearn import TorchConfig
     TorchConfig.init()
+    os.environ['TOKENIZERS_PARALLELISM'] = 'true'
     if 0:
         import logging
         fmt = '%(asctime)-15s [%(name)s] %(message)s'
