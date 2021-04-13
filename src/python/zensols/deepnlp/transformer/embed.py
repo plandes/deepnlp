@@ -35,26 +35,49 @@ class TransformerEmbedding(object):
 
     @property
     def resource(self) -> TransformerResource:
+        """The transformer resource containing the model."""
         return self.tokenizer.resource
 
     @property
     @persisted('_vec_dim')
     def vector_dimension(self) -> int:
+        """Return the output embedding dimension of the final layer.
+
+        """
         toker: TransformerDocumentTokenizer = self.tokenizer
         doc: TokenizedFeatureDocument = toker._from_tokens([['the']], None)
         output = self.transform((doc,))
         emb = output.last_hidden_state
-        return emb.size(2)
+        return emb.size(-1)
 
     @property
     def trainable(self) -> bool:
+        """Whether or not the model is trainable or frozen."""
         return self.resource.trainable
 
     def tokenize(self, doc: FeatureDocument) -> TokenizedFeatureDocument:
+        """Tokenize the feature document, which is used as the input to
+        :meth:`transform`.
+
+        :doc: the document to tokenize
+
+        :return: the tokenization of ``doc``
+
+        """
         return self.tokenizer.tokenize(doc)
 
     def transform(self, docs: Tuple[TokenizedDocument]) -> \
             BaseModelOutputWithPoolingAndCrossAttentions:
+        """Transform the documents in to the transformer output.
+
+        :param docs: the batch of documents to return
+
+        :return: a container object instance with the output, which contains
+                (among other data) ``last_hidden_state`` with the output
+                embeddings of the last layer with shape:
+                ``(batch, N sentences, hidden layer dimension)``
+
+        """
         output: BaseModelOutputWithPoolingAndCrossAttentions
         model: nn.Module = self.resource.model
         params: Dict[str, Tensor] = defaultdict(list)
