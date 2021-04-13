@@ -53,7 +53,14 @@ class NERFacadeApplication(FacadeApplication):
                 for id, batch in it.islice(facade.batch_stash, 100):
                     batch.write()
 
+    def _write_max_word_piece_token_length(self):
+        logger.info('calculatating word piece length on data set...')
+        with dealloc(self._create_facade()) as facade:
+            mlen = facade.get_max_word_piece_len()
+            print(f'max word piece token length: {mlen}')
+
     def tmp(self):
         #self._test_transform()
         #self._test_decode()
-        self._test_batch_write()
+        #self._test_batch_write()
+        self._write_max_word_piece_token_length()
