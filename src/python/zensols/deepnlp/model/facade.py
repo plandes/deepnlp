@@ -228,8 +228,8 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
         field: ManagerFeatureMapping = \
             meta.mapping.get_field_map_by_feature_id(vec.feature_id)[1]
         attr_name: str = field.attr_access
-        mlen = 0
         batch_stash: Stash = self.batch_stash
+        mlen = 0
         params = {'padding': 'longest',
                   'truncation': False}
         for bn, batch in enumerate(batch_stash.values()):
@@ -273,6 +273,8 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
     def _configure_debug_logging(self):
         super()._configure_debug_logging()
         for name in ['zensols.deeplearn.layer.linear',
+                     'zensols.deepnlp.transformer',
+                     'zensols.deepnlp.vectorize.layer',
                      __name__]:
             logging.getLogger(name).setLevel(logging.DEBUG)
         for name in ['zensols.deepnlp.vectorize.vectorizers',

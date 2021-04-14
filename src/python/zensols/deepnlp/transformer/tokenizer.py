@@ -61,13 +61,20 @@ class TransformerDocumentTokenizer(object):
         tlen = self.word_piece_token_length
         tokenizer = self.resource.tokenizer
         params = {'return_offsets_mapping': True,
-                  'is_split_into_words': True,
-                  'padding': 'max_length',
-                  'truncation': True,
-                  'max_length': tlen}
+                  'is_split_into_words': True}
+        if tlen > 0:
+            params.update({'padding': 'max_length',
+                           'truncation': True,
+                           'max_length': tlen})
+        else:
+            params.update({'padding': 'longest',
+                           'truncation': False})
         if tokenizer_kwargs is not None:
             params.update(tokenizer_kwargs)
         tok_dat = tokenizer(sents, **params)
+
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f"lengths: {[len(i) for i in tok_dat['input_ids']]}")
 
         offsets = tok_dat['offset_mapping']
         # roberta offsets are 1-indexed

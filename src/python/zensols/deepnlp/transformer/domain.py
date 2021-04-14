@@ -27,6 +27,10 @@ class TokenizedDocument(PersistableContainer):
     def __post_init__(self):
         super().__init__()
 
+    @classmethod
+    def from_tensor(cls, tensor: Tensor) -> TokenizedDocument:
+        return cls(tensor)
+
     @property
     def input_ids(self) -> Tensor:
         """The token IDs as the output from the tokenizer."""
@@ -84,6 +88,9 @@ class TokenizedDocument(PersistableContainer):
 
     def __str__(self) -> str:
         return f'doc: {self.tensor.shape}'
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
 
 @dataclass

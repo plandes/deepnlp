@@ -241,6 +241,14 @@ class FeatureDocument(TokensContainer):
     def to_document(self) -> FeatureDocument:
         return self
 
+    @classmethod
+    def from_containers(cls, conts: Tuple[TokensContainer]) -> FeatureDocument:
+        """Coerce a tuple of token containers (either documents or sentences) in to
+        one *synthesized* document.
+
+        """
+        return cls(list(map(lambda c: c.to_sentence(), conts)))
+
     @property
     @persisted('_text', transient=True)
     def text(self):

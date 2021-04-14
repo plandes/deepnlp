@@ -10,6 +10,7 @@ from collections import defaultdict
 import torch
 from torch import Tensor
 from torch import nn
+from transformers import PreTrainedModel
 from transformers.modeling_outputs import \
     BaseModelOutputWithPoolingAndCrossAttentions
 from zensols.deepnlp import FeatureDocument
@@ -39,6 +40,10 @@ class TransformerEmbedding(object):
         return self.tokenizer.resource
 
     @property
+    def model(self) -> PreTrainedModel:
+        return self.resource.model
+
+    @property
     @persisted('_vec_dim')
     def vector_dimension(self) -> int:
         """Return the output embedding dimension of the final layer.
@@ -46,7 +51,7 @@ class TransformerEmbedding(object):
         """
         toker: TransformerDocumentTokenizer = self.tokenizer
         doc: TokenizedFeatureDocument = toker._from_tokens([['the']], None)
-        output = self.transform((doc,))
+        output = self.transform(doc)
         emb = output.last_hidden_state
         return emb.size(-1)
 
@@ -66,7 +71,7 @@ class TransformerEmbedding(object):
         """
         return self.tokenizer.tokenize(doc)
 
-    def transform(self, docs: Tuple[TokenizedDocument]) -> \
+    def transform(self, doc: TokenizedDocument) -> \
             BaseModelOutputWithPoolingAndCrossAttentions:
         """Transform the documents in to the transformer output.
 
@@ -80,17 +85,7 @@ class TransformerEmbedding(object):
         """
         output: BaseModelOutputWithPoolingAndCrossAttentions
         model: nn.Module = self.resource.model
-        params: Dict[str, Tensor] = defaultdict(list)
-
-        # stack respective parameters in to batches
-        for doc in docs:
-            for k, v in doc.params().items():
-                v_arr = v.squeeze(0)
-                params[k].append(v_arr)
-        params = {k: torch.stack(params[k]) for k in params.keys()}
-
-        # put the model in `evaluation` mode, meaning feed-forward operation.
-        model = self.resource.torch_config.to(model)
+        params: Dict[str, Tensor] = doc.params()
 
         # predict hidden states features for each layer
         if self.resource.trainable:

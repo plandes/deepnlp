@@ -21,7 +21,7 @@ from zensols.deeplearn.vectorize import (
     VectorizerError, FeatureContext, TensorFeatureContext,
     TransformableFeatureVectorizer
 )
-from zensols.deepnlp import TokensContainer, FeatureSentence, FeatureDocument
+from zensols.deepnlp import TokensContainer, FeatureDocument
 from zensols.deepnlp.embed import WordEmbedModel
 from zensols.deepnlp.transformer import TransformerEmbedding, TokenizedDocument
 from zensols.deepnlp.vectorize import TokenContainerFeatureType
@@ -43,7 +43,8 @@ class EmbeddingLayer(DebugModule, Deallocatable):
 
     """
     def __init__(self, feature_vectorizer: TokenContainerFeatureVectorizer,
-                 embedding_dim: int, trainable: bool = False):
+                 embedding_dim: int, module_logger: logging.Logger = None,
+                 trainable: bool = False):
         """Initialize.
 
         :param feature_vectorizer: the feature vectorizer that manages this
@@ -54,7 +55,9 @@ class EmbeddingLayer(DebugModule, Deallocatable):
         :param trainable: ``True`` if the embedding layer is to be trained
 
         """
-        super().__init__()
+        if module_logger is None:
+            module_logger = logger
+        super().__init__(module_logger=module_logger)
         self.embedding_dim = embedding_dim
         self.token_length = feature_vectorizer.token_length
         self.torch_config = feature_vectorizer.torch_config
@@ -184,21 +187,10 @@ class TransformerEmbeddingLayer(EmbeddingLayer):
         if hasattr(self, 'embed_model'):
             del self.embed_model
 
-    def _forward_trainable(self, sents: Tensor) -> Tensor:
-        trans = self.embed_model.model
-
-        if logger.isEnabledFor(logging.DEBUG):
-            self._shape_debug('forward', sents)
-
-        # batch, input/mask, tok_len
-        input_ids = sents[:, 0, :]
-        attention_mask = sents[:, 1, :]
-        if logger.isEnabledFor(logging.DEBUG):
-            self._shape_debug('input ids', input_ids)
-            self._shape_debug('attn mask', attention_mask)
-
+    def _forward_trainable(self, doc: Tensor) -> Tensor:
+        tok_doc: TokenizedDocument = TokenizedDocument.from_tensor(doc)
         output: BaseModelOutputWithPoolingAndCrossAttentions
-        output = trans(input_ids=input_ids, attention_mask=attention_mask)
+        output = self.embed_model.transform(tok_doc)
         x = output.last_hidden_state
 
         if logger.isEnabledFor(logging.DEBUG):
@@ -207,6 +199,8 @@ class TransformerEmbeddingLayer(EmbeddingLayer):
         return x
 
     def forward(self, x: Tensor) -> Tensor:
+        self._shape_debug('transformer input', x)
+
         if self.embed_model.trainable:
             x = self._forward_trainable(x)
 
@@ -307,16 +301,15 @@ class TransformerFeatureContext(FeatureContext, Deallocatable):
     :class:`.TransformerTokensContainerFeatureVectorizer`.
 
     """
-    documents: Tuple[TokenizedDocument] = field()
+    document: TokenizedDocument = field()
     """The document used to create the transformer embeddings.
 
     """
 
     def deallocate(self):
         super().deallocate()
-        for doc in self.documents:
-            self.deallocate(doc)
-        del self.documents
+        self.deallocate(self.document)
+        del self.document
 
 
 @dataclass
@@ -328,11 +321,6 @@ class TransformerTokensContainerFeatureVectorizer(TokensContainerFeatureVectoriz
     Note the encoding input ideally are sentences shorter than 512 tokens.
     However, this vectorizer can accommodate both :class:`.FeatureSentence` and
     :class:`.FeatureDocument` instances.
-
-    If the input is a document, it is flattened in to one sentence.  This is
-    useful when in some cases the expected input is a single sentence, but
-    :class:`~zensols.deepnlp.FeatureDocumentParser`/spaCy parse the text in to
-    muultiple sentences.
 
     """
     DESCRIPTION = 'transformer vector sentence'
@@ -346,36 +334,28 @@ class TransformerTokensContainerFeatureVectorizer(TokensContainerFeatureVectoriz
 
     def _encode(self, containers: List[TokensContainer]) -> FeatureContext:
         emb: TransformerEmbedding = self.embed_model
-        docs = []
         if logger.isEnabledFor(logging.INFO):
             logger.info(f'encoding {len(containers)} token containers')
-        for tc in containers:
-            # if it's a multi-sentence document, collapse it down to one long
-            # sentence so the tokenization matrix has the right dimensions;
-            # then convert that to a one sentence document to adhear to the
-            # contract
-            sent: FeatureSentence = tc.to_sentence()
-            doc: FeatureDocument = sent.to_document()
-            tok_doc = emb.tokenize(doc)
-            docs.append(tok_doc.detach())
-        return TransformerFeatureContext(self.feature_id, docs)
+        doc = FeatureDocument.from_containers(containers)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'synthesized document: {doc}')
+        tok_doc = emb.tokenize(doc).detach()
+        return TransformerFeatureContext(self.feature_id, tok_doc)
 
     def _decode(self, context: TransformerFeatureContext) -> Tensor:
         emb: TransformerEmbedding = self.embed_model
-        mats: List[Tensor] = []
         if logger.isEnabledFor(logging.INFO):
-            logger.info(f'decoding {len(context.documents)} documents')
+            logger.info(f'decoding {len(context.document)} document')
         tok_doc: TokenizedDocument
         arr: Tensor
         if emb.trainable:
-            mats = tuple(map(lambda td: td.tensor, context.documents))
-            arr = torch.stack(mats)
-            if logger.isEnabledFor(logging.INFO):
-                logger.info('passing through tensor: {arr.shape}')
+            arr = context.document.tensor
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug('passing through tensor: {arr.shape}')
         else:
-            if logger.isEnabledFor(logging.INFO):
-                logger.info('transforming docs')
-            arr = emb.transform(context.documents).last_hidden_state
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug('transforming doc: {context.document}')
+            arr = emb.transform(context.document).last_hidden_state
         if logger.isEnabledFor(logging.INFO):
             logger.info(f'decoded {arr.shape} on {arr.device}')
         return arr

@@ -7,7 +7,9 @@ from typing import Dict, Any
 from dataclasses import dataclass, field, InitVar
 import logging
 from pathlib import Path
-from transformers import AutoModel, AutoTokenizer
+from transformers import (
+    AutoModel, AutoTokenizer, PreTrainedTokenizer, PreTrainedModel
+)
 from zensols.util.time import time
 from zensols.persist import persisted, PersistedWork
 from zensols.deeplearn import TorchConfig
@@ -102,7 +104,7 @@ class TransformerResource(object):
 
     @property
     @persisted('_tokenizer')
-    def tokenizer(self):
+    def tokenizer(self) -> PreTrainedTokenizer:
         params = {'do_lower_case': not self.cased}
         if self.cache_dir is not None:
             params['cache_dir'] = str(self.cache_dir.absolute())
@@ -114,7 +116,7 @@ class TransformerResource(object):
 
     @property
     @persisted('_model')
-    def model(self):
+    def model(self) -> PreTrainedModel:
         # load pre-trained model (weights)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'loading model: {self.model_id}')
@@ -127,10 +129,13 @@ class TransformerResource(object):
             logger.debug(f'creating model using: {params}')
         with time(f'loaded model from pretrained {self.model_id}'):
             model = AutoModel.from_pretrained(self.model_id, **params)
+        # put the model in `evaluation` mode, meaning feed-forward operation.
         if not self.trainable:
+            logger.debug('turning off grad for non-trainable transformer')
             model.eval()
             for param in model.parameters():
                 param.requires_grad = False
+        model = self.torch_config.to(model)
         return model
 
     def clear(self):
