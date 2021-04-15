@@ -85,6 +85,13 @@ class TokenContainerFeatureVectorizerManager(FeatureVectorizerManager):
     these checks, of course, are not necessary if pickling isn't used across
     the parse and vectorization steps.
 
+    Instances can set a hard fixed token length, but which vectorized tensors
+    have a like fixed width based on the setting of :obj:`token_length`.
+    However, this can also be set to use the longest sentence of the document,
+    which is useful when computing vectorized tensors from the document as a
+    batch, even if the input data are batched as a group of sentences in a
+    document.
+
     :see: :class:`.TokenContainerFeatureVectorizer`
 
     :see :meth:`parse`
@@ -95,7 +102,11 @@ class TokenContainerFeatureVectorizerManager(FeatureVectorizerManager):
 
     token_length: int = field()
     """The length of tokens used in fixed length features.  This is used as a
-    dimension in decoded tensors.
+    dimension in decoded tensors.  If this value is ``-1``, use the longest
+    sentence of the document as the token length, which is usually counted as
+    the batch.
+
+    :see: :meth:`get_token_length`
 
     """
 
@@ -117,6 +128,30 @@ class TokenContainerFeatureVectorizerManager(FeatureVectorizerManager):
             fdiffs = ', '.join(feat_diff)
             s = f'parser token features do not exist in vectorizer: {fdiffs}'
             raise ValueError(s)
+
+    @property
+    def is_batch_token_length(self) -> bool:
+        """Return whether or not the token length is variable based on the longest
+        token length in the batch.
+
+        """
+        return self.token_length < 0
+
+    def get_token_length(self, doc: FeatureDocument) -> int:
+        """Get the token length for the document.  If :obj:`is_batch_token_length` is
+        ``True``, then the token length is computed based on the longest
+        sentence in the document ``doc``.  See the class docs.
+
+        :param doc: used to compute the longest sentence if
+                    :obj:`is_batch_token_length` is ``True``
+
+        :return: the (global) token length for the document
+
+        """
+        if self.is_batch_token_length:
+            return doc.max_sentence_len
+        else:
+            return self.token_length
 
     def parse(self, text: Union[str, List[str]], *args, **kwargs) -> \
             FeatureDocument:

@@ -79,19 +79,20 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
         return None, self.token_length, flen
 
     def _get_shape_decode(self) -> Tuple[int, int]:
-        """Return the shape needed for the tensor when encoding.
-
-        """
+        """Return the shape needed for the tensor when encoding."""
         return self._get_shape_with_feature_ids(None)
 
-    def _get_shape(self) -> Tuple[int, int]:
-        """Compute the shape based on what spacy feature ids are given.
+    def _get_shape_for_document(self, doc: FeatureDocument):
+        """Return the shape of the vectorized output for the given document."""
+        return (len(doc.sents),
+                self.manager.get_token_length(doc),
+                self._get_shape_decode()[-1])
 
-        """
+    def _get_shape(self) -> Tuple[int, int]:
+        """Compute the shape based on what spacy feature ids are given."""
         return self._get_shape_with_feature_ids(self.decoded_feature_ids)
 
-    def _populate_feature_vectors(self, sent: FeatureSentence,
-                                  six: int,
+    def _populate_feature_vectors(self, sent: FeatureSentence, six: int,
                                   fvec: SpacyFeatureVectorizer,
                                   arr: torch.Tensor,
                                   col_start: int, col_end: int):
@@ -117,10 +118,7 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
 
         """
         assert isinstance(doc, FeatureDocument)
-        sent_shape = self._get_shape_decode()
-        slen = len(doc.sents)
-        arr_shape = (slen, *sent_shape[1:])
-        arr = self.torch_config.zeros(arr_shape)
+        arr = self.torch_config.zeros(self._get_shape_for_document(doc))
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'type array shape: {arr.shape}')
         sent: FeatureSentence

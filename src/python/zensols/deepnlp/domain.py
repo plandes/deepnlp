@@ -116,7 +116,7 @@ class TokensContainer(PersistableContainer, TextContainer, metaclass=ABCMeta):
 
     @property
     @persisted('_token_len', transient=True)
-    def token_len(self):
+    def token_len(self) -> int:
         """Return the number of tokens."""
         return sum(1 for i in self.token_iter())
 
@@ -140,13 +140,13 @@ class TokensContainer(PersistableContainer, TextContainer, metaclass=ABCMeta):
         pass
 
     @property
-    def norms(self):
+    def norms(self) -> Set[str]:
         return set(map(lambda t: t.norm.lower(),
                        filter(lambda t: not t.is_punctuation and not t.is_stop,
                               self.tokens)))
 
     @property
-    def lemmas(self):
+    def lemmas(self) -> Set[str]:
         return set(map(lambda t: t.lemma.lower(),
                        filter(lambda t: not t.is_punctuation and not t.is_stop,
                               self.tokens)))
@@ -184,10 +184,10 @@ class FeatureSentence(TokensContainer):
         return self.sent_tokens
 
     @property
-    def token_len(self):
+    def token_len(self) -> int:
         return len(self.sent_tokens)
 
-    def __getitem__(self, key):
+    def __getitem__(self, key) -> FeatureToken:
         return self.tokens[key]
 
     def to_sentence(self, limit: int = sys.maxsize) -> FeatureSentence:
@@ -196,7 +196,7 @@ class FeatureSentence(TokensContainer):
     def to_document(self) -> FeatureDocument:
         return FeatureDocument([self])
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self.token_len
 
     def __iter__(self):
@@ -228,7 +228,7 @@ class FeatureDocument(TokensContainer):
         else:
             return it.islice(sent_toks, *args)
 
-    def sent_iter(self, *args):
+    def sent_iter(self, *args) -> Iterable[FeatureSentence]:
         if len(args) == 0:
             return iter(self.sents)
         else:
@@ -236,6 +236,13 @@ class FeatureDocument(TokensContainer):
 
     def get_text(self, *args):
         return ' '.join(map(lambda s: s.text, self.sent_iter(*args)))
+
+    @property
+    def max_sentence_len(self) -> int:
+        """Return the length of tokens from the longest sentence in the document.
+
+        """
+        return max(map(len, self.sent_iter()))
 
     def to_sentence(self, *args) -> FeatureSentence:
         sents = self.sent_iter(*args)
