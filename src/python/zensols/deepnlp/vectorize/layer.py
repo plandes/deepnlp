@@ -12,11 +12,8 @@ import logging
 import torch
 from torch import Tensor
 from torch import nn
-from transformers.modeling_outputs import \
-    BaseModelOutputWithPoolingAndCrossAttentions
 from zensols.persist import persisted, Deallocatable, Primeable
 from zensols.deeplearn.model import BaseNetworkModule, DebugModule
-from zensols.deeplearn.layer import MaxPool1dFactory
 from zensols.deeplearn.vectorize import (
     VectorizerError, FeatureContext, TensorFeatureContext,
     TransformableFeatureVectorizer
@@ -66,8 +63,55 @@ class EmbeddingLayer(DebugModule, Deallocatable):
     def __getstate__(self):
         raise ValueError('layers should not be pickeled')
 
+    def deallocate(self):
+        super().deallocate()
+        if hasattr(self, 'emb'):
+            if logger.isEnabledFor(logging.DEBUG):
+                em = '<deallocated>'
+                if hasattr(self, 'embed_model'):
+                    em = self.embed_model.name
+                self._debug(f'deallocating: {em} and {type(self.emb)}')
+            del self.emb
+            if hasattr(self, 'embed_model'):
+                del self.embed_model
 
-class WordVectorEmbeddingLayer(EmbeddingLayer):
+
+class TrainableEmbeddingLayer(EmbeddingLayer):
+    def reset_parameters(self):
+        if self.trainable:
+            self.emb.load_state_dict({'weight': self.vecs})
+
+    def _get_emb_key(self, prefix: str):
+        return f'{prefix}emb.weight'
+
+    def state_dict(self, destination=None, prefix='', *args, **kwargs):
+        state = super().state_dict(destination, prefix, *args, **kwargs)
+        if logger.isEnabledFor(logging.DEBUG):
+            self._debug(f'state_dict: trainable: {self.trainable}')
+        if not self.trainable:
+            emb_key = self._get_emb_key(prefix)
+            if logger.isEnabledFor(logging.DEBUG):
+                self._debug(f'state_dict: embedding key: {emb_key}')
+            if emb_key is not None:
+                arr = state[emb_key]
+                if arr is not None:
+                    if logger.isEnabledFor(logging.DEBUG):
+                        self._debug(f'state_dict: emb state: {arr.shape}')
+                    assert arr.shape == self.embed_model.matrix.shape
+                state[emb_key] = None
+        return state
+
+    def _load_from_state_dict(self, state_dict, prefix, *args, **kwargs):
+        if not self.trainable:
+            emb_key = self._get_emb_key(prefix)
+            if logger.isEnabledFor(logging.DEBUG):
+                self._debug(f'load_state_dict: {emb_key}')
+            if emb_key is not None:
+                state_dict[emb_key] = self.vecs
+        super()._load_from_state_dict(state_dict, prefix, *args, **kwargs)
+
+
+class WordVectorEmbeddingLayer(TrainableEmbeddingLayer):
     """An input embedding layer.  This uses an instance of :class:`.WordEmbedModel`
     to compose the word embeddings from indexes.  Each index is that of word
     vector, which is stacked to create the embedding.  This happens in the
@@ -103,50 +147,6 @@ class WordVectorEmbeddingLayer(EmbeddingLayer):
         self.emb = nn.Embedding.from_pretrained(self.vecs)
         self.emb.freeze = self.trainable
 
-    def reset_parameters(self):
-        if self.trainable:
-            self.emb.load_state_dict({'weight': self.vecs})
-
-    def _get_emb_key(self, prefix: str):
-        return f'{prefix}emb.weight'
-
-    def state_dict(self, destination=None, prefix='', *args, **kwargs):
-        state = super().state_dict(destination, prefix, *args, **kwargs)
-        if logger.isEnabledFor(logging.DEBUG):
-            self._debug(f'state_dict: trainable: {self.trainable}')
-        if not self.trainable:
-            emb_key = self._get_emb_key(prefix)
-            if logger.isEnabledFor(logging.DEBUG):
-                self._debug(f'state_dict: embedding key: {emb_key}')
-            if emb_key is not None:
-                arr = state[emb_key]
-                if arr is not None:
-                    if logger.isEnabledFor(logging.DEBUG):
-                        self._debug(f'state_dict: emb state: {arr.shape}')
-                    assert arr.shape == self.embed_model.matrix.shape
-                state[emb_key] = None
-        return state
-
-    def _load_from_state_dict(self, state_dict, prefix, *args, **kwargs):
-        if not self.trainable:
-            emb_key = self._get_emb_key(prefix)
-            if logger.isEnabledFor(logging.DEBUG):
-                self._debug(f'load_state_dict: {emb_key}')
-            if emb_key is not None:
-                state_dict[emb_key] = self.vecs
-        super()._load_from_state_dict(state_dict, prefix, *args, **kwargs)
-
-    def deallocate(self):
-        super().deallocate()
-        if hasattr(self, 'emb'):
-            if logger.isEnabledFor(logging.DEBUG):
-                em = '<deallocated>'
-                if hasattr(self, 'embed_model'):
-                    em = self.embed_model.name
-                self._debug(f'deallocating: {em} and {type(self.emb)}')
-            del self.emb
-            del self.embed_model
-
     def forward(self, x: Tensor) -> Tensor:
         if logger.isEnabledFor(logging.DEBUG):
             self._debug(f'forward: {x.shape}, device: {x.device} = ' +
@@ -161,8 +161,7 @@ class TransformerEmbeddingLayer(EmbeddingLayer):
     """
     MODULE_NAME = 'transformer embedding'
 
-    def __init__(self, *args, embed_model: TransformerEmbedding,
-                 max_pool: dict = None, **kwargs):
+    def __init__(self, *args, embed_model: TransformerEmbedding, **kwargs):
         """Initialize.
 
         :param embed_model: used to generate the transformer (i.e. Bert)
@@ -173,25 +172,15 @@ class TransformerEmbeddingLayer(EmbeddingLayer):
             *args, embedding_dim=embed_model.vector_dimension, **kwargs)
         self.embed_model = embed_model
         if self.embed_model.trainable:
-            self.transformer = embed_model.model
-        self._debug(f'config pool: {max_pool}')
-        if max_pool is not None:
-            fac = MaxPool1dFactory(W=self.embedding_dim, **max_pool)
-            self.pool = fac.max_pool1d()
-            self.embedding_dim = fac.W_out
-        else:
-            self.pool = None
+            self.emb = embed_model.model
 
     def deallocate(self):
-        super().deallocate()
-        if hasattr(self, 'embed_model'):
-            del self.embed_model
+        if not self.embed_model.cache:
+            super().deallocate()
 
     def _forward_trainable(self, doc: Tensor) -> Tensor:
         tok_doc: TokenizedDocument = TokenizedDocument.from_tensor(doc)
-        output: BaseModelOutputWithPoolingAndCrossAttentions
-        output = self.embed_model.transform(tok_doc)
-        x = output.last_hidden_state
+        x = self.embed_model.transform(tok_doc)
 
         if logger.isEnabledFor(logging.DEBUG):
             self._shape_debug('embedding', x)
@@ -204,11 +193,8 @@ class TransformerEmbeddingLayer(EmbeddingLayer):
         if self.embed_model.trainable:
             x = self._forward_trainable(x)
 
-        if self.pool is not None:
-            x = self.pool(x)
-
         if logger.isEnabledFor(logging.DEBUG):
-            self._shape_debug('pool', x)
+            self._shape_debug('transform', x)
 
         return x
 
@@ -355,7 +341,7 @@ class TransformerTokensContainerFeatureVectorizer(TokensContainerFeatureVectoriz
         else:
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug('transforming doc: {context.document}')
-            arr = emb.transform(context.document).last_hidden_state
+            arr = emb.transform(context.document)
         if logger.isEnabledFor(logging.INFO):
             logger.info(f'decoded {arr.shape} on {arr.device}')
         return arr

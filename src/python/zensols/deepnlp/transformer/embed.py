@@ -3,10 +3,9 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Dict, Tuple
+from typing import Dict, Union
 from dataclasses import dataclass, field
 import logging
-from collections import defaultdict
 import torch
 from torch import Tensor
 from torch import nn
@@ -29,7 +28,17 @@ class TransformerEmbedding(object):
     transformms API.
 
     """
+    name: str = field()
+    """The name of the embedding as given in the configuration."""
+
     tokenizer: TransformerDocumentTokenizer = field()
+    """The tokenizer used for creating the input for the model."""
+
+    output: str = field(default='pooler_output')
+    """The output from the huggingface transformer API to return."""
+
+    output_attentions: bool = field(default=False)
+    """Whether or not to output the attention layer."""
 
     def __post_init__(self):
         self._vec_dim = PersistedWork('_vec_dim', self, self.resource.cache)
@@ -38,6 +47,10 @@ class TransformerEmbedding(object):
     def resource(self) -> TransformerResource:
         """The transformer resource containing the model."""
         return self.tokenizer.resource
+
+    @property
+    def cache(self):
+        return self.resource.cache
 
     @property
     def model(self) -> PreTrainedModel:
@@ -51,8 +64,7 @@ class TransformerEmbedding(object):
         """
         toker: TransformerDocumentTokenizer = self.tokenizer
         doc: TokenizedFeatureDocument = toker._from_tokens([['the']], None)
-        output = self.transform(doc)
-        emb = output.last_hidden_state
+        emb = self.transform(doc, 'pooler_output')
         return emb.size(-1)
 
     @property
@@ -71,7 +83,7 @@ class TransformerEmbedding(object):
         """
         return self.tokenizer.tokenize(doc)
 
-    def transform(self, doc: TokenizedDocument) -> \
+    def transform(self, doc: TokenizedDocument, output: str = None) -> \
             BaseModelOutputWithPoolingAndCrossAttentions:
         """Transform the documents in to the transformer output.
 
@@ -83,9 +95,13 @@ class TransformerEmbedding(object):
                 ``(batch, N sentences, hidden layer dimension)``
 
         """
+        output = self.output if output is None else output
         output: BaseModelOutputWithPoolingAndCrossAttentions
         model: nn.Module = self.resource.model
         params: Dict[str, Tensor] = doc.params()
+
+        if self.output_attentions:
+            params['output_attentions'] = True
 
         # predict hidden states features for each layer
         if self.resource.trainable:
@@ -97,7 +113,12 @@ class TransformerEmbedding(object):
             with torch.no_grad():
                 output = model(**params)
 
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'embedding dim: {output.last_hidden_state.size()}')
+        if output is None:
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'transform output: {output}')
+        else:
+            output: Tensor = getattr(output, self.output)
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'embedding dim: {output.size()}')
 
         return output

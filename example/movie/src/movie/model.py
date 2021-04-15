@@ -59,6 +59,9 @@ class ReviewNetwork(EmbeddingNetworkModule):
         logger.debug(f'linear input settings: {ls}')
         self.fc_deep = DeepLinear(ls)
 
+        from torch import nn
+        self.dropout = nn.Dropout(0.1)
+
     def _forward(self, batch: Batch) -> torch.Tensor:
         if self.logger.isEnabledFor(logging.DEBUG):
             self._debug('review batch:')
@@ -66,6 +69,7 @@ class ReviewNetwork(EmbeddingNetworkModule):
 
         x = self.forward_embedding_features(batch)
         x = self.forward_token_features(batch, x)
+        self._shape_debug('token', x)
 
         x = self.recur(x)[0]
         self._shape_debug('lstm', x)

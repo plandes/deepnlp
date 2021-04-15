@@ -3,14 +3,13 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Dict, Any
+from typing import Dict, Any, Type
 from dataclasses import dataclass, field, InitVar
 import logging
 from pathlib import Path
-from transformers import (
-    AutoModel, AutoTokenizer, PreTrainedTokenizer, PreTrainedModel
-)
+from transformers import PreTrainedTokenizer, PreTrainedModel
 from zensols.util.time import time
+from zensols.introspect import ClassImporter
 from zensols.persist import persisted, PersistedWork
 from zensols.deeplearn import TorchConfig
 
@@ -70,6 +69,18 @@ class TransformerResource(object):
 
     """
 
+    model_class: str = field(default='transformers.AutoModel')
+    """The model fully qualified class used to create models with the
+    ``from_pretrained`` static method.
+
+    """
+
+    tokenizer_class: str = field(default='transformers.AutoTokenizer')
+    """The model fully qualified class used to create tokenizers with the
+    ``from_pretrained`` static method.
+
+    """
+
     cache: InitVar[bool] = field(default=False)
     """When set to ``True`` cache a global space model using the parameters from
     the first instance creation.
@@ -102,6 +113,10 @@ class TransformerResource(object):
     def _is_roberta(self):
         return self.model_id.startswith('roberta')
 
+    def _create_tokenizer_class(self) -> Type[PreTrainedTokenizer]:
+        ci = ClassImporter(self.tokenizer_class)
+        return ci.get_class()
+
     @property
     @persisted('_tokenizer')
     def tokenizer(self) -> PreTrainedTokenizer:
@@ -112,7 +127,12 @@ class TransformerResource(object):
         params.update(self.tokenizer_args)
         if self._is_roberta():
             params['add_prefix_space'] = True
-        return AutoTokenizer.from_pretrained(self.model_id, **params)
+        cls = self._create_tokenizer_class()
+        return cls.from_pretrained(self.model_id, **params)
+
+    def _create_model_class(self) -> Type[PreTrainedModel]:
+        ci = ClassImporter(self.model_class)
+        return ci.get_class()
 
     @property
     @persisted('_model')
@@ -128,12 +148,13 @@ class TransformerResource(object):
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'creating model using: {params}')
         with time(f'loaded model from pretrained {self.model_id}'):
-            model = AutoModel.from_pretrained(self.model_id, **params)
+            cls = self._create_model_class()
+            model = cls.from_pretrained(self.model_id, **params)
         # put the model in `evaluation` mode, meaning feed-forward operation.
         if not self.trainable:
             logger.debug('turning off grad for non-trainable transformer')
             model.eval()
-            for param in model.parameters():
+            for param in model.base_model.parameters():
                 param.requires_grad = False
         model = self.torch_config.to(model)
         return model
