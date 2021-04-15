@@ -17,6 +17,7 @@ from zensols.deeplearn.vectorize import (
 )
 from zensols.deepnlp import (
     FeatureToken,
+    FeatureSentence,
     FeatureDocument,
     TokensContainer,
 )
@@ -75,7 +76,7 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
         for fvec in self.manager.spacy_vectorizers.values():
             if feature_ids is None or fvec.feature_id in feature_ids:
                 flen += fvec.shape[1]
-        return self.token_length, flen
+        return None, self.token_length, flen
 
     def _get_shape_decode(self) -> Tuple[int, int]:
         """Return the shape needed for the tensor when encoding.
@@ -89,7 +90,8 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
         """
         return self._get_shape_with_feature_ids(self.decoded_feature_ids)
 
-    def _populate_feature_vectors(self, container: TokensContainer,
+    def _populate_feature_vectors(self, sent: FeatureSentence,
+                                  six: int,
                                   fvec: SpacyFeatureVectorizer,
                                   arr: torch.Tensor,
                                   col_start: int, col_end: int):
@@ -100,27 +102,35 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
         """
         attr_name = fvec.feature_id
         col_end = col_start + fvec.shape[1]
-        toks = container.tokens[:arr.shape[0]]
-        for i, tok in enumerate(toks):
+        toks = sent.tokens[:arr.shape[1]]
+        for tix, tok in enumerate(toks):
             val = getattr(tok, attr_name)
             vec = fvec.from_spacy(val)
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'adding vec {fvec} for tok {tok}>: {vec}')
             if vec is not None:
-                arr[i, col_start:col_end] = vec
+                arr[six, tix, col_start:col_end] = vec
 
-    def _encode(self, container: TokensContainer) -> FeatureContext:
+    def _encode(self, doc: FeatureDocument) -> FeatureContext:
         """Encode tokens found in the container by aggregating the SpaCy vectorizers
         output.
 
         """
-        col_start = 0
-        arr = self.torch_config.zeros(self._get_shape_decode())
+        assert isinstance(doc, FeatureDocument)
+        sent_shape = self._get_shape_decode()
+        slen = len(doc.sents)
+        arr_shape = (slen, *sent_shape[1:])
+        arr = self.torch_config.zeros(arr_shape)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'type array shape: {arr.shape}')
-        for fvec in self.manager.spacy_vectorizers.values():
-            col_end = col_start + fvec.shape[1]
-            self._populate_feature_vectors(
-                container, fvec, arr, col_start, col_end)
-            col_start = col_end
+        sent: FeatureSentence
+        for six, sent in enumerate(doc.sents):
+            col_start = 0
+            for fvec in self.manager.spacy_vectorizers.values():
+                col_end = col_start + fvec.shape[1]
+                self._populate_feature_vectors(
+                    sent, six, fvec, arr, col_start, col_end)
+                col_start = col_end
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'array shape: {arr.shape}')
         return SparseTensorFeatureContext.instance(
@@ -140,7 +150,7 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'type={fid}, to keep={keeps}')
             if fid in keeps:
-                tensors.append(arr[:, col_start:col_end])
+                tensors.append(arr[:, :, col_start:col_end])
                 keeps.remove(fid)
             col_start = col_end
         if len(keeps) > 0:

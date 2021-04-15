@@ -167,7 +167,8 @@ class TestFeatureVectorizationCombinedSpacy(TestFeatureVectorization):
         # transpose added after transposed vectorizer
         should = should.to_dense().T
         self.assertTensorEquals(should, tensor)
-        self.assertEqual(should.shape, tvec.shape)
+        self.assertEqual(tuple([None] + list(should.shape)),
+                         tuple(tvec.shape))
 
 
 class TestFeatureVectorizationCombined(TestFeatureVectorization):
@@ -181,8 +182,8 @@ class TestFeatureVectorizationCombined(TestFeatureVectorization):
         feature_ids = ', '.join(map(lambda x: x[1].feature_id, res))
         self.assertEqual('count, dep, enum, stats', feature_ids)
         # transpose added after transposed vectorizer
-        shapes = tuple(map(lambda x: x[0].T.shape, res))
-        self.assertEqual(((174,), (30,), (174, 30), (9,)), shapes)
+        shapes = tuple(map(lambda x: tuple(x[0].T.shape), res))
+        self.assertEqual(((174,), (30,), (174, 30, 2), (9,)), shapes)
 
     def test_fewer_feats(self):
         vec = self.fac.instance('single_vectorizer_feature_vectorizer_manager')
@@ -195,8 +196,8 @@ class TestFeatureVectorizationCombined(TestFeatureVectorization):
         feature_ids = ', '.join(map(lambda x: x[1].feature_id, res))
         self.assertEqual('count, enum, stats', feature_ids)
         # transpose added after transposed vectorizer
-        shapes = tuple(map(lambda x: x[0].T.shape, res))
-        self.assertEqual(((174,), (174, 25), (9,)), shapes)
+        shapes = tuple(map(lambda x: tuple(x[0].T.shape), res))
+        self.assertEqual(((174,), (174, 25, 2), (9,)), shapes)
 
 
 class TestFeatureVectorizationOverlap(TestFeatureVectorization):

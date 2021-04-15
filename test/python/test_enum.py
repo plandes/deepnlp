@@ -1,4 +1,5 @@
 import logging
+import numpy as np
 from zensols.deepnlp.vectorize import TokenContainerFeatureVectorizer
 from util import TestFeatureVectorization
 
@@ -17,18 +18,20 @@ class TestEnumVectorizer(TestFeatureVectorization):
         arr, vec = res[0]
         self.assertTrue(isinstance(vec, TokenContainerFeatureVectorizer))
         self.assertEqual('enum', vec.feature_id)
-        should = (30, 92)
-        self.assertEqual(should, arr.shape)
-        self.assertEqual(should, vec.shape)
+        self.assertEqual((2, 30, 92), arr.shape)
+        self.assertEqual((None, 30, 92), vec.shape)
 
     def test_ent(self):
-        vec = self.fac.instance('dep_vectorizer_manager')
+        vec = self.fac.instance('ent_vectorizer_manager')
         fdoc = vec.parse(self.sent_text2)
         res = vec.transform(fdoc)
         self.assertEqual(1, len(res))
+        self.assertEqual(2, len(res[0]))
         arr, vec = res[0]
+        sm = self._to_sparse(arr)
+        self.assertEqual(np.array([1.], dtype=np.float), sm.data)
+        self.assertEqual(np.array([5]), sm.indices)
         self.assertTrue(isinstance(vec, TokenContainerFeatureVectorizer))
         self.assertEqual('enum', vec.feature_id)
-        should = (30, 21)
-        self.assertEqual(should, arr.shape)
-        self.assertEqual(should, vec.shape)
+        self.assertEqual((2, 30, 21), arr.shape)
+        self.assertEqual((None, 30, 21), vec.shape)

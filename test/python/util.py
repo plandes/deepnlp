@@ -1,8 +1,10 @@
 import logging
 import unittest
+from torch import Tensor
+from zensols.deeplearn import TorchConfig
+from zensols.deeplearn.vectorize import SparseTensorFeatureContext
 from zensols.config import ExtendedInterpolationConfig as AppConfig
 from zensols.config import ImportConfigFactory
-from zensols.deeplearn import TorchConfig
 
 logger = logging.getLogger(__name__)
 
@@ -31,3 +33,7 @@ class TestFeatureVectorization(unittest.TestCase):
         if not eq:
             logger.error(f'tensor {should} does not equal {tensor}')
         self.assertTrue(eq)
+
+    def _to_sparse(self, arr: Tensor):
+        return SparseTensorFeatureContext.instance(
+            None, arr, TorchConfig.cpu_device).sparse_arr[0]

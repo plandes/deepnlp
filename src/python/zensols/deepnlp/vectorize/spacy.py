@@ -126,7 +126,7 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
             writer.write(f'  {k} => {syms[k]} ({self.transform(k)})\n')
 
     def __str__(self):
-        return f'{self.descrption} ({self.feature_id})'
+        return f'{self.description} ({self.feature_id})'
 
 
 @dataclass

@@ -93,11 +93,15 @@ class TokensContainer(PersistableContainer, TextContainer, metaclass=ABCMeta):
     def token_iter(self, *args) -> Iterable[FeatureToken]:
         """Return an iterator over the token features.
 
+        :param args: the arguments given to :meth:`itertools.islice`
+
         """
         pass
 
     def norm_token_iter(self, *args) -> Iterable[str]:
         """Return a list of normalized tokens.
+
+        :param args: the arguments given to :meth:`itertools.islice`
 
         """
         return map(lambda t: t.norm, self.token_iter(*args))
