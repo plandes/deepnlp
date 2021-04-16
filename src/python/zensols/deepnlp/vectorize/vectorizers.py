@@ -167,11 +167,12 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
 
 @dataclass
 class CountEnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
-    """Return the count of all tokens as a 1 X M * N tensor where M is the number
-    of token feature ids and N is the number of columns of the output of the
-    :class:`.SpacyFeatureVectorizer` vectorizer.  Each column position's count
-    represents the number of counts for that spacy symol for that index
-    position in the output of :class:`.SpacyFeatureVectorizer`.
+    """Return the count of all tokens as a S X M * N tensor where S is the number
+    of sentences, M is the number of token feature ids and N is the number of
+    columns of the output of the :class:`.SpacyFeatureVectorizer` vectorizer.
+    Each column position's count represents the number of counts for that spacy
+    symol for that index position in the output of
+    :class:`.SpacyFeatureVectorizer`.
 
     This class uses the same efficiency in decoding features given in
     :class:`.EnumContainerFeatureVectorizer`.
@@ -198,10 +199,10 @@ class CountEnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
 
     def get_feature_counts(self, sent: FeatureSentence,
                            fvec: SpacyFeatureVectorizer) -> torch.Tensor:
-        """Return the count of all tokens as a 1 X N tensor where N is the columns of
-        the ``fvec`` vectorizer.  Each column position's count represents the
-        number of counts for that spacy symol for that index position in the
-        ``fvec``.
+        """Return the count of all tokens as a S X N tensor where S is the number of
+        sentences, N is the columns of the ``fvec`` vectorizer.  Each column
+        position's count represents the number of counts for that spacy symol
+        for that index position in the ``fvec``.
 
         """
         fid = fvec.feature_id
@@ -404,9 +405,9 @@ class OverlappingTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer
 
 @dataclass
 class MutualFeaturesContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
-    """Vectorize the shared count of all tokens as a 1 X M * N tensor where M is
-    the number of token feature ids and N is the columns of the output of the
-    :class:`.SpacyFeatureVectorizer` vectorizer.
+    """Vectorize the shared count of all tokens as a S X M * N tensor, where S is
+    the number of sentences, M is the number of token feature ids and N is the
+    columns of the output of the :class:`.SpacyFeatureVectorizer` vectorizer.
 
     This uses an instance of :class:`CountEnumContainerFeatureVectorizer` to
     compute across each spacy feature and then sums them up for only those
@@ -416,7 +417,7 @@ class MutualFeaturesContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
     The input to this feature vectorizer are a tuple of N
     :class:`.TokenContainer` instances.
 
-    :shape: ``(|decoded features|,)`` from the referenced
+    :shape: ``(|sentences|, |decoded features|,)`` from the referenced
             :class:`CountEnumContainerFeatureVectorizer` given by
             :obj:`count_vectorizer_feature_id`
 
