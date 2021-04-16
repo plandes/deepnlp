@@ -261,6 +261,10 @@ class FeatureDocument(TokensContainer):
         return cls(list(map(lambda c: c.to_sentence(), conts)))
 
     def combine_sentences(self) -> FeatureDocument:
+        """Combine all the sentences in this document in to a new document with a
+        single sentence.
+
+        """
         sent = FeatureSentence(self.tokens)
         return self.__class__([sent])
 
