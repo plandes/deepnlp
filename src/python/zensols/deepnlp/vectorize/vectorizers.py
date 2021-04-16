@@ -241,7 +241,6 @@ class CountEnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
                 logger.debug(f'type={fid}, to keep={keeps}')
             if fid in keeps:
                 keep_vec = arr[:, col_start:col_end]
-                print(f'adding: {fid}: {keep_vec}')
                 tensors.append(keep_vec)
                 keeps.remove(fid)
             col_start = col_end
@@ -267,6 +266,11 @@ class DepthTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
     join layer rather than stacked on to the embedded layer, it still assumes
     congruence with the token length, which is used in its shape.
 
+    **Important**: do not combine sentences in to a single document with
+    :meth:`FeatureDocument.combine_sentences` since features are created as a
+    dependency parse tree at the sentence level.  Otherwise, the dependency
+    relations are broken and results in a zeored tensor.
+
     :shape: ``(token length,)``
 
     """
@@ -274,31 +278,31 @@ class DepthTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
     FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
 
     def _get_shape(self) -> Tuple[int, int]:
-        return self.token_length,
+        return -1, self.token_length,
 
-    def _encode(self, container: TokensContainer) -> FeatureContext:
-        arr = self.torch_config.zeros((self.token_length,))
-        if isinstance(container, FeatureDocument):
-            for sent in container.sents:
-                self._transform_sent(sent, arr)
-        else:
-            self._transform_sent(container, arr)
+    def _encode(self, doc: FeatureDocument) -> FeatureContext:
+        n_sents = len(doc.sents)
+        n_toks = self.manager.get_token_length(doc)
+        arr = self.torch_config.zeros((n_sents, n_toks,))
+        for six, sent in enumerate(doc.sents):
+            self._transform_sent(sent, arr, six, n_toks)
         return TensorFeatureContext(self.feature_id, arr)
 
-    def _transform_sent(self, container: TokensContainer,  arr: torch.Tensor):
-        head_depths = self._get_head_depth(container)
+    def _transform_sent(self, sent: FeatureSentence,  arr: torch.Tensor,
+                        six: int, n_toks: int):
+        head_depths = self._get_head_depth(sent)
         for root, toks in head_depths:
-            if root.i < self.token_length:
-                arr[root.i] = 1.
+            if root.i < n_toks:
+                arr[six, root.i] = 1.
             for ti, t in toks:
-                if ti < self.token_length:
-                    arr[ti] = 0.5
+                if ti < n_toks:
+                    arr[six, ti] = 0.5
 
-    def _get_head_depth(self, container: TokensContainer) -> \
+    def _get_head_depth(self, sent: FeatureSentence) -> \
             Tuple[FeatureToken, List[Tuple[int, List[FeatureToken]]]]:
         tid_to_idx = {}
         deps = []
-        toks = container.tokens
+        toks = sent.tokens
         for i, tok in enumerate(toks):
             tid_to_idx[tok.i] = i
         root = tuple(

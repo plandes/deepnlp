@@ -117,29 +117,56 @@ class TestFeatureVectorizationCount(TestFeatureVectorization):
 
 
 class TestFeatureVectorizationDepth(TestFeatureVectorization):
-    def test_vectorize_head_depth(self):
+    def _single_should(self):
+        should = self.vmng.torch_config.from_iterable(
+            [[0.5000, 1.0000, 0.0000, 0.5000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
+              0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
+              0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
+              0.0000, 0.0000, 0.0000]])
+        return should
+
+    def _double_should(self):
+        should = self.vmng.torch_config.from_iterable(
+            [[0.5000, 1.0000, 0.0000, 0.5000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
+              0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
+              0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
+              0.0000, 0.0000, 0.0000],
+             [0.0000, 0.5000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
+              0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 1.0000, 0.0000, 0.0000, 0.0000,
+              0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
+              0.0000, 0.0000, 0.0000]])
+        return should
+
+    def test_fixed(self):
         fdoc = self.vmng.parse(self.sent_text)
         tvec = self.vmng.vectorizers['dep']
         tensor = tvec.transform(fdoc)
         self.assertTrue(isinstance(tensor, torch.Tensor))
-        should = self.vmng.torch_config.from_iterable(
-            [0.5000, 1.0000, 0.0000, 0.5000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
-             0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
-             0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
-             0.0000, 0.0000, 0.0000])
+        should = self._single_should()
         self.assertTensorEquals(should, tensor)
-        self.assertEqual(should.shape, tvec.shape)
+        self.assertEqual((-1, 30,), tvec.shape)
 
         fdoc = self.vmng.parse(self.sent_text2)
         tensor = tvec.transform(fdoc)
         self.assertTrue(isinstance(tensor, torch.Tensor))
-        should = self.vmng.torch_config.from_iterable(
-            [0.5000, 0.5000, 0.0000, 0.5000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
-             0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 1.0000, 0.0000, 0.0000, 0.0000,
-             0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
-             0.0000, 0.0000, 0.0000])
+        should = self._double_should()
         self.assertTensorEquals(should, tensor)
-        self.assertEqual(should.shape, tvec.shape)
+        self.assertEqual((-1, 30), tvec.shape)
+
+    def test_variable_length(self):
+        vmng = self.fac.instance('feature_vectorizer_manager_nolen')
+        fdoc = vmng.parse(self.sent_text)
+        tvec = vmng.vectorizers['dep']
+        tensor = tvec.transform(fdoc)
+        self.assertTrue(isinstance(tensor, torch.Tensor))
+        should = self._single_should()[:, :7]
+        self.assertTensorEquals(should, tensor)
+
+        fdoc = vmng.parse(self.sent_text2)
+        tensor = tvec.transform(fdoc)
+        self.assertTrue(isinstance(tensor, torch.Tensor))
+        should = self._double_should()[:, :7]
+        self.assertTensorEquals(should, tensor)
 
 
 class TestFeatureVectorizationStatistics(TestFeatureVectorization):
@@ -197,7 +224,7 @@ class TestFeatureVectorizationCombined(TestFeatureVectorization):
         self.assertEqual('count, dep, enum, stats', feature_ids)
         # transpose added after transposed vectorizer
         shapes = tuple(map(lambda x: tuple(x[0].T.shape), res))
-        self.assertEqual(((174, 2), (30,), (174, 30, 2), (9,)), shapes)
+        self.assertEqual(((174, 2), (30, 2), (174, 30, 2), (9,)), shapes)
 
     def test_fewer_feats(self):
         vec = self.fac.instance('single_vectorizer_feature_vectorizer_manager')
