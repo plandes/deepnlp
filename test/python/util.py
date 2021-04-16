@@ -25,6 +25,7 @@ class TestFeatureVectorization(unittest.TestCase):
         self.sent_text2 = self.sent_text + "  My name is Paul Landes."
 
     def assertTensorEquals(self, should, tensor):
+        self.assertEqual(should.shape, tensor.shape)
         try:
             eq = TorchConfig.equal(should, tensor)
         except RuntimeError as e:

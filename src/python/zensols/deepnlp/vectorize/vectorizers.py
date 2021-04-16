@@ -1,3 +1,4 @@
+
 """Generate and vectorize language features.
 
 """
@@ -51,7 +52,7 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
     Rows are tokens, columns intervals are features.  The encoded matrix is
     sparse, and decoded as a dense matrix.
 
-    :shape: ``(token length, |decoded features|)``
+    :shape: ``(|sentences|, |token length|, |decoded features|)``
 
     """
     ATTR_EXP_META = ('decoded_feature_ids',)
@@ -117,7 +118,7 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
         output.
 
         """
-        assert isinstance(doc, FeatureDocument)
+        self._assert_doc(doc)
         arr = self.torch_config.zeros(self._get_shape_for_document(doc))
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'type array shape: {arr.shape}')
@@ -167,15 +168,15 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
 @dataclass
 class CountEnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
     """Return the count of all tokens as a 1 X M * N tensor where M is the number
-    of token feature ids and N is the columns of the output of the
-    :class:`.SpacyFeatureVectorizer` vectorizer.  Each column position's
-    count represents the number of counts for that spacy symol for that index
+    of token feature ids and N is the number of columns of the output of the
+    :class:`.SpacyFeatureVectorizer` vectorizer.  Each column position's count
+    represents the number of counts for that spacy symol for that index
     position in the output of :class:`.SpacyFeatureVectorizer`.
 
     This class uses the same efficiency in decoding features given in
     :class:`.EnumContainerFeatureVectorizer`.
 
-    :shape: ``(|decoded features|,)``
+    :shape: ``(|sentences|, |decoded features|,)``
 
     """
     ATTR_EXP_META = ('decoded_feature_ids',)
@@ -193,9 +194,9 @@ class CountEnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
         for fvec in self.manager.spacy_vectorizers.values():
             if feature_ids is None or fvec.feature_id in feature_ids:
                 flen += fvec.shape[1]
-        return flen,
+        return -1, flen,
 
-    def get_feature_counts(self, container: TokensContainer,
+    def get_feature_counts(self, sent: FeatureSentence,
                            fvec: SpacyFeatureVectorizer) -> torch.Tensor:
         """Return the count of all tokens as a 1 X N tensor where N is the columns of
         the ``fvec`` vectorizer.  Each column position's count represents the
@@ -205,18 +206,24 @@ class CountEnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
         """
         fid = fvec.feature_id
         fcounts = self.torch_config.zeros(fvec.shape[1])
-        for tok in container.tokens:
+        for tok in sent.tokens:
             val = getattr(tok, fid)
             fnid = fvec.id_from_spacy(val, -1)
             if fnid > -1:
                 fcounts[fnid] += 1
         return fcounts
 
-    def _encode(self, container: TokensContainer) -> FeatureContext:
-        tensors = []
-        for fvec in self.manager.spacy_vectorizers.values():
-            tensors.append(self.get_feature_counts(container, fvec))
-        return TensorFeatureContext(self.feature_id, torch.cat(tensors))
+    def _encode(self, doc: FeatureDocument) -> FeatureContext:
+        sent_arrs = []
+        self._assert_doc(doc)
+        for sent in doc.sents:
+            tok_arrs = []
+            for fvec in self.manager.spacy_vectorizers.values():
+                tok_arrs.append(self.get_feature_counts(sent, fvec))
+            sent_arrs.append(torch.cat(tok_arrs))
+        arr = torch.stack(sent_arrs)
+        return SparseTensorFeatureContext.instance(
+            self.feature_id, arr, self.torch_config)
 
     def _slice_by_attributes(self, arr: torch.Tensor) -> torch.Tensor:
         """Create a new tensor from column based slices of the encoded tensor for each
@@ -232,7 +239,9 @@ class CountEnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'type={fid}, to keep={keeps}')
             if fid in keeps:
-                tensors.append(arr[col_start:col_end])
+                keep_vec = arr[:, col_start:col_end]
+                print(f'adding: {fid}: {keep_vec}')
+                tensors.append(keep_vec)
                 keeps.remove(fid)
             col_start = col_end
         if len(keeps) > 0:
@@ -436,7 +445,7 @@ class MutualFeaturesContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
         """Return a tensor of ones for the shape of this instance.
 
         """
-        return self.torch_config.ones((1, self.shape[0]))
+        return self.torch_config.ones((1, self.shape[1]))
 
     def _get_shape(self) -> Tuple[int, int]:
         return self.count_vectorizer.shape
@@ -446,8 +455,12 @@ class MutualFeaturesContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
         return MultiFeatureContext(self.feature_id, ctxs)
 
     def _decode(self, context: MultiFeatureContext) -> torch.Tensor:
+        def decode_context(ctx):
+            sents = self.count_vectorizer.decode(ctx)
+            return torch.sum(sents, axis=0)
+
         ones = self.ones
-        arrs = tuple(map(self.count_vectorizer.decode, context.contexts))
+        arrs = tuple(map(decode_context, context.contexts))
         if len(arrs) == 1:
             return arrs[0]
         else:

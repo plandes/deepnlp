@@ -23,8 +23,8 @@ class TestFeatureVectorization(TestFeatureVectorization):
         arr = sent_vec.transform(doc)
         self.assertTrue(isinstance(arr, torch.Tensor))
         should = vec.torch_config.from_iterable(
-            [4.0000e+05, 9.1300e+02, 7.0000e+00, 3.9410e+03, 3.0000e+00, 4.0000e+05,
-             2.0000e+00, 4.0000e+05, 4.0000e+05, 4.0000e+05, 4.0000e+05, 4.0000e+05,
-             4.0000e+05, 4.0000e+05, 4.0000e+05, 4.0000e+05, 4.0000e+05, 4.0000e+05,
-             4.0000e+05, 4.0000e+05])
+            [[4.0000e+05, 9.1300e+02, 7.0000e+00, 3.9410e+03, 3.0000e+00, 4.0000e+05,
+              2.0000e+00, 4.0000e+05, 4.0000e+05, 4.0000e+05, 4.0000e+05, 4.0000e+05,
+              4.0000e+05, 4.0000e+05, 4.0000e+05, 4.0000e+05, 4.0000e+05, 4.0000e+05,
+              4.0000e+05, 4.0000e+05]])
         self.assertTensorEquals(should, arr)

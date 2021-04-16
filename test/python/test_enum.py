@@ -29,7 +29,7 @@ class TestEnumVectorizer(TestFeatureVectorization):
         self.assertEqual(2, len(res[0]))
         arr, vec = res[0]
         sm = self._to_sparse(arr)
-        self.assertEqual(np.array([1.], dtype=np.float), sm.data)
+        self.assertEqual(np.array([1], dtype=np.float), sm.data)
         self.assertEqual(np.array([5]), sm.indices)
         self.assertTrue(isinstance(vec, TokenContainerFeatureVectorizer))
         self.assertEqual('enum', vec.feature_id)

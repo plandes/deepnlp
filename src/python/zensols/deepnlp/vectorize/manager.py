@@ -56,8 +56,11 @@ class TokenContainerFeatureVectorizer(EncodableFeatureVectorizer,
 
     """
     @abstractmethod
-    def _encode(self, container: TokensContainer) -> FeatureContext:
+    def _encode(self, doc: FeatureDocument) -> FeatureContext:
         pass
+
+    def _assert_doc(self, doc: FeatureDocument):
+        assert isinstance(doc, FeatureDocument)
 
     @property
     def feature_type(self) -> TokenContainerFeatureType:

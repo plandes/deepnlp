@@ -260,6 +260,9 @@ class FeatureDocument(TokensContainer):
         """
         return cls(list(map(lambda c: c.to_sentence(), conts)))
 
+    def combine_sentences(self) -> FeatureDocument:
+        return self.__class__([self.to_sentence()])
+
     @property
     @persisted('_text', transient=True)
     def text(self):
