@@ -17,11 +17,7 @@ from zensols.deeplearn.vectorize import (
     EncodableFeatureVectorizer,
     FeatureVectorizerManager,
 )
-from zensols.deepnlp import (
-    FeatureDocument,
-    TokensContainer,
-    FeatureDocumentParser,
-)
+from zensols.deepnlp import FeatureDocument, FeatureDocumentParser
 from . import SpacyFeatureVectorizer
 
 logger = logging.getLogger(__name__)
