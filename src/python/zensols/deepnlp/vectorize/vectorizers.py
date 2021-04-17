@@ -132,9 +132,8 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
                 col_start = col_end
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'encoded array shape: {arr.shape}')
-        # return SparseTensorFeatureContext.instance(
-        #     self.feature_id, arr, self.torch_config)
-        return TensorFeatureContext(self.feature_id, arr)
+        return SparseTensorFeatureContext.instance(
+            self.feature_id, arr, self.torch_config)
 
     def _slice_by_attributes(self, arr: torch.Tensor) -> torch.Tensor:
         """Create a new tensor from column based slices of the encoded tensor for each
