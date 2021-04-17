@@ -19,7 +19,7 @@ from zensols.deeplearn.vectorize import (
 )
 from zensols.deepnlp import FeatureDocumentParser, FeatureDocument
 from zensols.deepnlp.vectorize import \
-    TransformerTokensContainerFeatureVectorizer
+    TransformerEmbeddingFeatureVectorizer
 from zensols.deepnlp.transformer import (
     TransformerResource,
     TransformerDocumentTokenizer,
@@ -203,7 +203,7 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
         return self.vectorizer_manager_set[lc.manager_name]
 
     def get_transformer_vectorizer(self) -> \
-            TransformerTokensContainerFeatureVectorizer:
+            TransformerEmbeddingFeatureVectorizer:
         """Return the first found tranformer token vectorizer.
 
         """
@@ -212,13 +212,13 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
         for mng in mng_set.values():
             vec: FeatureVectorizer
             for vc in mng.vectorizers.values():
-                if isinstance(vc, TransformerTokensContainerFeatureVectorizer):
+                if isinstance(vc, TransformerEmbeddingFeatureVectorizer):
                     return vc
 
     def get_max_word_piece_len(self) -> int:
         """
         """
-        vec: TransformerTokensContainerFeatureVectorizer = \
+        vec: TransformerEmbeddingFeatureVectorizer = \
             self.get_transformer_vectorizer()
         if vec is None:
             raise ValueError('no transformer vectorizer found')

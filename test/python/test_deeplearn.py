@@ -2,7 +2,7 @@ import logging
 import torch
 from zensols.config import ExtendedInterpolationConfig as AppConfig
 from zensols.config import ImportConfigFactory
-from zensols.deepnlp.vectorize import TokensContainerFeatureVectorizer
+from zensols.deepnlp.vectorize import EmbeddingFeatureVectorizer
 from util import TestFeatureVectorization
 
 logger = logging.getLogger(__name__)
@@ -17,7 +17,7 @@ class TestFeatureVectorization(TestFeatureVectorization):
     def test_sentence_vectorize(self):
         vec = self.fac('feature_vectorizer')
         sent_vec = vec.vectorizers['wsv']
-        self.assertTrue(isinstance(sent_vec, TokensContainerFeatureVectorizer))
+        self.assertTrue(isinstance(sent_vec, EmbeddingFeatureVectorizer))
         self.assertEqual((20, 50), sent_vec.shape)
         doc = vec.parse(self.sent_text)
         arr = sent_vec.transform(doc)

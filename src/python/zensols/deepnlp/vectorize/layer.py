@@ -199,9 +199,9 @@ class TransformerEmbeddingLayer(EmbeddingLayer):
 
 
 @dataclass
-class TokensContainerFeatureVectorizer(TransformableFeatureVectorizer,
-                                       FeatureDocumentVectorizer,
-                                       Primeable):
+class EmbeddingFeatureVectorizer(TransformableFeatureVectorizer,
+                                 FeatureDocumentVectorizer,
+                                 Primeable):
     """Vectorize a :class:`.FeatureDocument` as a vector of embedding indexes.
     Later, these indexes are used in a :class:`WordEmbeddingLayer` to create
     the input word embedding during execution of the model.
@@ -234,7 +234,7 @@ class TokensContainerFeatureVectorizer(TransformableFeatureVectorizer,
 
 
 @dataclass
-class WordVectorTokensContainerFeatureVectorizer(TokensContainerFeatureVectorizer):
+class WordVectorEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
     """Vectorize sentences using an embedding model (:obj:`embed_model`) of type
     :class:`.WordEmbedModel`.
 
@@ -283,7 +283,7 @@ class WordVectorTokensContainerFeatureVectorizer(TokensContainerFeatureVectorize
 @dataclass
 class TransformerFeatureContext(FeatureContext, Deallocatable):
     """A vectorizer feature contex used with
-    :class:`.TransformerTokensContainerFeatureVectorizer`.
+    :class:`.TransformerEmbeddingFeatureVectorizer`.
 
     """
     document: TokenizedDocument = field()
@@ -298,7 +298,7 @@ class TransformerFeatureContext(FeatureContext, Deallocatable):
 
 
 @dataclass
-class TransformerTokensContainerFeatureVectorizer(TokensContainerFeatureVectorizer):
+class TransformerEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
     """A feature vectorizer used to create transformer (i.e. Bert) embeddings.  The
     class uses the :obj:`.embed_model`, which is of type
     :class:`.TransformerEmbedding`.

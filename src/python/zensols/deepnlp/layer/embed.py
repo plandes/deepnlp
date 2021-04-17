@@ -20,7 +20,7 @@ from zensols.deepnlp.vectorize import (
     EmbeddingLayer,
     TokenContainerFeatureType,
     FeatureDocumentVectorizer,
-    TokensContainerFeatureVectorizer,
+    EmbeddingFeatureVectorizer,
 )
 
 logger = logging.getLogger(__name__)
@@ -180,7 +180,7 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         x = batch.attributes[self.embedding_attribute_name]
         self._shape_debug('input', x)
         is_tok_vec = isinstance(self.embedding_vectorizer,
-                                TokensContainerFeatureVectorizer)
+                                EmbeddingFeatureVectorizer)
         if self.logger.isEnabledFor(logging.DEBUG):
             self._debug(f'vectorizer type: {type(self.embedding_vectorizer)}')
         if is_tok_vec:
