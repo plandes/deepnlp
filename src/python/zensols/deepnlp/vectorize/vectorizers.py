@@ -382,7 +382,7 @@ class OverlappingFeatureDocumentVectorizer(FeatureDocumentVectorizer):
     across multiple documents.
 
     The input to this feature vectorizer are a tuple N of
-    :class:`.TokenContainer` instances.
+    :class:`.FeatureDocument` instances.
 
     :shape: ``(2,)``
 
@@ -405,9 +405,9 @@ class OverlappingFeatureDocumentVectorizer(FeatureDocumentVectorizer):
         b = set(map(lambda s: s.lemma.lower(), bc.token_iter()))
         return a & b
 
-    def _encode(self, containers: Tuple[TokensContainer]) -> FeatureContext:
-        norms = reduce(self._norms, containers)
-        lemmas = reduce(self._lemmas, containers)
+    def _encode(self, docs: Tuple[FeatureDocument]) -> FeatureContext:
+        norms = reduce(self._norms, docs)
+        lemmas = reduce(self._lemmas, docs)
         arr = self.torch_config.from_iterable((len(norms), len(lemmas)))
         return TensorFeatureContext(self.feature_id, arr)
 
