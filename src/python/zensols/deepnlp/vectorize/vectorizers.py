@@ -131,9 +131,10 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
                     sent, six, fvec, arr, col_start, col_end)
                 col_start = col_end
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'array shape: {arr.shape}')
-        return SparseTensorFeatureContext.instance(
-            self.feature_id, arr, self.torch_config)
+            logger.debug(f'encoded array shape: {arr.shape}')
+        # return SparseTensorFeatureContext.instance(
+        #     self.feature_id, arr, self.torch_config)
+        return TensorFeatureContext(self.feature_id, arr)
 
     def _slice_by_attributes(self, arr: torch.Tensor) -> torch.Tensor:
         """Create a new tensor from column based slices of the encoded tensor for each
@@ -159,7 +160,9 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
     def _decode(self, context: FeatureContext) -> torch.Tensor:
         arr = super()._decode(context)
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'decoded features: {self.decoded_feature_ids}')
+            logger.debug(f'decoded features: {self.decoded_feature_ids}' +
+                         f'shape: {arr.shape}')
+        self._assert_decoded_doc_dim(arr, 3)
         if self.decoded_feature_ids is not None:
             arr = self._slice_by_attributes(arr)
         return arr
@@ -281,6 +284,7 @@ class DepthTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
         return -1, self.token_length,
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
+        self._assert_doc(doc)
         n_sents = len(doc.sents)
         n_toks = self.manager.get_token_length(doc)
         arr = self.torch_config.zeros((n_sents, n_toks,))
@@ -340,8 +344,9 @@ class StatisticsTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer)
     def _get_shape(self) -> Tuple[int, int]:
         return 9,
 
-    def _encode(self, container: TokensContainer) -> FeatureContext:
-        n_toks = len(container.tokens)
+    def _encode(self, doc: FeatureDocument) -> FeatureContext:
+        self._assert_doc(doc)
+        n_toks = len(doc.tokens)
         n_sents = 1
         min_tlen = sys.maxsize
         max_tlen = 0
@@ -350,16 +355,16 @@ class StatisticsTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer)
         max_slen = 0
         ave_slen = 1
         n_char = 0
-        for t in container.tokens:
+        for t in doc.tokens:
             tlen = len(t.norm)
             n_char += tlen
             min_tlen = min(min_tlen, tlen)
             max_tlen = max(max_tlen, tlen)
         ave_tlen = n_char / n_toks
-        if isinstance(container, FeatureDocument):
-            n_sents = len(container.sents)
+        if isinstance(doc, FeatureDocument):
+            n_sents = len(doc.sents)
             ave_slen = n_toks / n_sents
-            for s in container.sents:
+            for s in doc.sents:
                 slen = len(s.tokens)
                 min_slen = min(min_slen, slen)
                 max_slen = max(max_slen, slen)
@@ -450,13 +455,14 @@ class MutualFeaturesContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
         """Return a tensor of ones for the shape of this instance.
 
         """
-        return self.torch_config.ones((1, self.shape[1]))
+        return self.torch_config.ones((1, self.shape[0]))
 
     def _get_shape(self) -> Tuple[int, int]:
-        return self.count_vectorizer.shape
+        return self.count_vectorizer.shape[1],
 
-    def _encode(self, containers: Tuple[TokensContainer]) -> FeatureContext:
-        ctxs = tuple(map(self.count_vectorizer.encode, containers))
+    def _encode(self, docs: Tuple[FeatureDocument]) -> FeatureContext:
+        ctxs = tuple(map(self.count_vectorizer.encode,
+                         map(lambda doc: doc.combine_sentences(), docs)))
         return MultiFeatureContext(self.feature_id, ctxs)
 
     def _decode(self, context: MultiFeatureContext) -> torch.Tensor:
@@ -467,10 +473,25 @@ class MutualFeaturesContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
         ones = self.ones
         arrs = tuple(map(decode_context, context.contexts))
         if len(arrs) == 1:
+            # return the single document as a mutual count against itself
             return arrs[0]
         else:
-            arrs = torch.stack(arrs, axis=0)
+            arrs = torch.stack(arrs, axis=0).squeeze(1)
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'combined counts (doc/row): {arrs.shape}')
+            # clone so the operations of this vectorizer do not effect the
+            # tensors from the delegate count vectorizer
             cnts = self.torch_config.clone(arrs)
-            mask = torch.min(torch.cat((cnts.prod(axis=0).unsqueeze(0), ones)),
-                             axis=0)[0]
+            # multiple counts of all docs so any 0 count feature will be 0 in
+            # the mask
+            prod = cnts.prod(axis=0).unsqueeze(0)
+            # create 2 X N with count product with ones
+            cat_ones = torch.cat((prod, ones))
+            # keep 0s for no count features or 1 if there is at least one for
+            # the mask
+            mask = torch.min(cat_ones, axis=0)[0]
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'counts mask: {cat_ones.shape}')
+            # use the mask to zero out counts that aren't mutual across all
+            # documents, then sum the counts across docuemnts
             return (cnts * mask).sum(axis=0)

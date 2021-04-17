@@ -4,18 +4,20 @@ natural language.
 """
 __author__ = 'Paul Landes'
 
-import logging
 from typing import List, Union, Set, Dict
+from dataclasses import dataclass, field
 from enum import Enum
 from abc import abstractmethod, ABCMeta
-from dataclasses import dataclass, field
+import logging
 import collections
+from torch import Tensor
 from zensols.persist import persisted
 from zensols.nlp import LanguageResource
 from zensols.deeplearn.vectorize import (
     FeatureContext,
     EncodableFeatureVectorizer,
     FeatureVectorizerManager,
+    VectorizerError,
 )
 from zensols.deepnlp import FeatureDocument, FeatureDocumentParser
 from . import SpacyFeatureVectorizer
@@ -56,7 +58,14 @@ class TokenContainerFeatureVectorizer(EncodableFeatureVectorizer,
         pass
 
     def _assert_doc(self, doc: FeatureDocument):
-        assert isinstance(doc, FeatureDocument)
+        if not isinstance(doc, FeatureDocument):
+            raise VectorizerError(
+                f'expecting document, but got type: {type(doc)}')
+
+    def _assert_decoded_doc_dim(self, arr: Tensor, expect: int):
+        if len(arr.size()) != expect:
+            raise VectorizerError(f'expecting {expect} tensor dimensions, ' +
+                                  f'but got shape: {arr.shape}')
 
     @property
     def feature_type(self) -> TokenContainerFeatureType:
