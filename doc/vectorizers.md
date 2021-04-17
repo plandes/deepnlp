@@ -9,11 +9,11 @@ The set of vectorizers included with this package are listed below:
 * [CountEnumContainerFeatureVectorizer]: Return the count of all tokens as a *1
   X M * N* tensor where *M* is the number of token feature ids and *N* is the
   columns of the output of the [SpacyFeatureVectorizer] vectorizer.
-* [DepthTokenContainerFeatureVectorizer]: Return the depths of tokens based on
+* [DepthFeatureDocumentVectorizer]: Return the depths of tokens based on
   how deep they are in a head dependency tree.
-* [StatisticsTokenContainerFeatureVectorizer]: Return basic statics including
+* [StatisticsFeatureDocumentVectorizer]: Return basic statics including
   token and sentence count for [FeatureDocument] instances.
-* [OverlappingTokenContainerFeatureVectorizer]: Return the number of normalized
+* [OverlappingFeatureDocumentVectorizer]: Return the number of normalized
   and lemmatized tokens across multiple documents.
 * [MutualFeaturesContainerFeatureVectorizer]: Return the shared count of all
   tokens as a *1 X M * N* tensor where *M* is the number of token feature ids
@@ -27,9 +27,9 @@ The set of vectorizers included with this package are listed below:
 
 [EnumContainerFeatureVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer
 [CountEnumContainerFeatureVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer
-[DepthTokenContainerFeatureVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.DepthTokenContainerFeatureVectorizer
-[StatisticsTokenContainerFeatureVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.StatisticsTokenContainerFeatureVectorizer
-[OverlappingTokenContainerFeatureVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.OverlappingTokenContainerFeatureVectorizer
+[DepthFeatureDocumentVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.DepthFeatureDocumentVectorizer
+[StatisticsFeatureDocumentVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.StatisticsFeatureDocumentVectorizer
+[OverlappingFeatureDocumentVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.OverlappingFeatureDocumentVectorizer
 [MutualFeaturesContainerFeatureVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer
 
 [SpacyFeatureVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer

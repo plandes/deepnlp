@@ -24,7 +24,7 @@ from zensols.deepnlp import (
 )
 from . import (
     SpacyFeatureVectorizer,
-    TokenContainerFeatureVectorizer,
+    FeatureDocumentVectorizer,
     TokenContainerFeatureType,
 )
 
@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
+class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
     """Encode tokens found in the container by aggregating the SpaCy vectorizers
     output.  The result is a concatenated binary representation of all
     configured token level features for each token.  This adds only token
@@ -40,7 +40,7 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
     features themselves (such as ``is_stop`` etc).
 
     All spaCy features are encoded given by
-    :obj:`~.TokenContainerFeatureVectorizerManager.spacy_vectorizers`.
+    :obj:`~.FeatureDocumentVectorizerManager.spacy_vectorizers`.
     However, only those given in :obj:`decoded_feature_ids` are produced in the
     output tensor after decoding.
 
@@ -63,7 +63,7 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
     """The spaCy generated features used during *only* decoding (see class docs).
     Examples include ``norm``, ``ent``, ``dep``, ``tag``.  When set to
     ``None``, use all those given in the
-    :obj:`~.TokenContainerFeatureVectorizerManager.spacy_vectorizers`.
+    :obj:`~.FeatureDocumentVectorizerManager.spacy_vectorizers`.
 
     """
 
@@ -169,7 +169,7 @@ class EnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
 
 
 @dataclass
-class CountEnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
+class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
     """Return the count of all tokens as a S X M * N tensor where S is the number
     of sentences, M is the number of token feature ids and N is the number of
     columns of the output of the :class:`.SpacyFeatureVectorizer` vectorizer.
@@ -261,7 +261,7 @@ class CountEnumContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
 
 
 @dataclass
-class DepthTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
+class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
     """Return the depths of tokens based on how deep they are in a head dependency
     tree.
 
@@ -322,7 +322,7 @@ class DepthTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
 
 
 @dataclass
-class StatisticsTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
+class StatisticsFeatureDocumentVectorizer(FeatureDocumentVectorizer):
     """Vectorizes basic surface language statics which include:
 
         * character count
@@ -377,7 +377,7 @@ class StatisticsTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer)
 
 
 @dataclass
-class OverlappingTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
+class OverlappingFeatureDocumentVectorizer(FeatureDocumentVectorizer):
     """Vectorize the number of normalized and lemmatized tokens (in this order)
     across multiple documents.
 
@@ -413,7 +413,7 @@ class OverlappingTokenContainerFeatureVectorizer(TokenContainerFeatureVectorizer
 
 
 @dataclass
-class MutualFeaturesContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
+class MutualFeaturesContainerFeatureVectorizer(FeatureDocumentVectorizer):
     """Vectorize the shared count of all tokens as a S X M * N tensor, where S is
     the number of sentences, M is the number of token feature ids and N is the
     columns of the output of the :class:`.SpacyFeatureVectorizer` vectorizer.
@@ -436,7 +436,7 @@ class MutualFeaturesContainerFeatureVectorizer(TokenContainerFeatureVectorizer):
 
     count_vectorizer_feature_id: str = field()
     """The string feature ID configured in the
-    :class:`.TokenContainerFeatureVectorizerManager` of the
+    :class:`.FeatureDocumentVectorizerManager` of the
     :class:`CountEnumContainerFeatureVectorizer` to use for the count features.
 
     """

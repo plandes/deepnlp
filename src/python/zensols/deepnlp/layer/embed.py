@@ -19,7 +19,7 @@ from zensols.deeplearn.batch import (
 from zensols.deepnlp.vectorize import (
     EmbeddingLayer,
     TokenContainerFeatureType,
-    TokenContainerFeatureVectorizer,
+    FeatureDocumentVectorizer,
     TokensContainerFeatureVectorizer,
 )
 
@@ -71,7 +71,7 @@ class EmbeddingNetworkModule(BaseNetworkModule):
     :obj:`~zensols.deeplearn.batch.meta.MetadataNetworkSettings.batch_metadata`
     property (type :class:`~zensols.deeplearn.batch.meta.BatchMetadata`).  For
     each meta data field's vectorizer that extends class
-    :class:`.TokenContainerFeatureVectorizer` the following is set on this
+    :class:`.FeatureDocumentVectorizer` the following is set on this
     instance based on the value of ``feature_type`` (of type
     :class:`.TokenContainerFeatureType`):
 
@@ -128,7 +128,7 @@ class EmbeddingNetworkModule(BaseNetworkModule):
             vec: FeatureVectorizer = field_meta.vectorizer
             if logger.isEnabledFor(logging.DEBUG):
                 self._debug(f'{name} -> {field_meta}')
-            if isinstance(vec, TokenContainerFeatureVectorizer):
+            if isinstance(vec, FeatureDocumentVectorizer):
                 attr = field_meta.field.attr
                 if vec.feature_type == TokenContainerFeatureType.TOKEN:
                     if logger.isEnabledFor(logging.DEBUG):

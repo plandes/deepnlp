@@ -22,7 +22,7 @@ from zensols.deepnlp import TokensContainer, FeatureDocument
 from zensols.deepnlp.embed import WordEmbedModel
 from zensols.deepnlp.transformer import TransformerEmbedding, TokenizedDocument
 from zensols.deepnlp.vectorize import TokenContainerFeatureType
-from . import TokenContainerFeatureVectorizer
+from . import FeatureDocumentVectorizer
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,7 @@ class EmbeddingLayer(DebugModule, Deallocatable):
     about initialization order.
 
     """
-    def __init__(self, feature_vectorizer: TokenContainerFeatureVectorizer,
+    def __init__(self, feature_vectorizer: FeatureDocumentVectorizer,
                  embedding_dim: int, module_logger: logging.Logger = None,
                  trainable: bool = False):
         """Initialize.
@@ -201,7 +201,7 @@ class TransformerEmbeddingLayer(EmbeddingLayer):
 
 @dataclass
 class TokensContainerFeatureVectorizer(TransformableFeatureVectorizer,
-                                       TokenContainerFeatureVectorizer,
+                                       FeatureDocumentVectorizer,
                                        Primeable):
     """Vectorize a :class:`.TokensContainer` as a vector of embedding indexes.
     Later, these indexes are used in a :class:`WordEmbeddingLayer` to create

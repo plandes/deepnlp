@@ -10,7 +10,7 @@ from zensols.deepnlp.model import (
     LanguageModelFacade,
     LanguageModelFacadeConfig,
 )
-from zensols.deepnlp.vectorize import TokenContainerFeatureVectorizerManager
+from zensols.deepnlp.vectorize import FeatureDocumentVectorizerManager
 from zensols.deepnlp.transformer import TransformerEmbedding
 from . import NERBatch, SentenceStats
 
@@ -38,14 +38,14 @@ class NERModelFacade(LanguageModelFacade):
 
     @property
     def transformer_vectorizer(self) -> TransformerEmbedding:
-        mng: TokenContainerFeatureVectorizerManager = \
+        mng: FeatureDocumentVectorizerManager = \
             self.language_vectorizer_manager
         name: str = NERBatch.TRANSFORMER_MODEL_NAME
         return mng.vectorizers[name]
 
     @property
     def transformer_embedding_model(self) -> TransformerEmbedding:
-        mng: TokenContainerFeatureVectorizerManager = \
+        mng: FeatureDocumentVectorizerManager = \
             self.language_vectorizer_manager
         name: str = NERBatch.TRANSFORMER_MODEL_NAME
         return mng.vectorizers[name].embed_model

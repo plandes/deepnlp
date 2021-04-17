@@ -1,6 +1,6 @@
 import logging
 import numpy as np
-from zensols.deepnlp.vectorize import TokenContainerFeatureVectorizer
+from zensols.deepnlp.vectorize import FeatureDocumentVectorizer
 from util import TestFeatureVectorization
 
 logger = logging.getLogger(__name__)
@@ -16,7 +16,7 @@ class TestEnumVectorizer(TestFeatureVectorization):
         res = vec.transform(fdoc)
         self.assertEqual(1, len(res))
         arr, vec = res[0]
-        self.assertTrue(isinstance(vec, TokenContainerFeatureVectorizer))
+        self.assertTrue(isinstance(vec, FeatureDocumentVectorizer))
         self.assertEqual('enum', vec.feature_id)
         self.assertEqual((2, 30, 92), arr.shape)
         self.assertEqual((None, 30, 92), vec.shape)
@@ -31,7 +31,7 @@ class TestEnumVectorizer(TestFeatureVectorization):
         sm = self._to_sparse(arr)
         self.assertEqual(np.array([1], dtype=np.float), sm.data)
         self.assertEqual(np.array([5]), sm.indices)
-        self.assertTrue(isinstance(vec, TokenContainerFeatureVectorizer))
+        self.assertTrue(isinstance(vec, FeatureDocumentVectorizer))
         self.assertEqual('enum', vec.feature_id)
         self.assertEqual((2, 30, 21), arr.shape)
         self.assertEqual((None, 30, 21), vec.shape)
@@ -46,7 +46,7 @@ class TestEnumVectorizer(TestFeatureVectorization):
         sm = self._to_sparse(arr)
         self.assertEqual(np.array([1.], dtype=np.float), sm.data)
         self.assertEqual(np.array([5]), sm.indices)
-        self.assertTrue(isinstance(vec, TokenContainerFeatureVectorizer))
+        self.assertTrue(isinstance(vec, FeatureDocumentVectorizer))
         self.assertEqual('enum', vec.feature_id)
         self.assertEqual((2, 7, 21), arr.shape)
         self.assertEqual((None, -1, 21), vec.shape)

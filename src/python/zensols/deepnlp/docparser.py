@@ -16,10 +16,10 @@ logger = logging.getLogger(__name__)
 class FeatureDocumentParser(object):
     """This class parses text in to instances of ``FeatureDocument``.
 
-    *Important:* It is better to use ``TokenContainerFeatureVectorizerManager``
+    *Important:* It is better to use ``FeatureDocumentVectorizerManager``
      instead of this class.
 
-    :see TokenContainerFeatureVectorizerManager:
+    :see FeatureDocumentVectorizerManager:
 
     """
     TOKEN_FEATURE_IDS = FeatureToken.TOKEN_FEATURE_IDS

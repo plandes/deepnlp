@@ -17,7 +17,7 @@ from zensols.persist import (
     Primeable
 )
 from zensols.deepnlp import FeatureDocument
-from zensols.deepnlp.vectorize import TokenContainerFeatureVectorizer
+from zensols.deepnlp.vectorize import FeatureDocumentVectorizer
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,7 @@ class IndexedDocumentFactory(ABC):
 
 
 @dataclass
-class DocumentIndexVectorizer(TokenContainerFeatureVectorizer,
+class DocumentIndexVectorizer(FeatureDocumentVectorizer,
                               PersistableContainer, Primeable,
                               metaclass=ABCMeta):
     """A vectorizer that generates vectorized features based on the index documents

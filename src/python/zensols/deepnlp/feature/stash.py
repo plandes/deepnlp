@@ -6,7 +6,7 @@ import itertools as it
 from zensols.persist import Stash, PrimeableStash
 from zensols.multi import MultiProcessStash
 from zensols.deepnlp import FeatureDocument
-from zensols.deepnlp.vectorize import TokenContainerFeatureVectorizerManager
+from zensols.deepnlp.vectorize import FeatureDocumentVectorizerManager
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +20,7 @@ class DocumentFeatureStash(MultiProcessStash, metaclass=ABCMeta):
     ATTR_EXP_META = ('document_limit',)
 
     factory: Stash
-    vec_manager: TokenContainerFeatureVectorizerManager
+    vec_manager: FeatureDocumentVectorizerManager
     document_limit: int
 
     def prime(self):

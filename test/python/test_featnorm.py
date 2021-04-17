@@ -3,7 +3,7 @@ import logging
 import torch
 from torch import Tensor
 from zensols.util import loglevel
-from zensols.deepnlp.vectorize import TokenContainerFeatureVectorizer
+from zensols.deepnlp.vectorize import FeatureDocumentVectorizer
 from zensols.deeplearn.vectorize import EncodableFeatureVectorizer
 from util import TestFeatureVectorization
 
@@ -226,7 +226,7 @@ class TestFeatureVectorizationCombined(TestFeatureVectorization):
         self.assertEqual(4, len(res))
         for arr, vec in res:
             self.assertTrue(isinstance(arr, torch.Tensor))
-            self.assertTrue(isinstance(vec, TokenContainerFeatureVectorizer))
+            self.assertTrue(isinstance(vec, FeatureDocumentVectorizer))
         feature_ids = ', '.join(map(lambda x: x[1].feature_id, res))
         self.assertEqual('count, dep, enum, stats', feature_ids)
         shapes = tuple(map(lambda x: tuple(x[0].shape), res))
@@ -239,7 +239,7 @@ class TestFeatureVectorizationCombined(TestFeatureVectorization):
         self.assertEqual(3, len(res))
         for arr, vec in res:
             self.assertTrue(isinstance(arr, torch.Tensor))
-            self.assertTrue(isinstance(vec, TokenContainerFeatureVectorizer))
+            self.assertTrue(isinstance(vec, FeatureDocumentVectorizer))
         feature_ids = ', '.join(map(lambda x: x[1].feature_id, res))
         self.assertEqual('count, enum, stats', feature_ids)
         shapes = tuple(map(lambda x: tuple(x[0].shape), res))

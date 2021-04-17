@@ -77,7 +77,7 @@ Linguistic features are vectorized at one of the following levels:
 * **document**: document level, typically added to a join layer
 * **embedding**: embedding layer, typically used as the input layer
 
-Each [TokenContainerFeatureVectorizer], which extends the [deeplearn API]
+Each [FeatureDocumentVectorizer], which extends the [deeplearn API]
 [EncodableFeatureVectorizer] class defines a `FEATURE_TYPE` of type
 [TokenContainerFeatureType] that indicates this level.  We'll see examples of
 these later in the configuration.  See the [deeplearn API] for more information
@@ -132,7 +132,7 @@ Several other linguistic feature vectorizers are defined until we get to the
 `language_feature_manager` entry:
 ```ini
 [language_feature_manager]
-class_name = zensols.deepnlp.vectorize.TokenContainerFeatureVectorizerManager
+class_name = zensols.deepnlp.vectorize.FeatureDocumentVectorizerManager
 torch_config = instance: torch_config
 # word embedding vectorizers can not be class level since each instance is
 # configured
@@ -152,7 +152,7 @@ token_length = ${language_defaults:token_length}
 # features to use
 token_feature_ids = ${doc_parser:token_feature_ids}
 ```
-This configuration creates a [TokenContainerFeatureVectorizerManager], which is
+This configuration creates a [FeatureDocumentVectorizerManager], which is
 a language specific vectorizer manager that uses the [FeatureDocumentParser] we
 defined earlier with the `doc_parser` entry.  This class extends from
 [FeatureVectorizerManager] as an NLP specific manager that creates and encodes
@@ -491,9 +491,9 @@ To run the [Jupyter movie notebook]:
 [EnumContainerFeatureVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer
 [SpacyFeatureVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer
 [TokenContainerFeatureType]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.TokenContainerFeatureType
-[TokenContainerFeatureVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizer
+[FeatureDocumentVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizer
 [CountEnumContainerFeatureVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer
-[TokenContainerFeatureVectorizerManager]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.TokenContainerFeatureVectorizerManager
+[FeatureDocumentVectorizerManager]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager
 [FeatureDocumentParser]: ../api/zensols.deepnlp.html#zensols.deepnlp.parse.FeatureDocumentParser
 [DocumentFeatureStash]: ../api/zensols.deepnlp.feature.html#zensols.deepnlp.feature.stash.DocumentFeatureStash
 [FeatureDocumentDataPoint]: ../api/zensols.deepnlp.batch.html#zensols.deepnlp.batch.domain.FeatureDocumentDataPoint

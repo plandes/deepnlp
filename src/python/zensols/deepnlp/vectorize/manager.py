@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 
 class TokenContainerFeatureType(Enum):
-    """The type of :class:`.TokenContainerFeatureVectorizer`.
+    """The type of :class:`.FeatureDocumentVectorizer`.
 
     """
     TOKEN = 0
@@ -47,8 +47,7 @@ class TokenContainerFeatureType(Enum):
 
 
 @dataclass
-class TokenContainerFeatureVectorizer(EncodableFeatureVectorizer,
-                                      metaclass=ABCMeta):
+class FeatureDocumentVectorizer(EncodableFeatureVectorizer, metaclass=ABCMeta):
     """Creates document or sentence level features using instances of
     :class:`.TokensContainer`.
 
@@ -82,8 +81,8 @@ class TokenContainerFeatureVectorizer(EncodableFeatureVectorizer,
 
 
 @dataclass
-class TokenContainerFeatureVectorizerManager(FeatureVectorizerManager):
-    """Creates and manages instances of :class:`.TokenContainerFeatureVectorizer`
+class FeatureDocumentVectorizerManager(FeatureVectorizerManager):
+    """Creates and manages instances of :class:`.FeatureDocumentVectorizer`
     and parses text in to feature based document.
 
     This is used to manage the relationship of a given set of parsed features
@@ -100,7 +99,7 @@ class TokenContainerFeatureVectorizerManager(FeatureVectorizerManager):
     batch, even if the input data are batched as a group of sentences in a
     document.
 
-    :see: :class:`.TokenContainerFeatureVectorizer`
+    :see: :class:`.FeatureDocumentVectorizer`
 
     :see :meth:`parse`
 
