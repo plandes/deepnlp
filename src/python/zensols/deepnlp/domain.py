@@ -265,8 +265,11 @@ class FeatureDocument(TokensContainer):
         single sentence.
 
         """
-        sent = FeatureSentence(self.tokens)
-        return self.__class__([sent])
+        if len(self.sents) == 1:
+            return self
+        else:
+            sent = FeatureSentence(self.tokens)
+            return self.__class__([sent])
 
     @property
     @persisted('_text', transient=True)
