@@ -1,4 +1,3 @@
-
 """This file contains a stash used to load an embedding layer.  It creates
 features in batches of matrices and persists matrix only (sans features) for
 efficient retrival.
@@ -203,7 +202,7 @@ class TransformerEmbeddingLayer(EmbeddingLayer):
 class TokensContainerFeatureVectorizer(TransformableFeatureVectorizer,
                                        FeatureDocumentVectorizer,
                                        Primeable):
-    """Vectorize a :class:`.TokensContainer` as a vector of embedding indexes.
+    """Vectorize a :class:`.FeatureDocument` as a vector of embedding indexes.
     Later, these indexes are used in a :class:`WordEmbeddingLayer` to create
     the input word embedding during execution of the model.
 
