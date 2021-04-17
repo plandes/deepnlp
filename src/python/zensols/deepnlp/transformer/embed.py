@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Dict, Union
+from typing import Dict
 from dataclasses import dataclass, field
 import logging
 import torch
@@ -96,29 +96,45 @@ class TransformerEmbedding(object):
 
         """
         output = self.output if output is None else output
-        output: BaseModelOutputWithPoolingAndCrossAttentions
+        output_res: BaseModelOutputWithPoolingAndCrossAttentions
         model: nn.Module = self.resource.model
         params: Dict[str, Tensor] = doc.params()
 
         if self.output_attentions:
             params['output_attentions'] = True
 
+        if 1:
+            # a bug in transformers 4.4.2 requires this
+            # https://github.com/huggingface/transformers/issues/2952
+            input_ids = params['input_ids']
+            seq_length = input_ids.size()[1]
+            position_ids = model.embeddings.position_ids
+            position_ids = position_ids[:, 0: seq_length].to(torch.long)
+            params['position_ids'] = position_ids
+
+        if logger.isEnabledFor(logging.DEBUG):
+            for k, v in params.items():
+                if isinstance(v, Tensor):
+                    logger.debug(f"{k}: dtype={v.dtype}, shape={v.shape}")
+                else:
+                    logger.debug(f'{k}: {v}')
+
         # predict hidden states features for each layer
         if self.resource.trainable:
-            output = model(**params)
+            output_res = model(**params)
         else:
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug('turning off gradients since model not trainable')
             model.eval()
             with torch.no_grad():
-                output = model(**params)
+                output_res = model(**params)
 
         if output is None:
             if logger.isEnabledFor(logging.DEBUG):
-                logger.debug(f'transform output: {output}')
+                logger.debug(f'transform output: {output_res}')
         else:
-            output: Tensor = getattr(output, self.output)
+            output_res: Tensor = getattr(output_res, self.output)
             if logger.isEnabledFor(logging.DEBUG):
-                logger.debug(f'embedding dim: {output.size()}')
+                logger.debug(f'embedding dim: {output_res.size()}')
 
-        return output
+        return output_res

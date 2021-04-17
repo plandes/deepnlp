@@ -106,4 +106,7 @@ class TransformerDocumentTokenizer(object):
             [tok_dat['input_ids'], tok_dat['attention_mask'], sent_offsets],
             dtype=torch.long)
 
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'tok doc mat: shape={arr.shape}, dtype={arr.dtype}')
+
         return TokenizedFeatureDocument(arr, doc, self.id2tok)
