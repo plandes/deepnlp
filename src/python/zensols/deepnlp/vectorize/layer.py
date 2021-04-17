@@ -20,7 +20,7 @@ from zensols.deeplearn.vectorize import (
 from zensols.deepnlp import TokensContainer, FeatureDocument
 from zensols.deepnlp.embed import WordEmbedModel
 from zensols.deepnlp.transformer import TransformerEmbedding, TokenizedDocument
-from zensols.deepnlp.vectorize import TokenContainerFeatureType
+from zensols.deepnlp.vectorize import TextFeatureType
 from . import FeatureDocumentVectorizer
 
 logger = logging.getLogger(__name__)
@@ -240,7 +240,7 @@ class WordVectorEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
 
     """
     DESCRIPTION = 'word vector sentence'
-    FEATURE_TYPE = TokenContainerFeatureType.EMBEDDING
+    FEATURE_TYPE = TextFeatureType.EMBEDDING
 
     def _encode(self, containers: List[TokensContainer]) -> FeatureContext:
         emodel = self.embed_model
@@ -309,7 +309,7 @@ class TransformerEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
 
     """
     DESCRIPTION = 'transformer vector sentence'
-    FEATURE_TYPE = TokenContainerFeatureType.EMBEDDING
+    FEATURE_TYPE = TextFeatureType.EMBEDDING
 
     def __post_init__(self):
         super().__post_init__()

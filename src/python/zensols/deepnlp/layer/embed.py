@@ -18,7 +18,7 @@ from zensols.deeplearn.batch import (
 )
 from zensols.deepnlp.vectorize import (
     EmbeddingLayer,
-    TokenContainerFeatureType,
+    TextFeatureType,
     FeatureDocumentVectorizer,
     EmbeddingFeatureVectorizer,
 )
@@ -73,15 +73,15 @@ class EmbeddingNetworkModule(BaseNetworkModule):
     each meta data field's vectorizer that extends class
     :class:`.FeatureDocumentVectorizer` the following is set on this
     instance based on the value of ``feature_type`` (of type
-    :class:`.TokenContainerFeatureType`):
+    :class:`.TextFeatureType`):
 
-      * :obj:`~.TokenContainerFeatureType.TOKEN`: ``embedding_output_size`` is
+      * :obj:`~.TextFeatureType.TOKEN`: ``embedding_output_size`` is
         increased by the vectorizer's shape
 
-      * :obj:`~.TokenContainerFeatureType.DOCUMENT`: ``join_size`` is increased
+      * :obj:`~.TextFeatureType.DOCUMENT`: ``join_size`` is increased
         by the vectorizer's shape
 
-      * :obj:`~.TokenContainerFeatureType.EMBEDDING`:
+      * :obj:`~.TextFeatureType.EMBEDDING`:
         ``embedding_attribute_name`` is set to the name field's attribute and
         ``embedding_vectorizer`` set to the field's vectorizer
 
@@ -130,19 +130,19 @@ class EmbeddingNetworkModule(BaseNetworkModule):
                 self._debug(f'{name} -> {field_meta}')
             if isinstance(vec, FeatureDocumentVectorizer):
                 attr = field_meta.field.attr
-                if vec.feature_type == TokenContainerFeatureType.TOKEN:
+                if vec.feature_type == TextFeatureType.TOKEN:
                     if logger.isEnabledFor(logging.DEBUG):
                         self._debug('adding embedding_output_size: ' +
                                     str(vec.shape[1]))
                     self.embedding_output_size += vec.shape[1]
                     self.token_attribs.append(attr)
-                elif vec.feature_type == TokenContainerFeatureType.DOCUMENT:
+                elif vec.feature_type == TextFeatureType.DOCUMENT:
                     if logger.isEnabledFor(logging.DEBUG):
                         self._debug(f'adding join size for {attr}: ' +
                                     str(field_meta.shape[0]))
                     self.join_size += field_meta.shape[0]
                     self.doc_attribs.append(attr)
-                elif vec.feature_type == TokenContainerFeatureType.EMBEDDING:
+                elif vec.feature_type == TextFeatureType.EMBEDDING:
                     if logger.isEnabledFor(logging.DEBUG):
                         self._debug(f'adding embedding: {attr}')
                     embedding_attribs.append(attr)

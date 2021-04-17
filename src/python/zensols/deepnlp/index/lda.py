@@ -8,7 +8,7 @@ from zensols.util import time
 from zensols.deeplearn import TorchConfig
 from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
 from zensols.deepnlp import TokensContainer, FeatureDocument
-from zensols.deepnlp.vectorize import TokenContainerFeatureType
+from zensols.deepnlp.vectorize import TextFeatureType
 from . import DocumentIndexVectorizer
 
 logger = logging.getLogger(__name__)
@@ -30,7 +30,7 @@ class TopicModelDocumentIndexerVectorizer(DocumentIndexVectorizer):
 
     """
     DESCRIPTION = 'latent semantic indexing'
-    FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
+    FEATURE_TYPE = TextFeatureType.DOCUMENT
 
     topics: int = field(default=20)
     """The number of topics (usually denoted ``K``)."""

@@ -25,7 +25,7 @@ from zensols.deepnlp import (
 from . import (
     SpacyFeatureVectorizer,
     FeatureDocumentVectorizer,
-    TokenContainerFeatureType,
+    TextFeatureType,
 )
 
 logger = logging.getLogger(__name__)
@@ -57,7 +57,7 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
     """
     ATTR_EXP_META = ('decoded_feature_ids',)
     DESCRIPTION = 'spacy feature vectorizer'
-    FEATURE_TYPE = TokenContainerFeatureType.TOKEN
+    FEATURE_TYPE = TextFeatureType.TOKEN
 
     decoded_feature_ids: Set[str] = field(default=None)
     """The spaCy generated features used during *only* decoding (see class docs).
@@ -185,7 +185,7 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
     """
     ATTR_EXP_META = ('decoded_feature_ids',)
     DESCRIPTION = 'token level feature counts'
-    FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
+    FEATURE_TYPE = TextFeatureType.DOCUMENT
 
     decoded_feature_ids: Set[str] = field(default=None)
 
@@ -278,7 +278,7 @@ class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
 
     """
     DESCRIPTION = 'head depth'
-    FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
+    FEATURE_TYPE = TextFeatureType.DOCUMENT
 
     def _get_shape(self) -> Tuple[int, int]:
         return -1, self.token_length,
@@ -339,7 +339,7 @@ class StatisticsFeatureDocumentVectorizer(FeatureDocumentVectorizer):
 
     """
     DESCRIPTION = 'statistics'
-    FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
+    FEATURE_TYPE = TextFeatureType.DOCUMENT
 
     def _get_shape(self) -> Tuple[int, int]:
         return 9,
@@ -388,7 +388,7 @@ class OverlappingFeatureDocumentVectorizer(FeatureDocumentVectorizer):
 
     """
     DESCRIPTION = 'overlapping token counts'
-    FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
+    FEATURE_TYPE = TextFeatureType.DOCUMENT
 
     def _get_shape(self) -> Tuple[int, int]:
         return 2,
@@ -432,7 +432,7 @@ class MutualFeaturesContainerFeatureVectorizer(FeatureDocumentVectorizer):
 
     """
     DESCRIPTION = 'mutual feature counts'
-    FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
+    FEATURE_TYPE = TextFeatureType.DOCUMENT
 
     count_vectorizer_feature_id: str = field()
     """The string feature ID configured in the

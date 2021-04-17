@@ -79,7 +79,7 @@ Linguistic features are vectorized at one of the following levels:
 
 Each [FeatureDocumentVectorizer], which extends the [deeplearn API]
 [EncodableFeatureVectorizer] class defines a `FEATURE_TYPE` of type
-[TokenContainerFeatureType] that indicates this level.  We'll see examples of
+[TextFeatureType] that indicates this level.  We'll see examples of
 these later in the configuration.  See the [deeplearn API] for more information
 on the base class [deeplearn vectorizers].
 
@@ -490,7 +490,7 @@ To run the [Jupyter movie notebook]:
 [FeatureDocument]: ../api/zensols.deepnlp.html#zensols.deepnlp.domain.FeatureDocument
 [EnumContainerFeatureVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer
 [SpacyFeatureVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer
-[TokenContainerFeatureType]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.TokenContainerFeatureType
+[TextFeatureType]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.TextFeatureType
 [FeatureDocumentVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizer
 [CountEnumContainerFeatureVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer
 [FeatureDocumentVectorizerManager]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager

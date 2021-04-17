@@ -6,7 +6,7 @@ __author__ = 'Paul Landes'
 
 from typing import List, Union, Set, Dict
 from dataclasses import dataclass, field
-from enum import Enum
+from enum import Enum, auto
 from abc import abstractmethod, ABCMeta
 import logging
 import collections
@@ -25,22 +25,22 @@ from . import SpacyFeatureVectorizer
 logger = logging.getLogger(__name__)
 
 
-class TokenContainerFeatureType(Enum):
+class TextFeatureType(Enum):
     """The type of :class:`.FeatureDocumentVectorizer`.
 
     """
-    TOKEN = 0
+    TOKEN = auto()
     """token level with a shape congruent with the number of tokens, typically
     concatenated with the ebedding layer
 
     """
 
-    DOCUMENT = 1
+    DOCUMENT = auto()
     """document level, typically added to a join layer
 
     """
 
-    EMBEDDING = 2
+    EMBEDDING = auto()
     """embedding layer, typically used as the input layer
 
     """
@@ -67,7 +67,7 @@ class FeatureDocumentVectorizer(EncodableFeatureVectorizer, metaclass=ABCMeta):
                                   f'but got shape: {arr.shape}')
 
     @property
-    def feature_type(self) -> TokenContainerFeatureType:
+    def feature_type(self) -> TextFeatureType:
         return self.FEATURE_TYPE
 
     @property

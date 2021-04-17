@@ -9,7 +9,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
 from zensols.util import time
 from zensols.deepnlp import FeatureDocument, TokensContainer
-from zensols.deepnlp.vectorize import TokenContainerFeatureType
+from zensols.deepnlp.vectorize import TextFeatureType
 from . import DocumentIndexVectorizer
 
 logger = logging.getLogger(__name__)
@@ -31,7 +31,7 @@ class LatentSemanticDocumentIndexerVectorizer(DocumentIndexVectorizer):
 
     """
     DESCRIPTION = 'latent semantic indexing'
-    FEATURE_TYPE = TokenContainerFeatureType.DOCUMENT
+    FEATURE_TYPE = TextFeatureType.DOCUMENT
 
     components: int = field(default=100)
     """The number of components for the output."""
