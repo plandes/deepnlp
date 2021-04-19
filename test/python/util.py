@@ -36,4 +36,4 @@ class TestFeatureVectorization(unittest.TestCase):
         self.assertTrue(eq)
 
     def _to_sparse(self, arr: Tensor):
-        return SparseTensorFeatureContext.to_sparse(arr)[0]
+        return SparseTensorFeatureContext.to_sparse(arr)[0][0]

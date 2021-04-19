@@ -244,7 +244,6 @@ class WordVectorEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
         self._assert_doc(doc)
-        doc = doc.combine_sentences()
         emodel = self.embed_model
         tw = self.manager.get_token_length(doc)
         sents: Tuple[FeatureSentence] = doc.sents

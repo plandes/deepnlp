@@ -137,8 +137,7 @@ class EmbeddingNetworkModule(BaseNetworkModule):
                     self.token_attribs.append(attr)
                 elif vec.feature_type == TextFeatureType.DOCUMENT:
                     if logger.isEnabledFor(logging.DEBUG):
-                        self._debug(f'adding doc type {attr}: ' +
-                                    str(field_meta.shape[1]))
+                        self._debug(f'adding doc type {attr} ({field_meta.shape}/{vec.shape})')
                     self.join_size += field_meta.shape[1]
                     self.doc_attribs.append(attr)
                 elif vec.feature_type == TextFeatureType.EMBEDDING:

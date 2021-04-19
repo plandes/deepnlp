@@ -200,7 +200,7 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
         for fvec in self.manager.spacy_vectorizers.values():
             if feature_ids is None or fvec.feature_id in feature_ids:
                 flen += fvec.shape[1]
-        return -1, flen,
+        return -1, flen
 
     def get_feature_counts(self, sent: FeatureSentence,
                            fvec: SpacyFeatureVectorizer) -> torch.Tensor:
@@ -291,7 +291,7 @@ class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
     FEATURE_TYPE = TextFeatureType.DOCUMENT
 
     def _get_shape(self) -> Tuple[int, int]:
-        return -1, self.token_length,
+        return -1, self.token_length
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
         self._assert_doc(doc)
@@ -352,7 +352,7 @@ class StatisticsFeatureDocumentVectorizer(FeatureDocumentVectorizer):
     FEATURE_TYPE = TextFeatureType.DOCUMENT
 
     def _get_shape(self) -> Tuple[int, int]:
-        return 9,
+        return -1, 9
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
         self._assert_doc(doc)
@@ -380,7 +380,7 @@ class StatisticsFeatureDocumentVectorizer(FeatureDocumentVectorizer):
                 max_slen = max(max_slen, slen)
         stats = (n_char, n_toks, min_tlen, max_tlen, ave_tlen,
                  n_sents, ave_slen, min_slen, max_slen)
-        arr = self.torch_config.from_iterable(stats)
+        arr = self.torch_config.from_iterable(stats).unsqueeze(0)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'array shape: {arr.shape}')
         return TensorFeatureContext(self.feature_id, arr)
@@ -401,7 +401,7 @@ class OverlappingFeatureDocumentVectorizer(FeatureDocumentVectorizer):
     FEATURE_TYPE = TextFeatureType.DOCUMENT
 
     def _get_shape(self) -> Tuple[int, int]:
-        return 2,
+        return -1, 2
 
     @staticmethod
     def _norms(ac: TokensContainer, bc: TokensContainer) -> Tuple[int]:
@@ -419,6 +419,7 @@ class OverlappingFeatureDocumentVectorizer(FeatureDocumentVectorizer):
         norms = reduce(self._norms, docs)
         lemmas = reduce(self._lemmas, docs)
         arr = self.torch_config.from_iterable((len(norms), len(lemmas)))
+        arr = arr.unsqueeze(0)
         return TensorFeatureContext(self.feature_id, arr)
 
 
@@ -465,10 +466,10 @@ class MutualFeaturesContainerFeatureVectorizer(FeatureDocumentVectorizer):
         """Return a tensor of ones for the shape of this instance.
 
         """
-        return self.torch_config.ones((1, self.shape[0]))
+        return self.torch_config.ones((1, self.shape[1]))
 
     def _get_shape(self) -> Tuple[int, int]:
-        return self.count_vectorizer.shape[1],
+        return -1, self.count_vectorizer.shape[1]
 
     def _encode(self, docs: Tuple[FeatureDocument]) -> FeatureContext:
         ctxs = tuple(map(self.count_vectorizer.encode,
@@ -504,4 +505,4 @@ class MutualFeaturesContainerFeatureVectorizer(FeatureDocumentVectorizer):
                 logger.debug(f'counts mask: {cat_ones.shape}')
             # use the mask to zero out counts that aren't mutual across all
             # documents, then sum the counts across docuemnts
-            return (cnts * mask).sum(axis=0)
+            return (cnts * mask).sum(axis=0).unsqueeze(0)
