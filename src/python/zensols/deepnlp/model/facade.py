@@ -274,7 +274,7 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
         super()._configure_debug_logging()
         for name in ['zensols.deeplearn.layer.linear',
                      'zensols.deepnlp.transformer',
-                     'zensols.deepnlp.vectorize.layer',
+                     #'zensols.deepnlp.vectorize.layer',
                      __name__]:
             logging.getLogger(name).setLevel(logging.DEBUG)
         for name in ['zensols.deepnlp.vectorize.vectorizers',

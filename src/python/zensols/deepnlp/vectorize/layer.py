@@ -17,7 +17,7 @@ from zensols.deeplearn.vectorize import (
     VectorizerError, FeatureContext, TensorFeatureContext,
     TransformableFeatureVectorizer
 )
-from zensols.deepnlp import TokensContainer, FeatureDocument
+from zensols.deepnlp import TokensContainer, FeatureDocument, FeatureSentence
 from zensols.deepnlp.embed import WordEmbedModel
 from zensols.deepnlp.transformer import TransformerEmbedding, TokenizedDocument
 from zensols.deepnlp.vectorize import TextFeatureType
@@ -239,19 +239,25 @@ class WordVectorEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
     :class:`.WordEmbedModel`.
 
     """
-    DESCRIPTION = 'word vector sentence'
+    DESCRIPTION = 'word vector document embedding'
     FEATURE_TYPE = TextFeatureType.EMBEDDING
 
-    def _encode(self, containers: List[TokensContainer]) -> FeatureContext:
+    def _encode(self, doc: FeatureDocument) -> FeatureContext:
+        self._assert_doc(doc)
+        doc = doc.combine_sentences()
         emodel = self.embed_model
-        tw = self.manager.token_length
-        shape = (len(containers), self.shape[0])
+        tw = self.manager.get_token_length(doc)
+        sents: Tuple[FeatureSentence] = doc.sents
+        shape = (len(sents), tw)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'--------------------using token length: {tw} with shape: {shape}, ' +
+                         f'sents: {len(sents)}')
         arr = self.torch_config.empty(shape, dtype=torch.long)
-        for row, container in enumerate(containers):
-            tokens = container.tokens[0:tw]
+        for row, sent in enumerate(sents):
+            tokens = sent.tokens[0:tw]
             slen = len(tokens)
             if logger.isEnabledFor(logging.DEBUG):
-                logger.debug(' '.join(map(lambda x: x.norm, tokens)))
+                logger.debug(f'row: {row}, ' + 'toks: ' + ' '.join(map(lambda x: x.norm, tokens)))
             tokens = [t.norm for t in tokens]
             if slen < tw:
                 tokens += [WordEmbedModel.ZERO] * (tw - slen)
@@ -265,8 +271,12 @@ class WordVectorEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
         return self.torch_config.from_numpy(self.embed_model.matrix)
 
     def _decode(self, context: FeatureContext) -> Tensor:
-        x = super()._decode(context)
+        x: Tensor = super()._decode(context)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'decoded word embedding: {x.shape}')
         if self.decode_embedding:
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'decoding using: {self.decode_embedding}')
             src_vecs = self.vectors
             batches = []
             vecs = []
@@ -308,7 +318,7 @@ class TransformerEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
     :class:`.FeatureDocument` instances.
 
     """
-    DESCRIPTION = 'transformer vector sentence'
+    DESCRIPTION = 'transformer document embedding'
     FEATURE_TYPE = TextFeatureType.EMBEDDING
 
     def __post_init__(self):

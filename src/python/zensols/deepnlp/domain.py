@@ -6,6 +6,7 @@ __author__ = 'Paul Landes'
 
 from typing import List, Tuple, Set, Iterable
 from dataclasses import dataclass, field
+import dataclasses
 from abc import ABCMeta, abstractmethod
 import sys
 import logging
@@ -260,6 +261,7 @@ class FeatureDocument(TokensContainer):
         """
         return cls(list(map(lambda c: c.to_sentence(), conts)))
 
+    @persisted('_combine_sentence', transient=True)
     def combine_sentences(self) -> FeatureDocument:
         """Combine all the sentences in this document in to a new document with a
         single sentence.
@@ -269,7 +271,9 @@ class FeatureDocument(TokensContainer):
             return self
         else:
             sent = FeatureSentence(self.tokens)
-            return self.__class__([sent])
+            doc = dataclasses.replace(self)
+            doc.sents = [sent]
+            return doc
 
     @property
     @persisted('_text', transient=True)

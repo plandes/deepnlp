@@ -108,9 +108,9 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
         for tix, tok in enumerate(toks):
             val = getattr(tok, attr_name)
             vec = fvec.from_spacy(val)
-            if logger.isEnabledFor(logging.DEBUG):
-                logger.debug(f'adding vec {fvec} for tok {tok}>: {vec}')
             if vec is not None:
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug(f'adding vec {fvec} for tok {tok}>: {vec.shape}')
                 arr[six, tix, col_start:col_end] = vec
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
@@ -119,6 +119,7 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
 
         """
         self._assert_doc(doc)
+        doc = doc.combine_sentences()
         arr = self.torch_config.zeros(self._get_shape_for_document(doc))
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'type array shape: {arr.shape}')
@@ -149,12 +150,16 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'type={fid}, to keep={keeps}')
             if fid in keeps:
+                #print(f'APP, {arr.shape} -> {arr[:, :, col_start:col_end].shape}')
                 tensors.append(arr[:, :, col_start:col_end])
                 keeps.remove(fid)
             col_start = col_end
         if len(keeps) > 0:
             raise ValueError(f'unknown feature type IDs: {keeps}')
-        return torch.cat(tensors, 1)
+        sarr = torch.cat(tensors, dim=2)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'slice dim: {sarr.shape}')
+        return sarr
 
     def _decode(self, context: FeatureContext) -> torch.Tensor:
         arr = super()._decode(context)
@@ -219,14 +224,18 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
         sent_arrs = []
         self._assert_doc(doc)
+        doc = doc.combine_sentences()
         for sent in doc.sents:
             tok_arrs = []
             for fvec in self.manager.spacy_vectorizers.values():
                 tok_arrs.append(self.get_feature_counts(sent, fvec))
             sent_arrs.append(torch.cat(tok_arrs))
         arr = torch.stack(sent_arrs)
-        return SparseTensorFeatureContext.instance(
-            self.feature_id, arr, self.torch_config)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'encoded shape: {arr.shape}')
+        # return SparseTensorFeatureContext.instance(
+        #     self.feature_id, arr, self.torch_config)
+        return TensorFeatureContext(self.feature_id, arr)
 
     def _slice_by_attributes(self, arr: torch.Tensor) -> torch.Tensor:
         """Create a new tensor from column based slices of the encoded tensor for each
@@ -242,13 +251,16 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'type={fid}, to keep={keeps}')
             if fid in keeps:
-                keep_vec = arr[:, col_start:col_end]
+                keep_vec = arr[col_start:col_end]
                 tensors.append(keep_vec)
                 keeps.remove(fid)
             col_start = col_end
         if len(keeps) > 0:
             raise ValueError(f'unknown feature type IDs: {keeps}')
-        return torch.cat(tensors, 0)
+        sarr = torch.cat(tensors, dim=0)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'slice dim: {sarr.shape}')
+        return sarr
 
     def _decode(self, context: FeatureContext) -> torch.Tensor:
         arr = super()._decode(context)
@@ -256,6 +268,9 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
             logger.debug(f'decoded features: {self.decoded_feature_ids}')
         if self.decoded_feature_ids is not None:
             arr = self._slice_by_attributes(arr)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'decoded shape: {arr.shape}')
+        #print(f'count decoded shape: {arr.shape}')
         return arr
 
 

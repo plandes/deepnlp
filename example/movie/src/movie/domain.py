@@ -96,14 +96,14 @@ class ReviewBatch(Batch):
             (FieldFeatureMapping('label', 'rvlabel', True),)),
          ManagerFeatureMapping(
              LANGUAGE_FEATURE_MANAGER_NAME,
-             (FieldFeatureMapping(GLOVE_50_EMBEDDING, 'wvglove50', True, 'doc'),
-              FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', True, 'doc'),
-              FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', True, 'doc'),
-              FieldFeatureMapping(TRANSFORMER_EMBEDDING, 'transformer', True, 'doc'),
-              FieldFeatureMapping(STATS_ATTRIBUTE, 'stats', False, 'doc', 0),
-              FieldFeatureMapping(ENUMS_ATTRIBUTE, 'enum', False, 'doc', 0),
-              FieldFeatureMapping(COUNTS_ATTRIBUTE, 'count', False, 'doc', 0),
-              FieldFeatureMapping(DEPENDENCIES_ATTRIBUTE, 'dep', False, 'doc', 0)))])
+             (FieldFeatureMapping(GLOVE_50_EMBEDDING, 'wvglove50', False, 'doc'),
+              #FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', True, 'doc'),
+              #FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', True, 'doc'),
+              #FieldFeatureMapping(TRANSFORMER_EMBEDDING, 'transformer', True, 'doc'),
+              FieldFeatureMapping(STATS_ATTRIBUTE, 'stats', False, 'doc'),
+              FieldFeatureMapping(ENUMS_ATTRIBUTE, 'enum', False, 'doc'),
+              FieldFeatureMapping(COUNTS_ATTRIBUTE, 'count', False, 'doc'),
+              FieldFeatureMapping(DEPENDENCIES_ATTRIBUTE, 'dep', False, 'doc')))])
 
     def _get_batch_feature_mappings(self) -> BatchFeatureMapping:
         return self.MAPPINGS
