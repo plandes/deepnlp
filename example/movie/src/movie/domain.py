@@ -101,8 +101,8 @@ class ReviewBatch(Batch):
               #FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', True, 'doc'),
               #FieldFeatureMapping(TRANSFORMER_EMBEDDING, 'transformer', True, 'doc'),
               FieldFeatureMapping(STATS_ATTRIBUTE, 'stats', False, 'doc'),
-              FieldFeatureMapping(ENUMS_ATTRIBUTE, 'enum', False, 'doc'),
-              FieldFeatureMapping(COUNTS_ATTRIBUTE, 'count', False, 'doc'),
+              FieldFeatureMapping(ENUMS_ATTRIBUTE, 'enum', False, 'combined_doc'),
+              FieldFeatureMapping(COUNTS_ATTRIBUTE, 'count', False, 'combined_doc'),
               FieldFeatureMapping(DEPENDENCIES_ATTRIBUTE, 'dep', False, 'doc')))])
 
     def _get_batch_feature_mappings(self) -> BatchFeatureMapping:

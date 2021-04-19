@@ -17,6 +17,15 @@ class FeatureSentenceDataPoint(DataPoint):
     """
     sent: FeatureSentence
 
+    @property
+    def doc(self) -> FeatureDocument:
+        """Return the sentence as a single sentence document.
+
+        :param: :meth:`.FeatureSentence.as_document`
+
+        """
+        return self.sent.as_document()
+
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
         super().write(depth, writer)
         self._write_line('sentence:', depth, writer)
@@ -35,6 +44,14 @@ class FeatureDocumentDataPoint(DataPoint):
 
     """
     doc: FeatureDocument
+
+    @property
+    def combined_doc(self) -> FeatureDocument:
+        """Return a document with sentences combined.
+
+        :see: :meth:`FeatureDocument.combine_sentences`
+        """
+        return self.doc.combine_sentences()
 
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
         super().write(depth, writer)

@@ -261,7 +261,7 @@ class FeatureDocument(TokensContainer):
         """
         return cls(list(map(lambda c: c.to_sentence(), conts)))
 
-    @persisted('_combine_sentence', transient=True)
+    @persisted('_combine_sentences', transient=True)
     def combine_sentences(self) -> FeatureDocument:
         """Combine all the sentences in this document in to a new document with a
         single sentence.

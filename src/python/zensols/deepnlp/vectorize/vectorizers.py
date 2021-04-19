@@ -1,4 +1,3 @@
-
 """Generate and vectorize language features.
 
 """
@@ -119,7 +118,6 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
 
         """
         self._assert_doc(doc)
-        doc = doc.combine_sentences()
         arr = self.torch_config.zeros(self._get_shape_for_document(doc))
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'type array shape: {arr.shape}')
@@ -224,7 +222,6 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
         sent_arrs = []
         self._assert_doc(doc)
-        doc = doc.combine_sentences()
         for sent in doc.sents:
             tok_arrs = []
             for fvec in self.manager.spacy_vectorizers.values():
@@ -233,9 +230,8 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
         arr = torch.stack(sent_arrs)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'encoded shape: {arr.shape}')
-        # return SparseTensorFeatureContext.instance(
-        #     self.feature_id, arr, self.torch_config)
-        return TensorFeatureContext(self.feature_id, arr)
+        return SparseTensorFeatureContext.instance(
+            self.feature_id, arr, self.torch_config)
 
     def _slice_by_attributes(self, arr: torch.Tensor) -> torch.Tensor:
         """Create a new tensor from column based slices of the encoded tensor for each
@@ -265,12 +261,12 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
     def _decode(self, context: FeatureContext) -> torch.Tensor:
         arr = super()._decode(context)
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'decoded features: {self.decoded_feature_ids}')
+            logger.debug(f'decoded features: {self.decoded_feature_ids}, ' +
+                         f'shape: {arr.shape}')
         if self.decoded_feature_ids is not None:
             arr = self._slice_by_attributes(arr)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'decoded shape: {arr.shape}')
-        #print(f'count decoded shape: {arr.shape}')
         return arr
 
 
