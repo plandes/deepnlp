@@ -55,6 +55,9 @@ class FeatureToken(TextContainer):
             if k not in fd:
                 fd[k] = None
         self.__dict__.update(fd)
+        # features used for sentence decomposition in FeatureDocument
+        self.i = features.i
+        self.i_sent = features.i_sent
 
     @property
     def text(self):
@@ -73,6 +76,9 @@ class FeatureToken(TextContainer):
             ptype = self.TYPES_BY_TOKEN_FEATURE_ID.get(k)
             ptype = 'missing type' if ptype is None else ptype
             self._write_line(f'{k}={v} ({ptype})', depth + 1, writer)
+
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
 
     def __str__(self):
         attrs = []
@@ -273,7 +279,33 @@ class FeatureDocument(TokensContainer):
             sent = FeatureSentence(self.tokens)
             doc = dataclasses.replace(self)
             doc.sents = [sent]
+            doc._combined = True
             return doc
+
+    def _reconstruct_sents_iter(self) -> Iterable[FeatureSentence]:
+        for sent in self.sents:
+            stoks = []
+            ip_sent = -1
+            for tok in sent:
+                if tok.i_sent < ip_sent:
+                    sent = FeatureSentence(stoks)
+                    stoks = []
+                    yield sent
+                stoks.append(tok)
+                ip_sent = tok.i_sent
+        if len(stoks) > 0:
+            yield FeatureSentence(stoks)
+
+    def uncombine_sentences(self) -> FeatureDocument:
+        """Reconstruct the sentence structure that we combined in
+        :meth:`combine_sentences`.  If that has not been done in this instance,
+        then return ``self``.
+
+        """
+        if hasattr(self, '_combined'):
+            return FeatureDocument(tuple(self._reconstruct_sents_iter()))
+        else:
+            return self
 
     @property
     @persisted('_text', transient=True)
