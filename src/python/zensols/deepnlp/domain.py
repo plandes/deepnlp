@@ -273,12 +273,12 @@ class FeatureDocument(TokensContainer):
         return self
 
     @classmethod
-    def from_containers(cls, conts: Tuple[TokensContainer]) -> FeatureDocument:
+    def combine_documents(cls, docs: Iterable[FeatureDocument]) -> FeatureDocument:
         """Coerce a tuple of token containers (either documents or sentences) in to
         one *synthesized* document.
 
         """
-        return cls(list(map(lambda c: c.to_sentence(), conts)))
+        return cls(list(map(lambda c: c.combine_sentences()[0], docs)))
 
     @persisted('_combine_sentences', transient=True)
     def combine_sentences(self) -> FeatureDocument:

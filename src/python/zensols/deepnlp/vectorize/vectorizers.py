@@ -5,10 +5,11 @@ __author__ = 'Paul Landes'
 
 import logging
 import sys
-from typing import List, Tuple, Set
+from typing import List, Tuple, Set, Union
 from dataclasses import dataclass, field
 from functools import reduce
 import torch
+from torch import Tensor
 from zensols.deeplearn.vectorize import (
     FeatureContext,
     TensorFeatureContext,
@@ -25,6 +26,7 @@ from . import (
     SpacyFeatureVectorizer,
     FeatureDocumentVectorizer,
     TextFeatureType,
+    MultiDocumentVectorizer,
 )
 
 logger = logging.getLogger(__name__)
@@ -293,12 +295,33 @@ class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
     def _get_shape(self) -> Tuple[int, int]:
         return -1, self.token_length
 
-    def _encode(self, doc: FeatureDocument) -> FeatureContext:
+    def encode(self, doc: Union[Tuple[FeatureDocument], FeatureDocument]) -> \
+            FeatureContext:
         self._assert_doc(doc)
-        n_sents = len(doc.sents)
+        ctx: TensorFeatureContext
+        if isinstance(doc, (tuple, list)):
+            docs = doc
+            comb_doc = FeatureDocument.combine_documents(docs)
+            n_toks = self.manager.get_token_length(comb_doc)
+            arrs = tuple(map(lambda d:
+                             self._encode_doc(d.combine_sentences(), n_toks),
+                             docs))
+            ctx = TensorFeatureContext(self.feature_id, torch.stack(arrs))
+        else:
+            ctx = super().encode(doc)
+        return ctx
+
+    def _encode(self, doc: FeatureDocument) -> FeatureContext:
         n_toks = self.manager.get_token_length(doc)
+        arr = self._encode_doc(doc, n_toks)
+        return TensorFeatureContext(self.feature_id, arr)
+
+    def _encode_doc(self, doc: FeatureDocument, n_toks: int) -> Tensor:
+        n_sents = len(doc.sents)
         arr = self.torch_config.zeros((n_sents, n_toks))
         u_doc = doc.uncombine_sentences()
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'encoding doc: {len(doc)}/{len(u_doc)}: {doc}')
         # if the doc is combined as several sentences concatenated in one, un
         # pack and write all features in one row
         if len(doc) != len(u_doc):
@@ -309,18 +332,23 @@ class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
         else:
             # otherwise, each row is a separate sentence
             for six, sent in enumerate(doc.sents):
+                print(f'sent: {type(sent)}')
                 self._transform_sent(sent, arr, six, 0, n_toks)
-        return TensorFeatureContext(self.feature_id, arr)
+        return arr
 
     def _transform_sent(self, sent: FeatureSentence, arr: torch.Tensor,
                         six: int, soff: int, slen: int):
         head_depths = self._get_head_depth(sent)
         for root, toks in head_depths:
             off = root.i_sent + soff
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'setting ({six}, {off}) = 1: {off < slen}')
             if off < slen:
                 arr[six, off] = 1.
             for ti, t in toks:
                 off = ti + soff
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug(f'setting ({six}, {off}) = 1: {off < slen}')
                 if off < slen:
                     arr[six, off] = 0.5
 
@@ -413,7 +441,7 @@ class StatisticsFeatureDocumentVectorizer(FeatureDocumentVectorizer):
 
 
 @dataclass
-class OverlappingFeatureDocumentVectorizer(FeatureDocumentVectorizer):
+class OverlappingFeatureDocumentVectorizer(MultiDocumentVectorizer):
     """Vectorize the number of normalized and lemmatized tokens (in this order)
     across multiple documents.
 
@@ -424,7 +452,6 @@ class OverlappingFeatureDocumentVectorizer(FeatureDocumentVectorizer):
 
     """
     DESCRIPTION = 'overlapping token counts'
-    FEATURE_TYPE = TextFeatureType.DOCUMENT
 
     def _get_shape(self) -> Tuple[int, int]:
         return -1, 2
@@ -450,7 +477,7 @@ class OverlappingFeatureDocumentVectorizer(FeatureDocumentVectorizer):
 
 
 @dataclass
-class MutualFeaturesContainerFeatureVectorizer(FeatureDocumentVectorizer):
+class MutualFeaturesContainerFeatureVectorizer(MultiDocumentVectorizer):
     """Vectorize the shared count of all tokens as a S X M * N tensor, where S is
     the number of sentences, M is the number of token feature ids and N is the
     columns of the output of the :class:`.SpacyFeatureVectorizer` vectorizer.
@@ -469,7 +496,6 @@ class MutualFeaturesContainerFeatureVectorizer(FeatureDocumentVectorizer):
 
     """
     DESCRIPTION = 'mutual feature counts'
-    FEATURE_TYPE = TextFeatureType.DOCUMENT
 
     count_vectorizer_feature_id: str = field()
     """The string feature ID configured in the

@@ -4,7 +4,7 @@ natural language.
 """
 __author__ = 'Paul Landes'
 
-from typing import List, Union, Set, Dict
+from typing import List, Union, Set, Dict, Tuple
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from abc import abstractmethod, ABCMeta
@@ -30,20 +30,19 @@ class TextFeatureType(Enum):
 
     """
     TOKEN = auto()
-    """token level with a shape congruent with the number of tokens, typically
-    concatenated with the ebedding layer
+    """Token level with a shape congruent with the number of tokens, typically
+    concatenated with the ebedding layer.
 
     """
 
     DOCUMENT = auto()
-    """document level, typically added to a join layer
+    """Document level, typically added to a join layer."""
 
-    """
+    MULTI_DOCUMENT = auto()
+    """"Multiple documents for the purposes of aggregating shared features."""
 
     EMBEDDING = auto()
-    """embedding layer, typically used as the input layer
-
-    """
+    """Embedding layer, typically used as the input layer."""
 
 
 @dataclass
@@ -56,8 +55,22 @@ class FeatureDocumentVectorizer(EncodableFeatureVectorizer, metaclass=ABCMeta):
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
         pass
 
-    def _assert_doc(self, doc: FeatureDocument):
-        if not isinstance(doc, FeatureDocument):
+    def _is_mult(self, doc: Union[Tuple[FeatureDocument], FeatureDocument]) \
+            -> bool:
+        return isinstance(doc, (tuple, list))
+
+    def encode(self, doc: Union[Tuple[FeatureDocument], FeatureDocument]) -> \
+            FeatureContext:
+        if self._is_mult(doc):
+            doc = FeatureDocument.combine_documents(doc)
+        return super().encode(doc)
+
+    def _assert_doc(self, doc: Union[Tuple[FeatureDocument], FeatureDocument]):
+        if self._is_mult(doc):
+            docs = doc
+            for doc in docs:
+                self._assert_doc(doc)
+        elif not isinstance(doc, FeatureDocument):
             raise VectorizerError(
                 f'expecting document, but got type: {type(doc)}')
 
@@ -78,6 +91,14 @@ class FeatureDocumentVectorizer(EncodableFeatureVectorizer, metaclass=ABCMeta):
         return (f'{super().__str__()}, ' +
                 f'feature type: {self.feature_type.name}, ' +
                 f'token length: {self.token_length}')
+
+
+@dataclass
+class MultiDocumentVectorizer(FeatureDocumentVectorizer, metaclass=ABCMeta):
+    FEATURE_TYPE = TextFeatureType.DOCUMENT
+
+    def encode(self, docs: Tuple[FeatureDocument]) -> FeatureContext:
+        return self._encode(docs)
 
 
 @dataclass
