@@ -57,16 +57,26 @@ class FeatureDocumentVectorizer(EncodableFeatureVectorizer, metaclass=ABCMeta):
 
     def _is_mult(self, doc: Union[Tuple[FeatureDocument], FeatureDocument]) \
             -> bool:
+        """Return ``True`` or not the input is a tuple (multiple) documents."""
         return isinstance(doc, (tuple, list))
 
     def encode(self, doc: Union[Tuple[FeatureDocument], FeatureDocument]) -> \
             FeatureContext:
+        """Encode by combining documents in to one monolithic document when a tuple is
+    passed, otherwise default to the super class's encode functionality.
+
+        """
         self._assert_doc(doc)
         if self._is_mult(doc):
             doc = FeatureDocument.combine_documents(doc)
         return super().encode(doc)
 
     def _assert_doc(self, doc: Union[Tuple[FeatureDocument], FeatureDocument]):
+        """Raise an error if any input is not a :class:`.FeatureDocument`.
+
+        :raises: :class:`.VectorizerError` if any input isn't a document
+
+        """
         if self._is_mult(doc):
             docs = doc
             for doc in docs:
@@ -76,6 +86,10 @@ class FeatureDocumentVectorizer(EncodableFeatureVectorizer, metaclass=ABCMeta):
                 f'expecting document, but got type: {type(doc)}')
 
     def _assert_decoded_doc_dim(self, arr: Tensor, expect: int):
+        """Check the decoded document dimesion and rase an error for those that do not
+        match.
+
+        """
         if len(arr.size()) != expect:
             raise VectorizerError(f'expecting {expect} tensor dimensions, ' +
                                   f'but got shape: {arr.shape}')
