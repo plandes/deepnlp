@@ -27,7 +27,8 @@ include $(ENV_INC)
 
 $(ENV_INC):
 			mkdir -p $(MTARG)
-			$(ENTRY) -c $(MDL_DIR)/noop.conf export --expfmt make --output $(ENV_INC)
+			$(ENTRY) -c $(MDL_DIR)/noop.conf export --expfmt \
+				make --expoutput $(ENV_INC)
 
 .PHONY:			info
 info:
