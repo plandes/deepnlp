@@ -134,8 +134,8 @@ class TestFeatureVectorizationDepth(TestFeatureVectorization):
               0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
               0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
               0.0000, 0.0000, 0.0000],
-             [0.0000, 0.5000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
-              0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 1.0000, 0.0000, 0.0000, 0.0000,
+             [0.0000, 0.5000, 1.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
+              0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
               0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
               0.0000, 0.0000, 0.0000]])
         return should
@@ -148,7 +148,6 @@ class TestFeatureVectorizationDepth(TestFeatureVectorization):
         should = self._single_should()
         self.assertTensorEquals(should, tensor)
         self.assertEqual((-1, 30,), tvec.shape)
-
         fdoc = self.vmng.parse(self.sent_text2)
         tensor = tvec.transform(fdoc)
         self.assertTrue(isinstance(tensor, torch.Tensor))

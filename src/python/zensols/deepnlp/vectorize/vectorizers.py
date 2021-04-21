@@ -299,22 +299,24 @@ class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
         n_toks = self.manager.get_token_length(doc)
         arr = self.torch_config.zeros((n_sents, n_toks))
         u_doc = doc.uncombine_sentences()
+        # if the doc is combined as several sentences concatenated in one, un
+        # pack and write all features in one row
         if len(doc) != len(u_doc):
             soff = 0
             for sent in u_doc.sents:
-                self._transform_sent(sent, arr, 0, soff)
+                self._transform_sent(sent, arr, 0, soff, n_toks)
                 soff += len(sent)
         else:
+            # otherwise, each row is a separate sentence
             for six, sent in enumerate(doc.sents):
-                self._transform_sent(sent, arr, six, 0)
+                self._transform_sent(sent, arr, six, 0, n_toks)
         return TensorFeatureContext(self.feature_id, arr)
 
     def _transform_sent(self, sent: FeatureSentence, arr: torch.Tensor,
-                        six: int, soff: int):
+                        six: int, soff: int, slen: int):
         head_depths = self._get_head_depth(sent)
-        slen = arr.size(-1)
         for root, toks in head_depths:
-            off = root.i + soff
+            off = root.i_sent + soff
             if off < slen:
                 arr[six, off] = 1.
             for ti, t in toks:
@@ -324,20 +326,34 @@ class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
 
     def _get_head_depth(self, sent: FeatureSentence) -> \
             Tuple[FeatureToken, List[Tuple[int, List[FeatureToken]]]]:
+        """Return the head depths
+
+        :return: (root token, (index, tok))
+
+        """
         tid_to_idx = {}
         deps = []
         toks = sent.tokens
         for i, tok in enumerate(toks):
             tid_to_idx[tok.i] = i
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'tokens: {toks}')
         root = tuple(
             filter(lambda t: t.dep_ == 'ROOT' and not t.is_punctuation, toks))
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'root: {root}')
         if len(root) == 1:
             root = root[0]
             kids = set(root.children)
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'children: {kids}')
             ktoks = map(lambda t: (tid_to_idx[t.i], t),
                         filter(lambda t: not t.is_punctuation and t.i in kids,
                                toks))
-            deps.append((root, tuple(ktoks)))
+            ktoks = tuple(ktoks)
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'filtered children: {ktoks}')
+            deps.append((root, ktoks))
         return deps
 
 
