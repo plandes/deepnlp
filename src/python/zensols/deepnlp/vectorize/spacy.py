@@ -52,6 +52,7 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
         self.as_list = tuple(self.SYMBOLS.split())
         syms = dict(zip(self.as_list, it.count()))
         self.symbol_to_id = syms
+        self.id_to_symbol = dict(map(lambda x: (x[1], x[0]), syms.items()))
         n = len(syms)
         q = n - 1
         arr = self._to_hot_coded_matrix(n)

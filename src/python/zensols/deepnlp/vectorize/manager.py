@@ -212,12 +212,14 @@ class FeatureDocumentVectorizerManager(FeatureVectorizerManager):
         instance.  Keys are token level feature ids found in
         :obj:`.SpacyFeatureVectorizer.VECTORIZERS`.
 
+        :return: an :class:`collections.OrderedDict` of vectorizers
+
         """
         token_feature_ids = set(SpacyFeatureVectorizer.VECTORIZERS.keys())
         token_feature_ids = token_feature_ids & self.token_feature_ids
         token_feature_ids = sorted(token_feature_ids)
         vectorizers = collections.OrderedDict()
-        for feature_id in token_feature_ids:
+        for feature_id in sorted(token_feature_ids):
             cls = SpacyFeatureVectorizer.VECTORIZERS[feature_id]
             inst = cls(name=f'spacy vectorizer: {feature_id}',
                        config_factory=self.config_factory,

@@ -3,10 +3,10 @@
 """
 __author__ = 'Paul Landes'
 
+from typing import List, Tuple, Set, Union, Dict
+from dataclasses import dataclass, field
 import logging
 import sys
-from typing import List, Tuple, Set, Union
-from dataclasses import dataclass, field
 from functools import reduce
 import torch
 from torch import Tensor
@@ -95,8 +95,7 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
         return self._get_shape_with_feature_ids(self.decoded_feature_ids)
 
     def _populate_feature_vectors(self, sent: FeatureSentence, six: int,
-                                  fvec: SpacyFeatureVectorizer,
-                                  arr: torch.Tensor,
+                                  fvec: SpacyFeatureVectorizer, arr: Tensor,
                                   col_start: int, col_end: int):
         """Populate ``arr`` with every feature available from the vectorizer set
         defined in the manager.  This fills in the corresponding vectors from
@@ -111,7 +110,7 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
             vec = fvec.from_spacy(val)
             if vec is not None:
                 if logger.isEnabledFor(logging.DEBUG):
-                    logger.debug(f'adding vec {fvec} for tok {tok}>: {vec.shape}')
+                    logger.debug(f'adding vec {fvec} for {tok}: {vec.shape}')
                 arr[six, tix, col_start:col_end] = vec
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
@@ -135,7 +134,7 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
         return SparseTensorFeatureContext.instance(
             self.feature_id, arr, self.torch_config)
 
-    def _slice_by_attributes(self, arr: torch.Tensor) -> torch.Tensor:
+    def _slice_by_attributes(self, arr: Tensor) -> Tensor:
         """Create a new tensor from column based slices of the encoded tensor for each
         specified feature id given in :obj:`decoded_feature_ids`.
 
@@ -149,7 +148,6 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'type={fid}, to keep={keeps}')
             if fid in keeps:
-                #print(f'APP, {arr.shape} -> {arr[:, :, col_start:col_end].shape}')
                 tensors.append(arr[:, :, col_start:col_end])
                 keeps.remove(fid)
             col_start = col_end
@@ -160,7 +158,32 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
             logger.debug(f'slice dim: {sarr.shape}')
         return sarr
 
-    def _decode(self, context: FeatureContext) -> torch.Tensor:
+    def to_symbols(self, tensor: Tensor) -> List[List[Dict[str, float]]]:
+        """Reverse map the tensor to spaCy features.
+
+        :return: a list of sentences, each with a list of tokens, each having a
+                 map of name/count pairs
+
+        """
+        sents = []
+        for six in range(tensor.size(0)):
+            toks = []
+            sents.append(toks)
+            for tix in range(tensor.size(1)):
+                col_start = 0
+                by_fid = {}
+                toks.append(by_fid)
+                for fvec in self.manager.spacy_vectorizers.values():
+                    col_end = col_start + fvec.shape[1]
+                    fid = fvec.feature_id
+                    vec = tensor[six, tix, col_start:col_end]
+                    cnts = dict(filter(lambda x: x[1] > 0,
+                                       zip(fvec.as_list, vec.tolist())))
+                    by_fid[fid] = cnts
+                    col_start = col_end
+        return sents
+
+    def _decode(self, context: FeatureContext) -> Tensor:
         arr = super()._decode(context)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'decoded features: {self.decoded_feature_ids}' +
@@ -204,7 +227,7 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
         return -1, flen
 
     def get_feature_counts(self, sent: FeatureSentence,
-                           fvec: SpacyFeatureVectorizer) -> torch.Tensor:
+                           fvec: SpacyFeatureVectorizer) -> Tensor:
         """Return the count of all tokens as a S X N tensor where S is the number of
         sentences, N is the columns of the ``fvec`` vectorizer.  Each column
         position's count represents the number of counts for that spacy symol
@@ -221,11 +244,18 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
         return fcounts
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'encoding doc: {doc}')
         sent_arrs = []
         for sent in doc.sents:
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'encoding sentence: {sent}')
             tok_arrs = []
             for fvec in self.manager.spacy_vectorizers.values():
-                tok_arrs.append(self.get_feature_counts(sent, fvec))
+                cnts: Tensor = self.get_feature_counts(sent, fvec)
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug(f'encoding with {fvec}')
+                tok_arrs.append(cnts)
             sent_arrs.append(torch.cat(tok_arrs))
         arr = torch.stack(sent_arrs)
         if logger.isEnabledFor(logging.DEBUG):
@@ -233,7 +263,7 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
         return SparseTensorFeatureContext.instance(
             self.feature_id, arr, self.torch_config)
 
-    def _slice_by_attributes(self, arr: torch.Tensor) -> torch.Tensor:
+    def _slice_by_attributes(self, arr: Tensor) -> Tensor:
         """Create a new tensor from column based slices of the encoded tensor for each
         specified feature id given in :obj:`decoded_feature_ids`.
 
@@ -258,7 +288,29 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
             logger.debug(f'slice dim: {sarr.shape}')
         return sarr
 
-    def _decode(self, context: FeatureContext) -> torch.Tensor:
+    def to_symbols(self, tensor: Tensor) -> List[Dict[str, float]]:
+        """Reverse map the tensor to spaCy features.
+
+        :return: a list of sentences, each a map of name/count pairs.
+
+        """
+        sents = []
+        for six in range(tensor.size(0)):
+            col_start = 0
+            by_fid = {}
+            sents.append(by_fid)
+            arr = tensor[six]
+            for fvec in self.manager.spacy_vectorizers.values():
+                col_end = col_start + fvec.shape[1]
+                fid = fvec.feature_id
+                vec = arr[col_start:col_end]
+                cnts = dict(filter(lambda x: x[1] > 0,
+                                   zip(fvec.as_list, vec.tolist())))
+                by_fid[fid] = cnts
+                col_start = col_end
+        return sents
+
+    def _decode(self, context: FeatureContext) -> Tensor:
         arr = super()._decode(context)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'decoded features: {self.decoded_feature_ids}, ' +
@@ -333,7 +385,7 @@ class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
                 self._transform_sent(sent, arr, six, 0, n_toks)
         return arr
 
-    def _transform_sent(self, sent: FeatureSentence, arr: torch.Tensor,
+    def _transform_sent(self, sent: FeatureSentence, arr: Tensor,
                         six: int, soff: int, slen: int):
         head_depths = self._get_head_depth(sent)
         for root, toks in head_depths:
@@ -510,7 +562,7 @@ class MutualFeaturesContainerFeatureVectorizer(MultiDocumentVectorizer):
         return self.manager[self.count_vectorizer_feature_id]
 
     @property
-    def ones(self) -> torch.Tensor:
+    def ones(self) -> Tensor:
         """Return a tensor of ones for the shape of this instance.
 
         """
@@ -524,7 +576,7 @@ class MutualFeaturesContainerFeatureVectorizer(MultiDocumentVectorizer):
                          map(lambda doc: doc.combine_sentences(), docs)))
         return MultiFeatureContext(self.feature_id, ctxs)
 
-    def _decode(self, context: MultiFeatureContext) -> torch.Tensor:
+    def _decode(self, context: MultiFeatureContext) -> Tensor:
         def decode_context(ctx):
             sents = self.count_vectorizer.decode(ctx)
             return torch.sum(sents, axis=0)
