@@ -61,6 +61,7 @@ class FeatureDocumentVectorizer(EncodableFeatureVectorizer, metaclass=ABCMeta):
 
     def encode(self, doc: Union[Tuple[FeatureDocument], FeatureDocument]) -> \
             FeatureContext:
+        self._assert_doc(doc)
         if self._is_mult(doc):
             doc = FeatureDocument.combine_documents(doc)
         return super().encode(doc)

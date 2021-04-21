@@ -119,7 +119,6 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
         output.
 
         """
-        self._assert_doc(doc)
         arr = self.torch_config.zeros(self._get_shape_for_document(doc))
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'type array shape: {arr.shape}')
@@ -223,7 +222,6 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
         sent_arrs = []
-        self._assert_doc(doc)
         for sent in doc.sents:
             tok_arrs = []
             for fvec in self.manager.spacy_vectorizers.values():
@@ -297,9 +295,9 @@ class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
 
     def encode(self, doc: Union[Tuple[FeatureDocument], FeatureDocument]) -> \
             FeatureContext:
-        self._assert_doc(doc)
         ctx: TensorFeatureContext
         if isinstance(doc, (tuple, list)):
+            self._assert_doc(doc)
             docs = doc
             comb_doc = FeatureDocument.combine_documents(docs)
             n_toks = self.manager.get_token_length(comb_doc)
@@ -332,7 +330,6 @@ class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
         else:
             # otherwise, each row is a separate sentence
             for six, sent in enumerate(doc.sents):
-                print(f'sent: {type(sent)}')
                 self._transform_sent(sent, arr, six, 0, n_toks)
         return arr
 
@@ -409,7 +406,6 @@ class StatisticsFeatureDocumentVectorizer(FeatureDocumentVectorizer):
         return -1, 9
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
-        self._assert_doc(doc)
         n_toks = len(doc.tokens)
         n_sents = 1
         min_tlen = sys.maxsize
