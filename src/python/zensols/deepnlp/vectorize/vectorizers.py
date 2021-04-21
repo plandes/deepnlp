@@ -297,20 +297,30 @@ class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
         self._assert_doc(doc)
         n_sents = len(doc.sents)
         n_toks = self.manager.get_token_length(doc)
-        arr = self.torch_config.zeros((n_sents, n_toks,))
-        for six, sent in enumerate(doc.sents):
-            self._transform_sent(sent, arr, six, n_toks)
+        arr = self.torch_config.zeros((n_sents, n_toks))
+        u_doc = doc.uncombine_sentences()
+        if len(doc) != len(u_doc):
+            soff = 0
+            for sent in u_doc.sents:
+                self._transform_sent(sent, arr, 0, soff)
+                soff += len(sent)
+        else:
+            for six, sent in enumerate(doc.sents):
+                self._transform_sent(sent, arr, six, 0)
         return TensorFeatureContext(self.feature_id, arr)
 
-    def _transform_sent(self, sent: FeatureSentence,  arr: torch.Tensor,
-                        six: int, n_toks: int):
+    def _transform_sent(self, sent: FeatureSentence, arr: torch.Tensor,
+                        six: int, soff: int):
         head_depths = self._get_head_depth(sent)
+        slen = arr.size(-1)
         for root, toks in head_depths:
-            if root.i < n_toks:
-                arr[six, root.i] = 1.
+            off = root.i + soff
+            if off < slen:
+                arr[six, off] = 1.
             for ti, t in toks:
-                if ti < n_toks:
-                    arr[six, ti] = 0.5
+                off = ti + soff
+                if off < slen:
+                    arr[six, off] = 0.5
 
     def _get_head_depth(self, sent: FeatureSentence) -> \
             Tuple[FeatureToken, List[Tuple[int, List[FeatureToken]]]]:
