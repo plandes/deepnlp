@@ -80,13 +80,26 @@ class FeatureToken(TextContainer):
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
-    def __str__(self):
+    def long_repr(self) -> str:
         attrs = []
         for s in 'norm lemma tag ent'.split():
             v = getattr(self, s) if hasattr(self, s) else None
             if v is not None:
                 attrs.append(f'{s}: {v}')
         return ', '.join(attrs)
+
+    def short_repr(self) -> str:
+        s = None
+        if hasattr(self, 'norm'):
+            s = self.norm
+        elif hasattr(self, 'text'):
+            s = self.text
+        else:
+            s = self.long_repr()
+        return s
+
+    def __str__(self) -> str:
+        return self.short_repr()
 
     def __repr__(self):
         return self.__str__()
