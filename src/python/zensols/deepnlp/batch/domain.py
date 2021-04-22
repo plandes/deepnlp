@@ -50,6 +50,7 @@ class FeatureDocumentDataPoint(DataPoint):
         """Return a document with sentences combined.
 
         :see: :meth:`FeatureDocument.combine_sentences`
+
         """
         return self.doc.combine_sentences()
 
