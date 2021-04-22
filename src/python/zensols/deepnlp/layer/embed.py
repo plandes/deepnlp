@@ -137,7 +137,8 @@ class EmbeddingNetworkModule(BaseNetworkModule):
                     self.token_attribs.append(attr)
                 elif vec.feature_type == TextFeatureType.DOCUMENT:
                     if logger.isEnabledFor(logging.DEBUG):
-                        self._debug(f'adding doc type {attr} ({field_meta.shape}/{vec.shape})')
+                        self._debug(f'adding doc type {attr} ' +
+                                    f'({field_meta.shape}/{vec.shape})')
                     self.join_size += field_meta.shape[1]
                     self.doc_attribs.append(attr)
                 elif vec.feature_type == TextFeatureType.EMBEDDING:
@@ -161,6 +162,18 @@ class EmbeddingNetworkModule(BaseNetworkModule):
 
     def _get_embedding_attribute_name(self):
         return None
+
+    def vectorizer_by_name(self, name: str) -> FeatureVectorizer:
+        """Utility method to get a vectorizer by name.
+
+        :param name: the name of the vectorizer as given in the vectorizer
+                     manager
+
+        """
+        meta: BatchMetadata = self.net_settings.batch_metadata
+        field_meta: BatchFieldMetadata = meta.fields_by_attribute[name]
+        vec: FeatureVectorizer = field_meta.vectorizer
+        return vec
 
     def _forward(self, batch: Batch) -> Tensor:
         if self.logger.isEnabledFor(logging.DEBUG):
