@@ -1,4 +1,4 @@
-gensim>=3.8.3
+gensim>=4.0.1
 bcolz>=1.2.1
 transformers>=4.0.1
 zensols.nlp>=0.0.14
