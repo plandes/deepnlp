@@ -38,6 +38,7 @@ class NERTokenFeatures(BasicTokenFeatures):
     def __init__(self, i: int, text: str, tag_: str, syn_: str, ent_: str):
         super().__init__(text)
         self.i = i
+        self.i_sent = i
         self.tag_ = tag_
         self.syn_ = syn_
         self.ent_ = ent_
