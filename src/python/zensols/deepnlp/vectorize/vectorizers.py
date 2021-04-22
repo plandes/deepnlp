@@ -395,51 +395,57 @@ class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
     def _transform_sent(self, sent: FeatureSentence, arr: Tensor,
                         six: int, soff: int, slen: int):
         head_depths = self._get_head_depth(sent)
-        for root, toks in head_depths:
-            off = root.i_sent + soff
+        for tix, tok, depth in head_depths:
+            off = tix + soff
+            val = 1. / depth
+            in_range = (off < slen)
             if logger.isEnabledFor(logging.DEBUG):
-                logger.debug(f'setting ({six}, {off}) = 1: {off < slen}')
-            if off < slen:
-                arr[six, off] = 1.
-            for ti, t in toks:
-                off = ti + soff
-                if logger.isEnabledFor(logging.DEBUG):
-                    logger.debug(f'setting ({six}, {off}) = 1: {off < slen}')
-                if off < slen:
-                    arr[six, off] = 0.5
+                logger.debug(f'setting ({six}, {off}) = {val}: set={in_range}')
+            if in_range:
+                arr[six, off] = val
+
+    def _dep_branch(self, node: FeatureToken, toks: Tuple[FeatureToken],
+                    tid_to_idx: Dict[int, int], depth: int,
+                    depths: Dict[int, int]) -> \
+            Dict[FeatureToken, List[FeatureToken]]:
+        idx = tid_to_idx.get(node.i)
+        if idx is not None:
+            depths[idx] = depth
+        for c in node.children:
+            cix = tid_to_idx.get(c)
+            if cix is not None:
+                child = toks[cix]
+                self._dep_branch(child, toks, tid_to_idx, depth + 1, depths)
 
     def _get_head_depth(self, sent: FeatureSentence) -> \
-            Tuple[FeatureToken, List[Tuple[int, List[FeatureToken]]]]:
-        """Return the head depths
+            Tuple[Tuple[int, FeatureToken, int]]:
+        """Calculate the depth of tokens in a sentence.
 
-        :return: (root token, (index, tok))
+        :param sent: the sentence that has the tokens to get depts
+
+        :return: a tuple of (sentence token index, token, depth)
 
         """
-        tid_to_idx = {}
-        deps = []
+        tid_to_idx: Dict[int, int] = {}
         toks = sent.tokens
         for i, tok in enumerate(toks):
             tid_to_idx[tok.i] = i
         if logger.isEnabledFor(logging.DEBUG):
+            logger.debug('|'.join(
+                map(lambda t: f'{tid_to_idx[t.i]}:{t.i}:{t.text}({t.dep_})',
+                    sent.token_iter())))
+            logger.debug(f'tree: {sent.dependency_tree}')
+        if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'tokens: {toks}')
         root = tuple(
             filter(lambda t: t.dep_ == 'ROOT' and not t.is_punctuation, toks))
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'root: {root}')
-        # if there's more than one root, we don't know which root to iterate
         if len(root) == 1:
             root = root[0]
-            kids = set(root.children)
-            if logger.isEnabledFor(logging.DEBUG):
-                logger.debug(f'children: {kids}')
-            ktoks = map(lambda t: (tid_to_idx[t.i], t),
-                        filter(lambda t: not t.is_punctuation and t.i in kids,
-                               toks))
-            ktoks = tuple(ktoks)
-            if logger.isEnabledFor(logging.DEBUG):
-                logger.debug(f'filtered children: {ktoks}')
-            deps.append((root, ktoks))
-        return deps
+            tree = {tid_to_idx[root.i]: 0}
+            self._dep_branch(root, toks, tid_to_idx, 1, tree)
+            return map(lambda x: (x[0], toks[x[0]], x[1]), tree.items())
+        else:
+            return ()
 
 
 @dataclass
