@@ -18,7 +18,7 @@ def main(args: List[str], **factory_kwargs):
 def proto():
     print('-->proto')
     try:
-        args = './run.py debug -c models/transformer.conf'.split()
+        args = './run.py debug -c models/glove50.conf'.split()
         #args = './run.py info'.split()
         main(args, reload_factory=True)
     except SystemExit as e:

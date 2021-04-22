@@ -68,6 +68,7 @@ class ReviewNetwork(EmbeddingNetworkModule):
             batch.write()
 
         x = self.forward_embedding_features(batch)
+        self._shape_debug('embedding', x)
         x = self.forward_token_features(batch, x)
         self._shape_debug('token', x)
 
