@@ -68,8 +68,11 @@ class Word2VecModel(WordEmbedModel):
 
     def _create_data(self) -> WordVectorModel:
         logger.info('reading binary vector file')
-        wv = self._get_model().wv
-        words = wv.index2entity
+        # https://github.com/RaRe-Technologies/gensim/wiki/Migrating-from-Gensim-3.x-to-4
+        #wv = self._get_model().wv
+        wv = self._get_model()
+        #words = wv.index2entity
+        words = wv.index_to_key
         word2vec = {}
         word2idx = {}
         vectors = []
