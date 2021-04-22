@@ -16,6 +16,10 @@ from zensols.deeplearn import TorchConfig
 logger = logging.getLogger(__name__)
 
 
+class TransformerError(Exception):
+    pass
+
+
 @dataclass
 class TransformerResource(object):
     """A utility base class that allows configuration and creates various

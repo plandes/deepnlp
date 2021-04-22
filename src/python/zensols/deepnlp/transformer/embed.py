@@ -16,7 +16,8 @@ from zensols.deepnlp import FeatureDocument
 from zensols.deepnlp.transformer import TransformerResource
 from zensols.persist import persisted, PersistedWork
 from . import (
-    TokenizedDocument, TokenizedFeatureDocument, TransformerDocumentTokenizer
+    TransformerError, TokenizedDocument, TokenizedFeatureDocument,
+    TransformerDocumentTokenizer
 )
 
 logger = logging.getLogger(__name__)
@@ -103,7 +104,7 @@ class TransformerEmbedding(object):
         if self.output_attentions:
             params['output_attentions'] = True
 
-        if 1:
+        if self.resource.model_id.startswith('bert'):
             # a bug in transformers 4.4.2 requires this
             # https://github.com/huggingface/transformers/issues/2952
             input_ids = params['input_ids']
@@ -133,6 +134,10 @@ class TransformerEmbedding(object):
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'transform output: {output_res}')
         else:
+            if not hasattr(output_res, self.output):
+                raise TransformerError(
+                    f'no such output attribte {self.output} for ' +
+                    f'output {type(output_res)}')
             output_res: Tensor = getattr(output_res, self.output)
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'embedding dim: {output_res.size()}')
