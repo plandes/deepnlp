@@ -125,7 +125,7 @@ class TestFeatureVectorizationDepth(TestFeatureVectorization):
             [[0.5000, 1.0000, 0.0000, 0.5000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
               0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
               0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
-              0.0000, 0.0000, 0.0000]])
+              0.0000, 0.0000, 0.0000]]).unsqueeze(-1)
         return should
 
     def _double_should(self):
@@ -137,7 +137,7 @@ class TestFeatureVectorizationDepth(TestFeatureVectorization):
              [0.0000, 0.5000, 1.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
               0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
               0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
-              0.0000, 0.0000, 0.0000]])
+              0.0000, 0.0000, 0.0000]]).unsqueeze(-1)
         return should
 
     def test_fixed(self):
@@ -147,13 +147,13 @@ class TestFeatureVectorizationDepth(TestFeatureVectorization):
         self.assertTrue(isinstance(tensor, torch.Tensor))
         should = self._single_should()
         self.assertTensorEquals(should, tensor)
-        self.assertEqual((-1, 30,), tvec.shape)
+        self.assertEqual((-1, 30, 1), tvec.shape)
         fdoc = self.vmng.parse(self.sent_text2)
         tensor = tvec.transform(fdoc)
         self.assertTrue(isinstance(tensor, torch.Tensor))
         should = self._double_should()
         self.assertTensorEquals(should, tensor)
-        self.assertEqual((-1, 30), tvec.shape)
+        self.assertEqual((-1, 30, 1), tvec.shape)
 
     def test_variable_length(self):
         vmng = self.fac.instance('feature_vectorizer_manager_nolen')
@@ -229,7 +229,7 @@ class TestFeatureVectorizationCombined(TestFeatureVectorization):
         feature_ids = ', '.join(map(lambda x: x[1].feature_id, res))
         self.assertEqual('count, dep, enum, stats', feature_ids)
         shapes = tuple(map(lambda x: tuple(x[0].shape), res))
-        self.assertEqual(((2, 174), (2, 30), (2, 30, 174), (1, 9)), shapes)
+        self.assertEqual(((2, 174), (2, 30, 1), (2, 30, 174), (1, 9)), shapes)
 
     def test_fewer_feats(self):
         vec = self.fac.instance('single_vectorizer_feature_vectorizer_manager')
@@ -251,10 +251,10 @@ class TestFeatureVectorizationOverlap(TestFeatureVectorization):
         fdoc = vec.parse(self.sent_text)
         fdoc2 = vec.parse('I be a Citizen')
         tvec = vec.vectorizers['overlap_token']
-        self.assertEqual((-1, 2), tvec.shape)
+        self.assertEqual((2,), tvec.shape)
         tensor = tvec.transform((fdoc, fdoc2))
-        self.assertEqual((1, 2), tuple(tensor.shape))
-        self.assertTensorEquals(torch.tensor([[3, 4]]), tensor)
+        self.assertEqual((2,), tuple(tensor.shape))
+        self.assertTensorEquals(torch.tensor([3, 4]), tensor)
 
     def test_mutual_counts(self):
         vec = self.fac.instance('overlap_vectorizer_manager')

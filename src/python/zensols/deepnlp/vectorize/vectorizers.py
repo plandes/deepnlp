@@ -206,7 +206,7 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
     This class uses the same efficiency in decoding features given in
     :class:`.EnumContainerFeatureVectorizer`.
 
-    :shape: ``(|sentences|, |decoded features|,)``
+    :shape: ``(|sentences|, |decoded features|)``
 
     """
     ATTR_EXP_META = ('decoded_feature_ids',)
@@ -277,13 +277,13 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'type={fid}, to keep={keeps}')
             if fid in keeps:
-                keep_vec = arr[col_start:col_end]
+                keep_vec = arr[:, col_start:col_end]
                 tensors.append(keep_vec)
                 keeps.remove(fid)
             col_start = col_end
         if len(keeps) > 0:
             raise ValueError(f'unknown feature type IDs: {keeps}')
-        sarr = torch.cat(tensors, dim=0)
+        sarr = torch.cat(tensors, dim=1)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'slice dim: {sarr.shape}')
         return sarr
@@ -336,14 +336,14 @@ class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
     dependency parse tree at the sentence level.  Otherwise, the dependency
     relations are broken and results in a zeored tensor.
 
-    :shape: ``(token length,)``
+    :shape: ``(|sentences|, token length, 1)``
 
     """
     DESCRIPTION = 'head depth'
-    FEATURE_TYPE = TextFeatureType.DOCUMENT
+    FEATURE_TYPE = TextFeatureType.TOKEN
 
     def _get_shape(self) -> Tuple[int, int]:
-        return -1, self.token_length
+        return -1, self.token_length, 1
 
     def encode(self, doc: Union[Tuple[FeatureDocument], FeatureDocument]) -> \
             FeatureContext:
@@ -356,7 +356,10 @@ class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
             arrs = tuple(map(lambda d:
                              self._encode_doc(d.combine_sentences(), n_toks),
                              docs))
-            ctx = TensorFeatureContext(self.feature_id, torch.stack(arrs))
+            arr = torch.cat(arrs, dim=0)
+            arr = arr.unsqueeze(-1)
+            ctx = SparseTensorFeatureContext.instance(
+                self.feature_id, arr, self.torch_config)
         else:
             ctx = super().encode(doc)
         return ctx
@@ -364,7 +367,9 @@ class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
         n_toks = self.manager.get_token_length(doc)
         arr = self._encode_doc(doc, n_toks)
-        return TensorFeatureContext(self.feature_id, arr)
+        arr = arr.unsqueeze(-1)
+        return SparseTensorFeatureContext.instance(
+            self.feature_id, arr, self.torch_config)
 
     def _encode_doc(self, doc: FeatureDocument, n_toks: int) -> Tensor:
         n_sents = len(doc.sents)
@@ -383,6 +388,8 @@ class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
             # otherwise, each row is a separate sentence
             for six, sent in enumerate(doc.sents):
                 self._transform_sent(sent, arr, six, 0, n_toks)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'encoded shape: {arr.shape}')
         return arr
 
     def _transform_sent(self, sent: FeatureSentence, arr: Tensor,
@@ -502,7 +509,7 @@ class OverlappingFeatureDocumentVectorizer(MultiDocumentVectorizer):
     DESCRIPTION = 'overlapping token counts'
 
     def _get_shape(self) -> Tuple[int, int]:
-        return -1, 2
+        return 2,
 
     @staticmethod
     def _norms(ac: TokensContainer, bc: TokensContainer) -> Tuple[int]:
@@ -520,7 +527,6 @@ class OverlappingFeatureDocumentVectorizer(MultiDocumentVectorizer):
         norms = reduce(self._norms, docs)
         lemmas = reduce(self._lemmas, docs)
         arr = self.torch_config.from_iterable((len(norms), len(lemmas)))
-        arr = arr.unsqueeze(0)
         return TensorFeatureContext(self.feature_id, arr)
 
 

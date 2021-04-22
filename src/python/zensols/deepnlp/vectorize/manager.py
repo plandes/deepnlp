@@ -63,7 +63,7 @@ class FeatureDocumentVectorizer(EncodableFeatureVectorizer, metaclass=ABCMeta):
     def encode(self, doc: Union[Tuple[FeatureDocument], FeatureDocument]) -> \
             FeatureContext:
         """Encode by combining documents in to one monolithic document when a tuple is
-    passed, otherwise default to the super class's encode functionality.
+        passed, otherwise default to the super class's encode functionality.
 
         """
         self._assert_doc(doc)
@@ -110,6 +110,11 @@ class FeatureDocumentVectorizer(EncodableFeatureVectorizer, metaclass=ABCMeta):
 
 @dataclass
 class MultiDocumentVectorizer(FeatureDocumentVectorizer, metaclass=ABCMeta):
+    """A document level (feature type) vectorizer that passes multiple documents to
+    the encoding abstract method.  Examples include
+    :class:`.OverlappingFeatureDocumentVectorizer`.
+
+    """
     FEATURE_TYPE = TextFeatureType.DOCUMENT
 
     def encode(self, docs: Tuple[FeatureDocument]) -> FeatureContext:
