@@ -243,13 +243,12 @@ class WordVectorEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
     FEATURE_TYPE = TextFeatureType.EMBEDDING
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
-        self._assert_doc(doc)
         emodel = self.embed_model
         tw = self.manager.get_token_length(doc)
         sents: Tuple[FeatureSentence] = doc.sents
         shape = (len(sents), tw)
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'--------------------using token length: {tw} with shape: {shape}, ' +
+            logger.debug(f'using token length: {tw} with shape: {shape}, ' +
                          f'sents: {len(sents)}')
         arr = self.torch_config.empty(shape, dtype=torch.long)
         for row, sent in enumerate(sents):
