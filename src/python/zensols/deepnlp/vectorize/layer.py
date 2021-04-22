@@ -325,11 +325,8 @@ class TransformerEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
             raise VectorizerError('a trainable model can not encode ' +
                                   'transformed vectorized features')
 
-    def _encode(self, containers: List[TokensContainer]) -> FeatureContext:
+    def _encode(self, doc: FeatureDocument) -> FeatureContext:
         emb: TransformerEmbedding = self.embed_model
-        if logger.isEnabledFor(logging.INFO):
-            logger.info(f'encoding {len(containers)} token containers')
-        doc = FeatureDocument.from_containers(containers)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'synthesized document: {doc}')
         tok_doc = emb.tokenize(doc).detach()
