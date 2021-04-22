@@ -1,5 +1,5 @@
 from .cli import *
 from .corpus import *
-from .batch import *
+from .domain import *
 from .facade import *
 from .app import *
