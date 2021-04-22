@@ -196,12 +196,12 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
 
 @dataclass
 class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
-    """Return the count of all tokens as a S X M * N tensor where S is the number
-    of sentences, M is the number of token feature ids and N is the number of
-    columns of the output of the :class:`.SpacyFeatureVectorizer` vectorizer.
-    Each column position's count represents the number of counts for that spacy
-    symol for that index position in the output of
-    :class:`.SpacyFeatureVectorizer`.
+    """Vectorize the counts of parsed spaCy features.  This generates the count of
+    tokens as a S X M * N tensor where S is the number of sentences, M is the
+    number of token feature ids and N is the number of columns of the output of
+    the :class:`.SpacyFeatureVectorizer` vectorizer.  Each column position's
+    count represents the number of counts for that spacy symol for that index
+    position in the output of :class:`.SpacyFeatureVectorizer`.
 
     This class uses the same efficiency in decoding features given in
     :class:`.EnumContainerFeatureVectorizer`.
@@ -324,8 +324,8 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
 
 @dataclass
 class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
-    """Return the depths of tokens based on how deep they are in a head dependency
-    tree.
+    """Generate the depths of tokens based on how deep they are in a head
+    dependency tree.
 
     Even though this is a document level vectorizer and is usually added in a
     join layer rather than stacked on to the embedded layer, it still assumes
@@ -426,6 +426,7 @@ class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
             filter(lambda t: t.dep_ == 'ROOT' and not t.is_punctuation, toks))
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'root: {root}')
+        # if there's more than one root, we don't know which root to iterate
         if len(root) == 1:
             root = root[0]
             kids = set(root.children)
