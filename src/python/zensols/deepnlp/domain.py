@@ -4,7 +4,7 @@ from __future__ import annotations
 """
 __author__ = 'Paul Landes'
 
-from typing import List, Tuple, Set, Iterable
+from typing import List, Tuple, Set, Iterable, Dict
 from dataclasses import dataclass, field
 import dataclasses
 from abc import ABCMeta, abstractmethod
@@ -21,10 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 class TextContainer(Writable, metaclass=ABCMeta):
-    """A class that has a ``text`` property or attribute.  The class also provides
-    pretty print utility.
-
-    :attribute text: str
+    """A *writable* class that has a ``text`` property or attribute.
 
     """
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
@@ -77,8 +74,11 @@ class FeatureToken(TextContainer):
             ptype = 'missing type' if ptype is None else ptype
             self._write_line(f'{k}={v} ({ptype})', depth + 1, writer)
 
-    def __eq__(self, other):
-        return self.__dict__ == other.__dict__
+    def __eq__(self, other) -> bool:
+        return self.i == other.i and self.__dict__ == other.__dict__
+
+    def __hash__(self) -> int:
+        return hash(self.i) * hash(self.i_sent)
 
     def long_repr(self) -> str:
         attrs = []
@@ -88,18 +88,8 @@ class FeatureToken(TextContainer):
                 attrs.append(f'{s}: {v}')
         return ', '.join(attrs)
 
-    def short_repr(self) -> str:
-        s = None
-        if hasattr(self, 'norm'):
-            s = self.norm
-        elif hasattr(self, 'text'):
-            s = self.text
-        else:
-            s = self.long_repr()
-        return s
-
     def __str__(self) -> str:
-        return self.short_repr()
+        return self.text
 
     def __repr__(self):
         return self.__str__()
@@ -207,14 +197,39 @@ class FeatureSentence(TokensContainer):
     def token_len(self) -> int:
         return len(self.sent_tokens)
 
-    def __getitem__(self, key) -> FeatureToken:
-        return self.tokens[key]
-
     def to_sentence(self, limit: int = sys.maxsize) -> FeatureSentence:
         return self
 
     def to_document(self) -> FeatureDocument:
         return FeatureDocument([self])
+
+    def _branch(self, node: FeatureToken, toks: Tuple[FeatureToken],
+                tid_to_idx: Dict[int, int]) -> \
+            Dict[FeatureToken, List[FeatureToken]]:
+        clds = {}
+        for c in node.children:
+            cix = tid_to_idx.get(c)
+            if cix:
+                child = toks[cix]
+                clds[child] = self._branch(child, toks, tid_to_idx)
+        return clds
+
+    @property
+    @persisted('_dependency_tree', transient=True)
+    def dependency_tree(self) -> Dict[FeatureToken, List[Dict[FeatureToken]]]:
+        tid_to_idx: Dict[int, int] = {}
+        toks = self.tokens
+        for i, tok in enumerate(toks):
+            tid_to_idx[tok.i] = i
+        root = tuple(
+            filter(lambda t: t.dep_ == 'ROOT' and not t.is_punctuation, toks))
+        if len(root) == 1:
+            return {root[0]: self._branch(root[0], toks, tid_to_idx)}
+        else:
+            return {}
+
+    def __getitem__(self, key) -> FeatureToken:
+        return self.tokens[key]
 
     def __len__(self) -> int:
         return self.token_len
