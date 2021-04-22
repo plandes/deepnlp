@@ -24,7 +24,7 @@ class FeatureSentenceDataPoint(DataPoint):
         :param: :meth:`.FeatureSentence.as_document`
 
         """
-        return self.sent.as_document()
+        return self.sent.to_document()
 
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
         super().write(depth, writer)
