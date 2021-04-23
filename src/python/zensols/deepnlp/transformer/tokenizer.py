@@ -81,6 +81,7 @@ class TransformerDocumentTokenizer(object):
             logger.debug(f"lengths: {[len(i) for i in tok_dat['input_ids']]}")
 
         offsets = tok_dat['offset_mapping']
+
         # roberta offsets are 1-indexed
         if self.resource._is_roberta():
             offsets = tuple(map(lambda sent: list(
@@ -99,9 +100,11 @@ class TransformerDocumentTokenizer(object):
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.debug(f'{i}: s/e={s},{e}, off={(tix-off)}')
                 if e == 0:
+                    # we get an ending range for each padded token
                     if pad:
                         tok_offsets.append(-1)
                     else:
+                        # the first end indicates the padding starts
                         tok_offsets.append(tix-off)
                         pad = True
                 else:

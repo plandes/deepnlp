@@ -65,8 +65,7 @@ class TokenizedDocument(PersistableContainer):
         return self.tensor.size(-1)
 
     def detach(self) -> TokenizedDocument:
-        """Return a version of the document that is pickleable.
-        """
+        """Return a version of the document that is pickleable."""
         return self
 
     def params(self) -> Dict[str, Any]:
