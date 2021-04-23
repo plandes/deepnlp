@@ -120,9 +120,10 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
     def language_attributes(self, attributes: Set[str]):
         """The language attributes to be used.
 
-        :param attributes: the set of attributes to use, which is any
-                           combination of: 'enums', 'stats', 'counts',
-                           'dependencies'
+        :param attributes:
+            the set of attributes to use, which are and (sub)set of the
+            :class:`~zensols.deeplearn.batch.BatchStash`'s
+            ``decoded_attributes``
 
         """
         stash = self.batch_stash
