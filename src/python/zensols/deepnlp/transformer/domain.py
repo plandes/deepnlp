@@ -21,6 +21,13 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class TokenizedDocument(PersistableContainer):
+    """This is the tokenized document output of
+    :class:`.TransformerDocumentTokenizer`.  Instances of this class are
+    pickelable, in a feature context.  Then give to the in the decoding phase
+    to create a tensor with a transformer model such as
+    :class:`.TransformerEmbedding`.
+
+    """
     tensor: Tensor = field()
     """Encodes the input IDs, attention mask, and word piece offset map."""
 
@@ -95,8 +102,8 @@ class TokenizedDocument(PersistableContainer):
 
 @dataclass
 class TokenizedFeatureDocument(TokenizedDocument, Writable):
-    """This is the tokenized document output of
-    :class:`.TransformerDocumentTokenizer`.
+    """Instance of this class are created, then a picklable version returned with
+    :meth:`detach` as an instance of the super class.
 
     """
     feature: FeatureDocument = field()
