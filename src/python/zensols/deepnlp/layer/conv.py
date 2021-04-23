@@ -18,7 +18,9 @@ from zensols.deeplearn import (
     DropoutNetworkSettings,
     BatchNormNetworkSettings,
 )
-from zensols.deeplearn.layer import ConvolutionLayerFactory, MaxPool1dFactory
+from zensols.deeplearn.layer import (
+    LayerError, ConvolutionLayerFactory, MaxPool1dFactory
+)
 from zensols.deeplearn.model import BaseNetworkModule
 from . import EmbeddingNetworkModule
 
@@ -98,7 +100,7 @@ class DeepConvolution1dNetworkSettings(ActivationNetworkSettings,
 
         """
         if not hasattr(self, 'module'):
-            raise ValueError('not created with embedding module')
+            raise LayerError('Not created with embedding module')
 
     @property
     @persisted('_layer_factory')
@@ -140,7 +142,7 @@ class DeepConvolution1dNetworkSettings(ActivationNetworkSettings,
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'cloning module from module with {kwargs}')
         if hasattr(self, 'module'):
-            raise ValueError('not nascent: module already set')
+            raise LayerError('Not nascent: module already set')
         params = {
             'token_length': module.embedding.token_length,
             'embedding_dimension': module.embedding_output_size,

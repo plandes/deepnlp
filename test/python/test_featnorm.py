@@ -3,8 +3,10 @@ import logging
 import torch
 from torch import Tensor
 from zensols.util import loglevel
+from zensols.deeplearn.vectorize import (
+    VectorizerError, EncodableFeatureVectorizer
+)
 from zensols.deepnlp.vectorize import FeatureDocumentVectorizer
-from zensols.deeplearn.vectorize import EncodableFeatureVectorizer
 from util import TestFeatureVectorization
 
 logger = logging.getLogger(__name__)
@@ -14,7 +16,7 @@ class TestFeatureVectorizationParse(TestFeatureVectorization):
     def test_feature_mismatch(self):
         with loglevel('zensols.config.factory', logging.CRITICAL):
             self.assertRaises(
-                ValueError,
+                VectorizerError,
                 lambda: self.fac.instance('skinny_feature_vectorizer_manager'))
 
     def test_no_vectorizers(self):

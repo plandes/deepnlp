@@ -174,8 +174,8 @@ class FeatureDocumentVectorizerManager(FeatureVectorizerManager):
         feat_diff = self.token_feature_ids - self.doc_parser.token_feature_ids
         if len(feat_diff) > 0:
             fdiffs = ', '.join(feat_diff)
-            s = f'parser token features do not exist in vectorizer: {fdiffs}'
-            raise ValueError(s)
+            raise VectorizerError(
+                f'Parser token features do not exist in vectorizer: {fdiffs}')
 
     @property
     def is_batch_token_length(self) -> bool:

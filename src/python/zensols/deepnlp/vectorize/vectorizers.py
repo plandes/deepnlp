@@ -11,6 +11,7 @@ from functools import reduce
 import torch
 from torch import Tensor
 from zensols.deeplearn.vectorize import (
+    VectorizerError,
     FeatureContext,
     TensorFeatureContext,
     SparseTensorFeatureContext,
@@ -152,7 +153,7 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
                 keeps.remove(fid)
             col_start = col_end
         if len(keeps) > 0:
-            raise ValueError(f'unknown feature type IDs: {keeps}')
+            raise VectorizerError(f'Unknown feature type IDs: {keeps}')
         sarr = torch.cat(tensors, dim=2)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'slice dim: {sarr.shape}')
@@ -282,7 +283,7 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
                 keeps.remove(fid)
             col_start = col_end
         if len(keeps) > 0:
-            raise ValueError(f'unknown feature type IDs: {keeps}')
+            raise VectorizerError(f'Unknown feature type IDs: {keeps}')
         sarr = torch.cat(tensors, dim=1)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'slice dim: {sarr.shape}')

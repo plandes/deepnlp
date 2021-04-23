@@ -5,7 +5,7 @@ efficient retrival.
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, Union, List
+from typing import Tuple, Union
 from dataclasses import dataclass, field
 import logging
 import torch
@@ -13,11 +13,12 @@ from torch import Tensor
 from torch import nn
 from zensols.persist import persisted, Deallocatable, Primeable
 from zensols.deeplearn.model import BaseNetworkModule, DebugModule
+from zensols.deeplearn.layer import LayerError
 from zensols.deeplearn.vectorize import (
     VectorizerError, FeatureContext, TensorFeatureContext,
     TransformableFeatureVectorizer
 )
-from zensols.deepnlp import TokensContainer, FeatureDocument, FeatureSentence
+from zensols.deepnlp import FeatureDocument, FeatureSentence
 from zensols.deepnlp.embed import WordEmbedModel
 from zensols.deepnlp.transformer import TransformerEmbedding, TokenizedDocument
 from zensols.deepnlp.vectorize import TextFeatureType
@@ -60,7 +61,7 @@ class EmbeddingLayer(DebugModule, Deallocatable):
         self.trainable = trainable
 
     def __getstate__(self):
-        raise ValueError('layers should not be pickeled')
+        raise LayerError('Layers should not be pickeled')
 
     def deallocate(self):
         super().deallocate()
@@ -335,7 +336,7 @@ class TransformerEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
     def _decode(self, context: TransformerFeatureContext) -> Tensor:
         emb: TransformerEmbedding = self.embed_model
         if logger.isEnabledFor(logging.INFO):
-            logger.info(f'decoding {len(context.document)} document')
+            logger.info(f'decoding {len(context.document)} documents')
         tok_doc: TokenizedDocument
         arr: Tensor
         if emb.trainable:
@@ -344,7 +345,7 @@ class TransformerEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
                 logger.debug('passing through tensor: {arr.shape}')
         else:
             if logger.isEnabledFor(logging.DEBUG):
-                logger.debug('transforming doc: {context.document}')
+                logger.debug(f'transforming doc: {context.document}')
             arr = emb.transform(context.document)
         if logger.isEnabledFor(logging.INFO):
             logger.info(f'decoded {arr.shape} on {arr.device}')

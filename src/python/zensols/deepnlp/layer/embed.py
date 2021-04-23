@@ -10,6 +10,7 @@ import torch
 from torch import Tensor
 from zensols.deeplearn.vectorize import FeatureVectorizer
 from zensols.deeplearn.model import BaseNetworkModule
+from zensols.deeplearn.layer import LayerError
 from zensols.deeplearn.batch import (
     Batch,
     BatchMetadata,
@@ -147,8 +148,8 @@ class EmbeddingNetworkModule(BaseNetworkModule):
                     embedding_attribs.append(attr)
                     self.embedding_vectorizer = vec
         if len(embedding_attribs) != 1:
-            raise ValueError(
-                'expecting exactly one embedding vectorizer ' +
+            raise LayerError(
+                'Expecting exactly one embedding vectorizer ' +
                 f'feature type, but got {len(embedding_attribs)}')
         self.embedding_attribute_name = embedding_attribs[0]
 

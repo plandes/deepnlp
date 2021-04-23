@@ -11,7 +11,7 @@ import logging
 from zensols.persist import Stash
 from zensols.deeplearn import NetworkSettings, ModelSettings
 from zensols.deeplearn.batch import BatchMetadata, ManagerFeatureMapping
-from zensols.deeplearn.model import ModelFacade
+from zensols.deeplearn.model import ModelError, ModelFacade
 from zensols.deeplearn.vectorize import (
     FeatureVectorizerManagerSet,
     FeatureVectorizerManager,
@@ -131,7 +131,7 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
             logger.debug(f'all language attributes: {lc.attribs}')
         non_existant = attributes - lc.attribs
         if len(non_existant) > 0:
-            raise ValueError(f'no such langauge attributes: {non_existant}')
+            raise ModelError(f'No such langauge attributes: {non_existant}')
         cur_attribs = self.batch_stash.decoded_attributes
         to_set = (cur_attribs - lc.attribs) | attributes
         if logger.isEnabledFor(logging.DEBUG):
@@ -172,7 +172,7 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
         lang_attribs = self._get_language_model_config()
         emb_sec = embedding
         if emb_sec not in lang_attribs.embedding_attribs:
-            raise ValueError(f'no such embedding attribute: {embedding}')
+            raise ModelError(f'No such embedding attribute: {embedding}')
         stash = self.batch_stash
         cur_attribs = stash.decoded_attributes
         attribs = (cur_attribs - lang_attribs.embedding_attribs) | {emb_sec}
@@ -221,7 +221,7 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
         vec: TransformerEmbeddingFeatureVectorizer = \
             self.get_transformer_vectorizer()
         if vec is None:
-            raise ValueError('no transformer vectorizer found')
+            raise ModelError('No transformer vectorizer found')
         tres: TransformerResource = vec.embed_model
         tokenizer: TransformerDocumentTokenizer = tres.tokenizer
         meta: BatchMetadata = self.batch_metadata
@@ -265,7 +265,7 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
         spacy_feat_ids = set(lang_vec_mng.spacy_vectorizers.keys())
         non_existant = feature_ids - spacy_feat_ids
         if len(non_existant) > 0:
-            raise ValueError(f'no such spacy feature IDs: {non_existant}')
+            raise ModelError(f'No such spacy feature IDs: {non_existant}')
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'settings {feature_ids} on {lang_vec}')
         lang_vec.decoded_feature_ids = feature_ids
