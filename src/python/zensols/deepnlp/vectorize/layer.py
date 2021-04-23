@@ -20,7 +20,9 @@ from zensols.deeplearn.vectorize import (
 )
 from zensols.deepnlp import FeatureDocument, FeatureSentence
 from zensols.deepnlp.embed import WordEmbedModel
-from zensols.deepnlp.transformer import TransformerEmbedding, TokenizedDocument
+from zensols.deepnlp.transformer import (
+    TransformerEmbedding, TokenizedDocument, TokenizedFeatureDocument
+)
 from zensols.deepnlp.vectorize import TextFeatureType
 from . import FeatureDocumentVectorizer
 
@@ -326,11 +328,14 @@ class TransformerEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
             raise VectorizerError('a trainable model can not encode ' +
                                   'transformed vectorized features')
 
-    def _encode(self, doc: FeatureDocument) -> FeatureContext:
+    def tokenize(self, doc: FeatureDocument) -> TokenizedFeatureDocument:
         emb: TransformerEmbedding = self.embed_model
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'synthesized document: {doc}')
-        tok_doc = emb.tokenize(doc).detach()
+        return emb.tokenize(doc)
+
+    def _encode(self, doc: FeatureDocument) -> FeatureContext:
+        tok_doc = self.tokenize(doc).detach()
         return TransformerFeatureContext(self.feature_id, tok_doc)
 
     def _decode(self, context: TransformerFeatureContext) -> Tensor:

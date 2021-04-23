@@ -118,7 +118,17 @@ class TokenizedFeatureDocument(TokenizedDocument, Writable):
     def detach(self) -> TokenizedDocument:
         return TokenizedDocument(self.tensor)
 
-    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
+    def map_word_pieces_to_tokens(self) -> \
+            List[Dict[str, List[Tuple[FeatureToken, Tuple[str]]]]]:
+        """Map word piece tokens to linguistic tokens.
+
+        :return: a list sentence maps, each with:
+
+                   * ``sent`` -> :class:`.FeatureSentence`
+
+                   * ``map`` -> list of ``(token, word pieces)`` tuples
+
+        """
         if self.id2tok is not None:
             def id2tok(x):
                 return self.id2tok[x]
@@ -128,11 +138,23 @@ class TokenizedFeatureDocument(TokenizedDocument, Writable):
         input_ids = self.input_ids.cpu().numpy()
         sent_offsets = self.offsets
         doc = self.feature
+        sents_map = []
         for six, (sent, tok_offsets) in enumerate(zip(doc, sent_offsets)):
             input_sent = input_ids[six]
             wps = self.map_word_pieces(sent_offsets[six])
-            self._write_line(f'sentence: {sent}', depth, writer)
+            sent_map = []
+            sents_map.append({'sent': sent, 'map': sent_map})
             for tix, ixs in wps:
                 tok = sent[tix]
-                ttoks = '|'.join(map(lambda i: id2tok(input_sent[i]), ixs))
+                ttoks = tuple(map(lambda i: id2tok(input_sent[i]), ixs))
+                sent_map.append((tok, ttoks))
+        return sents_map
+
+    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
+        sent_map = Dict[str, List[Tuple[FeatureToken, Tuple[str]]]]
+        for sent_map in self.map_word_pieces_to_tokens():
+            sent = sent_map['sent']
+            tmap = sent_map['map']
+            self._write_line(f'sentence: {sent}', depth, writer)
+            for tok, ttoks in tmap:
                 self._write_line(f'{tok.text} -> {ttoks}', depth + 1, writer)

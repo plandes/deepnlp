@@ -62,6 +62,10 @@ class TransformerDocumentTokenizer(object):
         tokenizer = self.resource.tokenizer
         params = {'return_offsets_mapping': True,
                   'is_split_into_words': True}
+
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'parsing {sents} with token length: {tlen}')
+
         if tlen > 0:
             params.update({'padding': 'max_length',
                            'truncation': True,
@@ -90,9 +94,16 @@ class TransformerDocumentTokenizer(object):
             tix = 0
             tok_offsets = []
             sent_offsets.append(tok_offsets)
+            pad = False
             for i, (s, e) in enumerate(six_offsets[off:]):
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug(f'{i}: s/e={s},{e}, off={(tix-off)}')
                 if e == 0:
-                    tok_offsets.append(-1)
+                    if pad:
+                        tok_offsets.append(-1)
+                    else:
+                        tok_offsets.append(tix-off)
+                        pad = True
                 else:
                     tok_offsets.append(tix-off)
                     if s == 0:
@@ -101,6 +112,19 @@ class TransformerDocumentTokenizer(object):
             # the terminating sentence token (i.e. [SEP])
             if off == 1:
                 tok_offsets.append(-1)
+
+        if logger.isEnabledFor(logging.DEBUG):
+            for six, tids in enumerate(sent_offsets):
+                logger.debug(f'tok ids: {tids}')
+                for stix, tix in enumerate(tids):
+                    bid = tok_dat['input_ids'][six][stix]
+                    if tix >= 0:
+                        stok = sents[six][tix]
+                    else:
+                        stok = '-'
+                    logger.debug(
+                        f'sent={six}, tok id={tix}, model id={bid}: ' +
+                        f'{self.id2tok[bid]} -> {stok}')
 
         arr = torch_config.singleton(
             [tok_dat['input_ids'], tok_dat['attention_mask'], sent_offsets],
