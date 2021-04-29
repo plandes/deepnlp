@@ -21,7 +21,6 @@ class TestWordPieceTokenization(unittest.TestCase):
         vec = self.vmng.vectorizers['transformer']
         tdoc: TokenizedFeatureDocument = vec.tokenize(doc)
         self.assertEqual(TokenizedFeatureDocument, type(tdoc))
-        #tdoc.write()
         smaps = tdoc.map_word_pieces_to_tokens()
         self.assertEqual(len(should), len(smaps))
         for sent_map, should_sent in zip(smaps, should):

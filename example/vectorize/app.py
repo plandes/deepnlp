@@ -55,15 +55,10 @@ class Application(object):
         self._vectorize('wvglove50')
 
     def _transformer(self):
-        sent = 'The gunships are nearer than you think.  Their heading is changing.'
-        sent = 'The guns are near.  Their heading is changing to the gunships.'
-        sent = 'Their heading is changing to the gunships.'
-        sent = 'The guns are near.  Their heading is changing to the gunships.  The United States schooner created a gridlocking situation.'
+        sent = ('The guns are near.  Their heading is changing to the gunships.' +
+                '  The United States schooner created a gridlocking situation.')
         vec = self.vec_mng.vectorizers['transformer']
         doc: FeatureDocument = self.vec_mng.doc_parser.parse(sent)
-        with loglevel(['zensols.deepnlp.transformer',
-                       'zensols.deepnlp.vectorize.layer'], init=True):
-            pass
         tdoc = vec.tokenize(doc)
         tdoc.write()
 
