@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 import logging
+from zensols.util.log import loglevel
 from zensols.deepnlp import FeatureDocument
 from zensols.deepnlp.vectorize import FeatureDocumentVectorizerManager
 
@@ -13,22 +14,23 @@ class Application(object):
     """
     CLI_META = {'option_includes': {}}
 
-    lg_mng: FeatureDocumentVectorizerManager = field()
+    vec_mng: FeatureDocumentVectorizerManager = field()
     """The manager that vectorizes feature document."""
 
+    def __post_init__(self):
+        self.sent = 'California is part of the United States.  I live in CA.'
+        self.sent2 = 'The work in the NLP lab is fun.'
+
     def _vectorize(self, name: str):
-        sent = 'California is part of the United States.  I live in CA.'
-        sent2 = 'The work in the NLP lab is fun.'
-        vec = self.lg_mng.vectorizers[name]
-        doc: FeatureDocument = self.lg_mng.doc_parser.parse(sent)
-        print(doc.combine_sentences()[0].dependency_tree)
-        doc2: FeatureDocument = self.lg_mng.doc_parser.parse(sent2)
+        vec = self.vec_mng.vectorizers[name]
+        doc: FeatureDocument = self.vec_mng.doc_parser.parse(self.sent)
+        doc2: FeatureDocument = self.vec_mng.doc_parser.parse(self.sent2)
         docs = (doc, doc2)
+        print(doc.combine_sentences()[0].dependency_tree)
         for d in docs[0:1]:
             for t in d.tokens:
                 print(t.i, t.i_sent, t.text, t.dep_, t.ent_, t.children)
             print('-' * 30)
-        from zensols.util.log import loglevel
         with loglevel('zensols.deepnlp', init=True):
             arr = vec.transform(docs[0])
         print(arr.shape)
@@ -52,6 +54,19 @@ class Application(object):
         """Generate a word embedding."""
         self._vectorize('wvglove50')
 
+    def _transformer(self):
+        sent = 'The gunships are nearer than you think.  Their heading is changing.'
+        sent = 'The guns are near.  Their heading is changing to the gunships.'
+        sent = 'Their heading is changing to the gunships.'
+        sent = 'The guns are near.  Their heading is changing to the gunships.  The United States schooner created a gridlocking situation.'
+        vec = self.vec_mng.vectorizers['transformer']
+        doc: FeatureDocument = self.vec_mng.doc_parser.parse(sent)
+        with loglevel(['zensols.deepnlp.transformer',
+                       'zensols.deepnlp.vectorize.layer'], init=True):
+            pass
+        tdoc = vec.tokenize(doc)
+        tdoc.write()
+
     def go(self):
         """Prototyping entry point."""
-        self.dependency()
+        self._transformer()

@@ -4,7 +4,7 @@ from __future__ import annotations
 """
 __author__ = 'Paul Landes'
 
-from typing import List, Tuple, Dict, Any
+from typing import List, Tuple, Dict, Any, Union
 from dataclasses import dataclass, field
 import sys
 import logging
@@ -14,7 +14,7 @@ from torch import Tensor
 from zensols.deepnlp import FeatureDocument
 from zensols.persist import PersistableContainer
 from zensols.config import Writable
-from zensols.deepnlp import FeatureToken
+from zensols.deepnlp import FeatureToken, FeatureSentence
 
 logger = logging.getLogger(__name__)
 
@@ -118,7 +118,8 @@ class TokenizedFeatureDocument(TokenizedDocument, Writable):
         return TokenizedDocument(self.tensor)
 
     def map_word_pieces_to_tokens(self) -> \
-            List[Dict[str, List[Tuple[FeatureToken, Tuple[str]]]]]:
+            List[Dict[str, Union[FeatureSentence,
+                                 Tuple[FeatureToken, Tuple[str]]]]]:
         """Map word piece tokens to linguistic tokens.
 
         :return: a list sentence maps, each with:
@@ -150,10 +151,13 @@ class TokenizedFeatureDocument(TokenizedDocument, Writable):
         return sents_map
 
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
-        sent_map = Dict[str, List[Tuple[FeatureToken, Tuple[str]]]]
+        sent_map: Dict[str, Union[FeatureSentence,
+                                  Tuple[FeatureToken, Tuple[str]]]]
         for sent_map in self.map_word_pieces_to_tokens():
-            sent = sent_map['sent']
-            tmap = sent_map['map']
+            sent: FeatureSentence = sent_map['sent']
+            tmap: Tuple[FeatureToken, Tuple[str]] = sent_map['map']
             self._write_line(f'sentence: {sent}', depth, writer)
+            tok: FeatureToken
+            ttoks: Tuple[str]
             for tok, ttoks in tmap:
                 self._write_line(f'{tok.text} -> {ttoks}', depth + 1, writer)

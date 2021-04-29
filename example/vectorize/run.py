@@ -14,7 +14,7 @@ files = parser.conf
 
 [app]
 class_name = app.Application
-lg_mng = instance: language_feature_manager
+vec_mng = instance: language_feature_manager
 """
 
 
@@ -27,9 +27,10 @@ def silencewarn():
 def main():
     print()
     silencewarn()
+    rl_mods = 'app zensols.deepnlp.transformer zensols.deepnlp.vectorize.layer'.split()
     cli = ApplicationFactory(
         'nlparse', StringIO(CONFIG),
-        reload_pattern='^(?:app|zensols.deepnlp.vectorize.vectorizers)')
+        reload_pattern=f'^(?:{"|".join(rl_mods)})')
     import __main__ as mmod
     if hasattr(mmod, '__file__'):
         cli.invoke()
