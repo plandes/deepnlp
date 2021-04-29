@@ -2,4 +2,4 @@ gensim>=4.0.1
 bcolz>=1.2.1
 transformers>=4.0.1
 zensols.nlp>=0.0.14
-zensols.deeplearn>=0.1.1
+zensols.deeplearn>=0.1.2
