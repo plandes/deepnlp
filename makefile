@@ -1,10 +1,14 @@
 ## makefile automates the build and deployment for python projects
 
 ## build
-PROJ_TYPE=	python
-PROJ_MODULES=	git python-doc python-doc-deploy
+PROJ_TYPE =	python
+PROJ_MODULES =	git python-doc python-doc-deploy
 PROJ_ARGS =	-c resources/deepnlp.conf
 CLEAN_DEPS +=	exampleclean
+
+##doc
+PY_DOC_MD_SRC =	./doc/md
+
 
 ## models needed for testing
 CORPUS_DIR =	./corpus
