@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [0.0.3] - 2021-04-30
 ### Added
 - BERT/DistilBERT/RoBERTa transformer word piece tokenizer to linguistic token
   mapping.
@@ -16,7 +17,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Added simple vectorizer example.
 - Multiprocessing vectorization now supports GPU access via torch
   multiprocessing subsystem.
-
 ### Changed
 - Refactored word embedding (sub) modules.
 - Moved BERT transformer embeddings to separate `transformer` module.
@@ -39,7 +39,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v0.0.2...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v0.0.3...HEAD
+[0.0.3]: https://github.com/plandes/deepnlp/compare/v0.0.2...v0.0.3
 [0.0.2]: https://github.com/plandes/deepnlp/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/plandes/deepnlp/compare/v0.0.0...v0.0.1
 
