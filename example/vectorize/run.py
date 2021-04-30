@@ -35,7 +35,7 @@ def main():
     if hasattr(mmod, '__file__'):
         cli.invoke()
     else:
-        cli.invoke_protect('go'.split())
+        cli.invoke_protect('all'.split())
 
 
 if __name__ == '__main__':

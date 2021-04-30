@@ -50,18 +50,22 @@ class Application(object):
         """
         self._vectorize('dep')
 
-    def embedding(self):
+    def word2vec(self):
         """Generate a word embedding."""
         self._vectorize('wvglove50')
 
-    def _transformer(self):
-        sent = ('The guns are near.  Their heading is changing to the gunships.' +
-                '  The United States schooner created a gridlocking situation.')
+    def bert(self):
+        """Parse and vectorize a sentence in to BERT embeddings.
+
+        """
         vec = self.vec_mng.vectorizers['transformer']
-        doc: FeatureDocument = self.vec_mng.doc_parser.parse(sent)
+        doc: FeatureDocument = self.vec_mng.doc_parser.parse(self.sent)
         tdoc = vec.tokenize(doc)
         tdoc.write()
 
-    def go(self):
-        """Prototyping entry point."""
-        self._transformer()
+    def all(self):
+        """Run all examples."""
+        self.count()
+        self.dependency()
+        self.word2vec()
+        self.bert()
