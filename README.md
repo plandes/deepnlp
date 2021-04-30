@@ -10,20 +10,19 @@ feature engineering and embedding layers (see the [full documentation]).
 
 Features:
 * Configurable layers with little to no need to write code.
-* [Natural language specific layers](doc/layers.md):
-  * Easy to configure *N* [deep convolution layer] with automatic
-    dimensionality calculation and configurable pooling and batch centering.
+* [Natural language specific layers](doc/md/layers.md):
+  * Easily configurable word embedding layers for [Glove], [Word2Vec],
+    [fastText].
+  * Huggingface transformer ([BERT]) context based word vector layer.
   * Full [Embedding+BiLSTM-CRF] implementation using easy to configure
 	constituent layers.
-* [NLP specific vectorizers] that generated [zensols deeplearn] encoded and
+* [NLP specific vectorizers] that generate [zensols deeplearn] encoded and
   decoded [batched tensors] for [spaCy] parsed features, dependency tree
   features, overlapping text features and others.
 * Easily swapable during runtime embedded layers as [batched tensors] and other
   linguistic vectorized features.
-* Support and easily configurable word embeddings for [Glove], [Word2Vec],
-  [fastText] and [BERT].
 * Support for token, document and embedding level vectorized features.
-* Integration with [Pandas] data frames from data ingestion.
+* Transformer word piece to linguistic token mapping.
 * Two full documented examples provided as both command line and [Jupyter
   notebooks](#usage-and-examples).
 
