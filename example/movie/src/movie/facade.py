@@ -35,12 +35,6 @@ class ReviewModelFacade(LanguageModelFacade):
     def _get_language_model_config(self) -> LanguageModelFacadeConfig:
         return self.LANGUAGE_MODEL_CONFIG
 
-    # def _set_embedding(self, embedding: str):
-    #     needs_change = super()._set_embedding(embedding)
-    #     if needs_change and embedding == 'transformer':
-    #         vec_mng = self.language_vectorizer_manager
-    #         vec_mng.token_length = 100
-
     def get_predictions(self) -> pd.DataFrame:
         """Return a Pandas dataframe of the predictions with columns that include the
         correct label, the prediction, the text and the length of the text of
