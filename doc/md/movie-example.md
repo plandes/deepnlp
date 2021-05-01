@@ -314,10 +314,10 @@ Now we provide the linguistic feature mapping to vectorizers, again using the
               FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', True, 'doc'),
               FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', True, 'doc'),
               FieldFeatureMapping(TRANSFORMER_EMBEDDING, 'transformer', True, 'doc'),
-              FieldFeatureMapping(STATS_ATTRIBUTE, 'stats', False, 'doc', 0),
-              FieldFeatureMapping(ENUMS_ATTRIBUTE, 'enum', False, 'doc', 0),
-              FieldFeatureMapping(COUNTS_ATTRIBUTE, 'count', False, 'doc', 0),
-              FieldFeatureMapping(DEPENDENCIES_ATTRIBUTE, 'dep', False, 'doc', 0)))])
+              FieldFeatureMapping(STATS_ATTRIBUTE, 'stats', False, 'doc'),
+              FieldFeatureMapping(ENUMS_ATTRIBUTE, 'enum', True, 'doc'),
+              FieldFeatureMapping(COUNTS_ATTRIBUTE, 'count', True, 'doc'),
+              FieldFeatureMapping(DEPENDENCIES_ATTRIBUTE, 'dep', True, 'doc')))
 ```
 
 Finally, we return the given `MAPPINGS` class level constant in our class as
