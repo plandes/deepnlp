@@ -79,6 +79,9 @@ class EmbeddingLayer(DebugModule, Deallocatable):
 
 
 class TrainableEmbeddingLayer(EmbeddingLayer):
+    """A non-frozen embedding layer that has grad on parameters.
+
+    """
     def reset_parameters(self):
         if self.trainable:
             self.emb.load_state_dict({'weight': self.vecs})
