@@ -54,7 +54,7 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
     Rows are tokens, columns intervals are features.  The encoded matrix is
     sparse, and decoded as a dense matrix.
 
-    :shape: ``(|sentences|, |token length|, |decoded features|)``
+    :shape: (|sentences|, |token length|, |decoded features|)
 
     """
     ATTR_EXP_META = ('decoded_feature_ids',)
@@ -207,7 +207,7 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
     This class uses the same efficiency in decoding features given in
     :class:`.EnumContainerFeatureVectorizer`.
 
-    :shape: ``(|sentences|, |decoded features|)``
+    :shape: (|sentences|, |decoded features|)
 
     """
     ATTR_EXP_META = ('decoded_feature_ids',)
@@ -337,7 +337,7 @@ class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
     dependency parse tree at the sentence level.  Otherwise, the dependency
     relations are broken and results in a zeored tensor.
 
-    :shape: ``(|sentences|, token length, 1)``
+    :shape: (|sentences|, token length, 1)
 
     """
     DESCRIPTION = 'head depth'
@@ -463,7 +463,7 @@ class StatisticsFeatureDocumentVectorizer(FeatureDocumentVectorizer):
         * min sentence length
         * max sentence length
 
-    :shape: ``(9,)``
+    :shape: (9,)
 
     """
     DESCRIPTION = 'statistics'
@@ -511,7 +511,7 @@ class OverlappingFeatureDocumentVectorizer(MultiDocumentVectorizer):
     The input to this feature vectorizer are a tuple N of
     :class:`.FeatureDocument` instances.
 
-    :shape: ``(2,)``
+    :shape: (2,)
 
     """
     DESCRIPTION = 'overlapping token counts'
@@ -552,7 +552,7 @@ class MutualFeaturesContainerFeatureVectorizer(MultiDocumentVectorizer):
     The input to this feature vectorizer are a tuple of N
     :class:`.TokenContainer` instances.
 
-    :shape: ``(|sentences|, |decoded features|,)`` from the referenced
+    :shape: (|sentences|, |decoded features|,) from the referenced
             :class:`CountEnumContainerFeatureVectorizer` given by
             :obj:`count_vectorizer_feature_id`
 
