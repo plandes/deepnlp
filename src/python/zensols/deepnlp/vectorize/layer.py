@@ -333,6 +333,11 @@ class TransformerEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
                                   'transformed vectorized features')
 
     def tokenize(self, doc: FeatureDocument) -> TokenizedFeatureDocument:
+        """Tokenize the document in to a token document used by the encoding phase.
+
+        :param doc: the document to be tokenized
+
+        """
         emb: TransformerEmbedding = self.embed_model
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'synthesized document: {doc}')
@@ -363,6 +368,10 @@ class TransformerEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
 
 @dataclass
 class TransformerExpanderFeatureContext(MultiFeatureContext, Deallocatable):
+    """A vectorizer feature contex used with
+    :class:`.TransformerExpanderFeatureVectorizer`.
+
+    """
     document: TokenizedDocument = field()
     """The document used to create the transformer embeddings.
 
@@ -377,8 +386,16 @@ class TransformerExpanderFeatureContext(MultiFeatureContext, Deallocatable):
 @dataclass
 class TransformerExpanderFeatureVectorizer(FeatureDocumentVectorizer,
                                            Primeable):
-    """
-    :shape: Sum of all the delegate shapes across all three dimensions
+    """A vectorizer that expands lingustic feature vectors to their respective
+    locations as word piece token vectors.
+
+    This is used to concatenate lingustic features with Bert (and other
+    transformer) embeddings.  Each lingustic token is copied in the word piece
+    token location across all vectorizers and sentences.
+
+    :shape: (-1, token length, X), where X is the sum of all the delegate
+            shapes across all three dimensions
+
     """
     DESCRIPTION = 'transformer expander'
     FEATURE_TYPE = TextFeatureType.TOKEN
@@ -406,9 +423,17 @@ class TransformerExpanderFeatureVectorizer(FeatureDocumentVectorizer,
     @property
     @persisted('_delegates')
     def delegates(self) -> EncodableFeatureVectorizer:
+        """The delegates used for encoding and decoding the lingustic features.
+
+        """
         return tuple(map(lambda f: self.manager[f], self.delegate_feature_ids))
 
     def tokenize(self, doc: FeatureDocument) -> TokenizedFeatureDocument:
+        """Tokenize the document in to a token document used by the encoding phase.
+
+        :param doc: the document to be tokenized
+
+        """
         emb: TransformerEmbedding = self.embed_model
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'synthesized document: {doc}')
@@ -424,11 +449,13 @@ class TransformerExpanderFeatureVectorizer(FeatureDocumentVectorizer,
         vec: FeatureDocumentVectorizer
         ctx: FeatureContext
         arrs: List[Tensor] = []
+        # decode subordinate contexts
         for vec, ctx in zip(self.delegates, context.contexts):
             src = vec.decode(ctx)
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'decoded shape ({vec.feature_id}): {src.shape}')
             arrs.append(src)
+        # get the mapping per sentence
         wps_sents = tuple(map(lambda s: doc.map_word_pieces(s), doc.offsets))
         tlen = self.manager.token_length
         # use variable length tokens
@@ -440,11 +467,14 @@ class TransformerExpanderFeatureVectorizer(FeatureDocumentVectorizer,
             tlen += 1
             # add another (to be zero) for the ending sentence boudary
             tlen += 1 if doc.boundary_tokens else 0
-        slen = len(wps_sents)
+        # number of sentences
+        n_sents = len(wps_sents)
+        # feature dimension (last dimension)
         dim = sum(map(lambda x: x.size(2), arrs))
-        marr = self.torch_config.zeros((slen, tlen, dim))
+        # tensor to populate
+        marr = self.torch_config.zeros((n_sents, tlen, dim))
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'sents: {slen}, token length: {tlen}, dim: {dim}')
+            logger.debug(f'sents: {n_sents}, token length: {tlen}, dim: {dim}')
         sent: Tensor
         arr: Tensor
         wps: Tuple[Tuple[Tensor, List[int]]]
@@ -460,8 +490,11 @@ class TransformerExpanderFeatureVectorizer(FeatureDocumentVectorizer,
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.debug(f'expanding for {arr.shape} in ' +
                                  f'[{six},:,{marrix}:{meix}]')
-                # print(arr[six])
+                # iterate lingustic / word piece tokens
                 for tix, wpixs in wps:
+                    # for each word piece mapping, copy the source feature
+                    # vector to the target, thereby expanding and increasing
+                    # the size of the last dimsion
                     for wix in wpixs:
                         if logger.isEnabledFor(logging.DEBUG):
                             logger.debug(f'[{six}, {wix}, {marrix}:{meix}] ' +
