@@ -33,6 +33,8 @@ class TransformerDocumentTokenizer(object):
     same or greater in count than linguistic tokens because the word piece
     algorithm tokenizes on characters.
 
+    If this value is less than 0, than do not fix sentence lengths.
+
     """
 
     @property
@@ -88,10 +90,13 @@ class TransformerDocumentTokenizer(object):
                 list(lambda x: (x[0]-1, x[1]), sent)), offsets))
 
         sent_offsets = []
+        boundary_tokens = False
         for six, six_offsets in enumerate(offsets):
             # start at index 1 if end span > 0, which indicates a [CLS] (or <s>
             # i.e. roberta) token
             off = 1 if six_offsets[0][1] == 0 else 0
+            if off == 1:
+                boundary_tokens = True
             tix = 0
             tok_offsets = []
             sent_offsets.append(tok_offsets)
@@ -136,4 +141,4 @@ class TransformerDocumentTokenizer(object):
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'tok doc mat: shape={arr.shape}, dtype={arr.dtype}')
 
-        return TokenizedFeatureDocument(arr, doc, self.id2tok)
+        return TokenizedFeatureDocument(arr, doc, self.id2tok, boundary_tokens)

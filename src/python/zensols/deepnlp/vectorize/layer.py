@@ -5,9 +5,10 @@ efficient retrival.
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, Union
+from typing import Tuple, Union, List
 from dataclasses import dataclass, field
 import logging
+from itertools import chain
 import torch
 from torch import Tensor
 from torch import nn
@@ -15,8 +16,8 @@ from zensols.persist import persisted, Deallocatable, Primeable
 from zensols.deeplearn.model import BaseNetworkModule, DebugModule
 from zensols.deeplearn.layer import LayerError
 from zensols.deeplearn.vectorize import (
-    VectorizerError, FeatureContext, TensorFeatureContext,
-    TransformableFeatureVectorizer
+    EncodableFeatureVectorizer, VectorizerError, FeatureContext,
+    MultiFeatureContext, TensorFeatureContext, TransformableFeatureVectorizer
 )
 from zensols.deepnlp import FeatureDocument, FeatureSentence
 from zensols.deepnlp.embed import WordEmbedModel
@@ -358,3 +359,113 @@ class TransformerEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
         if logger.isEnabledFor(logging.INFO):
             logger.info(f'decoded {arr.shape} on {arr.device}')
         return arr
+
+
+@dataclass
+class TransformerExpanderFeatureContext(MultiFeatureContext, Deallocatable):
+    document: TokenizedDocument = field()
+    """The document used to create the transformer embeddings.
+
+    """
+
+    def deallocate(self):
+        super().deallocate()
+        self.deallocate(self.document)
+        del self.document
+
+
+@dataclass
+class TransformerExpanderFeatureVectorizer(FeatureDocumentVectorizer,
+                                           Primeable):
+    """
+    :shape: Sum of all the delegate shapes across all three dimensions
+    """
+    DESCRIPTION = 'transformer expander'
+    FEATURE_TYPE = TextFeatureType.TOKEN
+
+    embed_model: Union[WordEmbedModel, TransformerEmbedding] = field()
+    """Contains the word vector model."""
+
+    delegate_feature_ids: Tuple[str] = field()
+    """A list of feature IDs to """
+
+    def _get_shape(self) -> Tuple[int, int]:
+        shape = [-1, self.manager.token_length, 0]
+        vec: FeatureDocumentVectorizer
+        for vec in self.delegates:
+            if vec.feature_type != TextFeatureType.TOKEN:
+                raise VectorizerError('only token level vectorizers are ' +
+                                      f'supported, but got {vec}')
+            shape[2] += vec.shape[2]
+        return tuple(shape)
+
+    def prime(self):
+        if isinstance(self.embed_model, Primeable):
+            self.embed_model.prime()
+
+    @property
+    @persisted('_delegates')
+    def delegates(self) -> EncodableFeatureVectorizer:
+        return tuple(map(lambda f: self.manager[f], self.delegate_feature_ids))
+
+    def tokenize(self, doc: FeatureDocument) -> TokenizedFeatureDocument:
+        emb: TransformerEmbedding = self.embed_model
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'synthesized document: {doc}')
+        return emb.tokenize(doc)
+
+    def _encode(self, doc: FeatureDocument) -> FeatureContext:
+        tok_doc = self.tokenize(doc).detach()
+        cxs = tuple(map(lambda vec: vec.encode(doc), self.delegates))
+        return TransformerExpanderFeatureContext(self.feature_id, cxs, tok_doc)
+
+    def _decode(self, context: TransformerExpanderFeatureContext) -> Tensor:
+        doc: TokenizedDocument = context.document
+        vec: FeatureDocumentVectorizer
+        ctx: FeatureContext
+        arrs: List[Tensor] = []
+        for vec, ctx in zip(self.delegates, context.contexts):
+            src = vec.decode(ctx)
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'decoded shape ({vec.feature_id}): {src.shape}')
+            arrs.append(src)
+        wps_sents = tuple(map(lambda s: doc.map_word_pieces(s), doc.offsets))
+        tlen = self.manager.token_length
+        # use variable length tokens
+        if tlen <= 0:
+            tlen = max(chain.from_iterable(
+                chain.from_iterable(
+                    map(lambda s: map(lambda t: t[1], s), wps_sents))))
+            # max findes the largest index, so add 1 for size
+            tlen += 1
+            # add another (to be zero) for the ending sentence boudary
+            tlen += 1 if doc.boundary_tokens else 0
+        slen = len(wps_sents)
+        dim = sum(map(lambda x: x.size(2), arrs))
+        marr = self.torch_config.zeros((slen, tlen, dim))
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'sents: {slen}, token length: {tlen}, dim: {dim}')
+        sent: Tensor
+        arr: Tensor
+        wps: Tuple[Tuple[Tensor, List[int]]]
+        marrix = 0
+        # iterate feature vectors
+        for arr in arrs:
+            ln = arr.size(2)
+            meix = marrix + ln
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'feature range: [{marrix}:{meix}]')
+            # iterate sentences
+            for six, (sent, wps) in enumerate(zip(doc.offsets, wps_sents)):
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug(f'expanding for {arr.shape} in ' +
+                                 f'[{six},:,{marrix}:{meix}]')
+                # print(arr[six])
+                for tix, wpixs in wps:
+                    for wix in wpixs:
+                        if logger.isEnabledFor(logging.DEBUG):
+                            logger.debug(f'[{six}, {wix}, {marrix}:{meix}] ' +
+                                         f'= [{six}, {tix}]')
+                        marr[six, wix, marrix:meix] = arr[six, tix]
+            marrix += ln
+        return marr

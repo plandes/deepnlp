@@ -2,7 +2,10 @@ from dataclasses import dataclass, field
 import logging
 from zensols.util.log import loglevel
 from zensols.deepnlp import FeatureDocument
-from zensols.deepnlp.vectorize import FeatureDocumentVectorizerManager
+from zensols.deepnlp.vectorize import (
+    FeatureDocumentVectorizerManager,
+    TransformerEmbeddingFeatureVectorizer,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +23,7 @@ class Application(object):
     def __post_init__(self):
         self.sent = 'California is part of the United States.  I live in CA.'
         self.sent2 = 'The work in the NLP lab is fun.'
+        self.sent3 = 'The gunships are nearing.  They\'re almost right here now.'
 
     def _vectorize(self, name: str):
         vec = self.vec_mng.vectorizers[name]
@@ -58,10 +62,22 @@ class Application(object):
         """Parse and vectorize a sentence in to BERT embeddings.
 
         """
-        vec = self.vec_mng.vectorizers['transformer']
-        doc: FeatureDocument = self.vec_mng.doc_parser.parse(self.sent)
+        vec: TransformerEmbeddingFeatureVectorizer = \
+            self.vec_mng.vectorizers['transformer']
+        doc: FeatureDocument = self.vec_mng.doc_parser.parse(self.sent3)
         tdoc = vec.tokenize(doc)
         tdoc.write()
+        print(vec.transform(doc).shape)
+
+    def expand(self):
+        vec = self.vec_mng.vectorizers['transformer_expander']
+        doc: FeatureDocument = self.vec_mng.doc_parser.parse(self.sent3)
+        tdoc = vec.tokenize(doc)
+        tdoc.write()
+        ctx = vec.encode(doc)
+        with loglevel('zensols.deepnlp', init=True):
+            arr = vec.decode(ctx)
+        print(arr.shape, vec.shape)
 
     def all(self):
         """Run all examples."""

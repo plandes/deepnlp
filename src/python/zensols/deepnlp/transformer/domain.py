@@ -31,6 +31,12 @@ class TokenizedDocument(PersistableContainer):
     tensor: Tensor = field()
     """Encodes the input IDs, attention mask, and word piece offset map."""
 
+    boundary_tokens: bool = field()
+    """If the token document has sentence boundary tokens, such as ``[CLS]`` for
+    Bert.
+
+    """
+
     def __post_init__(self):
         super().__init__()
 
@@ -75,8 +81,20 @@ class TokenizedDocument(PersistableContainer):
             dct[att] = getattr(self, att)
         return dct
 
-    def map_word_pieces(self, token_offsets: List[int]) -> \
+    @staticmethod
+    def map_word_pieces(token_offsets: List[int]) -> \
             List[Tuple[FeatureToken, List[int]]]:
+        """Map word piece tokens to linguistic tokens.
+
+        :return:
+
+            a list of tuples in the form:
+
+            ``(<linguistic token|token index>, <list of word piece indexes>)``
+
+            if detatched, the linguistic token is an index as a tensor scalar
+
+        """
         ftoks = []
         n_ftok = -1
         for wix, tix in enumerate(token_offsets):
@@ -115,7 +133,7 @@ class TokenizedFeatureDocument(TokenizedDocument, Writable):
     """
 
     def detach(self) -> TokenizedDocument:
-        return TokenizedDocument(self.tensor)
+        return TokenizedDocument(self.tensor, self.boundary_tokens)
 
     def map_word_pieces_to_tokens(self) -> \
             List[Dict[str, Union[FeatureSentence,

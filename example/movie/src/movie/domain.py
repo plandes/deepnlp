@@ -87,8 +87,11 @@ class ReviewBatch(Batch):
     ENUMS_ATTRIBUTE = 'enums'
     COUNTS_ATTRIBUTE = 'counts'
     DEPENDENCIES_ATTRIBUTE = 'dependencies'
+    ENUM_EXPANDER_ATTRIBUTE = 'enum_expander'
+    DEPENDENCY_EXPANDER_ATTRIBTE = 'dep_expander'
     LANGUAGE_ATTRIBUTES = {STATS_ATTRIBUTE, ENUMS_ATTRIBUTE, COUNTS_ATTRIBUTE,
-                           DEPENDENCIES_ATTRIBUTE}
+                           DEPENDENCIES_ATTRIBUTE, ENUM_EXPANDER_ATTRIBUTE,
+                           DEPENDENCY_EXPANDER_ATTRIBTE}
     MAPPINGS = BatchFeatureMapping(
         'label',
         [ManagerFeatureMapping(
@@ -103,7 +106,10 @@ class ReviewBatch(Batch):
               FieldFeatureMapping(STATS_ATTRIBUTE, 'stats', False, 'doc'),
               FieldFeatureMapping(ENUMS_ATTRIBUTE, 'enum', True, 'doc'),
               FieldFeatureMapping(COUNTS_ATTRIBUTE, 'count', True, 'doc'),
-              FieldFeatureMapping(DEPENDENCIES_ATTRIBUTE, 'dep', True, 'doc')))])
+              FieldFeatureMapping(DEPENDENCIES_ATTRIBUTE, 'dep', True, 'doc'),
+              FieldFeatureMapping(ENUM_EXPANDER_ATTRIBUTE, 'transformer_enum_expander', True, 'doc'),
+              FieldFeatureMapping(DEPENDENCY_EXPANDER_ATTRIBTE, 'transformer_dep_expander', True, 'doc'),
+              ))])
 
     def _get_batch_feature_mappings(self) -> BatchFeatureMapping:
         return self.MAPPINGS

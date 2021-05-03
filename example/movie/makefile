@@ -88,7 +88,7 @@ rebatch:
 
 .PHONY:			modeldebug
 modeldebug:
-			$(ENTRY) debug -p --config $(MDL_DIR)/transformer.conf
+			$(ENTRY) debug --config $(MDL_DIR)/transformer.conf
 
 .PHONY:			glove50
 glove50:

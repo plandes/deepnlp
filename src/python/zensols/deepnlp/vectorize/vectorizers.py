@@ -187,7 +187,7 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
     def _decode(self, context: FeatureContext) -> Tensor:
         arr = super()._decode(context)
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'decoded features: {self.decoded_feature_ids}' +
+            logger.debug(f'decoded features: {self.decoded_feature_ids}, ' +
                          f'shape: {arr.shape}')
         self._assert_decoded_doc_dim(arr, 3)
         if self.decoded_feature_ids is not None:

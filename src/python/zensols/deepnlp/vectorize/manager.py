@@ -104,8 +104,7 @@ class FeatureDocumentVectorizer(EncodableFeatureVectorizer, metaclass=ABCMeta):
 
     def __str__(self):
         return (f'{super().__str__()}, ' +
-                f'feature type: {self.feature_type.name}, ' +
-                f'token length: {self.token_length}')
+                f'feature type: {self.feature_type.name} ')
 
 
 @dataclass
