@@ -28,14 +28,16 @@ def main():
     print()
     silencewarn()
     rl_mods = 'app zensols.deepnlp.transformer zensols.deepnlp.vectorize.layer'.split()
-    cli = ApplicationFactory(
-        'nlparse', StringIO(CONFIG),
-        reload_pattern=f'^(?:{"|".join(rl_mods)})')
+    reload_pattern = f'^(?:{"|".join(rl_mods)})'
+    #reload_pattern = 'zensols.deepnlp.transformer'
+    print(reload_pattern)
+    cli = ApplicationFactory('nlparse', StringIO(CONFIG),
+                             reload_pattern=reload_pattern)
     import __main__ as mmod
     if hasattr(mmod, '__file__'):
         cli.invoke()
     else:
-        cli.invoke_protect('expand'.split())
+        cli.invoke_protect('proto'.split())
 
 
 if __name__ == '__main__':
