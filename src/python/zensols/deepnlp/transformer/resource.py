@@ -38,13 +38,13 @@ class TransformerResource(object):
     """The ID of the model (i.e. ``bert-base-uncased``).  If this is not set, is
     derived from the ``model_name`` and ``case``.
 
-    Token embeding with :class:`.TransformerEmbedding` as been tested with:
+    Token embeding using :class:`.TransformerEmbedding` as been tested with:
 
-      * bert-base-cased
+      * ``bert-base-cased``
 
-      * roberta-base
+      * ``roberta-base``
 
-      * distilbert-base-cased
+      * ``distilbert-base-cased``
 
     :see: `Pretrained Models <https://huggingface.co/transformers/pretrained_models.html>`_
 
