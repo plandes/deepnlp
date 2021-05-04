@@ -16,6 +16,7 @@ from zensols.deeplearn.vectorize import (
     TensorFeatureContext,
     SparseTensorFeatureContext,
     MultiFeatureContext,
+    OneHotEncodedEncodableFeatureVectorizer,
 )
 from zensols.deepnlp import (
     FeatureToken,
@@ -447,6 +448,40 @@ class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
             return map(lambda x: (x[0], toks[x[0]], x[1]), tree.items())
         else:
             return ()
+
+
+@dataclass
+class OneHotEncodedFeatureDocumentVectorizer(
+        FeatureDocumentVectorizer, OneHotEncodedEncodableFeatureVectorizer):
+    ATTR_EXP_META = ('decoded_feature_ids',)
+    DESCRIPTION = 'encoded feature document vectorizer'
+    FEATURE_TYPE = TextFeatureType.TOKEN
+
+    feature_attribute: Tuple[str] = field(default=None)
+    """The feature attributes to vectorize."""
+
+    def __post_init__(self):
+        super().__post_init__()
+        self.optimize_bools = False
+
+    def _get_shape(self) -> Tuple[int, int]:
+        return -1, self.token_length, super()._get_shape()[1]
+
+    def _encode(self, doc: FeatureDocument) -> FeatureContext:
+        tlen = self.manager.get_token_length(doc)
+        slen = len(doc)
+        attr = self.feature_attribute
+        arr = self.torch_config.zeros((slen, tlen, self.shape[2]))
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'vectorizing: {attr} for token length: {tlen} ' +
+                         f'in to {arr.shape}')
+        for six, sent in enumerate(doc.sents):
+            feats = tuple(map(lambda s: getattr(s, attr), sent))
+            self._encode_cats(feats, arr[six])
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'vectorized: {len(doc)} sents in to {arr.shape}')
+        return SparseTensorFeatureContext.instance(
+            self.feature_id, arr, self.torch_config)
 
 
 @dataclass
