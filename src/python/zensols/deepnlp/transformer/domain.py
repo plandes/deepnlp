@@ -8,6 +8,7 @@ from typing import List, Tuple, Dict, Any, Union
 from dataclasses import dataclass, field
 import sys
 import logging
+import itertools as it
 from io import TextIOBase
 import torch
 from torch import Tensor
@@ -132,6 +133,9 @@ class TokenizedFeatureDocument(TokenizedDocument, Writable):
 
     """
 
+    char_offsets: Tuple[Tuple[int, int]] = field()
+    """The valid character offsets for each word piece token."""
+
     def detach(self) -> TokenizedDocument:
         return TokenizedDocument(self.tensor, self.boundary_tokens)
 
@@ -148,10 +152,26 @@ class TokenizedFeatureDocument(TokenizedDocument, Writable):
 
         """
         if self.id2tok is not None:
-            def id2tok(x):
-                return self.id2tok[x]
+            def id2tok(x, offix):
+                tix = input_sent[x]
+                tok = self.id2tok[tix]
+                tmp = tok
+                off = char_offsets[x]
+                tlen = len(tmp)
+                olen = off[1] - off[0]
+                if tlen > olen:
+                    if tok.startswith('##'):
+                        start = 2
+                    else:
+                        start = 1
+                else:
+                    start = 0
+                end = (off[1] - off[0]) + (start * 2)
+                tok = tok[start:end]
+                #print(off, tmp, tok, start, end, offix, len(tmp), (off[1] - off[0]))
+                return tok
         else:
-            def id2tok(x):
+            def id2tok(x, _):
                 return str(x)
         input_ids = self.input_ids.cpu().numpy()
         sent_offsets = self.offsets
@@ -160,17 +180,21 @@ class TokenizedFeatureDocument(TokenizedDocument, Writable):
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'doc: {doc}')
             logger.debug(f'inputs: {input_ids}')
-        for six, (sent, tok_offsets) in enumerate(zip(doc, sent_offsets)):
+        for six, (sent, tok_offsets, char_offsets) in enumerate(zip(doc, sent_offsets, self.char_offsets)):
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'sent idx: {six}, sent: {sent}, ' +
                              f'offsets: {tok_offsets}')
             input_sent = input_ids[six]
-            wps = self.map_word_pieces(sent_offsets[six])
+            wps = self.map_word_pieces(tok_offsets)
             sent_map = []
             sents_map.append({'sent': sent, 'map': sent_map})
             for tix, ixs in wps:
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug(f'{ixs} -> {tix}')
                 tok = sent[tix]
-                ttoks = tuple(map(lambda i: id2tok(input_sent[i]), ixs))
+                ttoks = tuple(map(lambda i: id2tok(i[0], i[1]), zip(ixs, it.count())))
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug(f'{tok} -> {ttoks}')
                 sent_map.append((tok, ttoks))
         return sents_map
 

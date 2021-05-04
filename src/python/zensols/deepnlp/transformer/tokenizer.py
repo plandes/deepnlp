@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Tuple
 from dataclasses import dataclass, field
 import logging
 import torch
@@ -82,12 +82,21 @@ class TransformerDocumentTokenizer(object):
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f"lengths: {[len(i) for i in tok_dat['input_ids']]}")
 
-        offsets = tok_dat['offset_mapping']
+        char_offsets = offsets = tok_dat['offset_mapping']
+
+        # bert:    [[(0, 0), (0, 3), (0, 4), (4, 8), (0, 3), (0, 4), (4, 7), (0, 1), (0, 0), (0, 0)], [(0, 0), (0, 4), (0, 1), (1, 3), (0, 6), (0, 5), (0, 4), (0, 3), (0, 1), (0, 0)]]
+        # roberta: [[(0, 0), (1, 3), (1, 4), (4, 8), (1, 3), (1, 7), (1, 1), (0, 0), (0, 0), (0, 0)], [(0, 0), (1, 4), (1, 1), (1, 3), (1, 6), (1, 5), (1, 4), (1, 3), (1, 1), (0, 0)]]
+
+        def map_off(iv: Tuple[int, int]) -> Tuple[int, int]:
+            if iv[0] > 0:# and (iv[1] - iv[0]) > 0:
+                #return (iv[0] - 1, iv[1] - 1)
+                return (iv[0] - 1, iv[1])
+            else:
+                return iv
 
         # roberta offsets are 1-indexed
         if self.resource._is_roberta():
-            offsets = tuple(map(lambda sent: list(
-                list(lambda x: (x[0]-1, x[1]), sent)), offsets))
+            offsets = tuple(map(lambda sent: list(map(map_off, sent)), offsets))
 
         sent_offsets = []
         boundary_tokens = False
@@ -104,7 +113,7 @@ class TransformerDocumentTokenizer(object):
             for i, (s, e) in enumerate(six_offsets[off:]):
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.debug(f'{i}: s/e={s},{e}, off={(tix-off)}')
-                if e == 0:
+                if e == 0 and s == 0:#e == 0:# or ((e-s)==0):
                     # we get an ending range for each padded token
                     if pad:
                         tok_offsets.append(-1)
@@ -126,13 +135,13 @@ class TransformerDocumentTokenizer(object):
                 logger.debug(f'tok ids: {tids}')
                 for stix, tix in enumerate(tids):
                     bid = tok_dat['input_ids'][six][stix]
+                    wtok = self.id2tok[bid]
                     if tix >= 0:
                         stok = sents[six][tix]
                     else:
                         stok = '-'
                     logger.debug(
-                        f'sent={six}, tok id={tix}, model id={bid}: ' +
-                        f'{self.id2tok[bid]} -> {stok}')
+                        f'sent={six}, idx={tix}, id={bid}: {wtok} -> {stok}')
 
         arr = torch_config.singleton(
             [tok_dat['input_ids'], tok_dat['attention_mask'], sent_offsets],
@@ -144,5 +153,6 @@ class TransformerDocumentTokenizer(object):
         return TokenizedFeatureDocument(
             tensor=arr,
             boundary_tokens=boundary_tokens,
+            char_offsets=char_offsets,
             feature=doc,
             id2tok=self.id2tok)

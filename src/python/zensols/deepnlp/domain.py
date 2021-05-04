@@ -269,8 +269,9 @@ class FeatureDocument(TokensContainer):
         else:
             return it.islice(self.sents, *args)
 
-    def get_text(self, *args):
-        return ' '.join(map(lambda s: s.text, self.sent_iter(*args)))
+    def get_text(self, *args, insert_space: bool = False):
+        delim = ' ' if insert_space else ''
+        return delim.join(map(lambda s: s.text, self.sent_iter(*args)))
 
     @property
     def max_sentence_len(self) -> int:

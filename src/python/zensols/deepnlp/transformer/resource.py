@@ -130,6 +130,8 @@ class TransformerResource(object):
         params.update(self.args)
         params.update(self.tokenizer_args)
         if self._is_roberta():
+            if not self.cased:
+                raise TransformerError('RoBERTa only supports cased models')
             params['add_prefix_space'] = True
         cls = self._create_tokenizer_class()
         return cls.from_pretrained(self.model_id, **params)
