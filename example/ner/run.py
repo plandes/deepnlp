@@ -18,13 +18,15 @@ def main(args: List[str], **factory_kwargs):
 def proto():
     print('-->proto')
     try:
-        run = 1
+        run = 0
         args = '-c models/transformer.conf'
-        reload = True
-        {0: lambda: main(f'./run.py tmp {args}'.split(), reload_factory=reload),
-         1: lambda: main(f'./run.py debug {args}'.split(), reload_factory=reload),
-         2: lambda: main('./run.py batch'.split(), reload_factory=reload),
-         3: lambda: main('./run.py train'.split(), reload_factory=reload),
+        # other reload patterns read from app.conf
+        rl_mods = 'ner.app'.split()
+        {0: lambda: main(f'./run.py tmp {args}'.split(),
+                         reload_pattern=f'^(?:{"|".join(rl_mods)})'),
+         1: lambda: main(f'./run.py debug {args}'.split()),
+         2: lambda: main('./run.py batch'.split()),
+         3: lambda: main('./run.py train'.split()),
          }[run]()
     except SystemExit as e:
         print(f'exit: {e}')

@@ -18,18 +18,6 @@ from zensols.deepnlp.batch import FeatureSentenceDataPoint
 @dataclass
 class NERDataPoint(FeatureSentenceDataPoint):
     @property
-    @persisted('_tags')
-    def tags(self) -> Tuple[str]:
-        """Part-of-speech (POS) tag"""
-        return tuple(map(lambda t: t.tag_, self.sent.token_iter()))
-
-    @property
-    @persisted('_syns')
-    def syns(self) -> Tuple[str]:
-        """A syntactic chunk tag."""
-        return tuple(map(lambda t: t.syn_, self.sent.token_iter()))
-
-    @property
     @persisted('_ents')
     def ents(self) -> Tuple[str]:
         """The label: the fourth the named entity tag."""
@@ -50,15 +38,17 @@ class NERBatch(Batch):
         'ents',
         [ManagerFeatureMapping(
             'label_vectorizer_manager',
-            (FieldFeatureMapping('tags', 'taglabel', True),
-             FieldFeatureMapping('syns', 'synlabel', True),
-             FieldFeatureMapping('ents', 'entlabel', True),
+            (FieldFeatureMapping('ents', 'entlabel', True),
              FieldFeatureMapping('mask', 'mask', True, 'ents'))),
          ManagerFeatureMapping(
              LANGUAGE_FEATURE_MANAGER_NAME,
-             (FieldFeatureMapping(GLOVE_50_EMBEDDING, 'wvglove50', True, 'doc'),
+             (FieldFeatureMapping('tags', 'tag', True, 'doc'),
+              FieldFeatureMapping('syns', 'syn', True, 'doc'),
+              FieldFeatureMapping(GLOVE_50_EMBEDDING, 'wvglove50', True, 'doc'),
               FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', True, 'doc'),
               FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', True, 'doc'),
+              FieldFeatureMapping('tags_expander', 'transformer_tags_expander', True, 'doc'),
+              FieldFeatureMapping('syns_expander', 'transformer_syns_expander', True, 'doc'),
               FieldFeatureMapping(
                   TRANSFORMER_EMBEDDING, TRANSFORMER_MODEL_NAME, True, 'doc'),),)])
 

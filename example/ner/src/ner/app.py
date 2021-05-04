@@ -38,9 +38,15 @@ class NERFacadeApplication(FacadeApplication):
                     print(model.transform(tsent).shape)
 
     def _test_decode(self):
+        import itertools as it
+        from zensols.deepnlp import FeatureDocument
         with dealloc(self._create_facade()) as facade:
-            vec = facade.transformer_vectorizer
-            print(type(vec))
+            sents = tuple(it.islice(facade.feature_stash.values(), 3))
+            doc = FeatureDocument(sents)
+            vec = facade.language_vectorizer_manager.vectorizers['syn']
+            from zensols.util.log import loglevel
+            with loglevel('zensols.deepnlp'):
+                vec.encode(doc)
 
     def _test_batch_write(self):
         if 0:
@@ -48,9 +54,9 @@ class NERFacadeApplication(FacadeApplication):
         import itertools as it
         from zensols.util.log import loglevel
         with dealloc(self._create_facade()) as facade:
-            with loglevel(['zensols.deepnlp.transformer',
-                           'zensols.deepnlp.vectorize.layer'], logging.DEBUG):
-                for id, batch in it.islice(facade.batch_stash, 100):
+            with loglevel(['xzensols.deepnlp.transformer',
+                           'xzensols.deepnlp.vectorize.layer'], logging.DEBUG):
+                for id, batch in it.islice(facade.batch_stash, 5):
                     batch.write()
 
     def _write_max_word_piece_token_length(self):
@@ -62,5 +68,5 @@ class NERFacadeApplication(FacadeApplication):
     def tmp(self):
         #self._test_transform()
         #self._test_decode()
-        #self._test_batch_write()
-        self._write_max_word_piece_token_length()
+        self._test_batch_write()
+        #self._write_max_word_piece_token_length()
