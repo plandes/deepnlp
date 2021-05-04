@@ -141,4 +141,8 @@ class TransformerDocumentTokenizer(object):
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'tok doc mat: shape={arr.shape}, dtype={arr.dtype}')
 
-        return TokenizedFeatureDocument(arr, doc, self.id2tok, boundary_tokens)
+        return TokenizedFeatureDocument(
+            tensor=arr,
+            boundary_tokens=boundary_tokens,
+            feature=doc,
+            id2tok=self.id2tok)

@@ -157,7 +157,13 @@ class TokenizedFeatureDocument(TokenizedDocument, Writable):
         sent_offsets = self.offsets
         doc = self.feature
         sents_map = []
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'doc: {doc}')
+            logger.debug(f'inputs: {input_ids}')
         for six, (sent, tok_offsets) in enumerate(zip(doc, sent_offsets)):
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'sent idx: {six}, sent: {sent}, ' +
+                             f'offsets: {tok_offsets}')
             input_sent = input_ids[six]
             wps = self.map_word_pieces(sent_offsets[six])
             sent_map = []

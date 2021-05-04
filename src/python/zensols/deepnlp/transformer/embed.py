@@ -36,7 +36,19 @@ class TransformerEmbedding(object):
     """The tokenizer used for creating the input for the model."""
 
     output: str = field(default='pooler_output')
-    """The output from the huggingface transformer API to return."""
+    """The output from the huggingface transformer API to return.
+
+    This is set to one of:
+
+       * ``last_hidden_state``: with the output embeddings of the last layer
+         with shape: ``(batch, N sentences, hidden layer dimension)
+
+       * ``pooler_output``: the last layer hidden-state of the first token of
+         the sequence (classification token) further processed by a Linear
+         layer and a Tanh activation function with shape: ``(batch, hidden
+         layer dimension)``
+
+    """
 
     output_attentions: bool = field(default=False)
     """Whether or not to output the attention layer."""
