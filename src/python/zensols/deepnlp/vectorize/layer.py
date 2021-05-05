@@ -329,6 +329,9 @@ class TransformerEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
     def __post_init__(self):
         super().__post_init__()
         if self.encode_transformed and self.embed_model.trainable:
+            # once the transformer last hidden state is dumped during encode
+            # the parameters are lost, which are needed to train the model
+            # properly
             raise VectorizerError('a trainable model can not encode ' +
                                   'transformed vectorized features')
 

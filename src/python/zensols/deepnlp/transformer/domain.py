@@ -32,12 +32,6 @@ class TokenizedDocument(PersistableContainer):
     tensor: Tensor = field()
     """Encodes the input IDs, attention mask, and word piece offset map."""
 
-    boundary_tokens: bool = field()
-    """If the token document has sentence boundary tokens, such as ``[CLS]`` for
-    Bert.
-
-    """
-
     def __post_init__(self):
         super().__init__()
 
@@ -137,7 +131,7 @@ class TokenizedFeatureDocument(TokenizedDocument, Writable):
     """The valid character offsets for each word piece token."""
 
     def detach(self) -> TokenizedDocument:
-        return TokenizedDocument(self.tensor, self.boundary_tokens)
+        return TokenizedDocument(self.tensor)
 
     def map_word_pieces_to_tokens(self) -> \
             List[Dict[str, Union[FeatureSentence,

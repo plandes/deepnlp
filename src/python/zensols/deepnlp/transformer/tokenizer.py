@@ -84,12 +84,8 @@ class TransformerDocumentTokenizer(object):
 
         char_offsets = offsets = tok_dat['offset_mapping']
 
-        # bert:    [[(0, 0), (0, 3), (0, 4), (4, 8), (0, 3), (0, 4), (4, 7), (0, 1), (0, 0), (0, 0)], [(0, 0), (0, 4), (0, 1), (1, 3), (0, 6), (0, 5), (0, 4), (0, 3), (0, 1), (0, 0)]]
-        # roberta: [[(0, 0), (1, 3), (1, 4), (4, 8), (1, 3), (1, 7), (1, 1), (0, 0), (0, 0), (0, 0)], [(0, 0), (1, 4), (1, 1), (1, 3), (1, 6), (1, 5), (1, 4), (1, 3), (1, 1), (0, 0)]]
-
         def map_off(iv: Tuple[int, int]) -> Tuple[int, int]:
-            if iv[0] > 0:# and (iv[1] - iv[0]) > 0:
-                #return (iv[0] - 1, iv[1] - 1)
+            if iv[0] > 0:
                 return (iv[0] - 1, iv[1])
             else:
                 return iv
@@ -99,13 +95,10 @@ class TransformerDocumentTokenizer(object):
             offsets = tuple(map(lambda sent: list(map(map_off, sent)), offsets))
 
         sent_offsets = []
-        boundary_tokens = False
         for six, six_offsets in enumerate(offsets):
             # start at index 1 if end span > 0, which indicates a [CLS] (or <s>
             # i.e. roberta) token
             off = 1 if six_offsets[0][1] == 0 else 0
-            if off == 1:
-                boundary_tokens = True
             tix = 0
             tok_offsets = []
             sent_offsets.append(tok_offsets)
@@ -113,7 +106,7 @@ class TransformerDocumentTokenizer(object):
             for i, (s, e) in enumerate(six_offsets[off:]):
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.debug(f'{i}: s/e={s},{e}, off={(tix-off)}')
-                if e == 0 and s == 0:#e == 0:# or ((e-s)==0):
+                if e == 0 and s == 0:
                     # we get an ending range for each padded token
                     if pad:
                         tok_offsets.append(-1)
@@ -152,7 +145,6 @@ class TransformerDocumentTokenizer(object):
 
         return TokenizedFeatureDocument(
             tensor=arr,
-            boundary_tokens=boundary_tokens,
             char_offsets=char_offsets,
             feature=doc,
             id2tok=self.id2tok)
