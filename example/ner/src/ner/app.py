@@ -5,7 +5,9 @@ __author__ = 'plandes'
 
 from dataclasses import dataclass
 import logging
+import itertools as it
 from zensols.deeplearn.cli import FacadeApplication
+from zensols.deepnlp import FeatureDocument
 from zensols.persist import dealloc
 
 logger = logging.getLogger(__name__)
@@ -38,8 +40,6 @@ class NERFacadeApplication(FacadeApplication):
                     print(model.transform(tsent).shape)
 
     def _test_decode(self):
-        import itertools as it
-        from zensols.deepnlp import FeatureDocument
         with dealloc(self._create_facade()) as facade:
             sents = tuple(it.islice(facade.feature_stash.values(), 3))
             doc = FeatureDocument(sents)
@@ -52,12 +52,9 @@ class NERFacadeApplication(FacadeApplication):
         if 0:
             self.sent_batch_stash.clear()
         import itertools as it
-        from zensols.util.log import loglevel
         with dealloc(self._create_facade()) as facade:
-            with loglevel(['xzensols.deepnlp.transformer',
-                           'xzensols.deepnlp.vectorize.layer'], logging.DEBUG):
-                for id, batch in it.islice(facade.batch_stash, 5):
-                    batch.write()
+            for id, batch in it.islice(facade.batch_stash, 5):
+                batch.write()
 
     def _write_max_word_piece_token_length(self):
         logger.info('calculatating word piece length on data set...')
