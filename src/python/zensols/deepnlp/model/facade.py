@@ -61,6 +61,9 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
     facade.  This facade also provides logging configuration for NLP domains
     for this package.
 
+    This class makes assumptions on the naming of the embedding layer
+    vectorizer naming.  See :obj:`embedding`.
+
     """
     @abstractmethod
     def _get_language_model_config(self) -> LanguageModelFacadeConfig:
@@ -148,7 +151,22 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
 
     @property
     def embedding(self) -> str:
-        """Configure the embedding layer.
+        """The embedding layer.
+
+        **Important**: the naming of the ``embedding`` parameter is that which
+        is given in the configuration without the ``_layer`` postfix.  For
+        example, ``embedding`` is ``glove_50_embedding`` for:
+
+          * ``glove_50_embedding`` is the name of the
+            :class:`~zensols.deepnlp.embed.GloveWordEmbedModel`
+
+          * ``glove_50_feature_vectorizer`` is the name of the
+            :class:`~zensols.deepnlp.vectorize.WordVectorEmbeddingFeatureVectorizer`
+
+          * ``glove_50_embedding_layer`` is the name of the
+            :class: `~zensols.deepnlp.vectorize.WordVectorEmbeddingLayer`
+
+        :param embedding: the kind of embedding, i.e. ``glove_50_embedding``
 
         """
         stash = self.batch_stash
@@ -160,11 +178,22 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
 
     @embedding.setter
     def embedding(self, embedding: str):
-        """Configure the embedding layer.
+        """The embedding layer.
 
-        :param embedding: the kind of embedding, which is one of ``glove_50``
-                          for glove 50 dimension, ``glove_300`` for glove 300
-                          dimension or ``bert`` for BERT embeddings
+        **Important**: the naming of the ``embedding`` parameter is that which
+        is given in the configuration without the ``_layer`` postfix.  For
+        example, ``embedding`` is ``glove_50_embedding`` for:
+
+          * ``glove_50_embedding`` is the name of the
+            :class:`~zensols.deepnlp.embed.GloveWordEmbedModel`
+
+          * ``glove_50_feature_vectorizer`` is the name of the
+            :class:`~zensols.deepnlp.vectorize.WordVectorEmbeddingFeatureVectorizer`
+
+          * ``glove_50_embedding_layer`` is the name of the
+            :class: `~zensols.deepnlp.vectorize.WordVectorEmbeddingLayer`
+
+        :param embedding: the kind of embedding, i.e. ``glove_50_embedding``
 
         """
         self._set_embedding(embedding)
