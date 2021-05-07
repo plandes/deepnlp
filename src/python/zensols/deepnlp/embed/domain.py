@@ -5,11 +5,12 @@ __author__ = 'Paul Landes'
 
 from typing import List, Dict, Tuple
 from dataclasses import dataclass, field
-from abc import ABC, abstractmethod
+from abc import ABCMeta, abstractmethod
 from pathlib import Path
 import logging
 import numpy as np
 import torch
+from zensols.config import Deallocatable
 from zensols.deeplearn import TorchConfig
 
 logger = logging.getLogger(__name__)
@@ -50,7 +51,7 @@ class WordVectorModel(object):
 
 
 @dataclass
-class WordEmbedModel(ABC):
+class WordEmbedModel(Deallocatable, metaclass=ABCMeta):
     """This is an abstract base class that represents a set of word vectors
     (i.e. GloVe).
 
@@ -107,7 +108,13 @@ class WordEmbedModel(ABC):
         pass
 
     def clear_cache(self):
+        for model in self.CACHE.values():
+            self._try_deallocate(model)
         self.CACHE.clear()
+
+    def deallocate(self):
+        self.clear_cache()
+        super().deallocate()
 
     @property
     def model_id(self) -> str:

@@ -74,6 +74,7 @@ class EmbeddingLayer(DebugModule, Deallocatable):
                 if hasattr(self, 'embed_model'):
                     em = self.embed_model.name
                 self._debug(f'deallocating: {em} and {type(self.emb)}')
+            self._try_deallocate(self.emb)
             del self.emb
             if hasattr(self, 'embed_model'):
                 del self.embed_model
@@ -182,6 +183,8 @@ class TransformerEmbeddingLayer(EmbeddingLayer):
 
     def deallocate(self):
         if not self.embed_model.cache:
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug('deallocate: {self.__class__}')
             super().deallocate()
 
     def _forward_trainable(self, doc: Tensor) -> Tensor:
@@ -370,7 +373,7 @@ class TransformerEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
 
 
 @dataclass
-class TransformerExpanderFeatureContext(MultiFeatureContext, Deallocatable):
+class TransformerExpanderFeatureContext(MultiFeatureContext):
     """A vectorizer feature contex used with
     :class:`.TransformerExpanderFeatureVectorizer`.
 
@@ -388,7 +391,7 @@ class TransformerExpanderFeatureContext(MultiFeatureContext, Deallocatable):
 
 @dataclass
 class TransformerExpanderFeatureVectorizer(FeatureDocumentVectorizer,
-                                           Primeable):
+                                           Deallocatable, Primeable):
     """A vectorizer that expands lingustic feature vectors to their respective
     locations as word piece token vectors.
 
@@ -424,7 +427,7 @@ class TransformerExpanderFeatureVectorizer(FeatureDocumentVectorizer,
             self.embed_model.prime()
 
     @property
-    @persisted('_delegates')
+    @persisted('_delegates', allocation_track=False)
     def delegates(self) -> EncodableFeatureVectorizer:
         """The delegates used for encoding and decoding the lingustic features.
 
@@ -449,10 +452,10 @@ class TransformerExpanderFeatureVectorizer(FeatureDocumentVectorizer,
 
     def _decode(self, context: TransformerExpanderFeatureContext) -> Tensor:
         doc: TokenizedDocument = context.document
-        vec: FeatureDocumentVectorizer
-        ctx: FeatureContext
         arrs: List[Tensor] = []
         # decode subordinate contexts
+        vec: FeatureDocumentVectorizer
+        ctx: FeatureContext
         for vec, ctx in zip(self.delegates, context.contexts):
             src = vec.decode(ctx)
             if logger.isEnabledFor(logging.DEBUG):

@@ -14,7 +14,7 @@ from transformers.modeling_outputs import \
     BaseModelOutputWithPoolingAndCrossAttentions
 from zensols.deepnlp import FeatureDocument
 from zensols.deepnlp.transformer import TransformerResource
-from zensols.persist import persisted, PersistedWork
+from zensols.persist import persisted, PersistedWork, PersistableContainer
 from . import (
     TransformerError, TokenizedDocument, TokenizedFeatureDocument,
     TransformerDocumentTokenizer
@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class TransformerEmbedding(object):
+class TransformerEmbedding(PersistableContainer):
     """An model for transformer (i.e. Bert) embeddings that wraps the HuggingFace
     transformms API.
 
@@ -78,7 +78,9 @@ class TransformerEmbedding(object):
         toker: TransformerDocumentTokenizer = self.tokenizer
         doc: TokenizedFeatureDocument = toker._from_tokens([['the']], None)
         emb = self.transform(doc, 'pooler_output')
-        return emb.size(-1)
+        size = emb.size(-1)
+        doc.deallocate()
+        return size
 
     @property
     def trainable(self) -> bool:

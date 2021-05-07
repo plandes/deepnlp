@@ -9,14 +9,14 @@ import logging
 import torch
 from zensols.deepnlp import FeatureDocument
 from zensols.deepnlp.transformer import TransformerResource
-from zensols.persist import persisted
+from zensols.persist import persisted, PersistableContainer
 from . import TokenizedFeatureDocument
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass
-class TransformerDocumentTokenizer(object):
+class TransformerDocumentTokenizer(PersistableContainer):
     MAX_TOKEN_LENGTH = 512
     """The maximum token length to truncate before converting to IDs.  If this
     isn't done, the following error is raised:

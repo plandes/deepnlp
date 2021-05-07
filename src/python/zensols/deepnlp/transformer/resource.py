@@ -10,18 +10,22 @@ from pathlib import Path
 from transformers import PreTrainedTokenizer, PreTrainedModel
 from zensols.util.time import time
 from zensols.introspect import ClassImporter
-from zensols.persist import persisted, PersistedWork
+from zensols.persist import persisted, PersistedWork, PersistableContainer
 from zensols.deeplearn import TorchConfig
 
 logger = logging.getLogger(__name__)
 
 
 class TransformerError(Exception):
+    """Raised for any transformer specific errors in this and child modules of the
+    parent.
+
+    """
     pass
 
 
 @dataclass
-class TransformerResource(object):
+class TransformerResource(PersistableContainer):
     """A utility base class that allows configuration and creates various
     huggingface models.
 
