@@ -29,6 +29,7 @@ class TokenizedDocument(PersistableContainer):
     :class:`.TransformerEmbedding`.
 
     """
+
     tensor: Tensor = field()
     """Encodes the input IDs, attention mask, and word piece offset map."""
 
