@@ -13,7 +13,9 @@ import re
 import collections
 from io import TextIOBase
 from zensols.util import time
-from zensols.persist import OneShotFactoryStash, PersistedWork, persisted
+from zensols.persist import (
+    OneShotFactoryStash, PersistedWork, persisted, PersistableContainer
+)
 from zensols.config import Dictable
 from zensols.nlp import BasicTokenFeatures
 from zensols.dataset import AbstractSplitKeyContainer, DatasetSplitStash
@@ -115,7 +117,7 @@ class SentenceFactoryStash(OneShotFactoryStash, AbstractSplitKeyContainer):
 
 
 @dataclass
-class SentenceStats(Dictable):
+class SentenceStats(PersistableContainer, Dictable):
     stash: DatasetSplitStash
     path: Path
 

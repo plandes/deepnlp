@@ -19,7 +19,7 @@ def proto():
     print('-->proto')
     try:
         run = 0
-        args = '-c models/transformer.conf'
+        args = '-c models/transformer-fixed.conf'
         # other reload patterns read from app.conf
         rl_mods = 'ner.app'.split()
         {0: lambda: main(f'./run.py tmp {args}'.split(),
