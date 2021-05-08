@@ -391,7 +391,7 @@ class TransformerExpanderFeatureContext(MultiFeatureContext):
 
 @dataclass
 class TransformerExpanderFeatureVectorizer(FeatureDocumentVectorizer,
-                                           Deallocatable, Primeable):
+                                           Primeable):
     """A vectorizer that expands lingustic feature vectors to their respective
     locations as word piece token vectors.
 
