@@ -191,6 +191,8 @@ class TransformerEmbeddingLayer(EmbeddingLayer):
         tok_doc: TokenizedDocument = TokenizedDocument.from_tensor(doc)
         x = self.embed_model.transform(tok_doc)
 
+        tok_doc.deallocate()
+
         if logger.isEnabledFor(logging.DEBUG):
             self._shape_debug('embedding', x)
 
