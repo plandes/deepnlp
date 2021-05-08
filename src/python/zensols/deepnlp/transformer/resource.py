@@ -107,6 +107,7 @@ class TransformerResource(PersistableContainer):
     """The directory that is contains the BERT model(s)."""
 
     def __post_init__(self, cache: bool):
+        super().__init__()
         if self.cache_dir is not None and not self.cache_dir.exists():
             if logger.isEnabledFor(logging.DEBUG):
                 logger.info(f'creating cache directory: {self.cache_dir}')

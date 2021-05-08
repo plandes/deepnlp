@@ -54,6 +54,7 @@ class TransformerEmbedding(PersistableContainer):
     """Whether or not to output the attention layer."""
 
     def __post_init__(self):
+        super().__init__()
         self._vec_dim = PersistedWork('_vec_dim', self, self.resource.cache)
 
     @property
@@ -63,6 +64,10 @@ class TransformerEmbedding(PersistableContainer):
 
     @property
     def cache(self):
+        """When set to ``True`` cache a global space model using the parameters from
+        the first instance creation.
+
+        """
         return self.resource.cache
 
     @property

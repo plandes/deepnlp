@@ -37,6 +37,9 @@ class TransformerDocumentTokenizer(PersistableContainer):
 
     """
 
+    def __post_init__(self):
+        super().__init__()
+
     @property
     @persisted('_id2tok')
     def id2tok(self) -> Dict[int, str]:
