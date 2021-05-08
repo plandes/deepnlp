@@ -362,7 +362,7 @@ class TransformerEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
         if emb.trainable:
             arr = context.document.tensor
             if logger.isEnabledFor(logging.DEBUG):
-                logger.debug('passing through tensor: {arr.shape}')
+                logger.debug(f'passing through tensor: {arr.shape}')
         else:
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'transforming doc: {context.document}')

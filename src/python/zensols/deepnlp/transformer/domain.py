@@ -38,6 +38,14 @@ class TokenizedDocument(PersistableContainer):
 
     @classmethod
     def from_tensor(cls, tensor: Tensor) -> TokenizedDocument:
+        """Create an instance of the class using a tensor.  This is useful for
+        re-creating documents for mapping with :meth:`.map_word_pieces` after
+        unpickling from a document created with
+        :class:`.TransformerDocumentTokenizer.tokenize`.
+
+        :param tensor: the tensor to set in :obj:`.tensor`
+
+        """
         return cls(tensor)
 
     @property
@@ -64,6 +72,7 @@ class TokenizedDocument(PersistableContainer):
         return self.tensor.shape
 
     def __len__(self) -> int:
+        """Return the size of the document in number of word pieces."""
         return self.tensor.size(-1)
 
     def detach(self) -> TokenizedDocument:
