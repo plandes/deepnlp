@@ -22,7 +22,7 @@ def proto():
         args = '-c models/transformer-fixed.conf'
         # other reload patterns read from app.conf
         rl_mods = 'ner.app'.split()
-        {0: lambda: main(f'./run.py tmp {args}'.split(),
+        {0: lambda: main(f'./run.py all {args}'.split(),
                          reload_pattern=f'^(?:{"|".join(rl_mods)})'),
          1: lambda: main(f'./run.py debug {args}'.split()),
          2: lambda: main('./run.py batch'.split()),

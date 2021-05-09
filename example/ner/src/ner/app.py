@@ -20,6 +20,10 @@ class NERFacadeApplication(FacadeApplication):
     """
     CLASS_INSPECTOR = {}
 
+    def __post_init__(self):
+        super().__post_init__()
+        self.sent = "I'm Paul Landes.  I live in the United States."
+
     def stats(self):
         """Print out the corpus statistics.
 
@@ -28,10 +32,9 @@ class NERFacadeApplication(FacadeApplication):
             facade.write_corpus_stats()
 
     def _test_transform(self):
-        text = "I'm Paul Landes.  I live in the United States."
         with dealloc(self._create_facade()) as facade:
             model = facade.transformer_embedding_model
-            sents = facade.doc_parser.parse(text)
+            sents = facade.doc_parser.parse(self.sent)
             from zensols.util.log import loglevel
             with loglevel(['zensols.deepnlp.transformer'], logging.INFO):
                 for sent in sents[0:1]:
@@ -48,10 +51,9 @@ class NERFacadeApplication(FacadeApplication):
             with loglevel('zensols.deepnlp'):
                 vec.encode(doc)
 
-    def _test_batch_write(self):
-        if 0:
+    def _test_batch_write(self, clear: bool = False):
+        if clear:
             self.sent_batch_stash.clear()
-        import itertools as it
         with dealloc(self._create_facade()) as facade:
             for id, batch in it.islice(facade.batch_stash, 5):
                 batch.write()
@@ -62,8 +64,8 @@ class NERFacadeApplication(FacadeApplication):
             mlen = facade.get_max_word_piece_len()
             print(f'max word piece token length: {mlen}')
 
-    def tmp(self):
-        #self._test_transform()
-        #self._test_decode()
+    def all(self):
+        self._test_transform()
+        self._test_decode()
         self._test_batch_write()
-        #self._write_max_word_piece_token_length()
+        self._write_max_word_piece_token_length()
