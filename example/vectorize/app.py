@@ -85,3 +85,7 @@ class Application(object):
         self.dependency()
         self.word2vec()
         self.bert()
+
+    def proto(self):
+        """Prototype entry point."""
+        self.bert()
