@@ -88,7 +88,7 @@ rebatch:
 
 .PHONY:			modeldebug
 modeldebug:
-			$(ENTRY) debug --config $(MDL_DIR)/transformer.conf
+			$(ENTRY) debug --config $(MDL_DIR)/transformer-fixed.conf
 
 .PHONY:			glove50
 glove50:
@@ -104,7 +104,7 @@ word2vec:
 
 .PHONY:			transformer
 transformer:
-			$(ENTRY) traintest -p --config $(MDL_DIR)/transformer.conf
+			$(ENTRY) traintest -p --config $(MDL_DIR)/transformer-fixed.conf
 
 .PHONY:			allmodels
 allmodels:		glove50 glove300 word2vec transformer

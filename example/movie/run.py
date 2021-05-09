@@ -18,9 +18,12 @@ def main(args: List[str], **factory_kwargs):
 def proto():
     print('-->proto')
     try:
-        args = './run.py debug -c models/glove50.conf'.split()
-        #args = './run.py info'.split()
-        main(args, reload_factory=True)
+        action = {0: 'debug',
+                  1: 'batch',
+                  2: 'proto',
+                  }[0]
+        args = f'run.py {action} -c models/transformer-fixed.conf'
+        main(args.split(), reload_factory=True)
     except SystemExit as e:
         print(f'exit: {e}')
 
