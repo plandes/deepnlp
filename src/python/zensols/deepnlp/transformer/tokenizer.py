@@ -98,10 +98,13 @@ class TransformerDocumentTokenizer(PersistableContainer):
             offsets = tuple(map(lambda sent: list(map(map_off, sent)), offsets))
 
         sent_offsets = []
+        boundary_tokens = False
         for six, six_offsets in enumerate(offsets):
             # start at index 1 if end span > 0, which indicates a [CLS] (or <s>
             # i.e. roberta) token
             off = 1 if six_offsets[0][1] == 0 else 0
+            if off == 1:
+                boundary_tokens = True
             tix = 0
             tok_offsets = []
             sent_offsets.append(tok_offsets)
@@ -148,6 +151,7 @@ class TransformerDocumentTokenizer(PersistableContainer):
 
         return TokenizedFeatureDocument(
             tensor=arr,
+            boundary_tokens=boundary_tokens,
             char_offsets=char_offsets,
             feature=doc,
             id2tok=self.id2tok)
