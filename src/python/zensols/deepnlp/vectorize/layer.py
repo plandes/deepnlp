@@ -358,7 +358,8 @@ class TransformerEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
     def _decode(self, context: TransformerFeatureContext) -> Tensor:
         emb: TransformerEmbedding = self.embed_model
         if logger.isEnabledFor(logging.INFO):
-            logger.info(f'decoding {len(context.document)} documents')
+            logger.info(f'decoding {len(context.document)} documents with ' +
+                        f'trainable: {emb.trainable}')
         tok_doc: TokenizedDocument
         arr: Tensor
         if emb.trainable:
@@ -370,7 +371,7 @@ class TransformerEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
                 logger.debug(f'transforming doc: {context.document}')
             arr = emb.transform(context.document)
         if logger.isEnabledFor(logging.INFO):
-            logger.info(f'decoded {arr.shape} on {arr.device}')
+            logger.info(f'decoded trans layer {arr.shape} on {arr.device}')
         return arr
 
 

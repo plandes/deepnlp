@@ -181,3 +181,6 @@ class TransformerResource(PersistableContainer):
     def clear(self):
         self._tokenizer.clear()
         self._model.clear()
+
+    def __str__(self) -> str:
+        return f'{self.name}: id: {self.model_id}, cased: {self.cased}'

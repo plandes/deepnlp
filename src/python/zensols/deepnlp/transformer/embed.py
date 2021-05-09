@@ -84,6 +84,9 @@ class TransformerEmbedding(PersistableContainer):
         doc: TokenizedFeatureDocument = toker._from_tokens([['the']], None)
         emb = self.transform(doc, 'pooler_output')
         size = emb.size(-1)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'embedding dimension {size} for ' +
+                         f'model {self.resource}')
         doc.deallocate()
         return size
 
