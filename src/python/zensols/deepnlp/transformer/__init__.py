@@ -3,6 +3,7 @@ deeplearning framework.
 
 """
 from .domain import *
+from .optimizer import *
 from .resource import *
 from .tokenizer import *
 from .embed import *
