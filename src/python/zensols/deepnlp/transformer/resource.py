@@ -170,7 +170,9 @@ class TransformerResource(PersistableContainer):
             cls = self._create_model_class()
             model = cls.from_pretrained(self.model_id, **params)
         # put the model in `evaluation` mode, meaning feed-forward operation.
-        if not self.trainable:
+        if self.trainable:
+            logger.debug('model is trainable')
+        else:
             logger.debug('turning off grad for non-trainable transformer')
             model.eval()
             for param in model.base_model.parameters():

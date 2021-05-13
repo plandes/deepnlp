@@ -3,6 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
+from typing import Dict
 from dataclasses import dataclass
 from typing import Callable
 import logging
@@ -112,13 +113,18 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         super().__init__(net_settings, module_logger)
         self.embedding = net_settings.embedding_layer
         self.embedding_output_size = self.embedding.embedding_dim
+        if logger.isEnabledFor(logging.DEBUG):
+            self._debug(f'embedding dim: {self.embedding.embedding_dim} ' +
+                        f'output size: {self.embedding_output_size}')
         self.join_size = 0
         meta: BatchMetadata = self.net_settings.batch_metadata
         self.token_attribs = []
         self.doc_attribs = []
         embedding_attribs = []
         field: BatchFieldMetadata
-        fba = meta.fields_by_attribute
+        fba: Dict[str, BatchFieldMetadata] = meta.fields_by_attribute
+        if logger.isEnabledFor(logging.DEBUG):
+            self._debug(f'batch field metadata: {fba}')
         for name in sorted(fba.keys()):
             field_meta: BatchFieldMetadata = fba[name]
             if filter_attrib_fn is not None and \

@@ -78,12 +78,17 @@ class TransformerDocumentTokenizer(PersistableContainer):
         else:
             params.update({'padding': 'longest',
                            'truncation': False})
+
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug('using tokenizer parameters: {params}')
+
         if tokenizer_kwargs is not None:
             params.update(tokenizer_kwargs)
         tok_dat = tokenizer(sents, **params)
 
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f"lengths: {[len(i) for i in tok_dat['input_ids']]}")
+            logger.debug(f"inputs: {tok_dat['input_ids']}")
 
         char_offsets = offsets = tok_dat['offset_mapping']
 
