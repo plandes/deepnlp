@@ -317,8 +317,25 @@ class TransformerFeatureContext(FeatureContext, Deallocatable):
         del self.document
 
 
+class _DocumentTokenzier(object):
+    """Tokenizes documents.
+
+    """
+    def tokenize(self, doc: FeatureDocument) -> TokenizedFeatureDocument:
+        """Tokenize the document in to a token document used by the encoding phase.
+
+        :param doc: the document to be tokenized
+
+        """
+        emb: TransformerEmbedding = self.embed_model
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'synthesized document: {doc}')
+        return emb.tokenize(doc)
+
+
 @dataclass
-class TransformerEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
+class TransformerEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer,
+                                            _DocumentTokenzier):
     """A feature vectorizer used to create transformer (i.e. Bert) embeddings.  The
     class uses the :obj:`.embed_model`, which is of type
     :class:`.TransformerEmbedding`.
@@ -339,17 +356,6 @@ class TransformerEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
             # properly
             raise VectorizerError('a trainable model can not encode ' +
                                   'transformed vectorized features')
-
-    def tokenize(self, doc: FeatureDocument) -> TokenizedFeatureDocument:
-        """Tokenize the document in to a token document used by the encoding phase.
-
-        :param doc: the document to be tokenized
-
-        """
-        emb: TransformerEmbedding = self.embed_model
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'synthesized document: {doc}')
-        return emb.tokenize(doc)
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
         tok_doc = self.tokenize(doc).detach()
@@ -394,7 +400,7 @@ class TransformerExpanderFeatureContext(MultiFeatureContext):
 
 @dataclass
 class TransformerExpanderFeatureVectorizer(FeatureDocumentVectorizer,
-                                           Primeable):
+                                           Primeable, _DocumentTokenzier):
     """A vectorizer that expands lingustic feature vectors to their respective
     locations as word piece token vectors.
 
@@ -436,17 +442,6 @@ class TransformerExpanderFeatureVectorizer(FeatureDocumentVectorizer,
 
         """
         return tuple(map(lambda f: self.manager[f], self.delegate_feature_ids))
-
-    def tokenize(self, doc: FeatureDocument) -> TokenizedFeatureDocument:
-        """Tokenize the document in to a token document used by the encoding phase.
-
-        :param doc: the document to be tokenized
-
-        """
-        emb: TransformerEmbedding = self.embed_model
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'synthesized document: {doc}')
-        return emb.tokenize(doc)
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
         tok_doc = self.tokenize(doc).detach()
