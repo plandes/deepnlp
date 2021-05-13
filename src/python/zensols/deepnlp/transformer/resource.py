@@ -3,13 +3,18 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Dict, Any, Type
+from typing import Dict, Any, Type, Tuple
 from dataclasses import dataclass, field, InitVar
 import logging
+import collections
+from io import TextIOBase
+from functools import reduce
 from pathlib import Path
+from torch import Tensor
 from transformers import PreTrainedTokenizer, PreTrainedModel
 from zensols.util.time import time
 from zensols.introspect import ClassImporter
+from zensols.config import Dictable
 from zensols.persist import persisted, PersistedWork, PersistableContainer
 from zensols.deeplearn import TorchConfig
 
@@ -25,7 +30,7 @@ class TransformerError(Exception):
 
 
 @dataclass
-class TransformerResource(PersistableContainer):
+class TransformerResource(PersistableContainer, Dictable):
     """A utility base class that allows configuration and creates various
     huggingface models.
 
@@ -179,6 +184,31 @@ class TransformerResource(PersistableContainer):
                 param.requires_grad = False
         model = self.torch_config.to(model)
         return model
+
+    def _from_dictable(self, *args, **kwargs) -> Dict[str, Any]:
+        dct = super()._from_dictable(*args, **kwargs)
+        secs = collections.OrderedDict()
+        name: str
+        param: Tensor
+        n_total_params = 0
+        for name, param in self.model.named_parameters():
+            prefix = name[:name.find('.')]
+            layer: Dict[str, Tuple[int, int]] = secs.get(prefix)
+            if layer is None:
+                layer = collections.OrderedDict()
+                secs[prefix] = layer
+            shape: Tuple[int, int] = tuple(param.shape)
+            n_total_params += reduce(lambda x, y: x * y, shape)
+            layer[name] = shape
+        dct['model'] = {'sections': secs, 'params': n_total_params}
+        return dct
+
+    def _write_dict(self, data: dict, depth: int, writer: TextIOBase):
+        is_param = False
+        if len(data) > 0:
+            val = next(iter(data.values()))
+            is_param = (isinstance(val, tuple) and len(val) == 2)
+        super()._write_dict(data, depth, writer, is_param)
 
     def clear(self):
         self._tokenizer.clear()
