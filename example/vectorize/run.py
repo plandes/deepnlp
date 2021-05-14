@@ -29,10 +29,8 @@ def main():
     silencewarn()
     rl_mods = 'app zensols.deepnlp.transformer zensols.deepnlp.vectorize.layer'.split()
     reload_pattern = f'^(?:{"|".join(rl_mods)})'
-    #reload_pattern = 'zensols.deepnlp.transformer'
-    print(reload_pattern)
-    cli = ApplicationFactory('nlparse', StringIO(CONFIG),
-                             reload_pattern=reload_pattern)
+    cli = ApplicationFactory(
+        'nlparse', StringIO(CONFIG), reload_pattern=reload_pattern)
     import __main__ as mmod
     if hasattr(mmod, '__file__'):
         cli.invoke()
