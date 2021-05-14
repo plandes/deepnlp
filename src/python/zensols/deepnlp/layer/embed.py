@@ -194,6 +194,7 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         """Use the embedding layer return the word embedding tensors.
 
         """
+        self._debug('forward embedding')
         decoded = False
         x = batch.attributes[self.embedding_attribute_name]
         self._shape_debug('input', x)
@@ -213,15 +214,24 @@ class EmbeddingNetworkModule(BaseNetworkModule):
     def forward_token_features(self, batch: Batch, x: Tensor = None) -> Tensor:
         """Concatenate any token features given by the vectorizer configuration.
 
+        :param batch: contains token level attributes to concatenate to ``x``
+
+        :param x: if given, the first tensor to be concatenated
+
         """
+        self._shape_debug('initial tensor to concat', x)
         arrs = []
         if x is not None:
+            self._shape_debug('adding passed token features', x)
             arrs.append(x)
         for attrib in self.token_attribs:
             feats = batch.attributes[attrib]
             self._shape_debug(f'token attrib {attrib}', feats)
             arrs.append(feats)
-        if len(arrs) > 0:
+        if len(arrs) == 1:
+            x = arrs[0]
+        elif len(arrs) > 1:
+            self._debug(f'concating {len(arrs)} token features')
             x = torch.cat(arrs, 2)
             self._shape_debug('token concat', x)
         return x
@@ -231,6 +241,7 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         """Concatenate any document features given by the vectorizer configuration.
 
         """
+        self._shape_debug('forward document features', x)
         arrs = []
         if x is not None:
             arrs.append(x)
