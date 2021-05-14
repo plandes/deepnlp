@@ -29,8 +29,10 @@ class ReviewNetworkSettings(DropoutNetworkSettings, EmbeddingNetworkSettings):
     def _set_option(self, name: str, value: Any):
         super()._set_option(name, value)
         if name == 'dropout' and hasattr(self, 'recurrent_settings'):
-            logger.debug(f'setting dropout: {value}')
-            self.recurrent_settings.dropout = value
+            if self.recurrent_settings is not None:
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug(f'setting dropout: {value}')
+                self.recurrent_settings.dropout = value
             self.linear_settings.dropout = value
 
     def get_module_class_name(self) -> str:
@@ -41,26 +43,34 @@ class ReviewNetwork(EmbeddingNetworkModule):
     """A recurrent neural network model that is used to classify sentiment.
 
     """
+    MODULE_NAME = 'review'
+
     def __init__(self, net_settings: ReviewNetworkSettings):
         super().__init__(net_settings, logger)
         ns = self.net_settings
         rs = ns.recurrent_settings
         ls = ns.linear_settings
 
-        rs.input_size = self.embedding_output_size
-        logger.debug(f'recur settings: {rs}')
-        self.recur = RecurrentAggregation(rs)
+        if logger.isEnabledFor(logging.DEBUG):
+            self._debug(f'embedding output size: {self.embedding_output_size}')
 
-        logger.debug(f'embedding join size: {self.join_size}')
-        self.join_size += self.recur.out_features
-        logger.debug(f'after lstm join size: {self.join_size}')
+        if rs is None:
+            ln_in_features = self.embedding_output_size
+            self.recur = None
+        else:
+            rs.input_size = self.embedding_output_size
+            self._debug(f'recur settings: {rs}')
+            self.recur = RecurrentAggregation(rs)
 
-        ls.in_features = self.join_size
-        logger.debug(f'linear input settings: {ls}')
-        self.fc_deep = DeepLinear(ls)
+            self._debug(f'embedding join size: {self.join_size}')
+            self.join_size += self.recur.out_features
+            self._debug(f'after lstm join size: {self.join_size}')
 
-        from torch import nn
-        self.dropout = nn.Dropout(0.1)
+            ln_in_features = self.join_size
+
+        ls.in_features = ln_in_features
+        self._debug(f'linear input settings: {ls}')
+        self.fc_deep = DeepLinear(ls, self.logger)
 
     def _forward(self, batch: Batch) -> torch.Tensor:
         if self.logger.isEnabledFor(logging.DEBUG):
@@ -69,11 +79,13 @@ class ReviewNetwork(EmbeddingNetworkModule):
 
         x = self.forward_embedding_features(batch)
         self._shape_debug('embedding', x)
+
         x = self.forward_token_features(batch, x)
         self._shape_debug('token', x)
 
-        x = self.recur(x)[0]
-        self._shape_debug('lstm', x)
+        if self.recur is not None:
+            x = self.recur(x)[0]
+            self._shape_debug('lstm', x)
 
         x = self.forward_document_features(batch, x)
 

@@ -30,7 +30,11 @@ class ReviewModelFacade(LanguageModelFacade):
 
     def _configure_debug_logging(self):
         super()._configure_debug_logging()
-        logging.getLogger('movie').setLevel(logging.DEBUG)
+        for i in ['zensols.deeplearn.layer',
+                  'zensols.deepnlp.layer',
+                  'zensols.deepnlp.transformer',
+                  'movie']:
+            logging.getLogger(i).setLevel(logging.DEBUG)
 
     def _get_language_model_config(self) -> LanguageModelFacadeConfig:
         return self.LANGUAGE_MODEL_CONFIG

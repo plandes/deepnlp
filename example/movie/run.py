@@ -20,9 +20,12 @@ def proto():
     try:
         action = {0: 'debug',
                   1: 'batch',
-                  2: 'proto',
                   }[0]
-        args = f'run.py {action} -c models/transformer-fixed.conf'
+        model = {0: 'glove50',
+                 1: 'transformer-fixed',
+                 2: 'transformer-trainable'
+                 }[2]
+        args = f'run.py {action} -c models/{model}.conf'
         main(args.split(), reload_factory=True)
     except SystemExit as e:
         print(f'exit: {e}')
