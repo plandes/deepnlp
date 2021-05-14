@@ -3,15 +3,17 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Dict
+from typing import Dict, Iterable, Tuple
 from dataclasses import dataclass, field
 import logging
+from itertools import chain
 import torch
 from torch import Tensor
 from torch import nn
 from transformers import PreTrainedModel
 from transformers.modeling_outputs import \
     BaseModelOutputWithPoolingAndCrossAttentions
+from zensols.config import Dictable
 from zensols.deepnlp import FeatureDocument
 from zensols.deepnlp.transformer import TransformerResource
 from zensols.persist import persisted, PersistedWork, PersistableContainer
@@ -24,11 +26,13 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class TransformerEmbedding(PersistableContainer):
+class TransformerEmbedding(PersistableContainer, Dictable):
     """An model for transformer (i.e. Bert) embeddings that wraps the HuggingFace
     transformms API.
 
     """
+    WRITABLE__DESCENDANTS = True
+
     name: str = field()
     """The name of the embedding as given in the configuration."""
 
@@ -166,3 +170,7 @@ class TransformerEmbedding(PersistableContainer):
                 logger.debug(f'embedding dim: {output_res.size()}')
 
         return output_res
+
+    def _get_dictable_attributes(self) -> Iterable[Tuple[str, str]]:
+        return chain.from_iterable(
+            [super()._get_dictable_attributes(), [('resource', 'resource')]])
