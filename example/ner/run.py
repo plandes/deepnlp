@@ -2,7 +2,6 @@
 
 from typing import List
 import sys
-import os
 from pathlib import Path
 
 
@@ -18,24 +17,25 @@ def main(args: List[str], **factory_kwargs):
 def proto():
     print('-->proto')
     try:
-        run = 0
-        args = '-c models/transformer-fixed.conf'
+        run = 1
+        args = '-c models/transformer-trainable.conf'
         # other reload patterns read from app.conf
         rl_mods = 'ner.app'.split()
-        {0: lambda: main(f'./run.py all {args}'.split(),
-                         reload_pattern=f'^(?:{"|".join(rl_mods)})'),
-         1: lambda: main(f'./run.py debug {args}'.split()),
-         2: lambda: main('./run.py batch'.split()),
-         3: lambda: main('./run.py train'.split()),
-         }[run]()
+        action = {0: 'proto',
+                  1: 'debug',
+                  2: 'all',
+                  3: 'batch',
+                  4: 'train',
+                  }[run]
+        main(f'./run.py {action} {args}'.split(),
+             reload_pattern=f'^(?:{"|".join(rl_mods)})'),
     except SystemExit as e:
         print(f'exit: {e}')
 
 
 if (__name__ == '__main__'):
-    from zensols.deeplearn import TorchConfig
-    TorchConfig.init()
-    os.environ['TOKENIZERS_PARALLELISM'] = 'true'
+    from zensols.deepnlp import init
+    init()
     if 0:
         import logging
         fmt = '%(asctime)-15s [%(name)s] %(message)s'

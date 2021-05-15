@@ -4,13 +4,14 @@
 __author__ = 'Paul Landes'
 
 from typing import Dict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Callable
 import logging
 import torch
 from torch import Tensor
+from zensols.persist import Deallocatable
 from zensols.deeplearn.vectorize import FeatureVectorizer
-from zensols.deeplearn.model import BaseNetworkModule
+from zensols.deeplearn.model import BaseNetworkModule, DebugModule
 from zensols.deeplearn.layer import LayerError
 from zensols.deeplearn.batch import (
     Batch,
@@ -19,7 +20,6 @@ from zensols.deeplearn.batch import (
     MetadataNetworkSettings,
 )
 from zensols.deepnlp.vectorize import (
-    EmbeddingLayer,
     TextFeatureType,
     FeatureDocumentVectorizer,
     EmbeddingFeatureVectorizer,
@@ -28,15 +28,100 @@ from zensols.deepnlp.vectorize import (
 logger = logging.getLogger(__name__)
 
 
+class EmbeddingLayer(DebugModule, Deallocatable):
+    """A class used as an input layer to provide word embeddings to a deep neural
+    network.
+
+    **Important**: you must always check for attributes in
+    :meth:`.Deallocatable.deallocate` since it might be called more than once
+    (i.e. from directly deallocating and then from the factory).
+
+    **Implementation note**: No datacasses are usable since pytorch is picky
+    about initialization order.
+
+    """
+    def __init__(self, feature_vectorizer: FeatureDocumentVectorizer,
+                 embedding_dim: int, sub_logger: logging.Logger = None,
+                 trainable: bool = False):
+        """Initialize.
+
+        :param feature_vectorizer: the feature vectorizer that manages this
+                                   instance
+
+        :param embedding_dim: the vector dimension of the embedding
+
+        :param trainable: ``True`` if the embedding layer is to be trained
+
+        """
+        super().__init__(sub_logger)
+        self.embedding_dim = embedding_dim
+        self.token_length = feature_vectorizer.token_length
+        self.torch_config = feature_vectorizer.torch_config
+        self.trainable = trainable
+
+    def __getstate__(self):
+        raise LayerError('Layers should not be pickeled')
+
+    def deallocate(self):
+        super().deallocate()
+        if hasattr(self, 'emb'):
+            if logger.isEnabledFor(logging.DEBUG):
+                em = '<deallocated>'
+                if hasattr(self, 'embed_model'):
+                    em = self.embed_model.name
+                self._debug(f'deallocating: {em} and {type(self.emb)}')
+            self._try_deallocate(self.emb)
+            del self.emb
+            if hasattr(self, 'embed_model'):
+                del self.embed_model
+
+
+class TrainableEmbeddingLayer(EmbeddingLayer):
+    """A non-frozen embedding layer that has grad on parameters.
+
+    """
+    def reset_parameters(self):
+        if self.trainable:
+            self.emb.load_state_dict({'weight': self.vecs})
+
+    def _get_emb_key(self, prefix: str):
+        return f'{prefix}emb.weight'
+
+    def state_dict(self, destination=None, prefix='', *args, **kwargs):
+        state = super().state_dict(destination, prefix, *args, **kwargs)
+        if logger.isEnabledFor(logging.DEBUG):
+            self._debug(f'state_dict: trainable: {self.trainable}')
+        if not self.trainable:
+            emb_key = self._get_emb_key(prefix)
+            if logger.isEnabledFor(logging.DEBUG):
+                self._debug(f'state_dict: embedding key: {emb_key}')
+            if emb_key is not None:
+                arr = state[emb_key]
+                if arr is not None:
+                    if logger.isEnabledFor(logging.DEBUG):
+                        self._debug(f'state_dict: emb state: {arr.shape}')
+                    assert arr.shape == self.embed_model.matrix.shape
+                state[emb_key] = None
+        return state
+
+    def _load_from_state_dict(self, state_dict, prefix, *args, **kwargs):
+        if not self.trainable:
+            emb_key = self._get_emb_key(prefix)
+            if logger.isEnabledFor(logging.DEBUG):
+                self._debug(f'load_state_dict: {emb_key}')
+            if emb_key is not None:
+                state_dict[emb_key] = self.vecs
+        super()._load_from_state_dict(state_dict, prefix, *args, **kwargs)
+
+
 @dataclass
 class EmbeddingNetworkSettings(MetadataNetworkSettings):
     """A utility container settings class for models that use an embedding input
     layer that inherit from :class:`.EmbeddingNetworkModule`.
 
-    :param embedding_layer: the word embedding layer used to vectorize
-
     """
-    embedding_layer: EmbeddingLayer
+    embedding_layer: EmbeddingLayer = field()
+    """The word embedding layer used to vectorize."""
 
     def get_module_class_name(self) -> str:
         return __name__ + '.EmbeddingNetworkModule'

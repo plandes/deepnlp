@@ -67,7 +67,14 @@ class Application(object):
         doc: FeatureDocument = self.vec_mng.doc_parser.parse(self.sent3)
         tdoc = vec.tokenize(doc)
         tdoc.write()
-        print(vec.transform(doc).shape)
+        out = vec.transform(doc)
+        print(type(out))
+        print(out.shape)
+        n_labels = 9
+        from torch import nn
+        linear = nn.Linear(768, n_labels)
+        logits = linear.forward(out)
+        print(logits.shape)
 
     def expand(self):
         vec = self.vec_mng.vectorizers['transformer_expander']
