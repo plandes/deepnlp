@@ -190,7 +190,8 @@ class TokenizedFeatureDocument(TokenizedDocument, Writable):
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'doc: {doc}')
             logger.debug(f'inputs: {input_ids}')
-        for six, (sent, tok_offsets, char_offsets) in enumerate(zip(doc, sent_offsets, self.char_offsets)):
+        sents = enumerate(zip(doc, sent_offsets, self.char_offsets))
+        for six, (sent, tok_offsets, char_offsets) in sents:
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'sent idx: {six}, sent: {sent}, ' +
                              f'offsets: {tok_offsets}')
@@ -202,7 +203,8 @@ class TokenizedFeatureDocument(TokenizedDocument, Writable):
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.debug(f'{ixs} -> {tix}')
                 tok = sent[tix]
-                ttoks = tuple(map(lambda i: id2tok(i[0], i[1]), zip(ixs, it.count())))
+                ttoks = tuple(map(lambda i: id2tok(i[0], i[1]),
+                                  zip(ixs, it.count())))
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.debug(f'{tok} -> {ttoks}')
                 sent_map.append((tok, ttoks))
