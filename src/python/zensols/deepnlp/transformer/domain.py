@@ -4,7 +4,7 @@ from __future__ import annotations
 """
 __author__ = 'Paul Landes'
 
-from typing import List, Tuple, Dict, Any, Union
+from typing import List, Tuple, Dict, Any, Union, Iterable, Callable
 from dataclasses import dataclass, field
 import sys
 import logging
@@ -117,6 +117,57 @@ class TokenizedDocument(PersistableContainer):
                 wptoks.append(wix)
         return ftoks
 
+    def map_to_word_pieces(self, sentences: Iterable[List[Any]] = None,
+                           map_wp: Union[Callable, Dict[int, str]] = None) -> \
+            List[Dict[str, Union[List[Any], Tuple[FeatureToken, Tuple[str]]]]]:
+        """Map word piece tokens to linguistic tokens.
+
+        :return: a list sentence maps, each with:
+
+                   * ``sent`` -> the ``i``th list in ``sentences``
+
+                   * ``map`` -> list of ``(sentence 'token', word pieces)``
+
+        """
+        def map_wp_by_id(x: int, six: int, input_ids: List[int]):
+            tix = input_ids[x]
+            tok = id2tok[tix]
+            return tok
+
+        id2tok = None
+        input_ids = self.input_ids.cpu().numpy()
+        sent_offsets = self.offsets
+        sents_map = []
+        if map_wp is None:
+            def map_str(x, *args, **kwargs):
+                return str(x)
+
+            map_wp = map_str
+        elif isinstance(map_wp, dict):
+            id2tok = map_wp
+            map_wp = map_wp_by_id
+        if sentences is None:
+            sentences = self.input_ids.cpu().numpy()
+        sents = enumerate(zip(sentences, sent_offsets))
+        for six, (sent, tok_offsets) in sents:
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'sent idx: {six}, sent: {sent}, ' +
+                             f'offsets: {tok_offsets}')
+            input_sent = input_ids[six]
+            wps = self.map_word_pieces(tok_offsets)
+            sent_map = []
+            sents_map.append({'sent': sent, 'map': sent_map})
+            for tix, ixs in wps:
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug(f'{ixs} -> {tix}')
+                tok = sent[tix]
+                ttoks = tuple(map(lambda i: map_wp(i[0], six, input_sent),
+                                  zip(ixs, it.count())))
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug(f'{tok} -> {ttoks}')
+                sent_map.append((tok, ttoks))
+        return sents_map
+
     def deallocate(self):
         super().deallocate()
         del self.tensor
@@ -158,57 +209,28 @@ class TokenizedFeatureDocument(TokenizedDocument, Writable):
 
                    * ``sent`` -> :class:`.FeatureSentence`
 
-                   * ``map`` -> list of ``(token, word pieces)`` tuples
+                   * ``map`` -> list of ``(token, word pieces)``
 
         """
-        if self.id2tok is not None:
-            def id2tok(x, offix):
-                tix = input_sent[x]
-                tok = self.id2tok[tix]
-                tmp = tok
-                off = char_offsets[x]
-                tlen = len(tmp)
-                olen = off[1] - off[0]
-                if tlen > olen:
-                    if tok.startswith('##'):
-                        start = 2
-                    else:
-                        start = 1
+        def id2tok(x: int, six: int, input_ids: List[int]):
+            tix = input_ids[x]
+            tok = self.id2tok[tix]
+            off = self.char_offsets[six][x]
+            olen = off[1] - off[0]
+            if len(tok) > olen:
+                # bert
+                if tok.startswith('##'):
+                    start = 2
+                # roberta
                 else:
-                    start = 0
-                end = (off[1] - off[0]) + (start * 2)
-                tok = tok[start:end]
-                #print(off, tmp, tok, start, end, offix, len(tmp), (off[1] - off[0]))
-                return tok
-        else:
-            def id2tok(x, _):
-                return str(x)
-        input_ids = self.input_ids.cpu().numpy()
-        sent_offsets = self.offsets
-        doc = self.feature
-        sents_map = []
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'doc: {doc}')
-            logger.debug(f'inputs: {input_ids}')
-        sents = enumerate(zip(doc, sent_offsets, self.char_offsets))
-        for six, (sent, tok_offsets, char_offsets) in sents:
-            if logger.isEnabledFor(logging.DEBUG):
-                logger.debug(f'sent idx: {six}, sent: {sent}, ' +
-                             f'offsets: {tok_offsets}')
-            input_sent = input_ids[six]
-            wps = self.map_word_pieces(tok_offsets)
-            sent_map = []
-            sents_map.append({'sent': sent, 'map': sent_map})
-            for tix, ixs in wps:
-                if logger.isEnabledFor(logging.DEBUG):
-                    logger.debug(f'{ixs} -> {tix}')
-                tok = sent[tix]
-                ttoks = tuple(map(lambda i: id2tok(i[0], i[1]),
-                                  zip(ixs, it.count())))
-                if logger.isEnabledFor(logging.DEBUG):
-                    logger.debug(f'{tok} -> {ttoks}')
-                sent_map.append((tok, ttoks))
-        return sents_map
+                    start = 1
+            else:
+                start = 0
+            end = (off[1] - off[0]) + (start * 2)
+            tok = tok[start:end]
+            return tok
+
+        return super().map_to_word_pieces(self.feature, id2tok)
 
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
         sent_map: Dict[str, Union[FeatureSentence,

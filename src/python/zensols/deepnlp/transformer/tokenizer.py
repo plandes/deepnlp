@@ -55,6 +55,10 @@ class TransformerDocumentTokenizer(PersistableContainer):
         :param doc: the document to tokenize
 
         """
+        if not self.resource.tokenizer.is_fast:
+            raise TransformerError(
+                'only fast tokenizers are supported for needed offset mapping')
+
         sents = list(map(lambda sent: list(
             map(lambda tok: tok.text, sent)), doc))
         return self._from_tokens(sents, doc, tokenizer_kwargs)
@@ -66,7 +70,13 @@ class TransformerDocumentTokenizer(PersistableContainer):
         tlen = self.word_piece_token_length
         tokenizer = self.resource.tokenizer
         params = {'return_offsets_mapping': True,
-                  'is_split_into_words': True}
+                  'is_split_into_words': True,
+                  'return_special_tokens_mask': True}
+
+        for i, sent in enumerate(sents):
+            if len(sent) == 0:
+                raise TransformerError(
+                    'Sentence {i} is empty: can not tokenize')
 
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'parsing {sents} with token length: {tlen}')
@@ -90,54 +100,13 @@ class TransformerDocumentTokenizer(PersistableContainer):
             logger.debug(f"lengths: {[len(i) for i in tok_dat['input_ids']]}")
             logger.debug(f"inputs: {tok_dat['input_ids']}")
 
-        if tokenizer.is_fast:
-            offsets = tok_dat['offset_mapping']
-        else:
-            raise TransformerError(
-                'only fast tokenizers are supported for needed offset mapping')
-        char_offsets = offsets
-
-        def map_off(iv: Tuple[int, int]) -> Tuple[int, int]:
-            if iv[0] > 0:
-                return (iv[0] - 1, iv[1])
-            else:
-                return iv
-
-        # roberta offsets are 1-indexed
-        if self.resource._is_roberta():
-            offsets = tuple(map(lambda sent: list(map(map_off, sent)), offsets))
-
-        sent_offsets = []
-        boundary_tokens = False
-        for six, six_offsets in enumerate(offsets):
-            # start at index 1 if end span > 0, which indicates a [CLS] (or <s>
-            # i.e. roberta) token
-            off = 1 if six_offsets[0][1] == 0 else 0
-            if off == 1:
-                boundary_tokens = True
-            tix = 0
-            tok_offsets = []
-            sent_offsets.append(tok_offsets)
-            pad = False
-            for i, (s, e) in enumerate(six_offsets[off:]):
-                if logger.isEnabledFor(logging.DEBUG):
-                    logger.debug(f'{i}: s/e={s},{e}, off={(tix-off)}')
-                if e == 0 and s == 0:
-                    # we get an ending range for each padded token
-                    if pad:
-                        tok_offsets.append(-1)
-                    else:
-                        # the first end indicates the padding starts
-                        tok_offsets.append(tix-off)
-                        pad = True
-                else:
-                    tok_offsets.append(tix-off)
-                    if s == 0:
-                        tix += 1
-            # if we have a starting token, add an another (invalid) offset for
-            # the terminating sentence token (i.e. [SEP])
-            if off == 1:
-                tok_offsets.append(-1)
+        input_ids = tok_dat.input_ids
+        char_offsets = tok_dat.offset_mapping
+        boundary_tokens = (tok_dat.special_tokens_mask[0][0]) == 1
+        sent_offsets = tuple(
+            map(lambda s: tuple(map(lambda x: -1 if x is None else x, s)),
+                map(lambda si: tok_dat.word_ids(batch_index=si),
+                    range(len(input_ids)))))
 
         if logger.isEnabledFor(logging.DEBUG):
             for six, tids in enumerate(sent_offsets):
@@ -153,7 +122,7 @@ class TransformerDocumentTokenizer(PersistableContainer):
                         f'sent={six}, idx={tix}, id={bid}: {wtok} -> {stok}')
 
         arr = torch_config.singleton(
-            [tok_dat['input_ids'], tok_dat['attention_mask'], sent_offsets],
+            [input_ids, tok_dat.attention_mask, sent_offsets],
             dtype=torch.long)
 
         if logger.isEnabledFor(logging.DEBUG):
@@ -161,6 +130,7 @@ class TransformerDocumentTokenizer(PersistableContainer):
 
         return TokenizedFeatureDocument(
             tensor=arr,
+            # needed by expander vectorizer
             boundary_tokens=boundary_tokens,
             char_offsets=char_offsets,
             feature=doc,
