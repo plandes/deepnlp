@@ -1,5 +1,10 @@
+"""Embedding input layer classes.
+
+"""
+__author__ = 'Paul Landes'
+
 from typing import Tuple
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import logging
 from torch import Tensor
 from zensols.deeplearn.model import ScoredNetworkModule
@@ -15,16 +20,10 @@ from zensols.deepnlp.layer import (
 class EmbeddedRecurrentCRFSettings(EmbeddingNetworkSettings):
     """A utility container settings class for convulsion network models.
 
-    :param embedding_settings: the configured embedded layer
-
-    :param recurrent_crf_settings: the RNN settings (configure this with an
-                                   LSTM for (Bi)LSTM CRFs)
-
-    :param add_attributes: any additionl attributes to be concatenated with the
-                           embedded layer before feeding in to the RNN/LSTM/GRU
-
     """
-    recurrent_crf_settings: RecurrentCRFNetworkSettings
+    recurrent_crf_settings: RecurrentCRFNetworkSettings = field()
+    """The RNN settings (configure this with an LSTM for (Bi)LSTM CRFs)."""
+
     mask_attribute: str
 
     def get_module_class_name(self) -> str:
@@ -59,7 +58,7 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, ScoredNetworkModule):
         self._shape_debug('mask', mask)
         return mask
 
-    def _forward(self, batch: Batch) -> Tensor:
+    def _forward(self, batch: Batch, criterion) -> Tensor:
         labels = batch.get_labels()
         self._shape_debug('labels', labels)
 
@@ -73,7 +72,7 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, ScoredNetworkModule):
 
         return x
 
-    def _score(self, batch: Batch) -> Tuple[Tensor, Tensor]:
+    def _score(self, batch: Batch, criterion) -> Tuple[Tensor, Tensor]:
         mask = self._get_mask(batch)
 
         x = super()._forward(batch)
