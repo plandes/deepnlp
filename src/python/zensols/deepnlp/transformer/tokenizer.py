@@ -10,7 +10,7 @@ import torch
 from zensols.deepnlp import FeatureDocument
 from zensols.deepnlp.transformer import TransformerResource
 from zensols.persist import persisted, PersistableContainer
-from . import TokenizedFeatureDocument
+from . import TransformerError, TokenizedFeatureDocument
 
 logger = logging.getLogger(__name__)
 
@@ -90,7 +90,12 @@ class TransformerDocumentTokenizer(PersistableContainer):
             logger.debug(f"lengths: {[len(i) for i in tok_dat['input_ids']]}")
             logger.debug(f"inputs: {tok_dat['input_ids']}")
 
-        char_offsets = offsets = tok_dat['offset_mapping']
+        if tokenizer.is_fast:
+            offsets = tok_dat['offset_mapping']
+        else:
+            raise TransformerError(
+                'only fast tokenizers are supported for needed offset mapping')
+        char_offsets = offsets
 
         def map_off(iv: Tuple[int, int]) -> Tuple[int, int]:
             if iv[0] > 0:
