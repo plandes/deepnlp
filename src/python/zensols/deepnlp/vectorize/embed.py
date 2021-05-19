@@ -5,11 +5,13 @@ efficient retrival.
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple
+from typing import Tuple, Any, Iterable
 from dataclasses import dataclass, field
 import logging
+from itertools import chain
 import torch
 from torch import Tensor
+from zensols.config import Dictable
 from zensols.persist import persisted, Primeable
 from zensols.deeplearn.vectorize import (
     FeatureContext, TensorFeatureContext, TransformableFeatureVectorizer
@@ -25,15 +27,44 @@ logger = logging.getLogger(__name__)
 @dataclass
 class EmbeddingFeatureVectorizer(TransformableFeatureVectorizer,
                                  FeatureDocumentVectorizer,
-                                 Primeable):
+                                 Primeable, Dictable):
     """Vectorize a :class:`.FeatureDocument` as a vector of embedding indexes.
     Later, these indexes are used in a :class:`WordEmbeddingLayer` to create
     the input word embedding during execution of the model.
 
     """
-#    embed_model: Union[WordEmbedModel, TransformerEmbedding] = field()
-    embed_model: WordEmbedModel = field()
-    """Contains the word vector model."""
+    embed_model: Any = field()
+    """Contains the word vector model.
+
+    Types for this value include:
+
+      * :class:`.WordEmbedModel`
+
+      * :class:`~zensols.deepnlp.transformer.TransformerEmbedding`
+
+    """
+
+    def _get_shape(self) -> Tuple[int, int]:
+        return self.manager.token_length, self.embed_model.vector_dimension
+
+    def prime(self):
+        if isinstance(self.embed_model, Primeable):
+            self.embed_model.prime()
+
+    def _get_dictable_attributes(self) -> Iterable[Tuple[str, str]]:
+        return chain.from_iterable(
+            [super()._get_dictable_attributes(), [('model', 'embed_model')]])
+
+
+@dataclass
+class WordVectorEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
+    """Vectorize sentences using an embedding model (:obj:`embed_model`) of type
+    :class:`.WordEmbedModel` or
+    :class:`~zensols.deepnlp.transformer.TransformerEmbedding`.
+
+    """
+    DESCRIPTION = 'word vector document embedding'
+    FEATURE_TYPE = TextFeatureType.EMBEDDING
 
     decode_embedding: bool = field(default=False)
     """Whether or not to decode the embedding during the decode phase, which is
@@ -49,23 +80,6 @@ class EmbeddingFeatureVectorizer(TransformableFeatureVectorizer,
     done for every epoch.
 
     """
-
-    def _get_shape(self) -> Tuple[int, int]:
-        return self.manager.token_length, self.embed_model.vector_dimension
-
-    def prime(self):
-        if isinstance(self.embed_model, Primeable):
-            self.embed_model.prime()
-
-
-@dataclass
-class WordVectorEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
-    """Vectorize sentences using an embedding model (:obj:`embed_model`) of type
-    :class:`.WordEmbedModel`.
-
-    """
-    DESCRIPTION = 'word vector document embedding'
-    FEATURE_TYPE = TextFeatureType.EMBEDDING
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
         emodel = self.embed_model

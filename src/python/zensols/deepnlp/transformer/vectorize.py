@@ -4,12 +4,12 @@ embeddings.
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, List, Iterable
+from typing import Tuple, List
 from dataclasses import dataclass, field
 import logging
 from itertools import chain
 from torch import Tensor
-from zensols.persist import persisted, Deallocatable, Primeable
+from zensols.persist import persisted, Deallocatable
 from zensols.config import Dictable
 from zensols.deeplearn.vectorize import (
     EncodableFeatureVectorizer, VectorizerError, FeatureContext,
@@ -44,8 +44,11 @@ class TransformerFeatureContext(FeatureContext, Deallocatable):
         del self.document
 
 
-class DocumentTokenzierVectorizer(Dictable):
-    """Tokenizes documents.
+@dataclass
+class TransformerFeatureVectorizer(EmbeddingFeatureVectorizer,
+                                   FeatureDocumentVectorizer):
+    """Base class for classes that vectorize transformer models.  This class also
+    tokenizes documents.
 
     """
     def tokenize(self, doc: FeatureDocument) -> TokenizedFeatureDocument:
@@ -59,14 +62,9 @@ class DocumentTokenzierVectorizer(Dictable):
             logger.debug(f'synthesized document: {doc}')
         return emb.tokenize(doc)
 
-    def _get_dictable_attributes(self) -> Iterable[Tuple[str, str]]:
-        return chain.from_iterable(
-            [super()._get_dictable_attributes(), [('model', 'embed_model')]])
-
 
 @dataclass
-class TransformerEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer,
-                                            DocumentTokenzierVectorizer):
+class TransformerEmbeddingFeatureVectorizer(TransformerFeatureVectorizer):
     """A feature vectorizer used to create transformer (i.e. Bert) embeddings.  The
     class uses the :obj:`.embed_model`, which is of type
     :class:`.TransformerEmbedding`.
@@ -130,8 +128,7 @@ class TransformerExpanderFeatureContext(MultiFeatureContext):
 
 
 @dataclass
-class TransformerExpanderFeatureVectorizer(
-        FeatureDocumentVectorizer, Primeable, DocumentTokenzierVectorizer):
+class TransformerExpanderFeatureVectorizer(TransformerFeatureVectorizer):
     """A vectorizer that expands lingustic feature vectors to their respective
     locations as word piece token vectors.
 
@@ -146,15 +143,12 @@ class TransformerExpanderFeatureVectorizer(
     DESCRIPTION = 'transformer expander'
     FEATURE_TYPE = TextFeatureType.TOKEN
 
-    embed_model: TransformerEmbedding = field()
-    """Contains the word vector model."""
-
     delegate_feature_ids: Tuple[str] = field()
     """A list of feature IDs to """
 
     def __post_init__(self):
         super().__post_init__()
-        if self.embed_model.output == 'pooler_output':
+        if self.embed_model.output != 'last_hidden_layer':
             raise VectorizerError("""\
 Expanders only work at the token level, so output such as `last_hidden_layer`,
 which provides an output for each token in the transformer embedding, is
@@ -169,10 +163,6 @@ required""")
                                       f'supported, but got {vec}')
             shape[2] += vec.shape[2]
         return tuple(shape)
-
-    def prime(self):
-        if isinstance(self.embed_model, Primeable):
-            self.embed_model.prime()
 
     @property
     @persisted('_delegates', allocation_track=False)
