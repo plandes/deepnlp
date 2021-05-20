@@ -18,7 +18,7 @@ from zensols.deeplearn.vectorize import (
     FeatureVectorizer,
 )
 from zensols.deepnlp import FeatureDocumentParser, FeatureDocument
-from zensols.deepnlp.transformer.vectorize import \
+from zensols.deepnlp.transformer.vectorizers import \
     TransformerEmbeddingFeatureVectorizer
 from zensols.deepnlp.transformer import (
     TransformerResource,
