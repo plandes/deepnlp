@@ -2,10 +2,11 @@
 deeplearning framework.
 
 """
+
 from .domain import *
 from .optimizer import *
 from .resource import *
 from .tokenizer import *
 from .embed import *
-from .vectorize import *
+from .vectorizers import *
 from .layer import *
