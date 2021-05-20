@@ -44,6 +44,21 @@ class EmbeddingFeatureVectorizer(TransformableFeatureVectorizer,
 
     """
 
+    decode_embedding: bool = field(default=False)
+    """Whether or not to decode the embedding during the decode phase, which is
+    helpful when caching batches; otherwise, the data is decoded from indexes
+    to embeddings each epoch.
+
+    Note that this option and functionality can not be obviated by that
+    implemented with the :obj:`encode_transformed` attribute.  The difference
+    is over whether or not more work is done on during decoding rather than
+    encoding.  An example of when this is useful is for large word embeddings
+    (i.e. Google 300D pretrained) where the the index to tensor embedding
+    transform is done while decoding rather than in the `forward` so it's not
+    done for every epoch.
+
+    """
+
     def _get_shape(self) -> Tuple[int, int]:
         return self.manager.token_length, self.embed_model.vector_dimension
 
@@ -65,21 +80,6 @@ class WordVectorEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
     """
     DESCRIPTION = 'word vector document embedding'
     FEATURE_TYPE = TextFeatureType.EMBEDDING
-
-    decode_embedding: bool = field(default=False)
-    """Whether or not to decode the embedding during the decode phase, which is
-    helpful when caching batches; otherwise, the data is decoded from indexes
-    to embeddings each epoch.
-
-    Note that this option and functionality can not be obviated by that
-    implemented with the :obj:`encode_transformed` attribute.  The difference
-    is over whether or not more work is done on during decoding rather than
-    encoding.  An example of when this is useful is for large word embeddings
-    (i.e. Google 300D pretrained) where the the index to tensor embedding
-    transform is done while decoding rather than in the `forward` so it's not
-    done for every epoch.
-
-    """
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
         emodel = self.embed_model
