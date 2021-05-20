@@ -4,7 +4,7 @@ from __future__ import annotations
 """
 __author__ = 'Paul Landes'
 
-from typing import List, Tuple, Set, Iterable, Dict
+from typing import List, Tuple, Set, Iterable, Dict, Type
 from dataclasses import dataclass, field
 import dataclasses
 from abc import ABCMeta, abstractmethod
@@ -161,11 +161,13 @@ class TokensContainer(PersistableContainer, TextContainer, metaclass=ABCMeta):
                        filter(lambda t: not t.is_punctuation and not t.is_stop,
                               self.tokens)))
 
-    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
+    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout,
+              n_tokens: int = sys.maxsize):
         super().write(depth, writer)
-        self._write_line('tokens:', depth, writer)
-        for t in self.token_iter():
-            t.write(depth + 1, writer)
+        if n_tokens > 0:
+            self._write_line('tokens:', depth, writer)
+            for t in it.islice(self.token_iter(), n_tokens):
+                t.write(depth + 1, writer)
 
 
 @dataclass
@@ -280,21 +282,41 @@ class FeatureDocument(TokensContainer):
         """
         return max(map(len, self.sent_iter()))
 
+    def _sent_class(self) -> Type[FeatureSentence]:
+        if len(self.sents) > 0:
+            cls = self.sents[0].__class__
+        else:
+            cls = FeatureSentence
+        return cls
+
     def to_sentence(self, *args) -> FeatureSentence:
         sents = self.sent_iter(*args)
         toks = chain.from_iterable(map(lambda s: s.tokens, sents))
-        return FeatureSentence(tuple(toks), self.get_text(*args))
+        cls = self._sent_class()
+        return cls(tuple(toks), self.get_text(*args))
 
     def to_document(self) -> FeatureDocument:
         return self
 
+    def _combine_documents(self, docs: Tuple[FeatureDocument]) -> \
+            FeatureDocument:
+        cls = self.__class__
+        return cls(list(chain.from_iterable(
+            map(lambda c: c.combine_sentences(), docs))))
+
     @classmethod
-    def combine_documents(cls, docs: Iterable[FeatureDocument]) -> FeatureDocument:
+    def combine_documents(cls, docs: Iterable[FeatureDocument]) -> \
+            FeatureDocument:
         """Coerce a tuple of token containers (either documents or sentences) in to
         one *synthesized* document.
 
         """
-        return cls(list(map(lambda c: c.combine_sentences()[0], docs)))
+        docs = tuple(docs)
+        if len(docs) == 0:
+            doc = cls([])
+        else:
+            doc = docs[0]._combine_documents(docs)
+        return doc
 
     @persisted('_combine_sentences', transient=True)
     def combine_sentences(self) -> FeatureDocument:
@@ -305,7 +327,8 @@ class FeatureDocument(TokensContainer):
         if len(self.sents) == 1:
             return self
         else:
-            sent = FeatureSentence(self.tokens)
+            sent_cls = self._sent_class()
+            sent = sent_cls(self.tokens)
             doc = dataclasses.replace(self)
             doc.sents = [sent]
             doc._combined = True
@@ -341,11 +364,12 @@ class FeatureDocument(TokensContainer):
     def text(self):
         return self.get_text()
 
-    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
+    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout,
+              n_tokens: int = 0, n_sents: int = sys.maxsize):
         TextContainer.write(self, depth, writer)
-        self._write_line('sentences:', depth, writer)
-        for s in self.sents:
-            s.write(depth + 1, writer)
+        self._write_line('sentences:', depth + 1, writer)
+        for s in it.islice(self.sents, n_sents):
+            s.write(depth + 2, writer, n_tokens=n_tokens)
 
     def __getitem__(self, key):
         return self.sents[key]
@@ -361,3 +385,22 @@ class FeatureDocument(TokensContainer):
 
     def __repr__(self):
         return self.__str__()
+
+
+# annotations
+
+@dataclass
+class TokenAnnotatedFeatureSentence(FeatureSentence):
+    """A feature sentence that contains token annotations.
+
+    """
+
+    annotations: Tuple[str] = field(default=())
+    """A token level annotation, which is one-to-one to tokens."""
+
+    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout,
+              n_tokens: int = 0):
+        super().write(depth, writer, n_tokens=n_tokens)
+        n_ann = len(self.annotations)
+        self._write_line(f'annotations ({n_ann}): {self.annotations}',
+                         depth, writer)
