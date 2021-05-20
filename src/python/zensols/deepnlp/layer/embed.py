@@ -304,7 +304,7 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         :param x: if given, the first tensor to be concatenated
 
         """
-        self._shape_debug('initial tensor to concat', x)
+        self._shape_debug('forward token features', x)
         arrs = []
         if x is not None:
             self._shape_debug('adding passed token features', x)
