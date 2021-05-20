@@ -249,12 +249,20 @@ class TransformerExpanderFeatureVectorizer(TransformerFeatureVectorizer):
 
 
 @dataclass
-class TransformerSequenceLabelFeatureVectorizer(TransformerFeatureVectorizer):
+class TransformerNominalFeatureVectorizer(TransformerFeatureVectorizer):
+    """
+    """
     DESCRIPTION = 'transformer seq labeler'
-    FEATURE_TYPE = TextFeatureType.TOKEN
 
     delegate_feature_id: str = field(default=None)
     """The feature IDs """
+
+    is_labeler: bool = field(default=True)
+    """If ``True``, make this a labeling specific vectorizer.  Otherwise, certain
+    layers will use the output of the vectorizer as features rather than the
+    labels.
+
+    """
 
     label_all_tokens: bool = field(default=False)
     """If ``True``, label all word piece tokens with the corresponding linguistic
@@ -272,6 +280,13 @@ class TransformerSequenceLabelFeatureVectorizer(TransformerFeatureVectorizer):
     def _get_shape(self) -> Tuple[int, int]:
         vec: FeatureDocumentVectorizer = self.delegate
         return (-1, self.word_piece_token_length, vec.shape[-1])
+
+    @property
+    def feature_type(self) -> TextFeatureType:
+        if self.is_labeler:
+            return TextFeatureType.NONE
+        else:
+            return TextFeatureType.TOKEN
 
     @property
     @persisted('_delegate', allocation_track=False)
