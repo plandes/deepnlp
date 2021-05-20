@@ -44,6 +44,13 @@ class TextFeatureType(Enum):
     EMBEDDING = auto()
     """Embedding layer, typically used as the input layer."""
 
+    NONE = auto()
+    """Other type, which tells the framework to ignore the vectorized features.
+
+    :see: :class:`~zensols.deepnlp.layer.embed.EmbeddingNetworkModule`
+
+    """
+
 
 @dataclass
 class FeatureDocumentVectorizer(EncodableFeatureVectorizer, metaclass=ABCMeta):
