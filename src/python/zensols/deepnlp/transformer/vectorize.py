@@ -4,21 +4,20 @@ embeddings.
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, List
+from typing import Tuple, List, Dict
 from dataclasses import dataclass, field
 import logging
 from itertools import chain
+import torch
 from torch import Tensor
 from zensols.persist import persisted, Deallocatable
-from zensols.config import Dictable
 from zensols.deeplearn.vectorize import (
-    EncodableFeatureVectorizer, VectorizerError, FeatureContext,
-    MultiFeatureContext
+    VectorizerError, TensorFeatureContext, EncodableFeatureVectorizer,
+    FeatureContext, MultiFeatureContext, AggregateEncodableFeatureVectorizer
 )
-from zensols.deepnlp import FeatureDocument
-from zensols.deepnlp.vectorize import EmbeddingFeatureVectorizer
+from zensols.deepnlp import FeatureDocument, TokenAnnotatedFeatureSentence
 from zensols.deepnlp.vectorize import (
-    TextFeatureType, FeatureDocumentVectorizer
+    EmbeddingFeatureVectorizer, TextFeatureType, FeatureDocumentVectorizer
 )
 from . import (
     TransformerEmbedding, TokenizedDocument, TokenizedFeatureDocument
@@ -51,6 +50,20 @@ class TransformerFeatureVectorizer(EmbeddingFeatureVectorizer,
     tokenizes documents.
 
     """
+    def _assert_token_output(self, expected: str = 'last_hidden_state'):
+        if self.embed_model.output != expected:
+            raise VectorizerError(f"""\
+Expanders only work at the token level, so output such as \
+`{expected}`, which provides an output for each token in the \
+transformer embedding, is required, got: {self.embed_model.output}""")
+
+    @property
+    def word_piece_token_length(self) -> int:
+        return self.embed_model.tokenizer.word_piece_token_length
+
+    def _get_shape(self) -> Tuple[int, int]:
+        return self.word_piece_token_length, self.embed_model.vector_dimension
+
     def tokenize(self, doc: FeatureDocument) -> TokenizedFeatureDocument:
         """Tokenize the document in to a token document used by the encoding phase.
 
@@ -143,16 +156,14 @@ class TransformerExpanderFeatureVectorizer(TransformerFeatureVectorizer):
     DESCRIPTION = 'transformer expander'
     FEATURE_TYPE = TextFeatureType.TOKEN
 
-    delegate_feature_ids: Tuple[str] = field()
-    """A list of feature IDs to """
+    delegate_feature_ids: Tuple[str] = field(default=None)
+    """A list of feature IDs of vectorizers whose output will be expanded."""
 
     def __post_init__(self):
         super().__post_init__()
-        if self.embed_model.output != 'last_hidden_layer':
-            raise VectorizerError("""\
-Expanders only work at the token level, so output such as `last_hidden_layer`,
-which provides an output for each token in the transformer embedding, is
-required""")
+        if self.delegate_feature_ids is None:
+            raise VectorizerError('expected attribute: delegate_feature_ids')
+        self._assert_token_output()
 
     def _get_shape(self) -> Tuple[int, int]:
         shape = [-1, self.manager.token_length, 0]
@@ -235,3 +246,72 @@ required""")
                         marr[six, wix, marrix:meix] = arr[six, tix]
             marrix += ln
         return marr
+
+
+@dataclass
+class TransformerSequenceLabelFeatureVectorizer(TransformerFeatureVectorizer):
+    DESCRIPTION = 'transformer seq labeler'
+    FEATURE_TYPE = TextFeatureType.TOKEN
+
+    delegate_feature_id: str = field(default=None)
+    """The feature IDs """
+
+    label_all_tokens: bool = field(default=False)
+    """If ``True``, label all word piece tokens with the corresponding linguistic
+    token label.  Otherwise, the default padded value is used, and thus,
+    ignored by the loss function when calculating loss.
+
+    """
+
+    def __post_init__(self):
+        super().__post_init__()
+        if self.delegate_feature_id is None:
+            raise VectorizerError('expected attribute: delegate_feature_id')
+        self._assert_token_output()
+
+    def _get_shape(self) -> Tuple[int, int]:
+        vec: FeatureDocumentVectorizer = self.delegate
+        return (-1, self.word_piece_token_length, vec.shape[-1])
+
+    @property
+    @persisted('_delegate', allocation_track=False)
+    def delegate(self) -> AggregateEncodableFeatureVectorizer:
+        """The delegates used for encoding and decoding the lingustic features.
+
+        """
+        return self.manager[self.delegate_feature_id]
+
+    def _encode(self, doc: FeatureDocument) -> FeatureContext:
+        delegate: AggregateEncodableFeatureVectorizer = self.delegate
+        tdoc: TokenizedDocument = self.tokenize(doc)
+        by_label: Dict[str, int] = delegate.delegate.by_label
+        n_sents = len(doc)
+        if self.word_piece_token_length > 0:
+            n_toks = self.manager.token_length
+        else:
+            n_toks = len(tdoc)
+        dtype: torch.dtype = delegate.delegate.data_type
+        arr = delegate.create_padded_tensor((n_sents, n_toks, 1), dtype)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'output shape: {arr.shape}/{self.shape}')
+        sent: TokenAnnotatedFeatureSentence
+        for six, sent in enumerate(doc):
+            sent_labels = sent.annotations
+            word_ids = tdoc.offsets[six]
+            previous_word_idx = None
+            for tix, word_idx in enumerate(word_ids):
+                # special tokens have a word id that is None. We set the label
+                # to -100 so they are automatically ignored in the loss
+                # function.
+                if word_idx == -1:
+                    pass
+                # we set the label for the first token of each word.
+                elif word_idx != previous_word_idx:
+                    arr[six][tix] = by_label[sent_labels[word_idx]]
+                # for the other tokens in a word, we set the label to either
+                # the current label or -100, depending on the label_all_tokens
+                # flag
+                elif self.label_all_tokens:
+                    arr[six][tix] = by_label[sent_labels[word_idx]]
+                previous_word_idx = word_idx
+        return TensorFeatureContext(self.feature_id, arr)
