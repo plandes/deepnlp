@@ -6,6 +6,7 @@ __author__ = 'Paul Landes'
 from dataclasses import dataclass
 import sys
 from io import TextIOBase
+from zensols.persist import persisted
 from zensols.deeplearn.batch import DataPoint
 from zensols.deepnlp import FeatureDocument, FeatureSentence
 
@@ -18,6 +19,7 @@ class FeatureSentenceDataPoint(DataPoint):
     sent: FeatureSentence
 
     @property
+    @persisted('_doc')
     def doc(self) -> FeatureDocument:
         """Return the sentence as a single sentence document.
 
