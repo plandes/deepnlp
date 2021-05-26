@@ -53,7 +53,7 @@ class NERModelFacade(LanguageModelFacade):
     def _configure_debug_logging(self):
         super()._configure_debug_logging()
         for name in ['ner',
-                     'zensols.deepnlp.vectorize.layer',
+                     #'zensols.deepnlp.vectorize.layer',
                      'zensols.deeplearn.model.module']:
             logging.getLogger(name).setLevel(logging.DEBUG)
 

@@ -17,7 +17,6 @@ def main(args: List[str], **factory_kwargs):
 def proto():
     print('-->proto')
     try:
-        run = 1
         args = '-c models/transformer-trainable.conf'
         # other reload patterns read from app.conf
         rl_mods = 'ner.app'.split()
@@ -26,7 +25,7 @@ def proto():
                   2: 'all',
                   3: 'batch',
                   4: 'train',
-                  }[run]
+                  }[1]
         main(f'./run.py {action} {args}'.split(),
              reload_pattern=f'^(?:{"|".join(rl_mods)})'),
     except SystemExit as e:

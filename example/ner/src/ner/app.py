@@ -35,12 +35,12 @@ class NERFacadeApplication(FacadeApplication):
         with dealloc(self._create_facade()) as facade:
             model = facade.transformer_embedding_model
             sents = facade.doc_parser.parse(self.sent)
-            from zensols.util.log import loglevel
-            with loglevel(['zensols.deepnlp.transformer'], logging.INFO):
-                for sent in sents[0:1]:
-                    tsent = model.tokenize(sent)
-                    tsent.write()
-                    print(model.transform(tsent).shape)
+            # from zensols.util.log import loglevel
+            # with loglevel(['zensols.deepnlp.transformer'], logging.INFO):
+            for sent in sents[0:1]:
+                tsent = model.tokenize(sent)
+                tsent.write()
+                print(model.transform(tsent).shape)
 
     def _test_decode(self):
         with dealloc(self._create_facade()) as facade:
@@ -50,6 +50,20 @@ class NERFacadeApplication(FacadeApplication):
             from zensols.util.log import loglevel
             with loglevel('zensols.deepnlp'):
                 vec.encode(doc)
+
+    def _test_trans_label(self):
+        from zensols.util.log import loglevel
+        with dealloc(self._create_facade()) as facade:
+            facade.write()
+            return
+            batches = tuple(it.islice(facade.batch_stash.values(), 3))
+            batch = batches[0]
+            dps = batch.get_data_points()
+            doc = FeatureDocument.combine_documents(map(lambda dp: dp.doc, dps))
+            vec = facade.language_vectorizer_manager.vectorizers['entlabel_trans']
+            with loglevel('zensols.deepnlp.transformer.vectorize'):
+                arr = vec.transform(doc)
+            #print(arr.squeeze(-1))
 
     def _test_batch_write(self, clear: bool = False):
         if clear:
@@ -69,3 +83,6 @@ class NERFacadeApplication(FacadeApplication):
         self._test_decode()
         self._test_batch_write()
         self._write_max_word_piece_token_length()
+
+    def proto(self):
+        self._test_trans_label()
