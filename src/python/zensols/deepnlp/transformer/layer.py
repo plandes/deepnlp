@@ -114,15 +114,6 @@ class TransformerSequenceLayer(EmbeddingNetworkModule, ScoredNetworkModule):
         if self.logger.isEnabledFor(logging.DEBUG):
             self._debug(f'tokenized doc: {tdoc}, len: {len(tdoc)}')
 
-        if 0:
-            print(attention_mask)
-            print(tdoc.input_ids)
-            print(labels)
-
-        #labels = labels[:, 0:len(tdoc)]
-        #self._shape_debug('label trunc', labels)
-        #self._shape_debug('labels exp', batch['transformer_ents_expander'])
-
         logits = self.decoder(emb)
         self._shape_debug('logits', logits)
         active_loss = attention_mask.view(-1) == 1
@@ -136,7 +127,6 @@ class TransformerSequenceLayer(EmbeddingNetworkModule, ScoredNetworkModule):
         vec: TransformerNominalFeatureVectorizer = \
             batch.get_label_feature_vectorizer()
         pad_label = vec.pad_label
-        print('P', pad_label)
 
         active_labels = torch.where(
             active_loss, labels.view(-1),
@@ -144,10 +134,8 @@ class TransformerSequenceLayer(EmbeddingNetworkModule, ScoredNetworkModule):
         )
 
         loss = criterion(active_logits, active_labels)
-        print('L', loss)
-        self._bail()
         if self.logger.isEnabledFor(logging.DEBUG):
-            self.logger.debug(f'training loss: {x}')
+            self.logger.debug(f'training loss: {loss}')
         return loss
 
     def _score(self, batch: Batch) -> Tuple[Tensor, Tensor]:
