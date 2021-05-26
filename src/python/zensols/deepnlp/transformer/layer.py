@@ -3,15 +3,21 @@
 """
 __author__ = 'Paul Landes'
 
+from typing import Tuple
 from dataclasses import dataclass, field
 import logging
+import torch
 from torch import Tensor
 from zensols.deeplearn.batch import Batch
-from zensols.deeplearn.layer import DeepLinearNetworkSettings
+from zensols.deeplearn.model import ScoredNetworkModule
+from zensols.deeplearn.layer import DeepLinearNetworkSettings, DeepLinear
 from zensols.deepnlp.layer import (
     EmbeddingNetworkSettings, EmbeddingNetworkModule, EmbeddingLayer
 )
-from . import TokenizedDocument, TransformerEmbedding
+from . import (
+    TokenizedDocument, TransformerEmbedding,
+    TransformerNominalFeatureVectorizer
+)
 
 logger = logging.getLogger(__name__)
 
@@ -74,20 +80,76 @@ class TransformerSequenceLayerNetworkSettings(EmbeddingNetworkSettings):
         return __name__ + '.TransformerSequenceLayer'
 
 
-@dataclass
-class TransformerSequenceLayer(EmbeddingNetworkModule):
+class TransformerSequenceLayer(EmbeddingNetworkModule, ScoredNetworkModule):
     MODULE_NAME = 'trans seq'
 
     def __init__(self, net_settings: TransformerSequenceLayerNetworkSettings,
                  sub_logger: logging.Logger = None):
-        super().__init__(sub_logger)
+        super().__init__(net_settings, sub_logger)
+        ns = self.net_settings
+        ds = ns.decoder_settings
+        ds.in_features = self.embedding_output_size
+        self._n_labels = ds.out_features
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self._debug(f'linear settings: {ds}')
+        self.decoder = DeepLinear(ds, self.logger)
 
     def deallocate(self):
         super().deallocate()
         self.decoder.deallocate()
 
-    def _forward(self, batch: Batch) -> Tensor:
-        #x: Tensor = super()._foward(batch)
-        print('HERE')
+    def _forward(self, batch: Batch, criterion) -> Tensor:
+        if self.logger.isEnabledFor(logging.DEBUG):
+            for dp in batch.get_data_points():
+                self.logger.debug(f'data point: {dp}')
+
+        emb: Tensor = super()._forward(batch)
+        tdoc: Tensor = batch[self.embedding_attribute_name]
+        tdoc = TokenizedDocument.from_tensor(tdoc)
+        attention_mask: Tensor = tdoc.attention_mask
+        labels: Tensor = batch.get_labels()
+
+        self._shape_debug('labels', labels)
+        self._shape_debug('embedding', emb)
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self._debug(f'tokenized doc: {tdoc}, len: {len(tdoc)}')
+
+        if 0:
+            print(attention_mask)
+            print(tdoc.input_ids)
+            print(labels)
+
+        #labels = labels[:, 0:len(tdoc)]
+        #self._shape_debug('label trunc', labels)
+        #self._shape_debug('labels exp', batch['transformer_ents_expander'])
+
+        logits = self.decoder(emb)
+        self._shape_debug('logits', logits)
+        active_loss = attention_mask.view(-1) == 1
+        active_logits = logits.view(-1, self._n_labels)
+        active_labels = labels.reshape(-1)
+
+        self._shape_debug('active_loss', active_loss)
+        self._shape_debug('active_logits', active_logits)
+        self._shape_debug('active_labels', active_labels)
+
+        vec: TransformerNominalFeatureVectorizer = \
+            batch.get_label_feature_vectorizer()
+        pad_label = vec.pad_label
+        print('P', pad_label)
+
+        active_labels = torch.where(
+            active_loss, labels.view(-1),
+            torch.tensor(pad_label).type_as(labels),
+        )
+
+        loss = criterion(active_logits, active_labels)
+        print('L', loss)
         self._bail()
-        #return x
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self.logger.debug(f'training loss: {x}')
+        return loss
+
+    def _score(self, batch: Batch) -> Tuple[Tensor, Tensor]:
+        # mask = self._get_mask(batch)
+        raise NotImplementedError()

@@ -250,12 +250,18 @@ class TransformerExpanderFeatureVectorizer(TransformerFeatureVectorizer):
 
 @dataclass
 class TransformerNominalFeatureVectorizer(TransformerFeatureVectorizer):
-    """
+    """This creates word piece (maps to tokens) labels.  This class uses a
+    :class:`~zensols.deeplearn.vectorize.AggregateEncodableFeatureVectorizer`
+    to map from string labels to their nominal long values.  It uses this class
+    instead of extending from it so there can be a single instance and
+    centralized location where the label mapping happens in case other
+    (non-transformer) components need to vectorize labels.
+
     """
     DESCRIPTION = 'transformer seq labeler'
 
     delegate_feature_id: str = field(default=None)
-    """The feature IDs """
+    """The feature ID for the aggregate encodeable feature vectorizer."""
 
     is_labeler: bool = field(default=True)
     """If ``True``, make this a labeling specific vectorizer.  Otherwise, certain
@@ -278,8 +284,12 @@ class TransformerNominalFeatureVectorizer(TransformerFeatureVectorizer):
         self._assert_token_output()
 
     def _get_shape(self) -> Tuple[int, int]:
-        vec: FeatureDocumentVectorizer = self.delegate
+        vec: AggregateEncodableFeatureVectorizer = self.delegate
         return (-1, self.word_piece_token_length, vec.shape[-1])
+
+    @property
+    def pad_label(self) -> int:
+        return self.delegate.pad_label
 
     @property
     def feature_type(self) -> TextFeatureType:
