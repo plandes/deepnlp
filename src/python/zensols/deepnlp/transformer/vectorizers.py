@@ -13,7 +13,8 @@ from torch import Tensor
 from zensols.persist import persisted, Deallocatable
 from zensols.deeplearn.vectorize import (
     VectorizerError, TensorFeatureContext, EncodableFeatureVectorizer,
-    FeatureContext, MultiFeatureContext, AggregateEncodableFeatureVectorizer
+    FeatureContext, MultiFeatureContext, AggregateEncodableFeatureVectorizer,
+    NominalEncodedEncodableFeatureVectorizer
 )
 from zensols.deepnlp import FeatureDocument, TokenAnnotatedFeatureSentence
 from zensols.deepnlp.vectorize import (
@@ -249,13 +250,14 @@ class TransformerExpanderFeatureVectorizer(TransformerFeatureVectorizer):
 
 
 @dataclass
-class TransformerNominalFeatureVectorizer(TransformerFeatureVectorizer):
+class TransformerNominalFeatureVectorizer(
+        AggregateEncodableFeatureVectorizer, TransformerFeatureVectorizer):
     """This creates word piece (maps to tokens) labels.  This class uses a
-    :class:`~zensols.deeplearn.vectorize.AggregateEncodableFeatureVectorizer`
-    to map from string labels to their nominal long values.  It uses this class
-    instead of extending from it so there can be a single instance and
-    centralized location where the label mapping happens in case other
-    (non-transformer) components need to vectorize labels.
+    :class:`~zensols.deeplearn.vectorize.NominalEncodedEncodableFeatureVectorizer``
+    to map from string labels to their nominal long values.  It this so there
+    can be a single instance and centralized location where the label mapping
+    happens in case other (non-transformer) components need to vectorize
+    labels.
 
     """
     DESCRIPTION = 'transformer seq labeler'
@@ -284,12 +286,9 @@ class TransformerNominalFeatureVectorizer(TransformerFeatureVectorizer):
         self._assert_token_output()
 
     def _get_shape(self) -> Tuple[int, int]:
-        vec: AggregateEncodableFeatureVectorizer = self.delegate
-        return (-1, self.word_piece_token_length, vec.shape[-1])
-
-    @property
-    def pad_label(self) -> int:
-        return self.delegate.pad_label
+        #vec: AggregateEncodableFeatureVectorizer = self.delegate
+        shape = super()._get_shape()
+        return (-1, self.word_piece_token_length, shape[-1])
 
     @property
     def feature_type(self) -> TextFeatureType:
@@ -298,25 +297,25 @@ class TransformerNominalFeatureVectorizer(TransformerFeatureVectorizer):
         else:
             return TextFeatureType.TOKEN
 
-    @property
-    @persisted('_delegate', allocation_track=False)
-    def delegate(self) -> AggregateEncodableFeatureVectorizer:
-        """The delegates used for encoding and decoding the lingustic features.
+    # @property
+    # @persisted('_delegate', allocation_track=False)
+    # def delegate(self) -> AggregateEncodableFeatureVectorizer:
+    #     """The delegates used for encoding and decoding the lingustic features.
 
-        """
-        return self.manager[self.delegate_feature_id]
+    #     """
+    #     return self.manager[self.delegate_feature_id]
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
-        delegate: AggregateEncodableFeatureVectorizer = self.delegate
+        delegate: NominalEncodedEncodableFeatureVectorizer = self.delegate
         tdoc: TokenizedDocument = self.tokenize(doc)
-        by_label: Dict[str, int] = delegate.delegate.by_label
+        by_label: Dict[str, int] = delegate.by_label
         n_sents = len(doc)
         if self.word_piece_token_length > 0:
             n_toks = self.manager.token_length
         else:
             n_toks = len(tdoc)
-        dtype: torch.dtype = delegate.delegate.data_type
-        arr = delegate.create_padded_tensor((n_sents, n_toks, 1), dtype)
+        dtype: torch.dtype = delegate.data_type
+        arr = self.create_padded_tensor((n_sents, n_toks, 1), dtype)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'output shape: {arr.shape}/{self.shape}')
         sent: TokenAnnotatedFeatureSentence
@@ -340,3 +339,6 @@ class TransformerNominalFeatureVectorizer(TransformerFeatureVectorizer):
                     arr[six][tix] = by_label[sent_labels[word_idx]]
                 previous_word_idx = word_idx
         return TensorFeatureContext(self.feature_id, arr)
+
+    def _decode(self, context: TransformerFeatureContext) -> Tensor:
+        return TransformerFeatureVectorizer._decode(self, context)

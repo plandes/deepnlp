@@ -6,8 +6,12 @@ __author__ = 'Paul Landes'
 from typing import Tuple
 from dataclasses import dataclass, field
 import logging
+import torch
 from torch import Tensor
-from zensols.deeplearn.model import ScoredNetworkModule
+from zensols.deeplearn import ModelError, DatasetSplitType
+from zensols.deeplearn.model import (
+    ScoredNetworkModule, ScoredNetworkContext, ScoredNetworkOutput
+)
 from zensols.deeplearn.batch import Batch
 from zensols.deeplearn.layer import RecurrentCRFNetworkSettings, RecurrentCRF
 from zensols.deepnlp.layer import (
@@ -33,7 +37,18 @@ class EmbeddedRecurrentCRFSettings(EmbeddingNetworkSettings):
 class EmbeddedRecurrentCRF(EmbeddingNetworkModule, ScoredNetworkModule):
     """A recurrent neural network composed of an embedding input, an recurrent
     network, and a linear conditional random field output layer.  When
-    configured with an LSTM, this becomes a (Bi)LSTM CRF.
+    configured with an LSTM, this becomes a (Bi)LSTM CRF.  More specifically,
+    this network has the following:
+
+      1. Input embeddings mapped from tokens.
+
+      2. Recurrent network (i.e. LSTM).
+
+      3. Fully connected feed forward deep linear layer(s) as the decoder.
+
+      4. Linear chain conditional random field (CRF) layer.
+
+      5. Output the labels.
 
     """
     MODULE_NAME = 'emb recur crf'
@@ -58,11 +73,12 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, ScoredNetworkModule):
         self._shape_debug('mask', mask)
         return mask
 
-    def _forward(self, batch: Batch, criterion) -> Tensor:
+    def _forward_train(self, batch: Batch) -> Tensor:
         labels = batch.get_labels()
         self._shape_debug('labels', labels)
 
         mask = self._get_mask(batch)
+        self._shape_debug('mask', mask)
 
         x = super()._forward(batch)
         self._shape_debug('super emb', x)
@@ -72,8 +88,9 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, ScoredNetworkModule):
 
         return x
 
-    def _score(self, batch: Batch, criterion) -> Tuple[Tensor, Tensor]:
+    def _decode(self, batch: Batch) -> Tuple[Tensor, Tensor]:
         mask = self._get_mask(batch)
+        self._shape_debug('mask', mask)
 
         x = super()._forward(batch)
         self._shape_debug('super emb', x)
@@ -83,3 +100,24 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, ScoredNetworkModule):
         self._shape_debug('score', score)
 
         return x, score
+
+    def _forward(self, batch: Batch, context: ScoredNetworkContext) -> \
+            ScoredNetworkOutput:
+        split_type: DatasetSplitType = context.split_type
+        preds: Tensor = None
+        loss: Tensor = None
+        score: Tensor = None
+        if context.split_type != DatasetSplitType.train and self.training:
+            raise ModelError(
+                f'Attempting to use split {split_type} while training')
+        if context.split_type == DatasetSplitType.train:
+            loss = self._forward_train(batch)
+        elif context.split_type == DatasetSplitType.validation:
+            loss = self._forward_train(batch)
+            preds, score = self._decode(batch)
+        elif context.split_type == DatasetSplitType.test:
+            preds, score = self._decode(batch)
+            loss = batch.torch_config.singleton([0], dtype=torch.float32)
+        else:
+            raise ModelError(f'Unknown data split type: {split_type}')
+        return ScoredNetworkOutput(preds, loss, score)
