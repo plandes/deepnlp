@@ -47,4 +47,4 @@ class ReviewModelFacade(LanguageModelFacade):
         """
         return super().get_predictions(
             ('text', 'len'),
-            lambda dp: (dp.review.text, len(dp.review.text)))
+            lambda dp: (dp.doc.text, len(dp.doc.text)))

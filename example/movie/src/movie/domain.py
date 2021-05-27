@@ -3,7 +3,8 @@
 """
 __author__ = 'Paul Landes'
 
-from dataclasses import dataclass
+from typing import Tuple, Type
+from dataclasses import dataclass, field
 import logging
 import pandas as pd
 from zensols.dataframe import DataframeStash
@@ -44,7 +45,19 @@ class Review(FeatureDocument):
     (good/bad => positive/negative).
 
     """
-    polarity: str
+
+    polarity: str = field()
+    """The polarity, either posititive (``p`)` or negative (``n``) of the
+    review.
+
+    """
+
+    # we have to add this method to tell the framework how to combine multiple
+    # instances of review 'documents' when batching many sentences (as
+    # documents) in to one document (the entire batch)
+    def _combine_documents(self, docs: Tuple[FeatureDocument],
+                           cls: Type[FeatureDocument]) -> FeatureDocument:
+        return super()._combine_documents(docs, FeatureDocument)
 
 
 @dataclass
