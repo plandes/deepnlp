@@ -21,6 +21,9 @@ $(ENV_INC):
 			$(ENTRY) -c $(MDL_DIR)/noop.conf export --expfmt \
 				make --expoutput $(ENV_INC)
 
+$(LOG_DIR):
+			mkdir -p $(LOG_DIR)
+
 .PHONY:			info
 info:
 			@cat $(ENV_INC)
@@ -43,10 +46,6 @@ env:
 rebatch:
 			rm -rf $(DATA_DIR)/batch
 			$(ENTRY) batch -c $(MDL_DIR)/glove50.conf
-
-.PHONY:			traintest
-traintest:
-			nohup $(ENTRY) traintest > $(LOG_DIR)/traintest.log 2>&1 &
 
 .PHONY:			glove50
 glove50:

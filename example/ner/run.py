@@ -17,7 +17,10 @@ def main(args: List[str], **factory_kwargs):
 def proto():
     print('-->proto')
     try:
-        args = '-c models/transformer-trainable.conf'
+        model = {0: 'glove50',
+                 1: 'transformer-trainable',
+                 }[0]
+        args = f'-c models/{model}.conf --execlevel 2'
         # other reload patterns read from app.conf
         rl_mods = 'ner.app'.split()
         action = {0: 'proto',

@@ -70,6 +70,7 @@ class NERFacadeApplication(FacadeApplication):
             self.sent_batch_stash.clear()
         with dealloc(self._create_facade()) as facade:
             for id, batch in it.islice(facade.batch_stash, 5):
+                print(batch.get_labels())
                 batch.write()
 
     def _write_max_word_piece_token_length(self):
@@ -85,4 +86,5 @@ class NERFacadeApplication(FacadeApplication):
         self._write_max_word_piece_token_length()
 
     def proto(self):
-        self._test_trans_label()
+        #self._test_trans_label()
+        self._test_batch_write()
