@@ -298,9 +298,13 @@ class FeatureDocument(TokensContainer):
     def to_document(self) -> FeatureDocument:
         return self
 
-    def _combine_documents(self, docs: Tuple[FeatureDocument]) -> \
-            FeatureDocument:
-        cls = self.__class__
+    def _combine_documents(self, docs: Tuple[FeatureDocument],
+                           cls: Type[FeatureDocument]) -> FeatureDocument:
+        """Override if there are any fields in your dataclass.  In most cases, the only
+        time this is called is by an embedding vectorizer to batch muultiple
+        sentences in to a single document, so the only feature that matter are the sentence level
+
+        """
         return cls(list(chain.from_iterable(
             map(lambda c: c.combine_sentences(), docs))))
 
@@ -315,7 +319,8 @@ class FeatureDocument(TokensContainer):
         if len(docs) == 0:
             doc = cls([])
         else:
-            doc = docs[0]._combine_documents(docs)
+            fdoc = docs[0]
+            doc = fdoc._combine_documents(docs, type(fdoc))
         return doc
 
     @persisted('_combine_sentences', transient=True)
