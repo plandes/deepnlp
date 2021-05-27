@@ -3,17 +3,18 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple
+from typing import Tuple, List
 from dataclasses import dataclass, field
 import logging
 import torch
 from torch import Tensor
-from zensols.deeplearn import ModelError, DatasetSplitType
+from zensols.deeplearn import ModelError, DatasetSplitType, TorchConfig
 from zensols.deeplearn.model import (
     ScoredNetworkModule, ScoredNetworkContext, ScoredNetworkOutput
 )
 from zensols.deeplearn.batch import Batch
 from zensols.deeplearn.layer import RecurrentCRFNetworkSettings, RecurrentCRF
+from zensols.deeplearn.vectorize import AggregateEncodableFeatureVectorizer
 from zensols.deepnlp.layer import (
     EmbeddingNetworkSettings,
     EmbeddingNetworkModule,
@@ -28,7 +29,17 @@ class EmbeddedRecurrentCRFSettings(EmbeddingNetworkSettings):
     recurrent_crf_settings: RecurrentCRFNetworkSettings = field()
     """The RNN settings (configure this with an LSTM for (Bi)LSTM CRFs)."""
 
-    mask_attribute: str
+    mask_attribute: str = field()
+    """The vectorizer attribute name for the mask feature."""
+
+    tensor_predictions: bool = field(default=False)
+    """Whether or not to return predictions as tensors.  There are currently no
+    identified use cases to do this as setting this to ``True`` will inflate
+    performance metrics.  This is because the batch iterator will create a
+    tensor with the entire batch adding a lot of default padded value that will
+    be counted as results.
+
+    """
 
     def get_module_class_name(self) -> str:
         return __name__ + '.EmbeddedRecurrentCRF'
@@ -88,18 +99,35 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, ScoredNetworkModule):
 
         return x
 
-    def _decode(self, batch: Batch) -> Tuple[Tensor, Tensor]:
+    def _decode(self, batch: Batch, add_loss: bool) -> Tuple[Tensor, Tensor]:
+        loss = None
         mask = self._get_mask(batch)
         self._shape_debug('mask', mask)
 
         x = super()._forward(batch)
         self._shape_debug('super emb', x)
 
+        if add_loss:
+            labels = batch.get_labels()
+            loss = self.recurcrf.forward(x, mask, labels)
+
         x, score = self.recurcrf.decode(x, mask)
         self._debug(f'recur {len(x)}')
         self._shape_debug('score', score)
 
-        return x, score
+        return x, loss, score
+
+    def _pred_tensor(self, batch: Batch, preds: List[List[int]]) -> Tensor:
+        vec: AggregateEncodableFeatureVectorizer = \
+            batch.get_label_feature_vectorizer()
+        labels: Tensor = batch.get_labels()
+        tc: TorchConfig = batch.torch_config
+        arr: Tensor = vec.create_padded_tensor(
+            labels.shape, labels.dtype, labels.device)
+        for rix, plist in enumerate(preds):
+            blen = len(plist)
+            arr[rix, :blen] = tc.singleton(plist, dtype=labels.dtype)
+        return arr
 
     def _forward(self, batch: Batch, context: ScoredNetworkContext) -> \
             ScoredNetworkOutput:
@@ -107,16 +135,20 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, ScoredNetworkModule):
         preds: Tensor = None
         loss: Tensor = None
         score: Tensor = None
+        tensor_preds = self.net_settings.tensor_predictions
         if context.split_type != DatasetSplitType.train and self.training:
             raise ModelError(
                 f'Attempting to use split {split_type} while training')
         if context.split_type == DatasetSplitType.train:
             loss = self._forward_train(batch)
         elif context.split_type == DatasetSplitType.validation:
-            loss = self._forward_train(batch)
-            preds, score = self._decode(batch)
+            preds, loss, score = self._decode(batch, True)
+            if tensor_preds:
+                preds = self._pred_tensor(batch, preds)
         elif context.split_type == DatasetSplitType.test:
-            preds, score = self._decode(batch)
+            preds, _, score = self._decode(batch, False)
+            if tensor_preds:
+                preds = self._pred_tensor(batch, preds)
             loss = batch.torch_config.singleton([0], dtype=torch.float32)
         else:
             raise ModelError(f'Unknown data split type: {split_type}')
