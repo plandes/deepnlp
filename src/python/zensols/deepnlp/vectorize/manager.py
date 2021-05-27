@@ -58,6 +58,7 @@ class FeatureDocumentVectorizer(EncodableFeatureVectorizer, metaclass=ABCMeta):
     :class:`.TokensContainer`.
 
     """
+
     @abstractmethod
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
         pass
