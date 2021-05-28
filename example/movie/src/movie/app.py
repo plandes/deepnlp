@@ -5,9 +5,11 @@ __author__ = 'plandes'
 
 from dataclasses import dataclass
 import logging
+import itertools as it
 from zensols.persist import dealloc
-from zensols.util.time import time
+from zensols.util.log import loglevel
 from zensols.deeplearn.cli import FacadeApplication
+from zensols.deeplearn.batch import BatchStash
 from zensols.deepnlp import FeatureDocument
 
 logger = logging.getLogger(__name__)
@@ -31,17 +33,31 @@ class ReviewApplication(FacadeApplication):
         with dealloc(self._create_facade()) as facade:
             facade.write()
 
-    def _create_batch(self, sent: str):
-        from zensols.deeplearn.batch import BatchStash
-
+    def _batch_sample(self):
         with dealloc(self._create_facade()) as facade:
             stash: BatchStash = facade.batch_stash
-            with time('created batch'):
-                batch = stash.create_nascent(sent)
+            for batch in it.islice(stash.values(), 1):
+                batch.write()
+                print(batch.get_label_classes())
+                print(batch.has_labels)
+                for dp in batch.get_data_points():
+                    if len(dp.doc) > 1:
+                        print(dp.doc.polarity)
+                        for s in dp.doc:
+                            print(s)
+                        print('-' * 30)
+
+    def _create_batch(self, sent: str):
+        with dealloc(self._create_facade()) as facade:
+            stash: BatchStash = facade.batch_stash
+            batch = stash.create_prediction(sent)
             batch.write()
             print(batch['glove_50_embedding'])
 
     def proto(self):
         s = "If you sometimes like to go to the movies to have fun , Wasabi is a good place to start .",
         s = 'There are a few stabs at absurdist comedy ... but mostly the humor is of the sweet , gentle and occasionally cloying kind that has become an Iranian specialty .'
-        self._create_batch(s)
+        if 0:
+            self._batch_sample()
+        else:
+            self._create_batch(s)

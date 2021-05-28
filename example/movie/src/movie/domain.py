@@ -94,7 +94,7 @@ class ReviewDataPointFeatureFactory(DataPointFeatureFactory):
     vec_manager: FeatureDocumentVectorizerManager
 
     def instance(self, sent_text: str) -> Tuple[Review]:
-        rev: Review = self.vec_manager.parse(sent_text, 'p')
+        rev: Review = self.vec_manager.parse(sent_text, None)
         return [rev]
 
 
@@ -130,7 +130,7 @@ class ReviewBatch(Batch):
               # FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', True, 'doc'),
               # FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', True, 'doc'),
               FieldFeatureMapping(TRANSFORMER_FIXED_EMBEDDING, 'transformer_fixed', True, 'doc'),
-#              FieldFeatureMapping(TRANSFORMER_TRAINABLE_EMBEDDING, 'transformer_trainable', True, 'doc'),
+              FieldFeatureMapping(TRANSFORMER_TRAINABLE_EMBEDDING, 'transformer_trainable', True, 'doc'),
               FieldFeatureMapping(STATS_ATTRIBUTE, 'stats', False, 'doc'),
               FieldFeatureMapping(ENUMS_ATTRIBUTE, 'enum', True, 'doc'),
               FieldFeatureMapping(COUNTS_ATTRIBUTE, 'count', True, 'doc'),
