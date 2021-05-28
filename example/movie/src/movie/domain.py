@@ -9,6 +9,7 @@ import logging
 import pandas as pd
 from zensols.dataframe import DataframeStash
 from zensols.deeplearn.batch import (
+    DataPointFeatureFactory,
     Batch,
     BatchFeatureMapping,
     ManagerFeatureMapping,
@@ -17,6 +18,7 @@ from zensols.deeplearn.batch import (
 from zensols.deepnlp import FeatureDocument
 from zensols.deepnlp.batch import FeatureDocumentDataPoint
 from zensols.deepnlp.feature import DocumentFeatureStash
+from zensols.deepnlp.vectorize import FeatureDocumentVectorizerManager
 from . import DatasetFactory
 
 logger = logging.getLogger(__name__)
@@ -88,6 +90,15 @@ class ReviewDataPoint(FeatureDocumentDataPoint):
 
 
 @dataclass
+class ReviewDataPointFeatureFactory(DataPointFeatureFactory):
+    vec_manager: FeatureDocumentVectorizerManager
+
+    def instance(self, sent_text: str) -> Tuple[Review]:
+        rev: Review = self.vec_manager.parse(sent_text, 'p')
+        return [rev]
+
+
+@dataclass
 class ReviewBatch(Batch):
     LANGUAGE_FEATURE_MANAGER_NAME = 'language_feature_manager'
     GLOVE_50_EMBEDDING = 'glove_50_embedding'
@@ -116,10 +127,10 @@ class ReviewBatch(Batch):
          ManagerFeatureMapping(
              LANGUAGE_FEATURE_MANAGER_NAME,
              (FieldFeatureMapping(GLOVE_50_EMBEDDING, 'wvglove50', True, 'doc'),
-              FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', True, 'doc'),
-              FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', True, 'doc'),
+              # FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', True, 'doc'),
+              # FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', True, 'doc'),
               FieldFeatureMapping(TRANSFORMER_FIXED_EMBEDDING, 'transformer_fixed', True, 'doc'),
-              FieldFeatureMapping(TRANSFORMER_TRAINABLE_EMBEDDING, 'transformer_trainable', True, 'doc'),
+#              FieldFeatureMapping(TRANSFORMER_TRAINABLE_EMBEDDING, 'transformer_trainable', True, 'doc'),
               FieldFeatureMapping(STATS_ATTRIBUTE, 'stats', False, 'doc'),
               FieldFeatureMapping(ENUMS_ATTRIBUTE, 'enum', True, 'doc'),
               FieldFeatureMapping(COUNTS_ATTRIBUTE, 'count', True, 'doc'),

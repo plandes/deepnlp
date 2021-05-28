@@ -18,16 +18,18 @@ def main(args: List[str], **factory_kwargs):
 def proto():
     print('-->proto')
     try:
-        action = {0: 'debug',
-                  1: 'batch',
-                  2: 'predictions',
-                  }[2]
+        action = {0: 'proto',
+                  1: 'debug',
+                  2: 'batch',
+                  3: 'predictions',
+                  }[0]
         model = {0: 'glove50',
                  1: 'transformer-fixed',
                  2: 'transformer-trainable'
                  }[0]
         args = f'run.py {action} -c models/{model}.conf'
-        main(args.split(), reload_factory=True)
+        rl_mods = 'movie.app'.split()
+        main(args.split(), reload_pattern=f'^(?:{"|".join(rl_mods)})'),
     except SystemExit as e:
         print(f'exit: {e}')
 

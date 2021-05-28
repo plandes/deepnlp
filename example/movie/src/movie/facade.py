@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import logging
 import pandas as pd
+from zensols.persist import Stash
 from zensols.deepnlp.model import (
     LanguageModelFacade,
     LanguageModelFacadeConfig,
@@ -48,3 +49,7 @@ class ReviewModelFacade(LanguageModelFacade):
         return super().get_predictions(
             ('text', 'len'),
             lambda dp: (dp.doc.text, len(dp.doc.text)))
+
+    @property
+    def feature_stash(self) -> Stash:
+        return super().feature_stash.delegate
