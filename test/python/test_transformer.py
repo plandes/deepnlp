@@ -24,7 +24,7 @@ class TestWordPieceTokenization(unittest.TestCase):
                   should_tok_len: int,
                   should: Tuple[Tuple[str, Tuple[str]]]):
         doc: FeatureDocument = self.vmng.parse(sent)
-        vec = self.vmng.vectorizers[vec_name]
+        vec = self.vmng[vec_name]
         tdoc: TokenizedFeatureDocument = vec.tokenize(doc)
         self.assertEqual(TokenizedFeatureDocument, type(tdoc))
         smaps = tdoc.map_word_pieces_to_tokens()

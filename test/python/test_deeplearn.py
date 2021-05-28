@@ -16,7 +16,7 @@ class TestFeatureVectorization(TestFeatureVectorization):
 
     def test_sentence_vectorize(self):
         vec = self.fac('feature_vectorizer')
-        sent_vec = vec.vectorizers['wsv']
+        sent_vec = vec['wsv']
         self.assertTrue(isinstance(sent_vec, EmbeddingFeatureVectorizer))
         self.assertEqual((20, 50), sent_vec.shape)
         doc = vec.parse(self.sent_text)

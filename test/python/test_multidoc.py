@@ -23,7 +23,7 @@ class TestMultiDoc(TestFeatureVectorization):
     def _test_counts(self, t1, t2, tb):
         vec = self.vmng
         docs = self._parse_docs(vec)
-        tvec = vec.vectorizers['count']
+        tvec = vec['count']
 
         # first sentence text has two sentences
         tensor = tvec.transform(docs[0])
@@ -44,7 +44,7 @@ class TestMultiDoc(TestFeatureVectorization):
     def _test_enums(self, t1, t2, tb, should):
         vec = self.vmng
         docs = self._parse_docs(vec)
-        tvec = vec.vectorizers['enum']
+        tvec = vec['enum']
 
         # first sentence text has two sentences
         tensor = tvec.transform(docs[0])

@@ -21,7 +21,7 @@ class TestFeatureVectorizationParse(TestFeatureVectorization):
 
     def test_no_vectorizers(self):
         vec = self.fac.instance('no_vectorizer_feature_vectorizer_manager')
-        self.assertEqual(0, len(vec.vectorizers))
+        self.assertEqual(0, len(vec))
 
     def test_token_parse(self):
         fdoc = self.vmng.parse(self.sent_text)
@@ -52,7 +52,7 @@ class TestFeatureVectorizationSpacy(TestFeatureVectorization):
     def test_vectorize_ent(self):
         fdoc = self.vmng.parse(self.sent_text)
         fent = self.vmng.spacy_vectorizers['ent']
-        tvec = self.vmng.vectorizers['count']
+        tvec = self.vmng['count']
         tensor = tvec.get_feature_counts(fdoc, fent)
         self.assertTrue(isinstance(tensor, torch.Tensor))
         should = self.vmng.torch_config.from_iterable(
@@ -65,7 +65,7 @@ class TestFeatureVectorizationCount(TestFeatureVectorization):
     def test_all_counts(self):
         vec = self.vmng
         fdoc = vec.parse(self.sent_text)
-        tvec = vec.vectorizers['count']
+        tvec = vec['count']
         tensor = tvec.transform(fdoc)
         self.assertTrue(isinstance(tensor, torch.Tensor))
         self.assertEqual((1, 174), tuple(tensor.shape))
@@ -116,7 +116,7 @@ class TestFeatureVectorizationCount(TestFeatureVectorization):
             sm.indices.tolist())
         vec = self.fac.instance('skinnier_feature_vectorizer_manager')
         fdoc = vec.parse(self.sent_text)
-        tvec = vec.vectorizers['count']
+        tvec = vec['count']
         tensor = tvec.transform(fdoc)
         self.assertEqual((1, 174), tuple(tensor.shape))
 
@@ -144,7 +144,7 @@ class TestFeatureVectorizationDepth(TestFeatureVectorization):
 
     def test_fixed(self):
         fdoc = self.vmng.parse(self.sent_text)
-        tvec = self.vmng.vectorizers['dep']
+        tvec = self.vmng['dep']
         tensor = tvec.transform(fdoc)
         self.assertTrue(isinstance(tensor, torch.Tensor))
         should = self._single_should()
@@ -160,7 +160,7 @@ class TestFeatureVectorizationDepth(TestFeatureVectorization):
     def test_variable_length(self):
         vmng = self.fac.instance('feature_vectorizer_manager_nolen')
         fdoc = vmng.parse(self.sent_text)
-        tvec = vmng.vectorizers['dep']
+        tvec = vmng['dep']
         tensor = tvec.transform(fdoc)
         self.assertTrue(isinstance(tensor, torch.Tensor))
         should = self._single_should()[:, :7]
@@ -176,7 +176,7 @@ class TestFeatureVectorizationDepth(TestFeatureVectorization):
 class TestFeatureVectorizationStatistics(TestFeatureVectorization):
     def test_statistics(self):
         fdoc = self.vmng.parse(self.sent_text)
-        tvec = self.vmng.vectorizers['stats']
+        tvec = self.vmng['stats']
         tensor = tvec.transform(fdoc)
         self.assertTrue(isinstance(tensor, torch.Tensor))
         should = self.vmng.torch_config.from_iterable(
@@ -199,7 +199,7 @@ class TestFeatureVectorizationStatistics(TestFeatureVectorization):
 class TestFeatureVectorizationCombinedSpacy(TestFeatureVectorization):
     def test_feature_id(self):
         fdoc = self.vmng.parse(self.sent_text)
-        tvec = self.vmng.vectorizers['enum']
+        tvec = self.vmng['enum']
         if 0:
             logging.basicConfig(level=logging.WARN)
             logging.getLogger('zensols.deepnlp.vectorize.vectorizers').setLevel(logging.DEBUG)
@@ -252,7 +252,7 @@ class TestFeatureVectorizationOverlap(TestFeatureVectorization):
         vec = self.fac.instance('overlap_vectorizer_manager')
         fdoc = vec.parse(self.sent_text)
         fdoc2 = vec.parse('I be a Citizen')
-        tvec = vec.vectorizers['overlap_token']
+        tvec = vec['overlap_token']
         self.assertEqual((2,), tvec.shape)
         tensor = tvec.transform((fdoc, fdoc2))
         self.assertEqual((2,), tuple(tensor.shape))
@@ -262,7 +262,7 @@ class TestFeatureVectorizationOverlap(TestFeatureVectorization):
         vec = self.fac.instance('overlap_vectorizer_manager')
         fdoc = vec.parse(self.sent_text)
         fdoc2 = vec.parse('I be a Citizen.  I am Paul Landes.  I made $3 from my plasma.')
-        tvec = vec.vectorizers['mutual_count']
+        tvec = vec['mutual_count']
         self.assertEqual((-1, 174), tvec.shape)
         tensor = tvec.transform((fdoc, fdoc2))
         self.assertEqual((1, 174), tuple(tensor.shape))
