@@ -40,7 +40,7 @@ class TransformerFeatureContext(FeatureContext, Deallocatable):
 
     def deallocate(self):
         super().deallocate()
-        self.deallocate(self.document)
+        self._try_deallocate(self.document)
         del self.document
 
 
@@ -137,7 +137,7 @@ class TransformerExpanderFeatureContext(MultiFeatureContext):
 
     def deallocate(self):
         super().deallocate()
-        self.deallocate(self.document)
+        self._try_deallocate(self.document)
         del self.document
 
 
