@@ -241,7 +241,7 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
         mng: FeatureVectorizerManager
         for mng in mng_set.values():
             vec: FeatureVectorizer
-            for vc in mng.vectorizers.values():
+            for vc in mng.values():
                 if isinstance(vc, TransformerEmbeddingFeatureVectorizer):
                     return vc
 
@@ -286,12 +286,12 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
         return mng.doc_parser
 
     def _get_vectorizer_feature_ids(self, name: str) -> Set[str]:
-        lang_vec = self.language_vectorizer_manager.vectorizers[name]
+        lang_vec = self.language_vectorizer_manager[name]
         return lang_vec.decoded_feature_ids
 
     def _set_vectorizer_feature_ids(self, name: str, feature_ids: Set[str]):
         lang_vec_mng = self.language_vectorizer_manager
-        lang_vec = lang_vec_mng.vectorizers[name]
+        lang_vec = lang_vec_mng[name]
         spacy_feat_ids = set(lang_vec_mng.spacy_vectorizers.keys())
         non_existant = feature_ids - spacy_feat_ids
         if len(non_existant) > 0:
