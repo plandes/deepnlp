@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, Type
+from typing import Tuple, Type, List, Iterable
 from dataclasses import dataclass, field
 import logging
 import pandas as pd
@@ -15,6 +15,7 @@ from zensols.deeplearn.batch import (
     ManagerFeatureMapping,
     FieldFeatureMapping,
 )
+from zensols.deeplearn.vectorize import CategoryEncodableFeatureVectorizer
 from zensols.deepnlp import FeatureDocument
 from zensols.deepnlp.batch import FeatureDocumentDataPoint
 from zensols.deepnlp.feature import DocumentFeatureStash
@@ -92,10 +93,18 @@ class ReviewDataPoint(FeatureDocumentDataPoint):
 @dataclass
 class ReviewDataPointFeatureFactory(DataPointFeatureFactory):
     vec_manager: FeatureDocumentVectorizerManager
+    label_feature_id: str
+
+    @property
+    def label_vectorizer(self) -> CategoryEncodableFeatureVectorizer:
+        return self.vec_manager[self.label_feature_id]
 
     def instance(self, sent_text: str) -> Tuple[Review]:
         rev: Review = self.vec_manager.parse(sent_text, None)
         return [rev]
+
+    def get_classes(self, nominals: Iterable[int]) -> List[str]:
+        return self.label_vectorizer.get_classes(nominals)
 
 
 @dataclass

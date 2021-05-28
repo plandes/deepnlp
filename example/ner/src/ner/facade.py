@@ -41,14 +41,14 @@ class NERModelFacade(LanguageModelFacade):
         mng: FeatureDocumentVectorizerManager = \
             self.language_vectorizer_manager
         name: str = NERBatch.TRANSFORMER_MODEL_NAME
-        return mng.vectorizers[name]
+        return mng[name]
 
     @property
     def transformer_embedding_model(self) -> TransformerEmbedding:
         mng: FeatureDocumentVectorizerManager = \
             self.language_vectorizer_manager
         name: str = NERBatch.TRANSFORMER_MODEL_NAME
-        return mng.vectorizers[name].embed_model
+        return mng[name].embed_model
 
     def _configure_debug_logging(self):
         super()._configure_debug_logging()

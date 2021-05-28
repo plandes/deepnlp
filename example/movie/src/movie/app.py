@@ -3,13 +3,15 @@
 """
 __author__ = 'plandes'
 
+from typing import Tuple, List
 from dataclasses import dataclass
 import logging
 import itertools as it
 from zensols.persist import dealloc
 from zensols.util.log import loglevel
+from zensols.persist import persisted
 from zensols.deeplearn.cli import FacadeApplication
-from zensols.deeplearn.batch import BatchStash
+from zensols.deeplearn.batch import Batch, BatchStash
 from zensols.deepnlp import FeatureDocument
 
 logger = logging.getLogger(__name__)
@@ -47,17 +49,22 @@ class ReviewApplication(FacadeApplication):
                             print(s)
                         print('-' * 30)
 
-    def _create_batch(self, sent: str):
+    def _create_batch(self, sents: Tuple[str]):
         with dealloc(self._create_facade()) as facade:
             stash: BatchStash = facade.batch_stash
-            batch = stash.create_prediction(sent)
-            batch.write()
-            print(batch['glove_50_embedding'])
+            batches: List[Batch] = stash.create_prediction(sents)
+            #with loglevel(['zensols.deeplearn.model', 'zensols.deeplearn.result']):
+            res = facade.predict_batches(batches)
+            preds = res.results[0].predictions
+            print(stash.data_point_feature_factory.get_classes(preds))
 
     def proto(self):
-        s = "If you sometimes like to go to the movies to have fun , Wasabi is a good place to start .",
-        s = 'There are a few stabs at absurdist comedy ... but mostly the humor is of the sweet , gentle and occasionally cloying kind that has become an Iranian specialty .'
+        sents = ["If you sometimes like to go to the movies to have fun , Wasabi is a good place to start .",
+                 'There are a few stabs at absurdist comedy ... but mostly the humor is of the sweet , gentle and occasionally cloying kind that has become an Iranian specialty .',
+                 'Terrible',
+                 'Great movie',
+                 ]
         if 0:
             self._batch_sample()
         else:
-            self._create_batch(s)
+            self._create_batch(sents)

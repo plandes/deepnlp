@@ -46,7 +46,7 @@ class NERFacadeApplication(FacadeApplication):
         with dealloc(self._create_facade()) as facade:
             sents = tuple(it.islice(facade.feature_stash.values(), 3))
             doc = FeatureDocument(sents)
-            vec = facade.language_vectorizer_manager.vectorizers['syn']
+            vec = facade.language_vectorizer_manager['syn']
             from zensols.util.log import loglevel
             with loglevel('zensols.deepnlp'):
                 vec.encode(doc)
@@ -60,7 +60,7 @@ class NERFacadeApplication(FacadeApplication):
             batch = batches[0]
             dps = batch.get_data_points()
             doc = FeatureDocument.combine_documents(map(lambda dp: dp.doc, dps))
-            vec = facade.language_vectorizer_manager.vectorizers['entlabel_trans']
+            vec = facade.language_vectorizer_manager['entlabel_trans']
             with loglevel('zensols.deepnlp.transformer.vectorize'):
                 arr = vec.transform(doc)
             #print(arr.squeeze(-1))
