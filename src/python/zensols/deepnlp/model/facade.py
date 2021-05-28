@@ -73,10 +73,10 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
         pass
 
     def _create_facade_explorer(self):
-        from zensols.deepnlp.vectorize import SentenceFeatureVectorizer
+        from zensols.deepnlp.vectorize import FeatureDocumentVectorizer
         ce = super()._create_facade_explorer()
         ce.include_classes.update({NetworkSettings, ModelSettings})
-        ce.exclude_classes.update({SentenceFeatureVectorizer})
+        ce.exclude_classes.update({FeatureDocumentVectorizer})
         ce.dictify_dataclasses = True
         return ce
 
