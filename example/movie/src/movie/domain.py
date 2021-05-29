@@ -3,19 +3,17 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, Type, List, Iterable
+from typing import Tuple, Type
 from dataclasses import dataclass, field
 import logging
 import pandas as pd
 from zensols.dataframe import DataframeStash
 from zensols.deeplearn.batch import (
-    PredictionMapper,
     Batch,
     BatchFeatureMapping,
     ManagerFeatureMapping,
     FieldFeatureMapping,
 )
-from zensols.deeplearn.vectorize import CategoryEncodableFeatureVectorizer
 from zensols.deepnlp import FeatureDocument
 from zensols.deepnlp.batch import (
     FeatureDocumentDataPoint, ClassificationPredictionMapper
@@ -85,17 +83,17 @@ class ReviewFeatureStash(DocumentFeatureStash):
 
 
 @dataclass
-class ReviewDataPoint(FeatureDocumentDataPoint):
-    @property
-    def label(self) -> str:
-        return self.doc.polarity
-
-
-@dataclass
 class ReviewPredictionMapper(ClassificationPredictionMapper):
     def create_features(self, sent_text: str) -> Tuple[Review]:
         rev: Review = self.vec_manager.parse(sent_text, None)
         return [rev]
+
+
+@dataclass
+class ReviewDataPoint(FeatureDocumentDataPoint):
+    @property
+    def label(self) -> str:
+        return self.doc.polarity
 
 
 @dataclass
@@ -128,7 +126,7 @@ class ReviewBatch(Batch):
              LANGUAGE_FEATURE_MANAGER_NAME,
              (FieldFeatureMapping(GLOVE_50_EMBEDDING, 'wvglove50', True, 'doc'),
               FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', True, 'doc'),
-              # FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', True, 'doc'),
+              FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', True, 'doc'),
               FieldFeatureMapping(TRANSFORMER_FIXED_EMBEDDING, 'transformer_fixed', True, 'doc'),
               FieldFeatureMapping(TRANSFORMER_TRAINABLE_EMBEDDING, 'transformer_trainable', True, 'doc'),
               FieldFeatureMapping(STATS_ATTRIBUTE, 'stats', False, 'doc'),
