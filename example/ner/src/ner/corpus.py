@@ -3,7 +3,7 @@
 """
 __author__ = 'plandes'
 
-from typing import Tuple, Iterable, Dict, Any
+from typing import Tuple, Iterable, Dict, Any, List
 from dataclasses import dataclass, field
 from pathlib import Path
 import logging
@@ -47,12 +47,18 @@ class NERTokenFeatures(BasicTokenFeatures):
 
 
 class NERFeatureToken(FeatureToken):
+    """A feature token that uses :class:`.NERTokenFeatures` as the features class.
+
+    """
     def __init__(self, features: NERTokenFeatures):
         super().__init__(features, NERTokenFeatures.FIELD_SET)
 
 
 @dataclass
 class NERFeatureSentence(FeatureSentence):
+    """A feature sentence with an identifier.
+
+    """
     sent_id: int = field(default=None)
 
     def __str__(self) -> str:
@@ -61,11 +67,19 @@ class NERFeatureSentence(FeatureSentence):
 
 @dataclass
 class SentenceFactoryStash(OneShotFactoryStash, AbstractSplitKeyContainer):
-    DOC_START = re.compile(r'^\s*-DOCSTART- -X- -X- O\n*', re.MULTILINE)
-    source_path: Path = field(default=None)
-    corpus_split_names: Tuple[str] = field(default=None)
+    """A factory stash that creates instances of :class:`.NERFeatureSentence` from
+    CoNLL 2003 format.
 
-    def _read_split(self, split_name: str):
+    """
+    DOC_START = re.compile(r'^\s*-DOCSTART- -X- -X- O\n*', re.MULTILINE)
+
+    source_path: Path = field(default=None)
+    """The path to the corpus input file."""
+
+    corpus_split_names: Tuple[str] = field(default=None)
+    """The names of the splits (i.e. ``train``, ``test``)."""
+
+    def _read_split(self, split_name: str) -> List[NERFeatureSentence]:
         path = self.source_path / f'{split_name}.txt'
         logger.info(f'reading {path}')
         toks = []
@@ -95,7 +109,7 @@ class SentenceFactoryStash(OneShotFactoryStash, AbstractSplitKeyContainer):
         start = 0
         for name in self.corpus_split_names:
             with time('parsed {slen} sentences ' + f'from {name}'):
-                sents = self._read_split(name)
+                sents: List[NERFeatureSentence] = self._read_split(name)
                 slen = len(sents)
             random.shuffle(sents)
             end = start + len(sents)
@@ -118,6 +132,9 @@ class SentenceFactoryStash(OneShotFactoryStash, AbstractSplitKeyContainer):
 
 @dataclass
 class SentenceStats(PersistableContainer, Dictable):
+    """Display sentence stats.
+
+    """
     stash: DatasetSplitStash
     path: Path
 
