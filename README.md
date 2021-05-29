@@ -25,6 +25,8 @@ Features:
 * Transformer word piece to linguistic token mapping.
 * Two full documented examples provided as both command line and [Jupyter
   notebooks](#usage-and-examples).
+* Command line support for training, testing, debugging, and creating
+  predictions.
 
 
 ## Documentation
@@ -84,7 +86,7 @@ An extensive changelog is available [here](CHANGELOG.md).
 
 [MIT License](LICENSE.md)
 
-Copyright (c) 2020 Paul Landes
+Copyright (c) 2020 - 2021 Paul Landes
 
 
 <!-- links -->
@@ -108,7 +110,7 @@ Copyright (c) 2020 Paul Landes
 [spaCy]: https://spacy.io
 [Pandas]: https://pandas.pydata.org
 
-[Stanford movie review]: https://ai.stanford.edu/~amaas/data/sentiment/
+[Stanford movie review]: https://nlp.stanford.edu/sentiment/
 [Cornell sentiment polarity]: https://www.cs.cornell.edu/people/pabo/movie-review-data/
 [CoNLL 2003 data set]: https://www.clips.uantwerpen.be/conll2003/ner/
 

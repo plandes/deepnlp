@@ -1,8 +1,8 @@
 # Movie Review Sentiment Example
 
 This document describes the [movie review task example] to demonstrate the
-DeepZenols NLP framework on the sentiment analysis task using the [Stanford
-movie review] and [Cornell sentiment polarity] data sets.
+DeepZenols NLP framework on the sentiment analysis task using the Stanford
+sentiment analysis corpus.
 
 As before, we'll incrementally go through the [configuration file] section by
 section skipping those we have already covered in the [deeplearn API] and [deep
@@ -11,6 +11,22 @@ are reading this in parallel with the [deep NLP] documentation.
 
 Note that there is quite a bit of inline documentation in the [configuration
 file] so it is recommended the reader follow it while reading this tutorial.
+
+
+## Corpus Installation
+
+The corpus used for this example is fairly small so the models train fast.  It
+is the Stanford movie review dataset with Cornell labels:
+* [Stanford movie review]
+* [Cornell sentiment polarity]
+
+The example's [makefile](../../example/movie/makefile) contains a target that
+should download and install the corpus with `make corpus`.  If that doesn't
+work, follow the links in the make file and create the following files in
+`example/movie/corpus`:
+* stanfordSentimentTreebank/datasetSentences.txt
+* rt-polaritydata/rt-polarity.pos
+* rt-polaritydata/rt-polarity.neg
 
 
 ## Embedding
@@ -460,7 +476,7 @@ To run the [Jupyter movie notebook]:
 [Word2Vec]: https://code.google.com/archive/p/word2vec/
 [fastText]: https://fasttext.cc
 [BERT]: https://huggingface.co/transformers/model_doc/bert.html
-[Stanford movie review]: https://ai.stanford.edu/~amaas/data/sentiment/
+[Stanford movie review]: https://nlp.stanford.edu/sentiment/
 [Cornell sentiment polarity]: https://www.cs.cornell.edu/people/pabo/movie-review-data/
 
 [nlparse]: https://github.com/plandes/nlparse
