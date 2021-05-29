@@ -54,7 +54,9 @@ class ReviewApplication(FacadeApplication):
 
     def _predict(self, sents: Tuple[str]):
         with dealloc(self._create_facade()) as facade:
-            print(facade.predict(sents))
+            docs = facade.predict(sents)
+            for doc in docs:
+                doc.write()
 
     def proto(self):
         sents = ["If you sometimes like to go to the movies to have fun , Wasabi is a good place to start .",

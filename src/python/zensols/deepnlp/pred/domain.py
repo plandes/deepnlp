@@ -36,6 +36,7 @@ class ClassificationPredictionMapper(PredictionMapper):
 
     def _create_features(self, sent_text: str) -> Tuple[FeatureDocument]:
         doc: FeatureDocument = self.vec_manager.parse(sent_text)
+        self._docs.append(doc)
         return [doc]
 
     def _map_classes(self, result: ResultsContainer) -> List[List[str]]:
@@ -53,5 +54,11 @@ class ClassificationPredictionMapper(PredictionMapper):
         return list(map(lambda cl: vec.get_classes(cl).tolist(), nominals))
 
     def map_results(self, result: ResultsContainer) -> Settings:
+        """Map class predictions and documents generated during use of this instance.
+
+        :return: a :class:`.Settings` instance with ``classess`` and ``docs``
+                 attributes
+
+        """
         classes = chain.from_iterable(self._map_classes(result))
-        return Settings(classes=tuple(classes))
+        return Settings(classes=tuple(classes), docs=tuple(self._docs))

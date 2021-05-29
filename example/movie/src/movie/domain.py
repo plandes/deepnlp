@@ -6,6 +6,8 @@ __author__ = 'Paul Landes'
 from typing import Tuple, Type
 from dataclasses import dataclass, field
 import logging
+import sys
+from io import TextIOBase
 import pandas as pd
 from zensols.dataframe import DataframeStash
 from zensols.deeplearn.batch import (
@@ -16,6 +18,7 @@ from zensols.deeplearn.batch import (
 )
 from zensols.deepnlp import FeatureDocument
 from zensols.deepnlp.batch import FeatureDocumentDataPoint
+from zensols.deepnlp.pred import ClassificationPredictionMapper
 from zensols.deepnlp.feature import DocumentFeatureStash
 from . import DatasetFactory
 
@@ -63,6 +66,14 @@ class Review(FeatureDocument):
                            cls: Type[FeatureDocument]) -> FeatureDocument:
         return super()._combine_documents(docs, FeatureDocument)
 
+    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
+        if self.polarity is None:
+            pol = '<none>'
+        else:
+            pol = 'positive' if self.polarity == 'p' else 'negative'
+        super().write(depth, writer)
+        self._write_line(f'polarity: {pol}', depth + 1, writer)
+
 
 @dataclass
 class ReviewFeatureStash(DocumentFeatureStash):
@@ -82,6 +93,15 @@ class ReviewFeatureStash(DocumentFeatureStash):
         # the class label
         polarity = row['polarity']
         return self.vec_manager.parse(text, polarity)
+
+
+@dataclass
+class ReviewPredictionMapper(ClassificationPredictionMapper):
+    def map_results(self, *args, **kwargs) -> Tuple[Review]:
+        res = super().map_results(*args, **kwargs)
+        for cl, doc in zip(res.classes, res.docs):
+            doc.polarity = cl
+        return tuple(res.docs)
 
 
 @dataclass
@@ -121,7 +141,7 @@ class ReviewBatch(Batch):
              LANGUAGE_FEATURE_MANAGER_NAME,
              (FieldFeatureMapping(GLOVE_50_EMBEDDING, 'wvglove50', True, 'doc'),
               FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', True, 'doc'),
-              FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', True, 'doc'),
+              #FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', True, 'doc'),
               FieldFeatureMapping(TRANSFORMER_FIXED_EMBEDDING, 'transformer_fixed', True, 'doc'),
               FieldFeatureMapping(TRANSFORMER_TRAINABLE_EMBEDDING, 'transformer_trainable', True, 'doc'),
               FieldFeatureMapping(STATS_ATTRIBUTE, 'stats', False, 'doc'),
