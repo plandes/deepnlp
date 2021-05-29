@@ -6,7 +6,6 @@ __author__ = 'Paul Landes'
 from typing import Tuple
 from dataclasses import dataclass
 import copy as cp
-import torch
 from zensols.persist import persisted
 from zensols.deeplearn.batch import (
     BatchStash,
@@ -16,7 +15,16 @@ from zensols.deeplearn.batch import (
     BatchFeatureMapping,
 )
 from zensols.deepnlp import TokenAnnotatedFeatureSentence
-from zensols.deepnlp.batch import FeatureSentenceDataPoint
+from zensols.deepnlp.batch import (
+    FeatureSentenceDataPoint, ClassificationPredictionMapper
+)
+
+
+@dataclass
+class ReviewPredictionMapper(ClassificationPredictionMapper):
+    def create_features(self, sent_text: str) -> Tuple[]:
+        rev: Review = self.vec_manager.parse(sent_text, None)
+        return [rev]
 
 
 @dataclass
@@ -38,8 +46,6 @@ class NERBatch(Batch):
     GLOVE_50_EMBEDDING = 'glove_50_embedding'
     GLOVE_300_EMBEDDING = 'glove_300_embedding'
     WORD2VEC_300_EMBEDDING = 'word2vec_300_embedding'
-    # TRANSFORMER_FIXED_MODEL_NAME = 'transformer_fixed'
-    # TRANSFORMER_TRAINABLE_MODEL_NAME = 'transformer_trainable'
     TRANSFORMER_FIXED_EMBEDDING = 'transformer_fixed_embedding'
     TRANSFORMER_TRAINABLE_EMBEDDING = 'transformer_trainable_embedding'
     EMBEDDING_ATTRIBUTES = {GLOVE_50_EMBEDDING, GLOVE_300_EMBEDDING,
@@ -75,11 +81,3 @@ class NERBatch(Batch):
         else:
             maps = self.MAPPINGS
         return maps
-
-    # def get_labels(self) -> torch.Tensor:
-    #     stash: BatchStash = self.batch_stash
-    #     if 'ents_trans' in stash.decoded_attributes:
-    #         labs = self.attributes['ents_trans']
-    #     else:
-    #         labs = super().get_labels()
-    #     return labs
