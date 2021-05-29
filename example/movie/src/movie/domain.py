@@ -9,7 +9,7 @@ import logging
 import pandas as pd
 from zensols.dataframe import DataframeStash
 from zensols.deeplearn.batch import (
-    DataPointFeatureFactory,
+    PredictionMapper,
     Batch,
     BatchFeatureMapping,
     ManagerFeatureMapping,
@@ -17,9 +17,10 @@ from zensols.deeplearn.batch import (
 )
 from zensols.deeplearn.vectorize import CategoryEncodableFeatureVectorizer
 from zensols.deepnlp import FeatureDocument
-from zensols.deepnlp.batch import FeatureDocumentDataPoint
+from zensols.deepnlp.batch import (
+    FeatureDocumentDataPoint, ClassificationPredictionMapper
+)
 from zensols.deepnlp.feature import DocumentFeatureStash
-from zensols.deepnlp.vectorize import FeatureDocumentVectorizerManager
 from . import DatasetFactory
 
 logger = logging.getLogger(__name__)
@@ -91,20 +92,10 @@ class ReviewDataPoint(FeatureDocumentDataPoint):
 
 
 @dataclass
-class ReviewDataPointFeatureFactory(DataPointFeatureFactory):
-    vec_manager: FeatureDocumentVectorizerManager
-    label_feature_id: str
-
-    @property
-    def label_vectorizer(self) -> CategoryEncodableFeatureVectorizer:
-        return self.vec_manager[self.label_feature_id]
-
-    def instance(self, sent_text: str) -> Tuple[Review]:
+class ReviewPredictionMapper(ClassificationPredictionMapper):
+    def create_features(self, sent_text: str) -> Tuple[Review]:
         rev: Review = self.vec_manager.parse(sent_text, None)
         return [rev]
-
-    def get_classes(self, nominals: Iterable[int]) -> List[str]:
-        return self.label_vectorizer.get_classes(nominals)
 
 
 @dataclass
@@ -136,7 +127,7 @@ class ReviewBatch(Batch):
          ManagerFeatureMapping(
              LANGUAGE_FEATURE_MANAGER_NAME,
              (FieldFeatureMapping(GLOVE_50_EMBEDDING, 'wvglove50', True, 'doc'),
-              # FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', True, 'doc'),
+              FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', True, 'doc'),
               # FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', True, 'doc'),
               FieldFeatureMapping(TRANSFORMER_FIXED_EMBEDDING, 'transformer_fixed', True, 'doc'),
               FieldFeatureMapping(TRANSFORMER_TRAINABLE_EMBEDDING, 'transformer_trainable', True, 'doc'),

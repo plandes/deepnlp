@@ -51,12 +51,7 @@ class ReviewApplication(FacadeApplication):
 
     def _create_batch(self, sents: Tuple[str]):
         with dealloc(self._create_facade()) as facade:
-            stash: BatchStash = facade.batch_stash
-            batches: List[Batch] = stash.create_prediction(sents)
-            #with loglevel(['zensols.deeplearn.model', 'zensols.deeplearn.result']):
-            res = facade.predict_batches(batches)
-            preds = res.results[0].predictions
-            print(stash.data_point_feature_factory.get_classes(preds))
+            print(facade.predict(sents))
 
     def proto(self):
         sents = ["If you sometimes like to go to the movies to have fun , Wasabi is a good place to start .",

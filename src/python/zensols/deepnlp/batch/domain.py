@@ -3,12 +3,15 @@
 """
 __author__ = 'Paul Landes'
 
+from typing import Tuple, Iterable, List
 from dataclasses import dataclass
 import sys
 from io import TextIOBase
 from zensols.persist import persisted
-from zensols.deeplearn.batch import DataPoint
+from zensols.deeplearn.batch import DataPoint, PredictionMapper
+from zensols.deeplearn.vectorize import CategoryEncodableFeatureVectorizer
 from zensols.deepnlp import FeatureDocument, FeatureSentence
+from zensols.deepnlp.vectorize import FeatureDocumentVectorizerManager
 
 
 @dataclass
@@ -66,3 +69,20 @@ class FeatureDocumentDataPoint(DataPoint):
 
     def __repr__(self):
         return self.__str__()
+
+
+@dataclass
+class ClassificationPredictionMapper(PredictionMapper):
+    vec_manager: FeatureDocumentVectorizerManager
+    label_feature_id: str
+
+    @property
+    def label_vectorizer(self) -> CategoryEncodableFeatureVectorizer:
+        return self.vec_manager[self.label_feature_id]
+
+    def create_feature(self, sent_text: str) -> Tuple[FeatureDocument]:
+        doc: FeatureDocument = self.vec_manager.parse(sent_text)
+        return [doc]
+
+    def get_classes(self, nominals: Iterable[int]) -> List[str]:
+        return self.label_vectorizer.get_classes(nominals)
