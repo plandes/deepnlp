@@ -10,6 +10,7 @@ import itertools as it
 from zensols.persist import dealloc
 from zensols.deeplearn.cli import FacadeApplication
 from zensols.deeplearn.batch import Batch, BatchStash
+from . import Review
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +24,6 @@ class ReviewApplication(FacadeApplication):
 
     def __post_init__(self):
         super().__post_init__()
-        self.sent = "I'm Paul Landes.  I live in the United States."
 
     def stats(self):
         """Print out the corpus statistics.
@@ -54,7 +54,7 @@ class ReviewApplication(FacadeApplication):
 
     def _predict(self, sents: Tuple[str]):
         with dealloc(self._create_facade()) as facade:
-            docs = facade.predict(sents)
+            docs: Tuple[Review] = facade.predict(sents)
             for doc in docs:
                 doc.write()
 
