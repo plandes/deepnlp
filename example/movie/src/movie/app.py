@@ -3,16 +3,13 @@
 """
 __author__ = 'plandes'
 
-from typing import Tuple, List
+from typing import Tuple
 from dataclasses import dataclass
 import logging
 import itertools as it
 from zensols.persist import dealloc
-from zensols.util.log import loglevel
-from zensols.persist import persisted
 from zensols.deeplearn.cli import FacadeApplication
 from zensols.deeplearn.batch import Batch, BatchStash
-from zensols.deepnlp import FeatureDocument
 
 logger = logging.getLogger(__name__)
 
@@ -36,20 +33,26 @@ class ReviewApplication(FacadeApplication):
             facade.write()
 
     def _batch_sample(self):
+        import numpy as np
         with dealloc(self._create_facade()) as facade:
             stash: BatchStash = facade.batch_stash
-            for batch in it.islice(stash.values(), 1):
-                batch.write()
-                print(batch.get_label_classes())
-                print(batch.has_labels)
-                for dp in batch.get_data_points():
-                    if len(dp.doc) > 1:
-                        print(dp.doc.polarity)
-                        for s in dp.doc:
-                            print(s)
-                        print('-' * 30)
+            batch: Batch
+            for batch in it.islice(stash.values(), 3):
+                classes = batch.get_label_classes()
+                uks = np.unique(np.array(classes))
+                if len(uks) > 1 or True:
+                    print(batch.split_name)
+                    batch.write()
+                    print(classes)
+                    print(batch.has_labels)
+                    for dp in batch.get_data_points():
+                        if len(dp.doc) > 1:
+                            print(dp.doc.polarity)
+                            for s in dp.doc:
+                                print(s)
+                            print('-' * 30)
 
-    def _create_batch(self, sents: Tuple[str]):
+    def _predict(self, sents: Tuple[str]):
         with dealloc(self._create_facade()) as facade:
             print(facade.predict(sents))
 
@@ -62,4 +65,4 @@ class ReviewApplication(FacadeApplication):
         if 0:
             self._batch_sample()
         else:
-            self._create_batch(sents)
+            self._predict(sents)

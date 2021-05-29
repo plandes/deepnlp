@@ -87,9 +87,10 @@ class ClassificationPredictionMapper(PredictionMapper):
         """The label vectorizer used to map classes in :meth:`get_classes`."""
         return self.vec_manager[self.label_feature_id]
 
-    def create_feature(self, sent_text: str) -> Tuple[FeatureDocument]:
+    def create_features(self, sent_text: str) -> Tuple[FeatureDocument]:
         doc: FeatureDocument = self.vec_manager.parse(sent_text)
         return [doc]
 
-    def get_classes(self, nominals: Iterable[int]) -> List[str]:
-        return self.label_vectorizer.get_classes(nominals)
+    def get_classes(self, nominals: Tuple[Iterable[int]]) -> List[List[str]]:
+        vec: CategoryEncodableFeatureVectorizer = self.label_vectorizer
+        return list(map(lambda cl: vec.get_classes(cl).tolist(), nominals))

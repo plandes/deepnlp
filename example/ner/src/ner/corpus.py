@@ -31,7 +31,7 @@ class NERTokenFeatures(BasicTokenFeatures):
         1. Word,
         2. Part-of-speech (POS) tag,
         3. A syntactic chunk tag,
-        4. The fourth the named entity tag.
+        4. The BIO named entity tag.
 
     """
     WRITABLE_FIELD_IDS = 'i text norm tag_ ent_'.split()

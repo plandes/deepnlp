@@ -6,9 +6,11 @@ __author__ = 'plandes'
 from dataclasses import dataclass
 import logging
 import itertools as it
+from zensols.persist import dealloc
+from zensols.util.log import loglevel
+from zensols.deeplearn.batch import BatchStash
 from zensols.deeplearn.cli import FacadeApplication
 from zensols.deepnlp import FeatureDocument
-from zensols.persist import dealloc
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +25,7 @@ class NERFacadeApplication(FacadeApplication):
     def __post_init__(self):
         super().__post_init__()
         self.sent = "I'm Paul Landes.  I live in the United States."
+        self.sent2 = 'West Indian all-rounder Phil Simmons took four for 38 on Friday as Leicestershire beat Somerset by an innings and 39 runs in two days to take over at the head of the county championship.'
 
     def stats(self):
         """Print out the corpus statistics.
@@ -52,7 +55,6 @@ class NERFacadeApplication(FacadeApplication):
                 vec.encode(doc)
 
     def _test_trans_label(self):
-        from zensols.util.log import loglevel
         with dealloc(self._create_facade()) as facade:
             facade.write()
             return
@@ -74,11 +76,33 @@ class NERFacadeApplication(FacadeApplication):
                     batch.write()
             facade.write_predictions()
 
+    def _batch_sample(self):
+        with dealloc(self._create_facade()) as facade:
+            stash: BatchStash = facade.batch_stash
+            for batch in it.islice(stash.values(), 1):
+                batch.write()
+                #print(batch.get_label_classes())
+                print(batch.has_labels)
+                print(batch.get_labels())
+                for dp in batch.get_data_points():
+                    if len(dp.doc) > 1:
+                        print(dp.doc.polarity)
+                        for s in dp.doc:
+                            print(s)
+                        print('-' * 30)
+
     def _write_max_word_piece_token_length(self):
         logger.info('calculatating word piece length on data set...')
         with dealloc(self._create_facade()) as facade:
             mlen = facade.get_max_word_piece_len()
             print(f'max word piece token length: {mlen}')
+
+    def _test_preds(self):
+        with dealloc(self._create_facade()) as facade:
+            #with loglevel('zensols.deeplearn.batch.domain'):
+            preds = facade.predict([self.sent, self.sent2])
+            for i in preds:
+                print(i)
 
     def all(self):
         self._test_transform()
@@ -87,5 +111,7 @@ class NERFacadeApplication(FacadeApplication):
         self._write_max_word_piece_token_length()
 
     def proto(self):
-        #self._test_trans_label()
-        self._test_batch_write()
+        if 0:
+            self._batch_sample()
+        else:
+            self._test_preds()
