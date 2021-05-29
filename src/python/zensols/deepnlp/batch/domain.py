@@ -4,7 +4,7 @@
 __author__ = 'Paul Landes'
 
 from typing import Tuple, Iterable, List
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import sys
 from io import TextIOBase
 from zensols.persist import persisted
@@ -73,11 +73,18 @@ class FeatureDocumentDataPoint(DataPoint):
 
 @dataclass
 class ClassificationPredictionMapper(PredictionMapper):
-    vec_manager: FeatureDocumentVectorizerManager
-    label_feature_id: str
+    """A prediction mapper for text classification.
+
+    """
+    vec_manager: FeatureDocumentVectorizerManager = field()
+    """The vectorizer manager used to parse and get the label vectorizer."""
+
+    label_feature_id: str = field()
+    """The feature ID for the label vectorizer."""
 
     @property
     def label_vectorizer(self) -> CategoryEncodableFeatureVectorizer:
+        """The label vectorizer used to map classes in :meth:`get_classes`."""
         return self.vec_manager[self.label_feature_id]
 
     def create_feature(self, sent_text: str) -> Tuple[FeatureDocument]:
