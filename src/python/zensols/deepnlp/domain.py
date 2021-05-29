@@ -177,8 +177,11 @@ class FeatureSentence(TokensContainer):
     with :meth:`to_document`.
 
     """
-    sent_tokens: Tuple[FeatureToken]
+    sent_tokens: Tuple[FeatureToken] = field()
+    """The tokens that make up the sentence."""
+
     text: str = field(default=None)
+    """The original raw text of the sentence."""
 
     def __post_init__(self):
         super().__init__()
@@ -256,7 +259,8 @@ class FeatureDocument(TokensContainer):
     :param sents: the sentences defined for this document
 
     """
-    sents: List[FeatureSentence]
+    sents: List[FeatureSentence] = field()
+    """The sentences that make up the document."""
 
     def token_iter(self, *args) -> Iterable[FeatureToken]:
         sent_toks = chain.from_iterable(map(lambda s: s.tokens, self.sents))
