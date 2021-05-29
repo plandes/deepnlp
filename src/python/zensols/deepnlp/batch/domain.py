@@ -8,8 +8,9 @@ from dataclasses import dataclass, field
 import sys
 from io import TextIOBase
 from zensols.persist import persisted
-from zensols.deeplearn.batch import DataPoint, PredictionMapper
+from zensols.deeplearn.batch import DataPoint
 from zensols.deeplearn.vectorize import CategoryEncodableFeatureVectorizer
+from zensols.deeplearn.model import PredictionMapper
 from zensols.deepnlp import FeatureDocument, FeatureSentence
 from zensols.deepnlp.vectorize import FeatureDocumentVectorizerManager
 
@@ -87,7 +88,7 @@ class ClassificationPredictionMapper(PredictionMapper):
         """The label vectorizer used to map classes in :meth:`get_classes`."""
         return self.vec_manager[self.label_feature_id]
 
-    def create_features(self, sent_text: str) -> Tuple[FeatureDocument]:
+    def _create_features(self, sent_text: str) -> Tuple[FeatureDocument]:
         doc: FeatureDocument = self.vec_manager.parse(sent_text)
         return [doc]
 

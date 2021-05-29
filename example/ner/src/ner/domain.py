@@ -28,15 +28,13 @@ from zensols.deepnlp.batch import (
 
 @dataclass
 class NERPredictionMapper(ClassificationPredictionMapper):
-    def create_data_point(self, cls: Type[DataPoint], stash: BatchStash,
-                          feature: Any) -> DataPoint:
+    def _create_data_point(self, cls: Type[DataPoint], stash: BatchStash,
+                           feature: Any) -> DataPoint:
         return cls(None, stash, feature, True)
 
     def create_features(self, sent_text: str) -> Tuple[FeatureSentence]:
         doc: FeatureDocument = self.vec_manager.parse(sent_text)
         return doc.sents
-
-    #def get_classes(self, nominals: Iterable[int]) -> List[str]:
 
 
 @dataclass
@@ -51,6 +49,7 @@ class NERDataPoint(FeatureSentenceDataPoint):
             self._map_tag(self.sent)
 
     def _map_syn(self, sent: FeatureSentence):
+        """Map from spaCy POS tags to the corpus *syntactic chunk*."""
         last = None
         outs = set('CC .'.split())
         for t in sent:

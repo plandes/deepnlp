@@ -84,7 +84,7 @@ class ReviewFeatureStash(DocumentFeatureStash):
 
 @dataclass
 class ReviewPredictionMapper(ClassificationPredictionMapper):
-    def create_features(self, sent_text: str) -> Tuple[Review]:
+    def _create_features(self, sent_text: str) -> Tuple[Review]:
         rev: Review = self.vec_manager.parse(sent_text, None)
         return [rev]
 
