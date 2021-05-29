@@ -3,16 +3,12 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, Iterable, List
 from dataclasses import dataclass, field
 import sys
 from io import TextIOBase
 from zensols.persist import persisted
 from zensols.deeplearn.batch import DataPoint
-from zensols.deeplearn.vectorize import CategoryEncodableFeatureVectorizer
-from zensols.deeplearn.model import PredictionMapper
 from zensols.deepnlp import FeatureDocument, FeatureSentence
-from zensols.deepnlp.vectorize import FeatureDocumentVectorizerManager
 
 
 @dataclass
@@ -20,7 +16,8 @@ class FeatureSentenceDataPoint(DataPoint):
     """A convenience class that stores a :class:`.FeatureSentence` as a data point.
 
     """
-    sent: FeatureSentence
+    sent: FeatureSentence = field()
+    """The sentence used for this data point."""
 
     @property
     @persisted('_doc')
@@ -49,7 +46,8 @@ class FeatureDocumentDataPoint(DataPoint):
     """A convenience class that stores a :class:`.FeatureDocument` as a data point.
 
     """
-    doc: FeatureDocument
+    doc: FeatureDocument = field()
+    """The document used for this data point."""
 
     @property
     def combined_doc(self) -> FeatureDocument:
@@ -70,28 +68,3 @@ class FeatureDocumentDataPoint(DataPoint):
 
     def __repr__(self):
         return self.__str__()
-
-
-@dataclass
-class ClassificationPredictionMapper(PredictionMapper):
-    """A prediction mapper for text classification.
-
-    """
-    vec_manager: FeatureDocumentVectorizerManager = field()
-    """The vectorizer manager used to parse and get the label vectorizer."""
-
-    label_feature_id: str = field()
-    """The feature ID for the label vectorizer."""
-
-    @property
-    def label_vectorizer(self) -> CategoryEncodableFeatureVectorizer:
-        """The label vectorizer used to map classes in :meth:`get_classes`."""
-        return self.vec_manager[self.label_feature_id]
-
-    def _create_features(self, sent_text: str) -> Tuple[FeatureDocument]:
-        doc: FeatureDocument = self.vec_manager.parse(sent_text)
-        return [doc]
-
-    def get_classes(self, nominals: Tuple[Iterable[int]]) -> List[List[str]]:
-        vec: CategoryEncodableFeatureVectorizer = self.label_vectorizer
-        return list(map(lambda cl: vec.get_classes(cl).tolist(), nominals))

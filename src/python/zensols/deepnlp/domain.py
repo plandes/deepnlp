@@ -4,7 +4,7 @@ from __future__ import annotations
 """
 __author__ = 'Paul Landes'
 
-from typing import List, Tuple, Set, Iterable, Dict, Type
+from typing import List, Tuple, Set, Iterable, Dict, Type, Any
 from dataclasses import dataclass, field
 import dataclasses
 from abc import ABCMeta, abstractmethod
@@ -13,6 +13,7 @@ import logging
 from io import TextIOBase
 from itertools import chain
 import itertools as it
+from spacy.tokens.doc import Doc
 from zensols.persist import PersistableContainer, persisted
 from zensols.config import Writable
 from zensols.nlp import TokenAttributes, TokenFeatures
@@ -262,6 +263,17 @@ class FeatureDocument(TokensContainer):
     sents: List[FeatureSentence] = field()
     """The sentences that make up the document."""
 
+    spacy_doc: Doc = field(default=None, repr=False, compare=False)
+    """The parsed spaCy document this feature set is based.  As explained in
+    :class:`~zensols.nlp.DetatchableTokenFeatures`, spaCy documents are heavy
+    weight and problematic to pickle.  For this reason, this attribute is
+    dropped when pickled, and only here for ad-hoc predictions.
+
+    """
+
+    def __post_init__(self):
+        super().__init__()
+
     def token_iter(self, *args) -> Iterable[FeatureToken]:
         sent_toks = chain.from_iterable(map(lambda s: s.tokens, self.sents))
         if len(args) == 0:
@@ -388,6 +400,11 @@ class FeatureDocument(TokensContainer):
 
     def __iter__(self):
         return self.sent_iter()
+
+    def __getstate__(self) -> Dict[str, Any]:
+        state: Dict[str, Any] = super().__getstate__()
+        state.pop('spacy_doc')
+        return state
 
     def __str__(self):
         return f'<{self.text[:79]}>'

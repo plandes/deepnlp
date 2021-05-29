@@ -15,9 +15,7 @@ from zensols.deeplearn.batch import (
     FieldFeatureMapping,
 )
 from zensols.deepnlp import FeatureDocument
-from zensols.deepnlp.batch import (
-    FeatureDocumentDataPoint, ClassificationPredictionMapper
-)
+from zensols.deepnlp.batch import FeatureDocumentDataPoint
 from zensols.deepnlp.feature import DocumentFeatureStash
 from . import DatasetFactory
 
@@ -48,9 +46,13 @@ class Review(FeatureDocument):
 
     """
 
-    polarity: str = field()
+    polarity: str = field(default=None)
     """The polarity, either posititive (``p`)` or negative (``n``) of the
-    review.
+    review.  This takes values of ``None`` for ad-hoc predictions.
+
+    Note we could have overridden
+    :class:`zensols.deepnlp.pred.ClassificationPredictionMapper` to create with
+    an additional ``None`` value.
 
     """
 
@@ -80,13 +82,6 @@ class ReviewFeatureStash(DocumentFeatureStash):
         # the class label
         polarity = row['polarity']
         return self.vec_manager.parse(text, polarity)
-
-
-@dataclass
-class ReviewPredictionMapper(ClassificationPredictionMapper):
-    def _create_features(self, sent_text: str) -> Tuple[Review]:
-        rev: Review = self.vec_manager.parse(sent_text, None)
-        return [rev]
 
 
 @dataclass
@@ -126,7 +121,7 @@ class ReviewBatch(Batch):
              LANGUAGE_FEATURE_MANAGER_NAME,
              (FieldFeatureMapping(GLOVE_50_EMBEDDING, 'wvglove50', True, 'doc'),
               FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', True, 'doc'),
-              #FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', True, 'doc'),
+              FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', True, 'doc'),
               FieldFeatureMapping(TRANSFORMER_FIXED_EMBEDDING, 'transformer_fixed', True, 'doc'),
               FieldFeatureMapping(TRANSFORMER_TRAINABLE_EMBEDDING, 'transformer_trainable', True, 'doc'),
               FieldFeatureMapping(STATS_ATTRIBUTE, 'stats', False, 'doc'),
