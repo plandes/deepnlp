@@ -5,7 +5,7 @@ from abc import abstractmethod, ABCMeta
 import itertools as it
 from zensols.persist import Stash, PrimeableStash
 from zensols.multi import MultiProcessStash
-from zensols.deepnlp import FeatureDocument
+from zensols.nlp import FeatureDocument
 from zensols.deepnlp.vectorize import FeatureDocumentVectorizerManager
 
 logger = logging.getLogger(__name__)

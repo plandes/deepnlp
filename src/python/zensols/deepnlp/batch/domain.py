@@ -7,8 +7,8 @@ from dataclasses import dataclass, field
 import sys
 from io import TextIOBase
 from zensols.persist import persisted
+from zensols.nlp import FeatureDocument, FeatureSentence
 from zensols.deeplearn.batch import DataPoint
-from zensols.deepnlp import FeatureDocument, FeatureSentence
 
 
 @dataclass

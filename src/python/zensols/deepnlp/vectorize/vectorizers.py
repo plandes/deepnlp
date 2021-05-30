@@ -18,17 +18,12 @@ from zensols.deeplearn.vectorize import (
     MultiFeatureContext,
     OneHotEncodedEncodableFeatureVectorizer,
 )
-from zensols.deepnlp import (
-    FeatureToken,
-    FeatureSentence,
-    FeatureDocument,
-    TokensContainer,
+from zensols.nlp import (
+    FeatureToken, FeatureSentence, FeatureDocument, TokensContainer,
 )
 from . import (
-    SpacyFeatureVectorizer,
-    FeatureDocumentVectorizer,
-    TextFeatureType,
-    MultiDocumentVectorizer,
+    SpacyFeatureVectorizer, FeatureDocumentVectorizer,
+    TextFeatureType, MultiDocumentVectorizer,
 )
 
 logger = logging.getLogger(__name__)

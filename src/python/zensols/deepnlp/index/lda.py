@@ -5,9 +5,9 @@ import torch
 import gensim.corpora as corpora
 from gensim.models.ldamodel import LdaModel
 from zensols.util import time
+from zensols.nlp import TokensContainer, FeatureDocument
 from zensols.deeplearn import TorchConfig
 from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
-from zensols.deepnlp import TokensContainer, FeatureDocument
 from zensols.deepnlp.vectorize import TextFeatureType
 from . import DocumentIndexVectorizer
 

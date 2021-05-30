@@ -6,9 +6,9 @@ from sklearn.decomposition import TruncatedSVD
 from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.preprocessing import Normalizer
 from sklearn.feature_extraction.text import TfidfVectorizer
-from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
 from zensols.util import time
-from zensols.deepnlp import FeatureDocument, TokensContainer
+from zensols.nlp import FeatureDocument, TokensContainer
+from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
 from zensols.deepnlp.vectorize import TextFeatureType
 from . import DocumentIndexVectorizer
 

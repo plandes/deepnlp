@@ -16,7 +16,7 @@ from zensols.persist import (
     PersistableContainer,
     Primeable
 )
-from zensols.deepnlp import FeatureDocument
+from zensols.nlp import FeatureDocument
 from zensols.deepnlp.vectorize import FeatureDocumentVectorizer
 
 logger = logging.getLogger(__name__)

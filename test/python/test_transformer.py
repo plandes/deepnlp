@@ -3,7 +3,7 @@ import logging
 import unittest
 from zensols.config import ExtendedInterpolationConfig as AppConfig
 from zensols.config import ImportConfigFactory
-from zensols.deepnlp import FeatureToken, FeatureDocument, FeatureSentence
+from zensols.nlp import FeatureToken, FeatureDocument, FeatureSentence
 from zensols.deepnlp.transformer import TokenizedFeatureDocument
 
 logger = logging.getLogger(__name__)

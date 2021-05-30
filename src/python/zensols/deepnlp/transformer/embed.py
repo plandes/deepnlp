@@ -14,7 +14,7 @@ from transformers import PreTrainedModel
 from transformers.modeling_outputs import \
     BaseModelOutputWithPoolingAndCrossAttentions
 from zensols.config import Dictable
-from zensols.deepnlp import FeatureDocument
+from zensols.nlp import FeatureDocument
 from zensols.deepnlp.transformer import TransformerResource
 from zensols.persist import persisted, PersistedWork, PersistableContainer
 from . import (

@@ -16,7 +16,7 @@ from zensols.persist import persisted, Primeable
 from zensols.deeplearn.vectorize import (
     FeatureContext, TensorFeatureContext, TransformableFeatureVectorizer
 )
-from zensols.deepnlp import FeatureDocument, FeatureSentence
+from zensols.nlp import FeatureDocument, FeatureSentence
 from zensols.deepnlp.embed import WordEmbedModel
 from zensols.deepnlp.vectorize import TextFeatureType
 from . import FeatureDocumentVectorizer

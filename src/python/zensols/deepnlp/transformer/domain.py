@@ -12,10 +12,10 @@ import itertools as it
 from io import TextIOBase
 import torch
 from torch import Tensor
-from zensols.deepnlp import FeatureDocument
+from zensols.nlp import FeatureDocument
 from zensols.persist import PersistableContainer
 from zensols.config import Writable
-from zensols.deepnlp import FeatureToken, FeatureSentence
+from zensols.nlp import FeatureToken, FeatureSentence
 
 logger = logging.getLogger(__name__)
 

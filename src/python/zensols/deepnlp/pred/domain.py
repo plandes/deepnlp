@@ -7,10 +7,10 @@ from typing import Tuple, Iterable, List
 from dataclasses import dataclass, field
 from itertools import chain
 from zensols.config import Settings
+from zensols.nlp import FeatureDocument
 from zensols.deeplearn.vectorize import CategoryEncodableFeatureVectorizer
 from zensols.deeplearn.model import PredictionMapper
 from zensols.deeplearn.result import ResultsContainer
-from zensols.deepnlp import FeatureDocument
 from zensols.deepnlp.vectorize import FeatureDocumentVectorizerManager
 
 

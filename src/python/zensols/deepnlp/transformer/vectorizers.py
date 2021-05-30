@@ -16,7 +16,7 @@ from zensols.deeplearn.vectorize import (
     FeatureContext, MultiFeatureContext, AggregateEncodableFeatureVectorizer,
     NominalEncodedEncodableFeatureVectorizer
 )
-from zensols.deepnlp import FeatureDocument, TokenAnnotatedFeatureSentence
+from zensols.nlp import FeatureDocument, TokenAnnotatedFeatureSentence
 from zensols.deepnlp.vectorize import (
     EmbeddingFeatureVectorizer, TextFeatureType, FeatureDocumentVectorizer
 )

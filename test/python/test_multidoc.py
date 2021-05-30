@@ -2,7 +2,7 @@ import logging
 import json
 import sys
 import torch
-from zensols.deepnlp import FeatureDocument
+from zensols.nlp import FeatureDocument
 from util import TestFeatureVectorization
 
 logger = logging.getLogger(__name__)
