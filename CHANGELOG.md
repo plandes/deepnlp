@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Removed
+- Move feature containers and parser to `zensols.nlparse`, including test
+  cases.
+
 
 ## [0.0.3] - 2021-04-30
 ### Added
