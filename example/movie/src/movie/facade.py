@@ -3,8 +3,7 @@ import logging
 import pandas as pd
 from zensols.persist import Stash
 from zensols.deepnlp.model import (
-    LanguageModelFacade,
-    LanguageModelFacadeConfig,
+    LanguageModelFacade, LanguageModelFacadeConfig,
 )
 from . import ReviewBatch
 

@@ -16,7 +16,7 @@ from zensols.deeplearn.batch import (
     ManagerFeatureMapping,
     FieldFeatureMapping,
 )
-from zensols.deepnlp import FeatureDocument
+from zensols.nlp import FeatureDocument
 from zensols.deepnlp.batch import FeatureDocumentDataPoint
 from zensols.deepnlp.pred import ClassificationPredictionMapper
 from zensols.deepnlp.feature import DocumentFeatureStash
