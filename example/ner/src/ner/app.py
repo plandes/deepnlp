@@ -3,14 +3,15 @@
 """
 __author__ = 'plandes'
 
+from typing import Tuple
 from dataclasses import dataclass
 import logging
 import itertools as it
-from zensols.persist import dealloc
+from zensols.persist import dealloc, persisted
 from zensols.util.log import loglevel
 from zensols.deeplearn.batch import BatchStash
 from zensols.deeplearn.cli import FacadeApplication
-from zensols.deepnlp import FeatureDocument
+from zensols.deepnlp import FeatureDocument, FeatureSentence, FeatureToken
 
 logger = logging.getLogger(__name__)
 
@@ -97,12 +98,47 @@ class NERFacadeApplication(FacadeApplication):
             mlen = facade.get_max_word_piece_len()
             print(f'max word piece token length: {mlen}')
 
-    def _test_preds(self):
+    @persisted('_t1', cache_global=True)
+    def _test_preds_(self):
         with dealloc(self._create_facade()) as facade:
-            #with loglevel('zensols.deeplearn.batch.domain'):
-            preds = facade.predict([self.sent, self.sent2])
-            for i in preds:
-                print(i)
+            return facade.predict([self.sent, self.sent2])
+
+    def _test_preds(self):
+        res = self._test_preds_()
+        cl: str
+        doc: FeatureDocument
+        docs: Tuple[FeatureDocument] = res.docs
+        for cls, doc in zip(res.classes, docs):
+            tok: FeatureToken
+            for cl, tok in zip(cls, doc.tokens):
+                tok.ent = cl
+        ents = []
+        # tok.i is not reliable since holes exist from filtered space and
+        # possibly other removed tokens
+        for six, (cls, doc) in enumerate(zip(res.classes, docs)):
+            tok: FeatureToken
+            start_ix = None
+            start_lab = None
+            for stix, (cl, tok) in enumerate(zip(cls, doc.tokens)):
+                ent = tok.ent
+                pos = ent.find('-')
+                bio, lab = None, None
+                if pos > -1:
+                    bio, lab = ent[0:pos], ent[pos+1:]
+                    if bio == 'B':
+                        start_ix = stix
+                        start_lab = lab
+                if ent == 'O' and start_ix is not None:
+                    ents.append((start_lab, six, (start_ix, stix)))
+                    start_ix = None
+                    start_lab = None
+        tok_ents = []
+        for lab, six, loc in ents:
+            doc = docs[six]
+            toks = doc.tokens
+            tok_ents.append((lab, toks[loc[0]:loc[1]]))
+        for lab, toks in tok_ents:
+            print(lab, toks)
 
     def all(self):
         self._test_transform()
