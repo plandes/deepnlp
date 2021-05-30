@@ -43,7 +43,7 @@ class TestWordPieceTokenization(unittest.TestCase):
         self.assertEqual((len(should), should_tok_len, 768), tuple(arr.shape))
 
     def _test_sent_1(self, vec_name: str):
-        sent = 'The gunships are nearer than you think.  Their heading is changing.'
+        sent = 'The gunships are nearer than you think. Their heading is changing.'
         should = ((('The', ('The',)),
                    ('gunships', ('guns', 'hips')),
                    ('are', ('are',)),
@@ -60,7 +60,7 @@ class TestWordPieceTokenization(unittest.TestCase):
         self._test_tok(vec_name, sent, 11, should)
 
     def _test_sent_2(self, vec_name: str):
-        sent = 'The guns are near.  Their heading is changing to the gunships.'
+        sent = 'The guns are near. Their heading is changing to the gunships.'
         should = ((('The', ('The',)),
                    ('guns', ('guns',)),
                    ('are', ('are',)),
@@ -89,8 +89,8 @@ class TestWordPieceTokenization(unittest.TestCase):
         self._test_tok(vec_name, sent, 11, should)
 
     def _test_sent_4(self, vec_name: str):
-        sent = ('The guns are near.  Their heading is changing to the gunships.' +
-                '  The United States schooner created a gridlocking situation.')
+        sent = ('The guns are near. Their heading is changing to the gunships.' +
+                ' The United States schooner created a gridlocking situation.')
         should = ((('The', ('The',)),
                    ('guns', ('guns',)),
                    ('are', ('are',)),
@@ -104,7 +104,8 @@ class TestWordPieceTokenization(unittest.TestCase):
                    ('the', ('the',)),
                    ('gunships', ('guns', 'hips')),
                    ('.', ('.',))),
-                  (('The United States', ('The', 'United', 'States')),
+                  (('The', ('The',)),
+                   ('United States', ('United', 'States')),
                    ('schooner', ('sch', 'oon', 'er',)) if vec_name == 'transformer_roberta'
                    else ('schooner', ('schooner',)),
                    ('created', ('created',)),

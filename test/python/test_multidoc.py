@@ -1,6 +1,7 @@
 import logging
-import torch
 import json
+import sys
+import torch
 from zensols.deepnlp import FeatureDocument
 from util import TestFeatureVectorization
 
@@ -12,9 +13,10 @@ class TestMultiDoc(TestFeatureVectorization):
         super().setUp()
         with open('test-resources/multi.json') as f:
             self.should = json.load(f)
+        self.maxDiff = sys.maxsize
 
     def _parse_docs(self, vmng):
-        sent = 'California is part of the United States.  I live in CA.'
+        sent = 'California is part of the United States. I live in CA.'
         sent2 = 'The work in the NLP lab is fun.'
         doc: FeatureDocument = vmng.parse(sent)
         doc2: FeatureDocument = vmng.parse(sent2)
@@ -59,6 +61,10 @@ class TestMultiDoc(TestFeatureVectorization):
         tensor = tvec.transform(docs)
         self.assertTrue(isinstance(tensor, torch.Tensor))
         self.assertEqual(tb, tuple(tensor.shape))
+        if 0:
+            print()
+            print(json.dumps(tvec.to_symbols(tensor), indent=4))
+            print()
         self.assertEqual(self.should[should], tvec.to_symbols(tensor))
 
 

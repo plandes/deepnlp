@@ -22,7 +22,7 @@ class TestFeatureVectorization(unittest.TestCase):
                           'the United States of America', '.')
         if not hasattr(self.__class__, 'NO_VECTORIZER'):
             self.vmng = self.fac.instance('feature_vectorizer_manager')
-        self.sent_text2 = self.sent_text + "  My name is Paul Landes."
+        self.sent_text2 = self.sent_text + " My name is Paul Landes."
 
     def assertTensorEquals(self, should, tensor):
         self.assertEqual(should.shape, tensor.shape)
