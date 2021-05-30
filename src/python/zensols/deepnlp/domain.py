@@ -318,7 +318,8 @@ class FeatureDocument(TokensContainer):
                            cls: Type[FeatureDocument]) -> FeatureDocument:
         """Override if there are any fields in your dataclass.  In most cases, the only
         time this is called is by an embedding vectorizer to batch muultiple
-        sentences in to a single document, so the only feature that matter are the sentence level
+        sentences in to a single document, so the only feature that matter are
+        the sentence level.
 
         """
         return cls(list(chain.from_iterable(
