@@ -76,7 +76,7 @@ class TransformerDocumentTokenizer(PersistableContainer):
         for i, sent in enumerate(sents):
             if len(sent) == 0:
                 raise TransformerError(
-                    'Sentence {i} is empty: can not tokenize')
+                    f'Sentence {i} is empty: can not tokenize')
 
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'parsing {sents} with token length: {tlen}')
