@@ -55,7 +55,7 @@ class NEREntityAnnotation(Dictable):
 
 
 @dataclass
-class NERAnnotator(object):
+class NERAnnotationMapper(object):
     """Matches feature documents/tokens with spaCy document/tokens and entity
     labels.
 
@@ -127,9 +127,8 @@ class NERAnnotator(object):
             anons.append(NEREntityAnnotation(lab, doc, ent_toks))
         return anons
 
-    def map_annotations(self, classes: Tuple[List[str]],
-                        docs: Tuple[FeatureDocument]) -> \
-            Tuple[NEREntityAnnotation]:
+    def map(self, classes: Tuple[List[str]],
+            docs: Tuple[FeatureDocument]) -> Tuple[NEREntityAnnotation]:
         """Map BIO entities and documents to pairings as annotations.
 
         :param docs: the feature documents to assign labels
@@ -144,12 +143,6 @@ class NERAnnotator(object):
         ents: Tuple[str, int, Tuple[int, int]] = \
             self._map_entities(classes, docs)
         return self._collate(docs, ents)
-
-    def annotate(self, classes: Tuple[List[str]], docs: Tuple[FeatureDocument]):
-        # add annotations
-        for anon in self.map_annotations(classes, docs):
-            for match in anon.token_matches:
-                print(anon.label, match)
 
 
 @dataclass
@@ -241,10 +234,9 @@ class NERFacadeApplication(FacadeApplication):
 
     def _test_preds(self):
         res = self._test_preds_()
-        anoner = NERAnnotator()
-        anoner.annotate(res.classes, res.docs)
-        #for anon in anoner.map_annotations(res.classes, res.docs):
-
+        anoner = NERAnnotationMapper()
+        for anon in anoner.map(res.classes, res.docs):
+            print(anon)
 
     def all(self):
         self._test_transform()
