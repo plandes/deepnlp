@@ -17,9 +17,8 @@ from zensols.persist import (
     OneShotFactoryStash, PersistedWork, persisted, PersistableContainer
 )
 from zensols.config import Dictable
-from zensols.nlp import BasicTokenFeatures
+from zensols.nlp import BasicTokenFeatures, FeatureToken, FeatureSentence
 from zensols.dataset import AbstractSplitKeyContainer, DatasetSplitStash
-from zensols.deepnlp import FeatureToken, FeatureSentence
 
 logger = logging.getLogger(__name__)
 

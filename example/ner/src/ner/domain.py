@@ -16,12 +16,12 @@ from zensols.deeplearn.batch import (
     FieldFeatureMapping,
     BatchFeatureMapping,
 )
+from zensols.nlp import (
+    FeatureSentence, FeatureDocument, TokenAnnotatedFeatureSentence
+)
 from zensols.deeplearn.result import ResultsContainer
 from zensols.deeplearn.vectorize import (
     FeatureVectorizerManager, FeatureVectorizer
-)
-from zensols.deepnlp import (
-    FeatureSentence, FeatureDocument, TokenAnnotatedFeatureSentence
 )
 from zensols.deepnlp.batch import FeatureSentenceDataPoint
 from zensols.deepnlp.pred import ClassificationPredictionMapper
