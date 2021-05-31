@@ -9,7 +9,9 @@ import logging
 import torch
 from torch import Tensor
 from zensols.deeplearn.batch import Batch
-from zensols.deeplearn.model import ScoredNetworkModule
+from zensols.deeplearn.model import (
+    ScoredNetworkModule, ScoredNetworkContext, ScoredNetworkOutput
+)
 from zensols.deeplearn.layer import DeepLinearNetworkSettings, DeepLinear
 from zensols.deepnlp.layer import (
     EmbeddingNetworkSettings, EmbeddingNetworkModule, EmbeddingLayer
@@ -98,7 +100,8 @@ class TransformerSequenceLayer(EmbeddingNetworkModule, ScoredNetworkModule):
         super().deallocate()
         self.decoder.deallocate()
 
-    def _forward(self, batch: Batch, criterion) -> Tensor:
+    def _forward(self, batch: Batch, context: ScoredNetworkContext) -> \
+            ScoredNetworkOutput:
         if self.logger.isEnabledFor(logging.DEBUG):
             for dp in batch.get_data_points():
                 self.logger.debug(f'data point: {dp}')
@@ -133,7 +136,7 @@ class TransformerSequenceLayer(EmbeddingNetworkModule, ScoredNetworkModule):
             torch.tensor(pad_label).type_as(labels),
         )
 
-        loss = criterion(active_logits, active_labels)
+        loss = context.criterion(active_logits, active_labels)
         if self.logger.isEnabledFor(logging.DEBUG):
             self.logger.debug(f'training loss: {loss}')
         return loss
