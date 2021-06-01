@@ -209,17 +209,16 @@ class NERFacadeApplication(FacadeApplication):
     def _batch_sample(self):
         with dealloc(self._create_facade()) as facade:
             stash: BatchStash = facade.batch_stash
-            for batch in it.islice(stash.values(), 1):
-                batch.write()
-                #print(batch.get_label_classes())
-                print(batch.has_labels)
-                print(batch.get_labels())
-                for dp in batch.get_data_points():
-                    if len(dp.doc) > 1:
-                        print(dp.doc.polarity)
-                        for s in dp.doc:
-                            print(s)
-                        print('-' * 30)
+            batch = stash['65']
+            emb = batch['transformer_trainable_embedding']
+            batch.write()
+            print(emb.shape)
+            for dp in batch.get_data_points():
+                print(dp)
+            # for batch in stash.values():
+            #     emb = batch['transformer_trainable_embedding']
+            #     if emb.size(1) == 173:
+            #         batch.write()
 
     def _write_max_word_piece_token_length(self):
         logger.info('calculatating word piece length on data set...')
@@ -227,12 +226,16 @@ class NERFacadeApplication(FacadeApplication):
             mlen = facade.get_max_word_piece_len()
             print(f'max word piece token length: {mlen}')
 
-    @persisted('_t1', cache_global=True)
+    #@persisted('_t1', cache_global=True)
     def _test_preds_(self):
         with dealloc(self._create_facade()) as facade:
             return facade.predict([self.sent, self.sent2])
 
     def _test_preds(self):
+        res = self._test_preds_()
+        print(res)
+
+    def _test_preds_x(self):
         res = self._test_preds_()
         anoner = NERAnnotationMapper()
         for anon in anoner.map(res.classes, res.docs):
@@ -245,7 +248,14 @@ class NERFacadeApplication(FacadeApplication):
         self._write_max_word_piece_token_length()
 
     def proto(self):
-        if 0:
-            self._batch_sample()
-        else:
-            self._test_preds()
+        self._batch_sample()
+        return
+        #self._test_preds()
+        import gc
+        from zensols.deeplearn import TorchConfig
+        gc.collect()
+        with open('memleak.txt', 'w') as f:
+            for arr in TorchConfig.in_memory_tensors():
+                print(arr.shape, arr.device, file=f)
+                print(gc.get_referrers(arr), file=f)
+                print('-' * 80, file=f)

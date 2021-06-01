@@ -19,7 +19,7 @@ def proto():
     try:
         model = {0: 'glove50',
                  1: 'transformer-trainable',
-                 }[0]
+                 }[1]
         args = f'-c models/{model}.conf'
         #args += ' --execlevel 2'
         # other reload patterns read from app.conf
@@ -29,7 +29,7 @@ def proto():
                   2: 'all',
                   3: 'batch',
                   4: 'train',
-                  }[0]
+                  }[4]
         main(f'./run.py {action} {args}'.split(),
              reload_pattern=f'^(?:{"|".join(rl_mods)})'),
     except SystemExit as e:
