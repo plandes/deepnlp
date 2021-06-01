@@ -8,6 +8,7 @@ from dataclasses import dataclass, field
 import logging
 import torch
 from torch import Tensor
+from zensols.deeplearn import DropoutNetworkSettings
 from zensols.deeplearn.batch import Batch
 from zensols.deeplearn.model import (
     ScoredNetworkModule, ScoredNetworkContext, ScoredNetworkOutput
@@ -74,7 +75,8 @@ class TransformerEmbeddingLayer(EmbeddingLayer):
 
 
 @dataclass
-class TransformerSequenceLayerNetworkSettings(EmbeddingNetworkSettings):
+class TransformerSequenceLayerNetworkSettings(EmbeddingNetworkSettings,
+                                              DropoutNetworkSettings):
     decoder_settings: DeepLinearNetworkSettings = field()
     """The decoder feed forward network."""
 
@@ -117,6 +119,9 @@ class TransformerSequenceLayer(EmbeddingNetworkModule, ScoredNetworkModule):
         if self.logger.isEnabledFor(logging.DEBUG):
             self._debug(f'tokenized doc: {tdoc}, len: {len(tdoc)}')
 
+        emb = self._forward_dropout(emb)
+        self._shape_debug('dropout', emb)
+
         logits = self.decoder(emb)
         self._shape_debug('logits', logits)
         active_loss = attention_mask.view(-1) == 1
@@ -139,7 +144,11 @@ class TransformerSequenceLayer(EmbeddingNetworkModule, ScoredNetworkModule):
         loss = context.criterion(active_logits, active_labels)
         if self.logger.isEnabledFor(logging.DEBUG):
             self.logger.debug(f'training loss: {loss}')
-        return loss
+
+        preds = logits.argmax(dim=-1).unsqueeze(-1)
+        self._shape_debug('predictions', preds)
+
+        return ScoredNetworkOutput(preds, loss)
 
     def _score(self, batch: Batch) -> Tuple[Tensor, Tensor]:
         # mask = self._get_mask(batch)
