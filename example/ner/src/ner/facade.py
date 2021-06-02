@@ -61,6 +61,7 @@ class NERModelFacade(LanguageModelFacade):
                                debug_loggers: List[str]):
         super()._configure_cli_logging(info_loggers, debug_loggers)
         info_loggers.append('ner')
+        info_loggers.remove('zensols.deeplearn.batch.stash')
 
     def get_predictions(self) -> pd.DataFrame:
         """Return a Pandas dataframe of the predictions with columns that include the

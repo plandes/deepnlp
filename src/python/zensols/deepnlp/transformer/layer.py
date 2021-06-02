@@ -8,6 +8,7 @@ from dataclasses import dataclass, field
 import logging
 import torch
 from torch import Tensor
+from torch import nn
 from zensols.deeplearn import DropoutNetworkSettings
 from zensols.deeplearn.batch import Batch
 from zensols.deeplearn.model import (
@@ -68,8 +69,6 @@ class TransformerEmbeddingLayer(EmbeddingLayer):
 
         if self.embed_model.trainable:
             x = self._forward_trainable(x)
-
-        if logger.isEnabledFor(logging.DEBUG):
             self._shape_debug('transform', x)
 
         return x
@@ -98,6 +97,22 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
         if self.logger.isEnabledFor(logging.DEBUG):
             self._debug(f'linear settings: {ds}')
         self.decoder = DeepLinear(ds, self.logger)
+        self._init_range = 0.02
+        self.decoder.apply(self._init_weights)
+
+    def _init_weights(self, module):
+        """Initialize the weights"""
+        if isinstance(module, nn.Linear):
+            module.weight.data.normal_(mean=0.0, std=self._init_range)
+            if module.bias is not None:
+                module.bias.data.zero_()
+        elif isinstance(module, nn.Embedding):
+            module.weight.data.normal_(mean=0.0, std=self._init_range)
+            if module.padding_idx is not None:
+                module.weight.data[module.padding_idx].zero_()
+        elif isinstance(module, nn.LayerNorm):
+            module.bias.data.zero_()
+            module.weight.data.fill_(1.0)
 
     def deallocate(self):
         super().deallocate()
@@ -105,7 +120,9 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
 
     def _forward(self, batch: Batch, context: ScoredNetworkContext) -> \
             ScoredNetworkOutput:
-        if False and self.logger.isEnabledFor(logging.DEBUG):
+        DEBUG = False
+
+        if DEBUG and self.logger.isEnabledFor(logging.DEBUG):
             for dp in batch.get_data_points():
                 self.logger.debug(f'data point: {dp}')
 
@@ -113,51 +130,61 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
         tdoc: Tensor = batch[self.embedding_attribute_name]
         tdoc = TokenizedDocument.from_tensor(tdoc)
         attention_mask: Tensor = tdoc.attention_mask
-        labels: Tensor = batch.get_labels()
+        labels: Tensor = batch.get_labels().squeeze()
+        vec: TransformerNominalFeatureVectorizer = \
+            batch.get_label_feature_vectorizer()
+        pad_label: int = vec.pad_label
 
         self._shape_debug('labels', labels)
         self._shape_debug('embedding', emb)
         if self.logger.isEnabledFor(logging.DEBUG):
             self._debug(f'tokenized doc: {tdoc}, len: {len(tdoc)}')
 
-        # emb = self._forward_dropout(emb)
-        # self._shape_debug('dropout', emb)
+        emb = self._forward_dropout(emb)
+        self._shape_debug('dropout', emb)
 
         logits = self.decoder(emb)
         self._shape_debug('logits', logits)
         active_loss = attention_mask.view(-1) == 1
         active_logits = logits.view(-1, self._n_labels)
-        active_labels = labels.reshape(-1)
 
-        if 0:
-            print('AM', attention_mask)
-            print('AL', active_loss)
+        if DEBUG:
+            print('attention mask', attention_mask)
+            print('active loss', active_loss)
 
         self._shape_debug('active_loss', active_loss)
         self._shape_debug('active_logits', active_logits)
-        self._shape_debug('active_labels', active_labels)
-
-        vec: TransformerNominalFeatureVectorizer = \
-            batch.get_label_feature_vectorizer()
-        pad_label = vec.pad_label
-
-        active_labels = torch.where(
-            active_loss, labels.view(-1),
-            torch.tensor(pad_label).type_as(labels)
-        )
 
         if 0:
-            print('L', active_labels)
+            active_labels = torch.where(
+                active_loss, labels.view(-1),
+                torch.tensor(pad_label).type_as(labels)
+            )
+            self._shape_debug('active_labels', active_labels)
+        else:
+            active_labels = labels.view(-1)
+
+        if DEBUG:
+            sz = 2
+            print('active labels', active_labels.tolist()[:sz])
             print(active_labels.shape)
-            print('LO', active_logits)
+            print('active logits', active_logits.tolist()[:sz])
             print(active_logits.shape)
 
         loss = context.criterion(active_logits, active_labels)
         if self.logger.isEnabledFor(logging.DEBUG):
-            self.logger.debug(f'training loss: {loss}')
+            self.logger.debug(f'loss: {loss}')
 
-        preds = logits.argmax(dim=-1).unsqueeze(-1)
+        preds = logits.argmax(dim=-1)
+        preds = torch.where(
+            labels != pad_label, preds,
+            torch.tensor(pad_label).type_as(preds)
+        )
         self._shape_debug('predictions', preds)
+        if DEBUG:
+            print('labels', labels.tolist()[:sz])
+            print('predictions', preds.squeeze().tolist()[:sz])
+        preds = preds.unsqueeze(-1)
 
         return ScoredNetworkOutput(preds, loss)
 

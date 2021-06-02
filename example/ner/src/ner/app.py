@@ -185,17 +185,23 @@ class NERFacadeApplication(FacadeApplication):
                 vec.encode(doc)
 
     def _test_trans_label(self):
+        from pprint import pprint
         with dealloc(self._create_facade()) as facade:
-            facade.write()
-            return
             batches = tuple(it.islice(facade.batch_stash.values(), 3))
             batch = batches[0]
-            dps = batch.get_data_points()
+            dps = batch.get_data_points()[0:2]
             doc = FeatureDocument.combine_documents(map(lambda dp: dp.doc, dps))
+            doc.write()
+            print(doc)
             vec = facade.language_vectorizer_manager['entlabel_trans']
-            with loglevel('zensols.deepnlp.transformer.vectorize'):
-                arr = vec.transform(doc)
-            #print(arr.squeeze(-1))
+            print(vec.delegate.label_encoder.classes_)
+            pprint(vec.delegate.by_label)
+            #with loglevel('zensols.deepnlp.transformer.vectorize'):
+            arr = vec.transform(doc)
+            print(arr.shape)
+            for i in arr.squeeze(-1).tolist(): print(i)
+            #print(vec.delegate.get_classes())
+            #print(arr.squeeze(-1).tolist())
 
     def _test_batch_write(self, clear: bool = False):
         if clear:
@@ -255,6 +261,8 @@ class NERFacadeApplication(FacadeApplication):
                 print('-' * 80, file=f)
 
     def proto(self):
+        self._test_trans_label()
+        return
         with dealloc(self._create_facade()) as facade:
             res = facade.last_result
             for i in res.validation.losses:
