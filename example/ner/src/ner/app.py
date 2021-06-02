@@ -209,16 +209,10 @@ class NERFacadeApplication(FacadeApplication):
     def _batch_sample(self):
         with dealloc(self._create_facade()) as facade:
             stash: BatchStash = facade.batch_stash
-            batch = stash['65']
-            emb = batch['transformer_trainable_embedding']
-            batch.write()
-            print(emb.shape)
-            for dp in batch.get_data_points():
-                print(dp)
-            # for batch in stash.values():
-            #     emb = batch['transformer_trainable_embedding']
-            #     if emb.size(1) == 173:
-            #         batch.write()
+            for batch in stash.values():
+                emb = batch['transformer_trainable_embedding']
+                if emb.size(1) == 173:
+                    batch.write()
 
     def _write_max_word_piece_token_length(self):
         logger.info('calculatating word piece length on data set...')
@@ -247,7 +241,7 @@ class NERFacadeApplication(FacadeApplication):
         self._test_batch_write()
         self._write_max_word_piece_token_length()
 
-    def proto(self):
+    def _mem_test(self):
         self._batch_sample()
         return
         #self._test_preds()
@@ -259,3 +253,9 @@ class NERFacadeApplication(FacadeApplication):
                 print(arr.shape, arr.device, file=f)
                 print(gc.get_referrers(arr), file=f)
                 print('-' * 80, file=f)
+
+    def proto(self):
+        with dealloc(self._create_facade()) as facade:
+            res = facade.last_result
+            for i in res.validation.losses:
+                print(i)

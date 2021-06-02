@@ -15,7 +15,8 @@ from zensols.deeplearn.model import (
 )
 from zensols.deeplearn.layer import DeepLinearNetworkSettings, DeepLinear
 from zensols.deepnlp.layer import (
-    EmbeddingNetworkSettings, EmbeddingNetworkModule, EmbeddingLayer
+    EmbeddingNetworkSettings, EmbeddingNetworkModule, EmbeddingLayer,
+    TrainableEmbeddingLayer
 )
 from . import (
     TokenizedDocument, TransformerEmbedding,
@@ -75,21 +76,21 @@ class TransformerEmbeddingLayer(EmbeddingLayer):
 
 
 @dataclass
-class TransformerSequenceLayerNetworkSettings(EmbeddingNetworkSettings,
-                                              DropoutNetworkSettings):
+class TransformerSequenceNetworkSettings(EmbeddingNetworkSettings,
+                                         DropoutNetworkSettings):
     decoder_settings: DeepLinearNetworkSettings = field()
     """The decoder feed forward network."""
 
     def get_module_class_name(self) -> str:
-        return __name__ + '.TransformerSequenceLayer'
+        return __name__ + '.TransformerSequence'
 
 
-class TransformerSequenceLayer(EmbeddingNetworkModule, ScoredNetworkModule):
+class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
     MODULE_NAME = 'trans seq'
 
-    def __init__(self, net_settings: TransformerSequenceLayerNetworkSettings,
+    def __init__(self, net_settings: TransformerSequenceNetworkSettings,
                  sub_logger: logging.Logger = None):
-        super().__init__(net_settings, sub_logger)
+        super().__init__(net_settings, sub_logger or logger)
         ns = self.net_settings
         ds = ns.decoder_settings
         ds.in_features = self.embedding_output_size
@@ -104,7 +105,7 @@ class TransformerSequenceLayer(EmbeddingNetworkModule, ScoredNetworkModule):
 
     def _forward(self, batch: Batch, context: ScoredNetworkContext) -> \
             ScoredNetworkOutput:
-        if self.logger.isEnabledFor(logging.DEBUG):
+        if False and self.logger.isEnabledFor(logging.DEBUG):
             for dp in batch.get_data_points():
                 self.logger.debug(f'data point: {dp}')
 
@@ -119,14 +120,18 @@ class TransformerSequenceLayer(EmbeddingNetworkModule, ScoredNetworkModule):
         if self.logger.isEnabledFor(logging.DEBUG):
             self._debug(f'tokenized doc: {tdoc}, len: {len(tdoc)}')
 
-        emb = self._forward_dropout(emb)
-        self._shape_debug('dropout', emb)
+        # emb = self._forward_dropout(emb)
+        # self._shape_debug('dropout', emb)
 
         logits = self.decoder(emb)
         self._shape_debug('logits', logits)
         active_loss = attention_mask.view(-1) == 1
         active_logits = logits.view(-1, self._n_labels)
         active_labels = labels.reshape(-1)
+
+        if 0:
+            print('AM', attention_mask)
+            print('AL', active_loss)
 
         self._shape_debug('active_loss', active_loss)
         self._shape_debug('active_logits', active_logits)
@@ -138,8 +143,14 @@ class TransformerSequenceLayer(EmbeddingNetworkModule, ScoredNetworkModule):
 
         active_labels = torch.where(
             active_loss, labels.view(-1),
-            torch.tensor(pad_label).type_as(labels),
+            torch.tensor(pad_label).type_as(labels)
         )
+
+        if 0:
+            print('L', active_labels)
+            print(active_labels.shape)
+            print('LO', active_logits)
+            print(active_logits.shape)
 
         loss = context.criterion(active_logits, active_labels)
         if self.logger.isEnabledFor(logging.DEBUG):

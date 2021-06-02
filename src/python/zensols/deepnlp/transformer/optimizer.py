@@ -3,18 +3,22 @@
 """
 __author__ = 'Paul Landes'
 
-
+from typing import Optional, Iterable
 from transformers import AdamW
 from torch import nn
+from torch.nn.parameter import Parameter
 import logging
-from zensols.deeplearn.model import ModelInputOptimizer
+from torch.optim import Optimizer
+from transformers import get_scheduler
+from zensols.deeplearn.model import ModelResourceFactory, ModelExecutor
 
 logger = logging.getLogger(__name__)
 
 
-class TransformerAdamW(AdamW, ModelInputOptimizer):
-    def __init__(self, params, *args, model: nn.Module,
-                 weight_decay: float = 0.0, **kwargs):
+class TransformerAdamFactory(ModelResourceFactory):
+    def __call__(self, params: Iterable[Parameter],
+                 model: nn.Module, executor: ModelExecutor,
+                 *args, weight_decay: float = 0.0, **kwargs):
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'using weight decay: {weight_decay}')
         # Optimizer
@@ -32,4 +36,45 @@ class TransformerAdamW(AdamW, ModelInputOptimizer):
                 "weight_decay": 0.0,
             },
         ]
-        super().__init__(optimizer_grouped_parameters, *args, **kwargs)
+        return AdamW(optimizer_grouped_parameters, *args, **kwargs)
+
+
+class TransformerSchedulerFactory(ModelResourceFactory):
+    """Unified API to get any scheduler from its name.  This simply calls
+    :func:`transformers.get_scheduler` and calculates ``num_training_steps`` as
+    ``epochs * batch_size``.
+
+    Documentation taken directly from ``get_scheduler`` function in the
+    `PyTorch source tree <https://github.com/huggingface/transformers/blob/4ba203d9d3ab5f6ae8def490cbea44b61798fc54/src/transformers/optimization.py#L229>`_.
+
+    """
+    def __call__(self, name: str,
+                 optimizer: Optimizer,
+                 executor: ModelExecutor,
+                 num_warmup_steps: Optional[int] = None,
+                 num_training_steps: Optional[int] = None):
+        """
+        Args:
+            name (:obj:`str` or `:obj:`SchedulerType`):
+                The name of the scheduler to use.
+            optimizer (:obj:`torch.optim.Optimizer`):
+                The optimizer that will be used during training.
+            num_warmup_steps (:obj:`int`, `optional`):
+                The number of warmup steps to do. This is not required by all schedulers (hence the argument being
+                optional), the function will raise an error if it's unset and the scheduler type requires it.
+            num_training_steps (:obj:`int`, `optional`):
+                The number of training steps to do. This is not required by all schedulers (hence the argument being
+                optional), the function will raise an error if it's unset and the scheduler type requires it.
+
+            if num_training_steps is None:
+                n_epochs = executor.model_settings.epochs
+                bsize = executor.batch_stash.batch_size
+                num_training_steps = n_epochs * bsize
+        """
+        if num_training_steps is None:
+            n_epochs = executor.model_settings.epochs
+            bsize = executor.batch_stash.batch_size
+            num_training_steps = n_epochs * bsize
+        return get_scheduler(name, optimizer, num_warmup_steps,
+                             num_training_steps)
+

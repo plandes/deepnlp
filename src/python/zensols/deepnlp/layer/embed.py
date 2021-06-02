@@ -10,6 +10,7 @@ import logging
 import torch
 from torch import Tensor
 from zensols.persist import Deallocatable
+from zensols.deeplearn import ModelError
 from zensols.deeplearn.vectorize import FeatureVectorizer
 from zensols.deeplearn.model import BaseNetworkModule, DebugModule
 from zensols.deeplearn.layer import LayerError
@@ -40,6 +41,7 @@ class EmbeddingLayer(DebugModule, Deallocatable):
     about initialization order.
 
     """
+
     def __init__(self, feature_vectorizer: FeatureDocumentVectorizer,
                  embedding_dim: int, sub_logger: logging.Logger = None,
                  trainable: bool = False):
@@ -59,8 +61,9 @@ class EmbeddingLayer(DebugModule, Deallocatable):
         self.torch_config = feature_vectorizer.torch_config
         self.trainable = trainable
 
-    def __getstate__(self):
-        raise LayerError('Layers should not be pickeled')
+    # already in parent module
+    # def __getstate__(self):
+    #     raise LayerError(f'Embedding layer should not be pickeled: {self}')
 
     def deallocate(self):
         super().deallocate()
@@ -96,6 +99,8 @@ class TrainableEmbeddingLayer(EmbeddingLayer):
             if logger.isEnabledFor(logging.DEBUG):
                 self._debug(f'state_dict: embedding key: {emb_key}')
             if emb_key is not None:
+                if emb_key not in state:
+                    raise ModelError(f'No key {emb_key} in {state.keys()}')
                 arr = state[emb_key]
                 if arr is not None:
                     if logger.isEnabledFor(logging.DEBUG):
