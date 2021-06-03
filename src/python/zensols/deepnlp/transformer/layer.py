@@ -117,22 +117,60 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
         super().deallocate()
         self.decoder.deallocate()
 
+    def _collapse(self, tdoc, fsents, sents: Tensor) -> Tensor:
+        offsets = tdoc.offsets
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'to collapse: {sents.shape}, ' +
+                         f'offsets: {offsets.shape}')
+        sixes = []
+        n_sents = sents.size(1)
+        max_sent = 0
+        for six in range(n_sents):
+            last = None
+            tixes = []
+            for wix, tix in enumerate(offsets[six]):
+                if tix >= 0 and last != tix:
+                    last = tix
+                    tixes.append(wix)
+            sixes.append(tixes)
+            max_sent = max(max_sent, len(tixes))
+        arr = torch.tensor([-1], dtype=sents.dtype, device=sents.device).\
+            repeat((2, n_sents, max_sent))
+        for six, tixes in enumerate(sixes):
+            sl = sents[:, six, tixes]
+            arr[0, six, 0:sl.size(1)] = sl[0]
+            arr[1, six, 0:sl.size(1)] = sl[1]
+        if 1:
+            vocab: Dict[str, int] = self.embedding.embed_model.resource.tokenizer.vocab
+            vocab = {vocab[k]: k for k in vocab.keys()}
+            input_ids = tdoc.input_ids
+            print(arr.shape)
+            for six in range(arr.size(1)):
+                sarr = arr[:, six, :]
+                print(fsents[six])
+                print('sent', ', '.join(
+                    map(lambda ix: vocab[ix.item()], input_ids[six])))
+                print(sarr[sarr >= 0].view(sarr.size(0), -1))
+            print('-' * 90)
+        return arr
+
     def _forward(self, batch: Batch, context: ScoredNetworkContext) -> \
             ScoredNetworkOutput:
         DEBUG = False
 
-        if DEBUG and self.logger.isEnabledFor(logging.DEBUG):
+        if True and self.logger.isEnabledFor(logging.DEBUG):
             for dp in batch.get_data_points():
                 self.logger.debug(f'data point: {dp}')
 
         emb: Tensor = super()._forward(batch)
-        tdoc: Tensor = batch[self.embedding_attribute_name]
-        tdoc = TokenizedDocument.from_tensor(tdoc)
-        labels: Tensor = batch.get_labels().squeeze()
-        active_labels = labels.view(-1)
         vec: TransformerNominalFeatureVectorizer = \
             batch.get_label_feature_vectorizer()
         pad_label: int = vec.pad_label
+        tdoc: Tensor = batch[self.embedding_attribute_name]
+        tdoc = TokenizedDocument.from_tensor(tdoc)
+        #tdoc = TokenizedFeatureDocument(
+        labels: Tensor = batch.get_labels().squeeze()
+        active_labels = labels.view(-1)
 
         self._shape_debug('labels', labels)
         self._shape_debug('embedding', emb)
@@ -169,6 +207,11 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
         if DEBUG:
             print('labels', labels.tolist()[:sz])
             print('predictions', preds.squeeze().tolist()[:sz])
+
+        to_collapse = torch.stack((labels, preds))
+        fsents = tuple(map(lambda d: d.doc.sents[0], batch.get_data_points()))
+        self._collapse(tdoc, fsents, to_collapse)
+        self._bail()
 
         preds = preds.unsqueeze(-1)
         self._shape_debug('predictions unsqueeze', preds)
