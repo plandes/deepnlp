@@ -17,7 +17,6 @@ from zensols.deeplearn.model import (
 from zensols.deeplearn.layer import DeepLinearNetworkSettings, DeepLinear
 from zensols.deepnlp.layer import (
     EmbeddingNetworkSettings, EmbeddingNetworkModule, EmbeddingLayer,
-    TrainableEmbeddingLayer
 )
 from . import (
     TokenizedDocument, TransformerEmbedding,
@@ -129,8 +128,8 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
         emb: Tensor = super()._forward(batch)
         tdoc: Tensor = batch[self.embedding_attribute_name]
         tdoc = TokenizedDocument.from_tensor(tdoc)
-        attention_mask: Tensor = tdoc.attention_mask
         labels: Tensor = batch.get_labels().squeeze()
+        active_labels = labels.view(-1)
         vec: TransformerNominalFeatureVectorizer = \
             batch.get_label_feature_vectorizer()
         pad_label: int = vec.pad_label
@@ -145,24 +144,9 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
 
         logits = self.decoder(emb)
         self._shape_debug('logits', logits)
-        active_loss = attention_mask.view(-1) == 1
+
         active_logits = logits.view(-1, self._n_labels)
-
-        if DEBUG:
-            print('attention mask', attention_mask)
-            print('active loss', active_loss)
-
-        self._shape_debug('active_loss', active_loss)
         self._shape_debug('active_logits', active_logits)
-
-        if 0:
-            active_labels = torch.where(
-                active_loss, labels.view(-1),
-                torch.tensor(pad_label).type_as(labels)
-            )
-            self._shape_debug('active_labels', active_labels)
-        else:
-            active_labels = labels.view(-1)
 
         if DEBUG:
             sz = 2
@@ -181,13 +165,12 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
             torch.tensor(pad_label).type_as(preds)
         )
         self._shape_debug('predictions', preds)
+
         if DEBUG:
             print('labels', labels.tolist()[:sz])
             print('predictions', preds.squeeze().tolist()[:sz])
+
         preds = preds.unsqueeze(-1)
+        self._shape_debug('predictions unsqueeze', preds)
 
         return ScoredNetworkOutput(preds, loss)
-
-    def _score(self, batch: Batch) -> Tuple[Tensor, Tensor]:
-        # mask = self._get_mask(batch)
-        raise NotImplementedError()
