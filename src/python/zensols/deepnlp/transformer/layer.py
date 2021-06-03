@@ -3,12 +3,13 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple
+from typing import List, Dict
 from dataclasses import dataclass, field
 import logging
 import torch
 from torch import Tensor
 from torch import nn
+from zensols.nlp import FeatureSentence
 from zensols.deeplearn import DropoutNetworkSettings
 from zensols.deeplearn.batch import Batch
 from zensols.deeplearn.model import (
@@ -117,7 +118,8 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
         super().deallocate()
         self.decoder.deallocate()
 
-    def _collapse(self, tdoc, fsents, sents: Tensor) -> Tensor:
+    def _collapse(self, tdoc: TokenizedDocument, sents: Tensor,
+                  fsents: List[FeatureSentence] = None) -> Tensor:
         offsets = tdoc.offsets
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'to collapse: {sents.shape}, ' +
@@ -125,6 +127,7 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
         sixes = []
         n_sents = sents.size(1)
         max_sent = 0
+        has_sents = sents.size(0) > 1
         for six in range(n_sents):
             last = None
             tixes = []
@@ -135,11 +138,12 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
             sixes.append(tixes)
             max_sent = max(max_sent, len(tixes))
         arr = torch.tensor([-1], dtype=sents.dtype, device=sents.device).\
-            repeat((2, n_sents, max_sent))
+            repeat((sents.size(0), n_sents, max_sent))
         for six, tixes in enumerate(sixes):
             sl = sents[:, six, tixes]
             arr[0, six, 0:sl.size(1)] = sl[0]
-            arr[1, six, 0:sl.size(1)] = sl[1]
+            if has_sents:
+                arr[1, six, 0:sl.size(1)] = sl[1]
         if 1:
             vocab: Dict[str, int] = self.embedding.embed_model.resource.tokenizer.vocab
             vocab = {vocab[k]: k for k in vocab.keys()}
@@ -151,7 +155,7 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
                 print('sent', ', '.join(
                     map(lambda ix: vocab[ix.item()], input_ids[six])))
                 print(sarr[sarr >= 0].view(sarr.size(0), -1))
-            print('-' * 90)
+                print('-' * 10)
         return arr
 
     def _forward(self, batch: Batch, context: ScoredNetworkContext) -> \
@@ -165,10 +169,10 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
         emb: Tensor = super()._forward(batch)
         vec: TransformerNominalFeatureVectorizer = \
             batch.get_label_feature_vectorizer()
+        print('C', vec.delegate.label_encoder.classes_)
         pad_label: int = vec.pad_label
         tdoc: Tensor = batch[self.embedding_attribute_name]
         tdoc = TokenizedDocument.from_tensor(tdoc)
-        #tdoc = TokenizedFeatureDocument(
         labels: Tensor = batch.get_labels().squeeze()
         active_labels = labels.view(-1)
 
@@ -208,9 +212,12 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
             print('labels', labels.tolist()[:sz])
             print('predictions', preds.squeeze().tolist()[:sz])
 
-        to_collapse = torch.stack((labels, preds))
+        to_collapse = torch.stack((preds, labels))
+        # no labels:
+        #to_collapse = preds.unsqueeze(0)
+
         fsents = tuple(map(lambda d: d.doc.sents[0], batch.get_data_points()))
-        self._collapse(tdoc, fsents, to_collapse)
+        self._collapse(tdoc, to_collapse, fsents)
         self._bail()
 
         preds = preds.unsqueeze(-1)
