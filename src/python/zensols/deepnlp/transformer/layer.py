@@ -141,14 +141,15 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
             repeat((sents.size(0), n_sents, max_sent))
         for six, tixes in enumerate(sixes):
             sl = sents[:, six, tixes]
+            print('SL', sl.shape, sl)
             arr[0, six, 0:sl.size(1)] = sl[0]
             if has_sents:
                 arr[1, six, 0:sl.size(1)] = sl[1]
-        if 1:
+        if 0:
             vocab: Dict[str, int] = self.embedding.embed_model.resource.tokenizer.vocab
             vocab = {vocab[k]: k for k in vocab.keys()}
             input_ids = tdoc.input_ids
-            print(arr.shape)
+            print('shape:', arr.shape)
             for six in range(arr.size(1)):
                 sarr = arr[:, six, :]
                 print(fsents[six])
@@ -162,19 +163,18 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
             ScoredNetworkOutput:
         DEBUG = False
 
-        if True and self.logger.isEnabledFor(logging.DEBUG):
+        if DEBUG and self.logger.isEnabledFor(logging.DEBUG):
             for dp in batch.get_data_points():
                 self.logger.debug(f'data point: {dp}')
 
         emb: Tensor = super()._forward(batch)
         vec: TransformerNominalFeatureVectorizer = \
             batch.get_label_feature_vectorizer()
-        print('C', vec.delegate.label_encoder.classes_)
+        #print('C', vec.delegate.label_encoder.classes_)
         pad_label: int = vec.pad_label
         tdoc: Tensor = batch[self.embedding_attribute_name]
         tdoc = TokenizedDocument.from_tensor(tdoc)
-        labels: Tensor = batch.get_labels().squeeze()
-        active_labels = labels.view(-1)
+        labels: Tensor = batch.get_labels()
 
         self._shape_debug('labels', labels)
         self._shape_debug('embedding', emb)
@@ -187,40 +187,50 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
         logits = self.decoder(emb)
         self._shape_debug('logits', logits)
 
-        active_logits = logits.view(-1, self._n_labels)
-        self._shape_debug('active_logits', active_logits)
+        # they will be None for predictions
+        if labels is not None:
+            active_logits = logits.view(-1, self._n_labels)
+            labels = labels.squeeze()
+            active_labels = labels.view(-1)
+            self._shape_debug('active_logits', active_logits)
+            loss = context.criterion(active_logits, active_labels)
+            if DEBUG:
+                sz = 2
+                print('active labels', active_labels.tolist()[:sz])
+                print(active_labels.shape)
+                print('active logits', active_logits.tolist()[:sz])
+                print(active_logits.shape)
+        else:
+            loss = batch.torch_config.singleton([0], dtype=torch.float32)
 
-        if DEBUG:
-            sz = 2
-            print('active labels', active_labels.tolist()[:sz])
-            print(active_labels.shape)
-            print('active logits', active_logits.tolist()[:sz])
-            print(active_logits.shape)
-
-        loss = context.criterion(active_logits, active_labels)
         if self.logger.isEnabledFor(logging.DEBUG):
             self.logger.debug(f'loss: {loss}')
 
         preds = logits.argmax(dim=-1)
-        preds = torch.where(
-            labels != pad_label, preds,
-            torch.tensor(pad_label).type_as(preds)
-        )
+        if labels is not None:
+            preds = torch.where(
+                labels != pad_label, preds,
+                torch.tensor(pad_label).type_as(preds)
+            )
         self._shape_debug('predictions', preds)
 
         if DEBUG:
             print('labels', labels.tolist()[:sz])
             print('predictions', preds.squeeze().tolist()[:sz])
 
-        to_collapse = torch.stack((preds, labels))
-        # no labels:
-        #to_collapse = preds.unsqueeze(0)
+        if labels is not None:
+            to_collapse = torch.stack((preds, labels))
+        else:
+            to_collapse = preds.unsqueeze(0)
 
-        fsents = tuple(map(lambda d: d.doc.sents[0], batch.get_data_points()))
+        if labels is not None:
+            fsents = tuple(map(lambda d: d.doc.sents[0],
+                               batch.get_data_points()))
+        else:
+            fsents = None
         self._collapse(tdoc, to_collapse, fsents)
-        self._bail()
 
-        preds = preds.unsqueeze(-1)
-        self._shape_debug('predictions unsqueeze', preds)
+        #preds = preds.unsqueeze(-1)
+        #self._shape_debug('predictions unsqueeze', preds)
 
         return ScoredNetworkOutput(preds, loss)

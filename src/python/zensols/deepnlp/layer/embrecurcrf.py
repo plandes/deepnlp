@@ -132,7 +132,7 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, ScoredNetworkModule):
     def _forward(self, batch: Batch, context: ScoredNetworkContext) -> \
             ScoredNetworkOutput:
         split_type: DatasetSplitType = context.split_type
-        preds: Tensor = None
+        preds: List[List[int]] = None
         loss: Tensor = None
         score: Tensor = None
         tensor_preds = self.net_settings.tensor_predictions
