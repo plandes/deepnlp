@@ -22,6 +22,11 @@ class ReviewModelFacade(LanguageModelFacade):
         manager_name=ReviewBatch.LANGUAGE_FEATURE_MANAGER_NAME,
         attribs=ReviewBatch.LANGUAGE_ATTRIBUTES,
         embedding_attribs=ReviewBatch.EMBEDDING_ATTRIBUTES)
+    """The label model configuration constructed from the batch metadata.
+
+    :see: :class:`.ReviewBatch`
+
+    """
 
     def __post_init__(self, *args, **kwargs):
         super().__post_init__(*args, **kwargs)
@@ -51,4 +56,5 @@ class ReviewModelFacade(LanguageModelFacade):
 
     @property
     def feature_stash(self) -> Stash:
+        """The stash containing the :class:`.Review` feature instances."""
         return super().feature_stash.delegate

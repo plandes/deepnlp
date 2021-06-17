@@ -62,8 +62,7 @@ class ReviewApplication(FacadeApplication):
         sents = ["If you sometimes like to go to the movies to have fun , Wasabi is a good place to start .",
                  'There are a few stabs at absurdist comedy ... but mostly the humor is of the sweet , gentle and occasionally cloying kind that has become an Iranian specialty .',
                  'Terrible',
-                 'Great movie',
-                 ]
+                 'Great movie',]
         if 0:
             self._batch_sample()
         else:

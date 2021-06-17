@@ -1,5 +1,10 @@
+"""Contains the movie review sentiment binary classification model.
+
+"""
+__author__ = 'Paul Landes'
+
 from typing import Any
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import logging
 import torch
 from zensols.deeplearn import DropoutNetworkSettings
@@ -23,8 +28,11 @@ class ReviewNetworkSettings(DropoutNetworkSettings, EmbeddingNetworkSettings):
     """A utility container settings class for convulsion network models.
 
     """
-    recurrent_settings: RecurrentAggregationNetworkSettings
-    linear_settings: DeepLinearNetworkSettings
+    recurrent_settings: RecurrentAggregationNetworkSettings = field()
+    """Contains the confgiuration for the models RNN."""
+
+    linear_settings: DeepLinearNetworkSettings = field()
+    """Contains the configuration for the model's FF *decoder*."""
 
     def _set_option(self, name: str, value: Any):
         super()._set_option(name, value)

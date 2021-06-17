@@ -11,6 +11,9 @@ from zensols.deeplearn.cli import FacadeApplicationFactory
 
 @dataclass
 class CliFactory(FacadeApplicationFactory):
+    """Used to create movie review model facades from the command line.
+
+    """
     @classmethod
     def instance(cls: type, root_dir: Path, gpu_primary_index: int = 0,
                  **kwargs):

@@ -97,6 +97,9 @@ class ReviewFeatureStash(DocumentFeatureStash):
 
 @dataclass
 class ReviewPredictionMapper(ClassificationPredictionMapper):
+    """Adds the ``polarity`` attribute as the review's sentiment prediction.
+
+    """
     def map_results(self, *args, **kwargs) -> Tuple[Review]:
         res = super().map_results(*args, **kwargs)
         for cl, doc in zip(res.classes, res.docs):
@@ -106,6 +109,10 @@ class ReviewPredictionMapper(ClassificationPredictionMapper):
 
 @dataclass
 class ReviewDataPoint(FeatureDocumentDataPoint):
+    """A representation of a data for a reivew document containing the sentiment
+    polarity as the label.
+
+    """
     @property
     def label(self) -> str:
         return self.doc.polarity
