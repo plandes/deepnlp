@@ -132,6 +132,15 @@ class TransformerResource(PersistableContainer, Dictable):
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'id: {self.model_id}, cased: {self.cased}')
 
+    @property
+    def cached(self) -> bool:
+        return self._tokenizer.cache_global
+
+    @cached.setter
+    def cached(self, cached: bool):
+        self._tokenizer.cache_global = cached
+        self._model.cache_global = cached
+
     def _is_roberta(self):
         return self.model_id.startswith('roberta')
 
