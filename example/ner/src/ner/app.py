@@ -9,10 +9,10 @@ import logging
 import itertools as it
 from spacy.tokens.doc import Doc
 from spacy.tokens import Token
-from zensols.persist import dealloc, persisted
-from zensols.config import Dictable
-from zensols.util.log import loglevel
-from zensols.nlp import FeatureDocument, FeatureToken
+from zensols.persist import dealloc, persisted, PersistableContainer
+from zensols.config import Settings, Dictable
+from zensols.nlp import FeatureDocument, FeatureToken, FeatureSentence
+from zensols.deeplearn.model import ModelFacade
 from zensols.deeplearn.batch import BatchStash
 from zensols.deeplearn.cli import FacadeApplication
 
@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class NEREntityAnnotation(Dictable):
+class NEREntityAnnotation(PersistableContainer, Dictable):
     """An annotation of a pair matching feature and spaCy tokens.
 
     """
@@ -39,6 +39,15 @@ class NEREntityAnnotation(Dictable):
         return self.doc.spacy_doc
 
     @property
+    @persisted('_sent', transient=True)
+    def sent(self) -> FeatureSentence:
+        """The sentence containing the annotated tokens."""
+        sents = self.doc.sentences_for_tokens(self.tokens)
+        assert len(sents) == 1
+        return sents[0]
+
+    @property
+    @persisted('_token_matches', transient=True)
     def token_matches(self) -> Tuple[FeatureToken, Token]:
         """Pairs of matching feature token to token mapping."""
         matches = []
@@ -121,7 +130,7 @@ class NERAnnotationMapper(object):
         """
         anons: List[NEREntityAnnotation] = []
         for lab, six, loc in ents:
-            doc = docs[six]
+            doc: FeatureDocument = docs[six]
             ftoks: Tuple[FeatureToken] = doc.tokens
             ent_toks: Tuple[FeatureToken] = ftoks[loc[0]:loc[1]]
             anons.append(NEREntityAnnotation(lab, doc, ent_toks))
@@ -166,7 +175,7 @@ class NERFacadeApplication(FacadeApplication):
 
     def _test_transform(self):
         with dealloc(self._create_facade()) as facade:
-            model = facade.transformer_embedding_model
+            model = facade.transformer_trainable_embedding_model
             sents = facade.doc_parser.parse(self.sent)
             # from zensols.util.log import loglevel
             # with loglevel(['zensols.deepnlp.transformer'], logging.INFO):
@@ -226,20 +235,19 @@ class NERFacadeApplication(FacadeApplication):
             mlen = facade.get_max_word_piece_len()
             print(f'max word piece token length: {mlen}')
 
-    #@persisted('_t1', cache_global=True)
-    def _test_preds_(self):
-        with dealloc(self._create_facade()) as facade:
-            return facade.predict([self.sent, self.sent2])
-
-    def _test_preds(self):
-        res = self._test_preds_()
-        print(res)
-
-    def _test_preds_x(self):
-        res = self._test_preds_()
+    def _test_preds(self, cache: bool = True):
+        facade: ModelFacade = self._get_cached_facade()
+        sents = (self.sent, self.sent2)
+        for s in sents: print(s)
+        res: Settings = facade.predict(sents)
         anoner = NERAnnotationMapper()
         for anon in anoner.map(res.classes, res.docs):
-            print(anon)
+            ftok = anon.tokens[0]
+            print(anon, ftok.i, ftok.i_sent, ftok.idx, anon.sent)
+            print('-' * 80)
+            #ftok.write()
+        if not cache:
+            self._clear_cached_facade()
 
     def all(self):
         self._test_transform()
@@ -261,6 +269,8 @@ class NERFacadeApplication(FacadeApplication):
                 print('-' * 80, file=f)
 
     def proto(self):
+        self._test_preds()
+        return
         self._test_trans_label()
         return
         with dealloc(self._create_facade()) as facade:

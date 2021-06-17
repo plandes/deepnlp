@@ -67,6 +67,11 @@ transformerfixed:
 transformertrain:
 			$(ENTRY) traintest -p --config $(MDL_DIR)/transformer-trainable.conf
 
+.PHONY:			transformertrainbg
+transformertrainbg:
+			$(ENTRY) traintest --config $(MDL_DIR)/transformer-trainable.conf > \
+				$(LOG_DIR)/trans-train.log 2>&1 &
+
 .PHONY:			allmodels
 allmodels:		glove50 glove300 word2vec transformer
 

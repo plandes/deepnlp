@@ -115,6 +115,7 @@ class NERBatch(Batch):
     WORD2VEC_300_EMBEDDING = 'word2vec_300_embedding'
     TRANSFORMER_FIXED_EMBEDDING = 'transformer_fixed_embedding'
     TRANSFORMER_TRAINABLE_EMBEDDING = 'transformer_trainable_embedding'
+    TRANSFORMER_TRAINABLE_MODEL_NAME = 'transformer_trainable'
     EMBEDDING_ATTRIBUTES = {GLOVE_50_EMBEDDING, GLOVE_300_EMBEDDING,
                             WORD2VEC_300_EMBEDDING, TRANSFORMER_FIXED_EMBEDDING,
                             TRANSFORMER_TRAINABLE_EMBEDDING}
@@ -132,7 +133,7 @@ class NERBatch(Batch):
               #FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', True, 'doc'),
               #FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', True, 'doc'),
               FieldFeatureMapping(TRANSFORMER_FIXED_EMBEDDING, 'transformer_fixed', True, 'doc'),
-              FieldFeatureMapping(TRANSFORMER_TRAINABLE_EMBEDDING, 'transformer_trainable', True, 'doc'),
+              FieldFeatureMapping(TRANSFORMER_TRAINABLE_EMBEDDING, TRANSFORMER_TRAINABLE_MODEL_NAME, True, 'doc'),
               FieldFeatureMapping('ents_trans', 'entlabel_trans', True, 'trans_doc', is_label=True),
               FieldFeatureMapping('tags_expander', 'transformer_tags_expander', True, 'doc'),
               FieldFeatureMapping('syns_expander', 'transformer_syns_expander', True, 'doc'),),)])
