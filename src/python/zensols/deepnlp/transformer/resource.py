@@ -134,10 +134,20 @@ class TransformerResource(PersistableContainer, Dictable):
 
     @property
     def cached(self) -> bool:
+        """If the model is cached.
+
+        :see: :obj:`cache`
+
+        """
         return self._tokenizer.cache_global
 
     @cached.setter
     def cached(self, cached: bool):
+        """If the model is cached.
+
+        :see: :obj:`cache`
+
+        """
         self._tokenizer.cache_global = cached
         self._model.cache_global = cached
 
@@ -145,6 +155,7 @@ class TransformerResource(PersistableContainer, Dictable):
         return self.model_id.startswith('roberta')
 
     def _create_tokenizer_class(self) -> Type[PreTrainedTokenizer]:
+        """Create the huggingface class used for tokenizer."""
         ci = ClassImporter(self.tokenizer_class)
         return ci.get_class()
 
