@@ -58,7 +58,6 @@ class FeatureDocumentVectorizer(EncodableFeatureVectorizer, metaclass=ABCMeta):
     :class:`.TokensContainer`.
 
     """
-
     @abstractmethod
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
         pass
@@ -104,10 +103,17 @@ class FeatureDocumentVectorizer(EncodableFeatureVectorizer, metaclass=ABCMeta):
 
     @property
     def feature_type(self) -> TextFeatureType:
+        """The type of feature this vectorizer generates.  This is used by classes such
+        as :class:`~zensols.deepnlp.layer.EmbeddingNetworkModule` to determine
+        where to add the features, such as concating to the embedding layer,
+        join layer etc.
+
+        """
         return self.FEATURE_TYPE
 
     @property
     def token_length(self) -> int:
+        """The number of token features (if token level) generated."""
         return self.manager.token_length
 
     def __str__(self):
