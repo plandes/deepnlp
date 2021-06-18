@@ -124,7 +124,9 @@ class NERBatch(Batch):
         [ManagerFeatureMapping(
             'label_vectorizer_manager',
             (FieldFeatureMapping('ents', 'entlabel', True, is_label=True),
-             FieldFeatureMapping('mask', 'mask', True, 'ents'))),
+             FieldFeatureMapping('mask', 'mask', True, 'ents'),
+             FieldFeatureMapping('mask_expander', 'transformer_mask_expander', True, 'doc'),
+             )),
          ManagerFeatureMapping(
              LANGUAGE_FEATURE_MANAGER_NAME,
              (FieldFeatureMapping('tags', 'tag', True, 'doc'),
@@ -134,13 +136,15 @@ class NERBatch(Batch):
               #FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', True, 'doc'),
               FieldFeatureMapping(TRANSFORMER_FIXED_EMBEDDING, 'transformer_fixed', True, 'doc'),
               FieldFeatureMapping(TRANSFORMER_TRAINABLE_EMBEDDING, TRANSFORMER_TRAINABLE_MODEL_NAME, True, 'doc'),
-              FieldFeatureMapping('ents_trans', 'entlabel_trans', True, 'trans_doc', is_label=True),
               FieldFeatureMapping('tags_expander', 'transformer_tags_expander', True, 'doc'),
-              FieldFeatureMapping('syns_expander', 'transformer_syns_expander', True, 'doc'),),)])
+              FieldFeatureMapping('syns_expander', 'transformer_syns_expander', True, 'doc'),
+              FieldFeatureMapping('ents_trans', 'entlabel_trans', True, 'trans_doc', is_label=True),
+              ),)])
 
     TRANS_MAPPINGS = cp.deepcopy(MAPPINGS)
     TRANS_MAPPINGS.label_attribute_name = 'ents_trans'
-    #MAPPINGS.manager_mappings[1].remove_field('ents_trans')
+    #TRANS_MAPPINGS.manager_mappings[0].remove_field('mask')
+    #TRANS_MAPPINGS.manager_mappings[0].fields[1].attr = 'mask'
 
     def _get_batch_feature_mappings(self) -> BatchFeatureMapping:
         stash: BatchStash = self.batch_stash

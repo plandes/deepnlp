@@ -268,7 +268,13 @@ class NERFacadeApplication(FacadeApplication):
                 print(gc.get_referrers(arr), file=f)
                 print('-' * 80, file=f)
 
+    def _tmp(self):
+        from . import NERBatch
+        NERBatch.TRANS_MAPPINGS.write()
+
     def proto(self):
+        self._tmp()
+        return
         self._test_preds()
         return
         self._test_trans_label()
