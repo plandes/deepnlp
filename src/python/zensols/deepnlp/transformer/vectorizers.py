@@ -182,20 +182,15 @@ class TransformerExpanderFeatureVectorizer(TransformerFeatureVectorizer):
         self._validated = False
 
     def _validate(self):
-        if self._validated:
-            return
-        for vec in self.delegates:
-            # if not hasattr(vec, 'feature_type'):
-            #     raise VectorizerError(f'Expecting a token ')
-            if hasattr(vec, 'feature_tye') and vec.feature_type != TextFeatureType.TOKEN:
-                raise VectorizerError('Only token level vectorizers are ' +
-                                      f'supported, but got {vec}')
-            # if len(vec.shape) != 3:
-            #     raise VectorizerError('Expecting a vectorizer with 3 dimsions')
+        if not self._validated:
+            for vec in self.delegates:
+                if hasattr(vec, 'feature_tye') and \
+                   vec.feature_type != TextFeatureType.TOKEN:
+                    raise VectorizerError('Only token level vectorizers are ' +
+                                          f'supported, but got {vec}')
         self._validated = True
 
     def _get_shape(self) -> Tuple[int, int]:
-        #shape = [-1, self.manager.token_length, 0]
         shape = [-1, self.word_piece_token_length, 0]
         vec: FeatureDocumentVectorizer
         for vec in self.delegates:
