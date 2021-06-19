@@ -18,8 +18,7 @@ def proto():
     print('-->proto')
     try:
         model = {0: 'glove50',
-                 1: 'transformer-fixed',
-                 2: 'transformer-trainable',
+                 1: 'transformer-trainable',
                  }[1]
         args = f'-c models/{model}.conf'
         #args += ' --execlevel 2'

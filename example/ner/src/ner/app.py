@@ -236,7 +236,7 @@ class NERFacadeApplication(FacadeApplication):
             print(f'max word piece token length: {mlen}')
 
     def _test_preds(self, cache: bool = True):
-        facade: ModelFacade = self._get_cached_facade()
+        facade: ModelFacade = self.get_cached_facade()
         sents = (self.sent, self.sent2)
         for s in sents: print(s)
         res: Settings = facade.predict(sents)
@@ -269,8 +269,8 @@ class NERFacadeApplication(FacadeApplication):
                 print('-' * 80, file=f)
 
     def _tmp(self):
-        from . import NERBatch
-        NERBatch.TRANS_MAPPINGS.write()
+        facade: ModelFacade = self.get_cached_facade()
+        print(facade.language_vectorizer_manager['entlabel_trans'].is_labeler)
 
     def proto(self):
         self._tmp()
