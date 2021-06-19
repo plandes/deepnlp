@@ -51,26 +51,12 @@ class TransformerFeatureVectorizer(EmbeddingFeatureVectorizer,
     tokenizes documents.
 
     """
-    is_labeler: bool = field(default=False)
-    """If ``True``, make this a labeling specific vectorizer.  Otherwise, certain
-    layers will use the output of the vectorizer as features rather than the
-    labels.
-
-    """
-
     def _assert_token_output(self, expected: str = 'last_hidden_state'):
         if self.embed_model.output != expected:
             raise VectorizerError(f"""\
 Expanders only work at the token level, so output such as \
 `{expected}`, which provides an output for each token in the \
 transformer embedding, is required, got: {self.embed_model.output}""")
-
-    @property
-    def feature_type(self) -> TextFeatureType:
-        if self.is_labeler:
-            return TextFeatureType.NONE
-        else:
-            return self.FEATURE_TYPE
 
     @property
     def word_piece_token_length(self) -> int:
@@ -179,22 +165,15 @@ class TransformerExpanderFeatureVectorizer(TransformerFeatureVectorizer):
         if self.delegate_feature_ids is None:
             raise VectorizerError('expected attribute: delegate_feature_ids')
         self._assert_token_output()
-        self._validated = False
-
-    def _validate(self):
-        if not self._validated:
-            for vec in self.delegates:
-                if hasattr(vec, 'feature_tye') and \
-                   vec.feature_type != TextFeatureType.TOKEN:
-                    raise VectorizerError('Only token level vectorizers are ' +
-                                          f'supported, but got {vec}')
-        self._validated = True
 
     def _get_shape(self) -> Tuple[int, int]:
-        shape = [-1, self.word_piece_token_length, 0]
+        shape = [-1, self.manager.token_length, 0]
         vec: FeatureDocumentVectorizer
         for vec in self.delegates:
-            shape[2] += vec.shape[-1]
+            if vec.feature_type != TextFeatureType.TOKEN:
+                raise VectorizerError('Only token level vectorizers are ' +
+                                      f'supported, but got {vec}')
+            shape[2] += vec.shape[2]
         return tuple(shape)
 
     @property
@@ -206,7 +185,6 @@ class TransformerExpanderFeatureVectorizer(TransformerFeatureVectorizer):
         return tuple(map(lambda f: self.manager[f], self.delegate_feature_ids))
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
-        self._validate()
         tok_doc = self.tokenize(doc).detach()
         cxs = tuple(map(lambda vec: vec.encode(doc), self.delegates))
         return TransformerExpanderFeatureContext(self.feature_id, cxs, tok_doc)
@@ -224,7 +202,7 @@ class TransformerExpanderFeatureVectorizer(TransformerFeatureVectorizer):
             arrs.append(src)
         # get the mapping per sentence
         wps_sents = tuple(map(lambda s: doc.map_word_pieces(s), doc.offsets))
-        tlen = self.word_piece_token_length
+        tlen = self.manager.token_length
         # use variable length tokens
         if tlen <= 0:
             tlen = max(chain.from_iterable(
@@ -237,7 +215,7 @@ class TransformerExpanderFeatureVectorizer(TransformerFeatureVectorizer):
         # number of sentences
         n_sents = len(wps_sents)
         # feature dimension (last dimension)
-        dim = sum(map(lambda x: x.size(-1), arrs))
+        dim = sum(map(lambda x: x.size(2), arrs))
         # tensor to populate
         marr = self.torch_config.zeros((n_sents, tlen, dim))
         if logger.isEnabledFor(logging.DEBUG):
@@ -248,7 +226,7 @@ class TransformerExpanderFeatureVectorizer(TransformerFeatureVectorizer):
         marrix = 0
         # iterate feature vectors
         for arr in arrs:
-            ln = arr.size(-1)
+            ln = arr.size(2)
             meix = marrix + ln
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'feature range: [{marrix}:{meix}]')
@@ -263,7 +241,7 @@ class TransformerExpanderFeatureVectorizer(TransformerFeatureVectorizer):
                     # vector to the target, thereby expanding and increasing
                     # the size of the last dimsion
                     for wix in wpixs:
-                        if False and logger.isEnabledFor(logging.DEBUG):
+                        if logger.isEnabledFor(logging.DEBUG):
                             logger.debug(f'[{six}, {wix}, {marrix}:{meix}] ' +
                                          f'= [{six}, {tix}]')
                         marr[six, wix, marrix:meix] = arr[six, tix]
@@ -276,13 +254,13 @@ class TransformerNominalFeatureVectorizer(
         AggregateEncodableFeatureVectorizer, TransformerFeatureVectorizer):
     """This creates word piece (maps to tokens) labels.  This class uses a
     :class:`~zensols.deeplearn.vectorize.NominalEncodedEncodableFeatureVectorizer``
-    to map from string labels to their nominal long values.  This allows a
-    single instance and centralized location where the label mapping happens in
-    case other (non-transformer) components need to vectorize labels.
+    to map from string labels to their nominal long values.  It this so there
+    can be a single instance and centralized location where the label mapping
+    happens in case other (non-transformer) components need to vectorize
+    labels.
 
     """
     DESCRIPTION = 'transformer seq labeler'
-    FEATURE_TYPE = TextFeatureType.TOKEN
 
     delegate_feature_id: str = field(default=None)
     """The feature ID for the aggregate encodeable feature vectorizer."""
@@ -308,8 +286,24 @@ class TransformerNominalFeatureVectorizer(
         self._assert_token_output()
 
     def _get_shape(self) -> Tuple[int, int]:
+        #vec: AggregateEncodableFeatureVectorizer = self.delegate
         shape = super()._get_shape()
         return (-1, self.word_piece_token_length, shape[-1])
+
+    @property
+    def feature_type(self) -> TextFeatureType:
+        if self.is_labeler:
+            return TextFeatureType.NONE
+        else:
+            return TextFeatureType.TOKEN
+
+    # @property
+    # @persisted('_delegate', allocation_track=False)
+    # def delegate(self) -> AggregateEncodableFeatureVectorizer:
+    #     """The delegates used for encoding and decoding the lingustic features.
+
+    #     """
+    #     return self.manager[self.delegate_feature_id]
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
         delegate: NominalEncodedEncodableFeatureVectorizer = self.delegate
@@ -317,12 +311,9 @@ class TransformerNominalFeatureVectorizer(
         by_label: Dict[str, int] = delegate.by_label
         n_sents = len(doc)
         if self.word_piece_token_length > 0:
-            n_toks = self.word_piece_token_length
+            n_toks = self.manager.token_length
         else:
             n_toks = len(tdoc)
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug('encoding using {n_toks} tokens with wp len: ' +
-                         f'{self.word_piece_token_length}')
         dtype: torch.dtype = delegate.data_type
         arr = self.create_padded_tensor((n_sents, n_toks, 1), dtype)
         if logger.isEnabledFor(logging.DEBUG):

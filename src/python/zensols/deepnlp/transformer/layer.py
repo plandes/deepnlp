@@ -3,13 +3,13 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import List
+from typing import List, Dict
 from dataclasses import dataclass, field
 import logging
+import itertools as it
 import torch
 from torch import Tensor
 from torch import nn
-from zensols.nlp import FeatureSentence
 from zensols.deeplearn import DropoutNetworkSettings
 from zensols.deeplearn.batch import Batch
 from zensols.deeplearn.model import (
@@ -118,14 +118,14 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
         super().deallocate()
         self.decoder.deallocate()
 
-    def _to_lists(self, tdoc: TokenizedDocument, sents: Tensor,
-                  fsents: List[FeatureSentence] = None) -> Tensor:
-        offsets = tdoc.offsets
+    def _to_lists(self, tdoc: TokenizedDocument, sents: Tensor) -> \
+            List[List[int]]:
+        offsets: Tensor = tdoc.offsets
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'to collapse: {sents.shape}, ' +
                          f'offsets: {offsets.shape}')
-        sent_lists = []
-        n_sents = sents.size(1)
+        sent_lists: List[List[int]] = []
+        n_sents: int = sents.size(1)
         for six in range(n_sents):
             last = None
             tixes = []
@@ -134,8 +134,23 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
                     last = tix
                     tixes.append(wix)
             sl = sents[:, six, tixes]
+            #print('SL', sl.squeeze().tolist(), tixes)
             sent_lists.append(sl[0].tolist())
         return sent_lists
+
+    def _debug_preds(self, labels: Tensor, preds: List[List[str]],
+                     tdoc: TokenizedDocument, batch: Batch, limit: int = 5):
+        vocab: Dict[str, int] = self.embedding.embed_model.resource.tokenizer.vocab
+        vocab = {vocab[k]: k for k in vocab.keys()}
+        input_ids = tdoc.input_ids
+        fsents = tuple(map(lambda d: d.doc.sents[0], batch.get_data_points()))
+        for six, pred in enumerate(it.islice(preds, limit)):
+            print(fsents[six])
+            print('sent', ', '.join(
+                map(lambda ix: vocab[ix.item()], input_ids[six])))
+            print('predictions:', pred)
+            print('labels:', labels[six])
+            print('-' * 10)
 
     def _forward(self, batch: Batch, context: ScoredNetworkContext) -> \
             ScoredNetworkOutput:
@@ -149,9 +164,9 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
         vec: TransformerNominalFeatureVectorizer = \
             batch.get_label_feature_vectorizer()
         pad_label: int = vec.pad_label
+        labels: Tensor = batch.get_labels()
         tdoc: Tensor = batch[self.embedding_attribute_name]
         tdoc = TokenizedDocument.from_tensor(tdoc)
-        labels: Tensor = batch.get_labels()
 
         self._shape_debug('labels', labels)
         self._shape_debug('embedding', emb)
@@ -164,21 +179,21 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
         logits = self.decoder(emb)
         self._shape_debug('logits', logits)
 
-        # they will be None for predictions
-        if labels is not None:
+        # labels are missing when predicting
+        if labels is None:
+            loss = batch.torch_config.singleton([0], dtype=torch.float32)
+        else:
             active_logits = logits.view(-1, self._n_labels)
             labels = labels.squeeze()
             active_labels = labels.view(-1)
             self._shape_debug('active_logits', active_logits)
             loss = context.criterion(active_logits, active_labels)
             if DEBUG:
-                sz = 2
+                sz = 10
                 print('active labels', active_labels.tolist()[:sz])
                 print(active_labels.shape)
                 print('active logits', active_logits.tolist()[:sz])
                 print(active_logits.shape)
-        else:
-            loss = batch.torch_config.singleton([0], dtype=torch.float32)
 
         if self.logger.isEnabledFor(logging.DEBUG):
             self.logger.debug(f'loss: {loss}')
@@ -191,23 +206,16 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
             )
         self._shape_debug('predictions', preds)
 
-        if DEBUG:
-            print('labels', labels.tolist()[:sz])
-            print('predictions', preds.squeeze().tolist()[:sz])
-
-        if labels is not None:
-            to_collapse = torch.stack((preds, labels))
-        else:
+        if labels is None:
             to_collapse = preds.unsqueeze(0)
-
-        if labels is not None:
-            fsents = tuple(map(lambda d: d.doc.sents[0],
-                               batch.get_data_points()))
+            label_offset = 0
         else:
-            fsents = None
-        preds = self._to_lists(tdoc, to_collapse, fsents)
+            to_collapse = torch.stack((preds, labels))
+            label_offset = 1 if (labels[0][0].item() == pad_label) else 0
 
-        #preds = preds.unsqueeze(-1)
-        #self._shape_debug('predictions unsqueeze', preds)
+        preds = self._to_lists(tdoc, to_collapse)
 
-        return ScoredNetworkOutput(preds, loss)
+        if DEBUG:
+            self._debug_preds(labels, preds, tdoc, batch)
+
+        return ScoredNetworkOutput(preds, loss, label_offset=label_offset)

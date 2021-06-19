@@ -24,7 +24,6 @@ class TransformerDocumentTokenizer(PersistableContainer):
       ``error: CUDA error: device-side assert triggered``
 
     """
-
     resource: TransformerResource = field()
     """Contains the model used to create the tokenizer."""
 
