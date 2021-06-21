@@ -167,11 +167,15 @@ class NERFacadeApplication(FacadeApplication):
         self.sent2 = 'West Indian all-rounder Phil Simmons took four for 38 on Friday as Leicestershire beat Somerset by an innings and 39 runs in two days to take over at the head of the county championship.'
 
     def stats(self):
-        """Print out the corpus statistics.
+        """Print out the corpus statistics."""
 
-       """
         with dealloc(self._create_facade()) as facade:
             facade.write_corpus_stats()
+
+    def assert_label_mapping(self):
+        """Confirm the the mapping of the labels is correct."""
+        facade: ModelFacade = self.get_cached_facade()
+        facade.assert_label_mapping()
 
     def _test_transform(self):
         with dealloc(self._create_facade()) as facade:
@@ -273,13 +277,4 @@ class NERFacadeApplication(FacadeApplication):
         print(facade.language_vectorizer_manager['entlabel_trans'].is_labeler)
 
     def proto(self):
-        self._tmp()
-        return
-        self._test_preds()
-        return
-        self._test_trans_label()
-        return
-        with dealloc(self._create_facade()) as facade:
-            res = facade.last_result
-            for i in res.validation.losses:
-                print(i)
+        self.assert_label_mapping()

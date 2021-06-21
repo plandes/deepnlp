@@ -59,10 +59,6 @@ glove300:
 word2vec:
 			$(ENTRY) traintest -p --config $(MDL_DIR)/word2vec.conf
 
-.PHONY:			transformerfixed
-transformerfixed:
-			$(ENTRY) traintest -p --config $(MDL_DIR)/transformer-fixed.conf
-
 .PHONY:			transformertrain
 transformertrain:
 			$(ENTRY) traintest -p --config $(MDL_DIR)/transformer-trainable.conf

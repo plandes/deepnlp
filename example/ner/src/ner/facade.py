@@ -5,7 +5,7 @@
 from typing import List
 from dataclasses import dataclass, field
 import logging
-import pandas as pd
+from zensols.deeplearn.batch import Batch
 from zensols.deepnlp.model import (
     LanguageModelFacade,
     LanguageModelFacadeConfig,
@@ -56,16 +56,42 @@ class NERModelFacade(LanguageModelFacade):
         info_loggers.append('ner')
         info_loggers.remove('zensols.deeplearn.batch.stash')
 
-    def get_predictions(self) -> pd.DataFrame:
-        """Return a Pandas dataframe of the predictions with columns that include the
-        correct label, the prediction, the text and the length of the text of
-        the review.
-
-        """
-        return super().get_predictions(
-            ('text', 'len'),
-            lambda dp: (dp.review.text, len(dp.review.text)))
-
     def write_corpus_stats(self):
         """Computes the corpus statistics."""
         self.sent_stats.write()
+
+    def assert_label_mapping(self, do_print: bool = False):
+        seq_vec = self.language_vectorizer_manager['entlabel_trans']
+        vec = seq_vec.delegate
+        le = vec.label_encoder
+        if do_print:
+            print(le.classes_)
+        batch_stash = self.batch_stash
+        res = self.last_result
+        ds = res.train
+        ds.write()
+        epoch = ds.converged_epoch
+        res_labels = epoch.labels
+        start = 0
+        end = None
+        for bid in epoch.batch_ids:
+            batch: Batch = batch_stash[bid]
+            if do_print:
+                batch.write()
+            blabs = batch.get_labels().squeeze()
+            for six, dp in enumerate(batch.get_data_points()):
+                sent = dp.sent
+                assert len(sent) == len(sent.annotations)
+                end = start + len(sent)
+                rs_labs = res_labels[start:end]
+                mapped_labs = tuple(vec.get_classes(rs_labs).tolist())
+                start = end
+                if do_print:
+                    print(sent)
+                    seq_vec.tokenize(sent.to_document()).write()
+                    print(blabs[six].tolist())
+                    print('G', sent.annotations)
+                    print('L', mapped_labs)
+                    print('-' * 10)
+                assert len(sent.annotations) == len(mapped_labs)
+                assert sent.annotations == mapped_labs

@@ -29,7 +29,7 @@ def proto():
                   2: 'all',
                   3: 'batch',
                   4: 'train',
-                  }[1]
+                  }[0]
         main(f'./run.py {action} {args}'.split(),
              reload_pattern=f'^(?:{"|".join(rl_mods)})'),
     except SystemExit as e:

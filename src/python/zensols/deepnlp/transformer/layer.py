@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import List, Dict
+from typing import List, Dict, Tuple
 from dataclasses import dataclass, field
 import logging
 import itertools as it
@@ -119,13 +119,14 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
         self.decoder.deallocate()
 
     def _to_lists(self, tdoc: TokenizedDocument, sents: Tensor) -> \
-            List[List[int]]:
+            Tuple[List[List[int]]]:
         offsets: Tensor = tdoc.offsets
+        preds: List[List[int]] = []
+        n_sents: int = sents.size(1)
+        labels: List[List[int]] = [] if sents.size(0) > 1 else None
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'to collapse: {sents.shape}, ' +
                          f'offsets: {offsets.shape}')
-        sent_lists: List[List[int]] = []
-        n_sents: int = sents.size(1)
         for six in range(n_sents):
             last = None
             tixes = []
@@ -135,8 +136,10 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
                     tixes.append(wix)
             sl = sents[:, six, tixes]
             #print('SL', sl.squeeze().tolist(), tixes)
-            sent_lists.append(sl[0].tolist())
-        return sent_lists
+            preds.append(sl[0].tolist())
+            if labels is not None:
+                labels.append(sl[1].tolist())
+        return preds, labels
 
     def _debug_preds(self, labels: Tensor, preds: List[List[str]],
                      tdoc: TokenizedDocument, batch: Batch, limit: int = 5):
@@ -167,8 +170,10 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
         labels: Tensor = batch.get_labels()
         tdoc: Tensor = batch[self.embedding_attribute_name]
         tdoc = TokenizedDocument.from_tensor(tdoc)
+        attention_mask: Tensor = tdoc.attention_mask
 
         self._shape_debug('labels', labels)
+        self._shape_debug('attention mask', attention_mask)
         self._shape_debug('embedding', emb)
         if self.logger.isEnabledFor(logging.DEBUG):
             self._debug(f'tokenized doc: {tdoc}, len: {len(tdoc)}')
@@ -179,17 +184,24 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
         logits = self.decoder(emb)
         self._shape_debug('logits', logits)
 
+        preds = logits.argmax(dim=-1)
+
         # labels are missing when predicting
         if labels is None:
             loss = batch.torch_config.singleton([0], dtype=torch.float32)
         else:
+            active_loss = attention_mask.view(-1) == 1
             active_logits = logits.view(-1, self._n_labels)
-            labels = labels.squeeze()
-            active_labels = labels.view(-1)
+            active_labels = torch.where(
+                active_loss, labels.view(-1),
+                torch.tensor(pad_label).type_as(labels)
+            )
             self._shape_debug('active_logits', active_logits)
+            self._shape_debug('active_labels', active_labels)
             loss = context.criterion(active_logits, active_labels)
+            labels = labels.squeeze()
             if DEBUG:
-                sz = 10
+                sz = 5
                 print('active labels', active_labels.tolist()[:sz])
                 print(active_labels.shape)
                 print('active logits', active_logits.tolist()[:sz])
@@ -198,24 +210,17 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
         if self.logger.isEnabledFor(logging.DEBUG):
             self.logger.debug(f'loss: {loss}')
 
-        preds = logits.argmax(dim=-1)
-        if labels is not None:
-            preds = torch.where(
-                labels != pad_label, preds,
-                torch.tensor(pad_label).type_as(preds)
-            )
         self._shape_debug('predictions', preds)
 
         if labels is None:
             to_collapse = preds.unsqueeze(0)
-            label_offset = 0
         else:
             to_collapse = torch.stack((preds, labels))
-            label_offset = 1 if (labels[0][0].item() == pad_label) else 0
 
-        preds = self._to_lists(tdoc, to_collapse)
+        preds, mapped_labels = self._to_lists(tdoc, to_collapse)
+        out = ScoredNetworkOutput(preds, loss, labels=mapped_labels)
 
         if DEBUG:
             self._debug_preds(labels, preds, tdoc, batch)
 
-        return ScoredNetworkOutput(preds, loss, label_offset=label_offset)
+        return out
