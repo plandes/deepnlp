@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, List
+from typing import Tuple, List, Optional
 from dataclasses import dataclass, field
 import logging
 import torch
@@ -133,6 +133,7 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, ScoredNetworkModule):
             ScoredNetworkOutput:
         split_type: DatasetSplitType = context.split_type
         preds: List[List[int]] = None
+        labels: Optional[List[List[int]]] = batch.get_labels()
         loss: Tensor = None
         score: Tensor = None
         tensor_preds = self.net_settings.tensor_predictions
@@ -152,4 +153,7 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, ScoredNetworkModule):
             loss = batch.torch_config.singleton([0], dtype=torch.float32)
         else:
             raise ModelError(f'Unknown data split type: {split_type}')
-        return ScoredNetworkOutput(preds, loss, score)
+        out = ScoredNetworkOutput(preds, loss, score, labels)
+        if preds is not None and labels is not None:
+            out.righsize_labels(preds)
+        return out
