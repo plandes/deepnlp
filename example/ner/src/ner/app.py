@@ -277,4 +277,4 @@ class NERFacadeApplication(FacadeApplication):
         print(facade.language_vectorizer_manager['entlabel_trans'].is_labeler)
 
     def proto(self):
-        self.assert_label_mapping()
+        self._test_preds()
