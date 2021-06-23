@@ -65,16 +65,15 @@ class CliHarness(object):
             model = {0: 'glove50',
                      1: 'transformer-trainable',
                      }[1]
-            args = f'-c models/{model}.conf'
-            #args += ' --execlevel 2'
-            # other reload patterns read from app.conf
-            rl_mods = 'ner.app'.split()
             action = {0: 'proto',
                       1: 'debug',
                       2: 'all',
                       3: 'batch',
                       4: 'train',
                       }[0]
+            args = f'-c models/{model}.conf'
+            # other reload patterns read from app.conf
+            rl_mods = 'ner.app'.split()
             self.invoke(f'{action} {args}'.split(),
                         reload_pattern=f'^(?:{"|".join(rl_mods)})'),
         except SystemExit as e:
