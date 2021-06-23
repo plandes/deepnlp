@@ -159,6 +159,8 @@ class NERFacadeApplication(FacadeApplication):
     """Example application to demonstrate Transformer sequence classification.
 
     """
+    CLI_META = {'mnemonic_overrides': {'assert_label_mapping': 'labmap'}} | \
+        FacadeApplication.CLI_META
     CLASS_INSPECTOR = {}
 
     def __post_init__(self):
