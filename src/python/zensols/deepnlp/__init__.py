@@ -2,6 +2,7 @@
 
 """
 
+
 def init(*args, **kwargs):
     """Initalize the deep NLP system, which includes a call to the PyTorch system.
     Arguments are passed on to :meth:`~zensols.deeplearn.TorchConfig.init`
