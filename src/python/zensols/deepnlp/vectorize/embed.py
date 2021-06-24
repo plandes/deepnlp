@@ -105,7 +105,7 @@ class WordVectorEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
 
     @property
     @persisted('_vectors')
-    def vectors(self):
+    def vectors(self) -> Tensor:
         return self.torch_config.from_numpy(self.embed_model.matrix)
 
     def _decode(self, context: FeatureContext) -> Tensor:
@@ -120,8 +120,8 @@ class WordVectorEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
             vecs = []
             for batch_idx in x:
                 for idxt in batch_idx:
-                    idx = idxt.item()
-                    vecs.append(src_vecs[idx])
+                    #idx = idxt.item()
+                    vecs.append(src_vecs[idxt])
                 batches.append(torch.stack(vecs))
                 vecs.clear()
             x = torch.stack(batches)
