@@ -215,8 +215,7 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
         else:
             vec_mng = self.language_vectorizer_manager
             old_emb = self.embedding
-            old_layer = f'{old_emb}_layer'
-            self._deallocate_config_instance(old_layer)
+            self._deallocate_config_instance(f'{old_emb}_layer')
             stash.decoded_attributes = attribs
             elayer = f'instance: {emb_sec}_layer'
             self.executor.net_settings.embedding_layer = elayer

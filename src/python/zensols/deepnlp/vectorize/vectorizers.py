@@ -448,7 +448,13 @@ class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
 @dataclass
 class OneHotEncodedFeatureDocumentVectorizer(
         FeatureDocumentVectorizer, OneHotEncodedEncodableFeatureVectorizer):
-    ATTR_EXP_META = ('decoded_feature_ids',)
+    """Vectorize nominal enumerated features in to a one-hot encoded vectors.  The
+    feature is taken another vectorizer indicated by the feature ID specified
+    with the :obj:`feature_id`.
+
+    :shape: (-1, |token length|, |categories|)
+
+    """
     DESCRIPTION = 'encoded feature document vectorizer'
     FEATURE_TYPE = TextFeatureType.TOKEN
 
@@ -463,8 +469,8 @@ class OneHotEncodedFeatureDocumentVectorizer(
         return -1, self.token_length, super()._get_shape()[1]
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
-        tlen = self.manager.get_token_length(doc)
         slen = len(doc)
+        tlen = self.manager.get_token_length(doc)
         attr = self.feature_attribute
         arr = self.torch_config.zeros((slen, tlen, self.shape[2]))
         if logger.isEnabledFor(logging.DEBUG):
