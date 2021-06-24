@@ -11,7 +11,7 @@ from abc import abstractmethod, ABCMeta
 import logging
 import collections
 from torch import Tensor
-from zensols.persist import persisted
+from zensols.persist import persisted, PersistedWork
 from zensols.nlp import LanguageResource
 from zensols.deeplearn.vectorize import (
     FeatureContext,
@@ -31,7 +31,7 @@ class TextFeatureType(Enum):
     """
     TOKEN = auto()
     """Token level with a shape congruent with the number of tokens, typically
-    concatenated with the ebedding layer.
+    concatenated with the embedding layer.
 
     """
 
@@ -189,6 +189,7 @@ class FeatureDocumentVectorizerManager(FeatureVectorizerManager):
             fdiffs = ', '.join(feat_diff)
             raise VectorizerError(
                 f'Parser token features do not exist in vectorizer: {fdiffs}')
+        self._spacy_vectorizers = PersistedWork('_spacy_vectorizers', self)
 
     @property
     def is_batch_token_length(self) -> bool:
@@ -260,3 +261,11 @@ class FeatureDocumentVectorizerManager(FeatureVectorizerManager):
                        vocab=self.langres.model.vocab)
             vectorizers[feature_id] = inst
         return vectorizers
+
+    def deallocate(self):
+        if self._spacy_vectorizers.is_set():
+            vecs = self.spacy_vectorizers
+            for vec in vecs.values():
+                vec.deallocate()
+            vecs.clear()
+        super().deallocate()
