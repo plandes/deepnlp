@@ -10,7 +10,7 @@ import torch
 from torch import Tensor
 from zensols.deeplearn import ModelError, DatasetSplitType, TorchConfig
 from zensols.deeplearn.model import (
-    ScoredNetworkModule, ScoredNetworkContext, ScoredNetworkOutput
+    SequenceNetworkModule, SequenceNetworkContext, SequenceNetworkOutput
 )
 from zensols.deeplearn.batch import Batch
 from zensols.deeplearn.layer import RecurrentCRFNetworkSettings, RecurrentCRF
@@ -45,7 +45,7 @@ class EmbeddedRecurrentCRFSettings(EmbeddingNetworkSettings):
         return __name__ + '.EmbeddedRecurrentCRF'
 
 
-class EmbeddedRecurrentCRF(EmbeddingNetworkModule, ScoredNetworkModule):
+class EmbeddedRecurrentCRF(EmbeddingNetworkModule, SequenceNetworkModule):
     """A recurrent neural network composed of an embedding input, an recurrent
     network, and a linear conditional random field output layer.  When
     configured with an LSTM, this becomes a (Bi)LSTM CRF.  More specifically,
@@ -129,8 +129,8 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, ScoredNetworkModule):
             arr[rix, :blen] = tc.singleton(plist, dtype=labels.dtype)
         return arr
 
-    def _forward(self, batch: Batch, context: ScoredNetworkContext) -> \
-            ScoredNetworkOutput:
+    def _forward(self, batch: Batch, context: SequenceNetworkContext) -> \
+            SequenceNetworkOutput:
         split_type: DatasetSplitType = context.split_type
         preds: List[List[int]] = None
         labels: Optional[List[List[int]]] = batch.get_labels()
@@ -153,7 +153,7 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, ScoredNetworkModule):
             loss = batch.torch_config.singleton([0], dtype=torch.float32)
         else:
             raise ModelError(f'Unknown data split type: {split_type}')
-        out = ScoredNetworkOutput(preds, loss, score, labels)
+        out = SequenceNetworkOutput(preds, loss, score, labels)
         if preds is not None and labels is not None:
             out.righsize_labels(preds)
         return out

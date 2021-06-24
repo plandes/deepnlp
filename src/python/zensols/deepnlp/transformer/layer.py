@@ -13,7 +13,7 @@ from torch import nn
 from zensols.deeplearn import DropoutNetworkSettings
 from zensols.deeplearn.batch import Batch
 from zensols.deeplearn.model import (
-    ScoredNetworkModule, ScoredNetworkContext, ScoredNetworkOutput
+    SequenceNetworkModule, SequenceNetworkContext, SequenceNetworkOutput
 )
 from zensols.deeplearn.layer import DeepLinearNetworkSettings, DeepLinear
 from zensols.deepnlp.layer import (
@@ -84,7 +84,7 @@ class TransformerSequenceNetworkSettings(EmbeddingNetworkSettings,
         return __name__ + '.TransformerSequence'
 
 
-class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
+class TransformerSequence(EmbeddingNetworkModule, SequenceNetworkModule):
     MODULE_NAME = 'trans seq'
 
     def __init__(self, net_settings: TransformerSequenceNetworkSettings,
@@ -155,8 +155,8 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
             print('labels:', labels[six])
             print('-' * 10)
 
-    def _forward(self, batch: Batch, context: ScoredNetworkContext) -> \
-            ScoredNetworkOutput:
+    def _forward(self, batch: Batch, context: SequenceNetworkContext) -> \
+            SequenceNetworkOutput:
         DEBUG = False
 
         if DEBUG and self.logger.isEnabledFor(logging.DEBUG):
@@ -218,7 +218,7 @@ class TransformerSequence(EmbeddingNetworkModule, ScoredNetworkModule):
             to_collapse = torch.stack((preds, labels))
 
         preds, mapped_labels = self._to_lists(tdoc, to_collapse)
-        out = ScoredNetworkOutput(preds, loss, labels=mapped_labels)
+        out = SequenceNetworkOutput(preds, loss, labels=mapped_labels)
 
         if DEBUG:
             self._debug_preds(labels, preds, tdoc, batch)
