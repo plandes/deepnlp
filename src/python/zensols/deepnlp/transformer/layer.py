@@ -77,6 +77,9 @@ class TransformerEmbeddingLayer(EmbeddingLayer):
 @dataclass
 class TransformerSequenceNetworkSettings(EmbeddingNetworkSettings,
                                          DropoutNetworkSettings):
+    """Settings configuration for :class:`.TransformerSequence`.
+
+    """
     decoder_settings: DeepLinearNetworkSettings = field()
     """The decoder feed forward network."""
 
@@ -85,7 +88,11 @@ class TransformerSequenceNetworkSettings(EmbeddingNetworkSettings,
 
 
 class TransformerSequence(EmbeddingNetworkModule, SequenceNetworkModule):
-    MODULE_NAME = 'trans seq'
+    """A sequence based model for token classification use HuggingFace
+    transformers.
+
+    """
+    MODULE_NAME = 'transformer sequence'
 
     def __init__(self, net_settings: TransformerSequenceNetworkSettings,
                  sub_logger: logging.Logger = None):
@@ -101,7 +108,8 @@ class TransformerSequence(EmbeddingNetworkModule, SequenceNetworkModule):
         self.decoder.apply(self._init_weights)
 
     def _init_weights(self, module):
-        """Initialize the weights"""
+        """Initialize the weights."""
+        # taken directly from HuggingFace
         if isinstance(module, nn.Linear):
             module.weight.data.normal_(mean=0.0, std=self._init_range)
             if module.bias is not None:
@@ -120,6 +128,17 @@ class TransformerSequence(EmbeddingNetworkModule, SequenceNetworkModule):
 
     def _to_lists(self, tdoc: TokenizedDocument, sents: Tensor) -> \
             Tuple[List[List[int]]]:
+        """Convert a document of sentences from a tensor to list of lists of nominial
+        labels.
+
+        :param tdoc: the tokenzied document representing this batch
+
+        :param sents: the sentences to convert to the list of lists, with rows
+                      as sentences and columns as word piece label
+
+        :return: of list of lists with each sublist represents a sentence
+
+        """
         offsets: Tensor = tdoc.offsets
         preds: List[List[int]] = []
         n_sents: int = sents.size(1)
@@ -135,7 +154,6 @@ class TransformerSequence(EmbeddingNetworkModule, SequenceNetworkModule):
                     last = tix
                     tixes.append(wix)
             sl = sents[:, six, tixes]
-            #print('SL', sl.squeeze().tolist(), tixes)
             preds.append(sl[0].tolist())
             if labels is not None:
                 labels.append(sl[1].tolist())
