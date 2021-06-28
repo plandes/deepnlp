@@ -64,13 +64,14 @@ class CliHarness(object):
         try:
             model = {0: 'glove50',
                      1: 'transformer-trainable',
-                     }[1]
+                     2: 'transformer-trainable-large',
+                     }[2]
             action = {0: 'proto',
                       1: 'debug',
                       2: 'all',
                       3: 'batch',
                       4: 'train',
-                      }[0]
+                      }[4]
             args = f'-c models/{model}.conf'
             # other reload patterns read from app.conf
             rl_mods = 'ner.app'.split()
