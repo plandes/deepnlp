@@ -190,55 +190,58 @@ class TransformerSequence(EmbeddingNetworkModule, SequenceNetworkModule):
         tdoc = TokenizedDocument.from_tensor(tdoc)
         attention_mask: Tensor = tdoc.attention_mask
 
-        self._shape_debug('labels', labels)
-        self._shape_debug('attention mask', attention_mask)
-        self._shape_debug('embedding', emb)
-        if self.logger.isEnabledFor(logging.DEBUG):
-            self._debug(f'tokenized doc: {tdoc}, len: {len(tdoc)}')
+        try:
+            self._shape_debug('labels', labels)
+            self._shape_debug('attention mask', attention_mask)
+            self._shape_debug('embedding', emb)
+            if self.logger.isEnabledFor(logging.DEBUG):
+                self._debug(f'tokenized doc: {tdoc}, len: {len(tdoc)}')
 
-        emb = self._forward_dropout(emb)
-        self._shape_debug('dropout', emb)
+            emb = self._forward_dropout(emb)
+            self._shape_debug('dropout', emb)
 
-        logits = self.decoder(emb)
-        self._shape_debug('logits', logits)
+            logits = self.decoder(emb)
+            self._shape_debug('logits', logits)
 
-        preds = logits.argmax(dim=-1)
+            preds = logits.argmax(dim=-1)
 
-        # labels are missing when predicting
-        if labels is None:
-            loss = batch.torch_config.singleton([0], dtype=torch.float32)
-        else:
-            active_loss = attention_mask.view(-1) == 1
-            active_logits = logits.view(-1, self._n_labels)
-            active_labels = torch.where(
-                active_loss, labels.view(-1),
-                torch.tensor(pad_label).type_as(labels)
-            )
-            self._shape_debug('active_logits', active_logits)
-            self._shape_debug('active_labels', active_labels)
-            loss = context.criterion(active_logits, active_labels)
-            labels = labels.squeeze(-1)
+            # labels are missing when predicting
+            if labels is None:
+                loss = batch.torch_config.singleton([0], dtype=torch.float32)
+            else:
+                active_loss = attention_mask.view(-1) == 1
+                active_logits = logits.view(-1, self._n_labels)
+                active_labels = torch.where(
+                    active_loss, labels.view(-1),
+                    torch.tensor(pad_label).type_as(labels)
+                )
+                self._shape_debug('active_logits', active_logits)
+                self._shape_debug('active_labels', active_labels)
+                loss = context.criterion(active_logits, active_labels)
+                labels = labels.squeeze(-1)
+                if DEBUG:
+                    sz = 5
+                    print('active labels', active_labels.tolist()[:sz])
+                    print(active_labels.shape)
+                    print('active logits', active_logits.tolist()[:sz])
+                    print(active_logits.shape)
+
+            if self.logger.isEnabledFor(logging.DEBUG):
+                self.logger.debug(f'loss: {loss}')
+
+            self._shape_debug('predictions', preds)
+
+            if labels is None:
+                to_collapse = preds.unsqueeze(0)
+            else:
+                to_collapse = torch.stack((preds, labels))
+
+            preds, mapped_labels = self._to_lists(tdoc, to_collapse)
+            out = SequenceNetworkOutput(preds, loss, labels=mapped_labels)
+
             if DEBUG:
-                sz = 5
-                print('active labels', active_labels.tolist()[:sz])
-                print(active_labels.shape)
-                print('active logits', active_logits.tolist()[:sz])
-                print(active_logits.shape)
-
-        if self.logger.isEnabledFor(logging.DEBUG):
-            self.logger.debug(f'loss: {loss}')
-
-        self._shape_debug('predictions', preds)
-
-        if labels is None:
-            to_collapse = preds.unsqueeze(0)
-        else:
-            to_collapse = torch.stack((preds, labels))
-
-        preds, mapped_labels = self._to_lists(tdoc, to_collapse)
-        out = SequenceNetworkOutput(preds, loss, labels=mapped_labels)
-
-        if DEBUG:
-            self._debug_preds(labels, preds, tdoc, batch)
+                self._debug_preds(labels, preds, tdoc, batch)
+        finally:
+            tdoc.deallocate()
 
         return out
