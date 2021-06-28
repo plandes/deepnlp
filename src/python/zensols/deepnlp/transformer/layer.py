@@ -217,7 +217,7 @@ class TransformerSequence(EmbeddingNetworkModule, SequenceNetworkModule):
             self._shape_debug('active_logits', active_logits)
             self._shape_debug('active_labels', active_labels)
             loss = context.criterion(active_logits, active_labels)
-            labels = labels.squeeze()
+            labels = labels.squeeze(-1)
             if DEBUG:
                 sz = 5
                 print('active labels', active_labels.tolist()[:sz])
