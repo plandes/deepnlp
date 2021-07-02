@@ -90,6 +90,10 @@ rebatch:
 modeldebug:
 			$(ENTRY) debug --config $(MDL_DIR)/transformer-fixed.conf
 
+.PHONY:			fasttrain
+fasttrain:
+			$(ENTRY) traintest -p --config $(MDL_DIR)/demo.conf
+
 .PHONY:			glove50
 glove50:
 			$(ENTRY) traintest -p --config $(MDL_DIR)/glove50.conf
