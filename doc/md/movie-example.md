@@ -454,7 +454,24 @@ To install the corpus:
 
 ### Command Line
 
-To train and test the model invoke: `make modeltraintest`.
+The makefile provides most functionality, including what's needed to download
+and [install the corpus](#corpus-install).  However, you short cut to training
+and test the model with : `make modeltraintest`.  That said, everything can be
+done with the harness script:
+```bash
+# get the command line help using a thin wrapper around the framework
+./run.py -h
+# the executor tests and trains the model, use it to get the stats used to train
+./run.py -c models/glove50.conf info -i executor
+# print a sample batch of what the model will get during training
+./run.py -c models/glove50.conf info -i batch
+# train and test the model but switch to model profile with optmizied 
+./run.py -c models/glove50.conf traintest -p
+# all model, its (hyper)parameters, metadata and results are stored in subdirectory of files
+./run.py -c models/glove50.conf result
+# write test predictions to a CSV file
+./run.py -c models/glove50.conf preds
+```
 
 
 ### Jupyter Notebook
