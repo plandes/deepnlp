@@ -22,9 +22,6 @@ class ReviewApplication(FacadeApplication):
     """
     CLASS_INSPECTOR = {}
 
-    def __post_init__(self):
-        super().__post_init__()
-
     def stats(self):
         """Print out the corpus statistics.
 
