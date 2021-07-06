@@ -54,7 +54,6 @@ class NERModelFacade(LanguageModelFacade):
                                debug_loggers: List[str]):
         super()._configure_cli_logging(info_loggers, debug_loggers)
         info_loggers.append('ner')
-        info_loggers.remove('zensols.deeplearn.batch.stash')
 
     def write_corpus_stats(self):
         """Computes the corpus statistics."""
