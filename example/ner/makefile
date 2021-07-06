@@ -47,6 +47,10 @@ rebatch:
 			rm -rf $(DATA_DIR)/batch
 			$(ENTRY) batch -c $(MDL_DIR)/glove50.conf
 
+.PHONY:			fasttrain
+fasttrain:
+			$(ENTRY) traintest -p --config $(MDL_DIR)/test.conf
+
 .PHONY:			glove50
 glove50:
 			$(ENTRY) traintest -p --config $(MDL_DIR)/glove50.conf
