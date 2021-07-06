@@ -107,7 +107,7 @@ class TransformerSequence(EmbeddingNetworkModule, SequenceNetworkModule):
         self._init_range = 0.02
         self.decoder.apply(self._init_weights)
 
-    def _init_weights(self, module):
+    def _init_weights(self, module: nn.Module):
         """Initialize the weights."""
         # taken directly from HuggingFace
         if isinstance(module, nn.Linear):
