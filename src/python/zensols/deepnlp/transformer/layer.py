@@ -29,13 +29,15 @@ logger = logging.getLogger(__name__)
 
 class TransformerEmbeddingLayer(EmbeddingLayer):
     """A transformer (i.e. Bert) embedding layer.  This class generates embeddings
-    on a per sentence basis.
+    on a per sentence basis.  See the initializer documentation for
+    configuration requirements.
 
     """
     MODULE_NAME = 'transformer embedding'
 
     def __init__(self, *args, embed_model: TransformerEmbedding, **kwargs):
-        """Initialize.
+        """Initialize with an embedding model.  This embedding model must configured
+        with :obj:`.TransformerEmbedding.output` to ``last_hidden_state``.
 
         :param embed_model: used to generate the transformer (i.e. Bert)
                             embeddings
@@ -237,7 +239,8 @@ class TransformerSequence(EmbeddingNetworkModule, SequenceNetworkModule):
                 to_collapse = torch.stack((preds, labels))
 
             preds, mapped_labels = self._to_lists(tdoc, to_collapse)
-            out = SequenceNetworkOutput(preds, loss, labels=mapped_labels)
+            out = SequenceNetworkOutput(
+                preds, loss, labels=mapped_labels, outputs=logits)
 
             if DEBUG:
                 self._debug_preds(labels, preds, tdoc, batch)

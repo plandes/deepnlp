@@ -3,9 +3,10 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, Iterable, List
+from typing import Tuple, List, Iterable
 from dataclasses import dataclass, field
-from itertools import chain
+from itertools import chain as ch
+import numpy as np
 from zensols.config import Settings
 from zensols.nlp import FeatureDocument
 from zensols.deeplearn.vectorize import CategoryEncodableFeatureVectorizer
@@ -50,15 +51,20 @@ class ClassificationPredictionMapper(PredictionMapper):
 
         """
         vec: CategoryEncodableFeatureVectorizer = self.label_vectorizer
-        nominals: Tuple[Iterable[int]] = result.predictions_raw
+        nominals: List[np.ndarray] = result.batch_predictions
         return list(map(lambda cl: vec.get_classes(cl).tolist(), nominals))
 
     def map_results(self, result: ResultsContainer) -> Settings:
-        """Map class predictions and documents generated during use of this instance.
+        """Map class predictions, logits, and documents generated during use of this
+        instance.  Each data point is aggregated across batches.
 
-        :return: a :class:`.Settings` instance with ``classess`` and ``docs``
-                 attributes
+        :return: a :class:`.Settings` instance with ``classess``, ``logits``
+                 and ``docs`` attributes
 
         """
-        classes = chain.from_iterable(self._map_classes(result))
-        return Settings(classes=tuple(classes), docs=tuple(self._docs))
+        class_groups: List[List[str]] = self._map_classes(result)
+        classes: Iterable[str] = ch.from_iterable(class_groups)
+        logits: Iterable[np.ndarray] = ch.from_iterable(result.batch_outputs)
+        return Settings(classes=tuple(classes),
+                        logits=tuple(logits),
+                        docs=tuple(self._docs))
