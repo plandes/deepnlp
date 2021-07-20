@@ -89,7 +89,7 @@ class TransformerDocumentTokenizer(PersistableContainer):
                            'truncation': False})
 
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug('using tokenizer parameters: {params}')
+            logger.debug(f'using tokenizer parameters: {params}')
 
         if tokenizer_kwargs is not None:
             params.update(tokenizer_kwargs)
