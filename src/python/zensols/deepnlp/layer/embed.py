@@ -61,10 +61,6 @@ class EmbeddingLayer(DebugModule, Deallocatable):
         self.torch_config = feature_vectorizer.torch_config
         self.trainable = trainable
 
-    # already in parent module
-    # def __getstate__(self):
-    #     raise LayerError(f'Embedding layer should not be pickeled: {self}')
-
     def deallocate(self):
         super().deallocate()
         if hasattr(self, 'emb'):
