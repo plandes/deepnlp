@@ -1,3 +1,4 @@
+from typing import Iterable, Any
 from dataclasses import dataclass
 import logging
 import pandas as pd
@@ -27,7 +28,6 @@ class ReviewModelFacade(LanguageModelFacade):
     :see: :class:`.ReviewBatch`
 
     """
-
     def __post_init__(self, *args, **kwargs):
         super().__post_init__(*args, **kwargs)
         # set to trigger writeback through to sub settings (linear, recur)
@@ -58,3 +58,14 @@ class ReviewModelFacade(LanguageModelFacade):
     def feature_stash(self) -> Stash:
         """The stash containing the :class:`.Review` feature instances."""
         return super().feature_stash.delegate
+
+    def predict(self, datas: Iterable[Any]) -> Any:
+        # remove expensive to load vectorizers for prediction only when we're
+        # not using those models
+        emb_conf = self.config.get_option('embedding', 'model_defaults')
+        if emb_conf != 'glove_300_embedding':
+            self.remove_metadata_mapping_field(ReviewBatch.GLOVE_300_EMBEDDING)
+        if emb_conf != 'word2vec_300_embedding':
+            self.remove_metadata_mapping_field(
+                ReviewBatch.WORD2VEC_300_EMBEDDING)
+        return super().predict(datas)

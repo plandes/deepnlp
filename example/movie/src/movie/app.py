@@ -29,7 +29,10 @@ class ReviewApplication(FacadeApplication):
         with dealloc(self._create_facade()) as facade:
             facade.write()
 
-    def _batch_sample(self):
+    def batch_sample(self):
+        """Print what's contained in this app specific batch.
+
+        """
         import numpy as np
         with dealloc(self._create_facade()) as facade:
             stash: BatchStash = facade.batch_stash
@@ -49,18 +52,24 @@ class ReviewApplication(FacadeApplication):
                                 print(s)
                             print('-' * 30)
 
-    def _predict(self, sents: Tuple[str]):
+    def predict(self):
+        """Predict several movie review test sentences.
+
+        """
+        # this takes a long time when word2vec embeddings are not commented out
+        # in model.conf because it has to load the vectors for each run of the
+        # program
+        sents = ["If you sometimes like to go to the movies to have fun , Wasabi is a good place to start .",
+                 'There are a few stabs at absurdist comedy ... but mostly the humor is of the sweet , gentle and occasionally cloying kind that has become an Iranian specialty .',
+                 'Terrible',
+                 'Great movie',
+                 'Wonderful, great, awesome, 100%',
+                 'Terrible, aweful, worst movie']
         with dealloc(self._create_facade()) as facade:
             docs: Tuple[Review] = facade.predict(sents)
             for doc in docs:
                 doc.write()
 
     def proto(self):
-        sents = ["If you sometimes like to go to the movies to have fun , Wasabi is a good place to start .",
-                 'There are a few stabs at absurdist comedy ... but mostly the humor is of the sweet , gentle and occasionally cloying kind that has become an Iranian specialty .',
-                 'Terrible',
-                 'Great movie',]
-        if 0:
-            self._batch_sample()
-        else:
-            self._predict(sents)
+        """Testing method."""
+        self.predict()

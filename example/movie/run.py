@@ -65,7 +65,7 @@ class CliHarness(object):
             model = {0: 'glove50',
                      1: 'transformer-fixed',
                      2: 'transformer-trainable'
-                     }[0]
+                     }[2]
             action = {0: 'proto',
                       1: 'debug',
                       2: 'batch',

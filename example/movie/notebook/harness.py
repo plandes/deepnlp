@@ -1,7 +1,11 @@
-# environemnt configuration and set up: add this (deepnlp) library to the Python path and framework entry point
+# environemnt configuration and set up: add this (deepnlp) library to the
+# Python path and framework entry point
 class NotebookHarness(object):
-    """Configure the Jupyter notebook environment and create model resources."""
-    def __init__(self, app_root_dir: str = '..', deepnlp_path: str = '../../../src/python'):
+    """Configure the Jupyter notebook environment and create model resources.
+
+    """
+    def __init__(self, app_root_dir: str = '..',
+                 deepnlp_path: str = '../../../src/python'):
         """Set up the interpreter environment so we can import local packages.
         
         :param app_root_dir: the application root directory
@@ -18,11 +22,15 @@ class NotebookHarness(object):
         # reset random state for consistency before any other packages are imported
         TorchConfig.init()
 
-    def __call__(self, cuda_device_index: int = None, temporary_dir_name: str = None):
+    def __call__(self, cuda_device_index: int = None,
+                 temporary_dir_name: str = None):
         """Create and return an instance a :class:`.JupyterManager`.
-        
+
         :param cuda_device_index: the CUDA (GPU) device to use
-        :param temporary_dir_name: the temporary directory to use for temporary space and results
+
+        :param temporary_dir_name: the temporary directory to use for temporary
+                                   space and results
+
         """
         from zensols.deeplearn.cli import JupyterManager
         from movie import CliFactory
@@ -33,13 +41,15 @@ class NotebookHarness(object):
         class NBJupyterManager(JupyterManager):
             def _init_jupyter(self):
                 import logging
-                logging.getLogger('zensols.deeplearn.model.executor.status').setLevel(logging.WARNING)
+                logging.getLogger('zensols.deeplearn.model.executor.status').\
+                    setLevel(logging.WARNING)
 
         mng = NBJupyterManager(
             allocation_tracking='counts',
             cli_class=CliFactory,
             factory_args=factory_args,
-            cli_args_fn=lambda model: ['-c', str(self.app_root_dir / 'models' / f'{model}.conf')])
+            cli_args_fn=lambda model: ['-c', str(
+                self.app_root_dir / 'models' / f'{model}.conf')])
         if cuda_device_index is not None:
             # tell which GPU to use
             mng.config('gpu_torch_config', cuda_device_index=cuda_device_index)

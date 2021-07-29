@@ -9,6 +9,8 @@ import logging
 import sys
 from io import TextIOBase
 import pandas as pd
+import numpy as np
+from zensols.config import Settings
 from zensols.dataframe import DataframeStash
 from zensols.deeplearn.batch import (
     Batch,
@@ -59,6 +61,8 @@ class Review(FeatureDocument):
 
     """
 
+    confidence: float = field(default=None)
+
     # we have to add this method to tell the framework how to combine multiple
     # instances of review 'documents' when batching many sentences (as
     # documents) in to one document (the entire batch)
@@ -73,6 +77,7 @@ class Review(FeatureDocument):
             pol = 'positive' if self.polarity == 'p' else 'negative'
         super().write(depth, writer)
         self._write_line(f'polarity: {pol}', depth + 1, writer)
+        self._write_line(f'confidence: {self.confidence}', depth + 1, writer)
 
 
 @dataclass
@@ -101,8 +106,11 @@ class ReviewPredictionMapper(ClassificationPredictionMapper):
 
     """
     def map_results(self, *args, **kwargs) -> Tuple[Review]:
-        res = super().map_results(*args, **kwargs)
-        for cl, doc in zip(res.classes, res.docs):
+        res: Settings = super().map_results(*args, **kwargs)
+        for cl, doc, logits in zip(res.classes, res.docs, res.logits):
+            conf = np.exp(logits) / sum(np.exp(logits))
+            # negative label is the first nominal
+            doc.confidence = conf[0 if cl == 'n' else 1]
             doc.polarity = cl
         return tuple(res.docs)
 
