@@ -26,7 +26,7 @@ class ReviewApplication(FacadeApplication):
         """Print out the corpus statistics.
 
        """
-        with dealloc(self._create_facade()) as facade:
+        with dealloc(self.create_facade()) as facade:
             facade.write()
 
     def batch_sample(self):
@@ -34,7 +34,7 @@ class ReviewApplication(FacadeApplication):
 
         """
         import numpy as np
-        with dealloc(self._create_facade()) as facade:
+        with dealloc(self.create_facade()) as facade:
             stash: BatchStash = facade.batch_stash
             batch: Batch
             for batch in it.islice(stash.values(), 3):
@@ -52,24 +52,26 @@ class ReviewApplication(FacadeApplication):
                                 print(s)
                             print('-' * 30)
 
-    def predict(self):
+    def predict(self, sentence: str):
         """Predict several movie review test sentences.
 
+        :param sentence: the sentence to classify
+
         """
-        # this takes a long time when word2vec embeddings are not commented out
-        # in model.conf because it has to load the vectors for each run of the
-        # program
-        sents = ["If you sometimes like to go to the movies to have fun , Wasabi is a good place to start .",
-                 'There are a few stabs at absurdist comedy ... but mostly the humor is of the sweet , gentle and occasionally cloying kind that has become an Iranian specialty .',
-                 'Terrible',
-                 'Great movie',
-                 'Wonderful, great, awesome, 100%',
-                 'Terrible, aweful, worst movie']
-        with dealloc(self._create_facade()) as facade:
+        if sentence is None:
+            sents = ["If you sometimes like to go to the movies to have fun , Wasabi is a good place to start .",
+                     'There are a few stabs at absurdist comedy ... but mostly the humor is of the sweet , gentle and occasionally cloying kind that has become an Iranian specialty .',
+                     'Terrible',
+                     'Great movie',
+                     'Wonderful, great, awesome, 100%',
+                     'Terrible, aweful, worst movie']
+        else:
+            sents = [sentence]
+        with dealloc(self.create_facade()) as facade:
             docs: Tuple[Review] = facade.predict(sents)
             for doc in docs:
                 doc.write()
 
     def proto(self):
         """Testing method."""
-        self.predict()
+        self.predict(None)
