@@ -2,6 +2,8 @@
 
 Example application to demonstrate Bert sequence classification.
 
+See the [NER example documentation](../../doc/md/ner-example.md).
+
 
 ## License
 
