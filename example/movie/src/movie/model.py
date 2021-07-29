@@ -36,6 +36,7 @@ class ReviewNetworkSettings(DropoutNetworkSettings, EmbeddingNetworkSettings):
 
     def _set_option(self, name: str, value: Any):
         super()._set_option(name, value)
+        # propogate dropout to recurrent network
         if name == 'dropout' and hasattr(self, 'recurrent_settings'):
             if self.recurrent_settings is not None:
                 if logger.isEnabledFor(logging.DEBUG):

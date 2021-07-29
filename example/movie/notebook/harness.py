@@ -26,7 +26,8 @@ class NotebookHarness(object):
                  temporary_dir_name: str = None):
         """Create and return an instance a :class:`.JupyterManager`.
 
-        :param cuda_device_index: the CUDA (GPU) device to use
+        :param cuda_device_index: the CUDA (GPU) device to use or ``None`` to
+               use the default
 
         :param temporary_dir_name: the temporary directory to use for temporary
                                    space and results

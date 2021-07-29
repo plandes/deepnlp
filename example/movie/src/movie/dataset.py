@@ -19,7 +19,6 @@ class DatasetFactory(object):
     """Creates a dataframe out of the merged dataset (text reviews with labels).
 
     """
-
     FILE_NAME = re.compile(r'^(.+)\.csv$')
 
     rt_pol_path: Path
