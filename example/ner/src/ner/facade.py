@@ -2,7 +2,7 @@
 
 """
 
-from typing import List
+from typing import List, Iterable, Any
 from dataclasses import dataclass, field
 import logging
 from zensols.deeplearn.batch import Batch
@@ -58,6 +58,16 @@ class NERModelFacade(LanguageModelFacade):
     def write_corpus_stats(self):
         """Computes the corpus statistics."""
         self.sent_stats.write()
+
+    def predict(self, datas: Iterable[Any]) -> Any:
+        # remove expensive to load vectorizers for prediction only when we're
+        # not using those models
+        emb_conf = self.config.get_option('embedding', 'language_defaults')
+        if emb_conf != 'glove_300_embedding':
+            self.remove_metadata_mapping_field(NERBatch.GLOVE_300_EMBEDDING)
+        if emb_conf != 'word2vec_300_embedding':
+            self.remove_metadata_mapping_field(NERBatch.WORD2VEC_300_EMBEDDING)
+        return super().predict(datas)
 
     def assert_label_mapping(self, do_print: bool = False):
         seq_vec = self.language_vectorizer_manager['entlabel_trans']
