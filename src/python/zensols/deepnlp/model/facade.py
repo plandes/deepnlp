@@ -245,7 +245,9 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
                     return vc
 
     def get_max_word_piece_len(self) -> int:
-        """
+        """Get the longest word piece length for the first found configured transformer
+        embedding feature vectorizer.
+
         """
         vec: TransformerEmbeddingFeatureVectorizer = \
             self.get_transformer_vectorizer()
