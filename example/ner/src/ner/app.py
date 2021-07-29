@@ -3,155 +3,18 @@
 """
 __author__ = 'plandes'
 
-from typing import Tuple, List
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 import logging
 import itertools as it
-from spacy.tokens.doc import Doc
-from spacy.tokens import Token
-from zensols.persist import dealloc, persisted, PersistableContainer
-from zensols.config import Settings, Dictable
-from zensols.nlp import FeatureDocument, FeatureToken, FeatureSentence
+from torch import Tensor
+from zensols.persist import dealloc
+from zensols.config import Settings
+from zensols.nlp import FeatureDocument
 from zensols.deeplearn.model import ModelFacade
-from zensols.deeplearn.batch import BatchStash
 from zensols.deeplearn.cli import FacadeApplication
+from zensols.deepnlp.model import BioSequenceAnnotationMapper
 
 logger = logging.getLogger(__name__)
-
-
-@dataclass
-class NEREntityAnnotation(PersistableContainer, Dictable):
-    """An annotation of a pair matching feature and spaCy tokens.
-
-    """
-    label: str = field()
-    """The string label of this annotation."""
-
-    doc: FeatureDocument = field()
-    """The feature document associated with this annotation."""
-
-    tokens: Tuple[FeatureToken] = field()
-    """The tokens annotated with ``label``."""
-
-    @property
-    def spacy_doc(self) -> Doc:
-        """The spaCy document associated with this annotation."""
-        return self.doc.spacy_doc
-
-    @property
-    @persisted('_sent', transient=True)
-    def sent(self) -> FeatureSentence:
-        """The sentence containing the annotated tokens."""
-        sents = self.doc.sentences_for_tokens(self.tokens)
-        assert len(sents) == 1
-        return sents[0]
-
-    @property
-    @persisted('_token_matches', transient=True)
-    def token_matches(self) -> Tuple[FeatureToken, Token]:
-        """Pairs of matching feature token to token mapping."""
-        matches = []
-        sdoc: Doc = self.spacy_doc
-        tok: FeatureToken
-        for tok in self.tokens:
-            stok: Token = sdoc[tok.i]
-            matches.append((tok, stok))
-        return matches
-
-    def __str__(self):
-        tokens = ', '.join(map(str, self.tokens))
-        return f'{tokens}: {self.label}'
-
-
-@dataclass
-class NERAnnotationMapper(object):
-    """Matches feature documents/tokens with spaCy document/tokens and entity
-    labels.
-
-    """
-    begin_tag: str = field(default='B')
-    """The sequence ``begin`` tag class."""
-
-    in_tag: str = field(default='I')
-    """The sequence ``in`` tag class."""
-
-    out_tag: str = field(default='O')
-    """The sequence ``out`` tag class."""
-
-    def _map_entities(self, classes: Tuple[List[str]],
-                      docs: Tuple[FeatureDocument]) -> \
-            Tuple[str, int, Tuple[int, int]]:
-        """Map BIO entities and documents to a pairing of both.
-
-        :param classes: the clases (labels, or usually, predictions)
-
-        :param docs: the feature documents to assign labels
-
-        :return: a tuple of label, sentence index and lexical feature document
-                 index interval of tokens
-
-        """
-        ents: Tuple[str, int, Tuple[int, int]] = []
-        doc: FeatureDocument
-        # tok.i is not reliable since holes exist from filtered space and
-        # possibly other removed tokens
-        for six, (cls, doc) in enumerate(zip(classes, docs)):
-            tok: FeatureToken
-            start_ix = None
-            start_lab = None
-            ent: str
-            for stix, (ent, tok) in enumerate(zip(cls, doc.tokens)):
-                pos: int = ent.find('-')
-                bio, lab = None, None
-                if pos > -1:
-                    bio, lab = ent[0:pos], ent[pos+1:]
-                    if bio == self.begin_tag:
-                        start_ix = stix
-                        start_lab = lab
-                if ent == self.out_tag and start_ix is not None:
-                    ents.append((start_lab, six, (start_ix, stix)))
-                    start_ix = None
-                    start_lab = None
-        return ents
-
-    def _collate(self, docs: Tuple[FeatureDocument],
-                 ents: Tuple[str, int, Tuple[int, int]]) -> \
-            Tuple[NEREntityAnnotation]:
-        """Collate entity tokens in to groups.
-
-        :param docs: the feature documents to assign labels
-
-        :param ents: a tuple of label, sentence index and lexical feature
-                     document index interval of tokens
-
-        :return: a tuple ``(feature document, label, (start feature token, end
-                 feature token))``
-
-        """
-        anons: List[NEREntityAnnotation] = []
-        for lab, six, loc in ents:
-            doc: FeatureDocument = docs[six]
-            ftoks: Tuple[FeatureToken] = doc.tokens
-            ent_toks: Tuple[FeatureToken] = ftoks[loc[0]:loc[1]]
-            anons.append(NEREntityAnnotation(lab, doc, ent_toks))
-        return anons
-
-    def map(self, classes: Tuple[List[str]],
-            docs: Tuple[FeatureDocument]) -> Tuple[NEREntityAnnotation]:
-        """Map BIO entities and documents to pairings as annotations.
-
-        :param docs: the feature documents to assign labels
-
-        :param ents: a tuple of label, sentence index and lexical feature
-                     document index interval of tokens
-
-        :return: a tuple of annotation instances, each with coupling of label,
-                 feature token and spaCy token
-
-        """
-        ents: Tuple[str, int, Tuple[int, int]] = \
-            self._map_entities(classes, docs)
-        return self._collate(docs, ents)
 
 
 @dataclass
@@ -179,16 +42,29 @@ class NERFacadeApplication(FacadeApplication):
         facade: ModelFacade = self.get_cached_facade()
         facade.assert_label_mapping()
 
+    def predict(self, sentence: str = None):
+        # self.clear_cached_facade()
+        # facade: ModelFacade = self.get_cached_facade()
+        with dealloc(self._create_facade()) as facade:
+            if sentence is None:
+                sents = (self.sent, self.sent2)
+            else:
+                sents = (sentence,)
+            res: Settings = facade.predict(sents)
+            anoner = BioSequenceAnnotationMapper()
+            for anon in anoner.map(res.classes, res.docs):
+                ftok = anon.tokens[0]
+                print(anon, ftok.i, ftok.i_sent, ftok.idx, anon.sent)
+                print('-' * 80)
+
     def _test_transform(self):
         with dealloc(self._create_facade()) as facade:
             model = facade.transformer_trainable_embedding_model
-            sents = facade.doc_parser.parse(self.sent)
-            # from zensols.util.log import loglevel
-            # with loglevel(['zensols.deepnlp.transformer'], logging.INFO):
-            for sent in sents[0:1]:
-                tsent = model.tokenize(sent)
-                tsent.write()
-                print(model.transform(tsent).shape)
+            doc = facade.doc_parser.parse(self.sent)
+            tdoc = model.tokenize(doc)
+            tdoc.write()
+            arr: Tensor = model.transform(tdoc)
+            print(arr.shape)
 
     def _test_decode(self):
         with dealloc(self._create_facade()) as facade:
@@ -199,84 +75,20 @@ class NERFacadeApplication(FacadeApplication):
             with loglevel('zensols.deepnlp'):
                 vec.encode(doc)
 
-    def _test_trans_label(self):
-        from pprint import pprint
-        with dealloc(self._create_facade()) as facade:
-            batches = tuple(it.islice(facade.batch_stash.values(), 3))
-            batch = batches[0]
-            dps = batch.get_data_points()[0:2]
-            doc = FeatureDocument.combine_documents(map(lambda dp: dp.doc, dps))
-            doc.write()
-            print(doc)
-            vec = facade.language_vectorizer_manager['entlabel_trans']
-            print(vec.delegate.label_encoder.classes_)
-            pprint(vec.delegate.by_label)
-            #with loglevel('zensols.deepnlp.transformer.vectorize'):
-            arr = vec.transform(doc)
-            print(arr.shape)
-            for i in arr.squeeze(-1).tolist(): print(i)
-            #print(vec.delegate.get_classes())
-            #print(arr.squeeze(-1).tolist())
-
-    def _test_batch_write(self, clear: bool = False):
-        if clear:
-            self.sent_batch_stash.clear()
-        with dealloc(self._create_facade()) as facade:
-            if 0:
-                for id, batch in it.islice(facade.batch_stash, 2):
-                    batch.write()
-            facade.write_predictions()
-
-    def _batch_sample(self):
-        with dealloc(self._create_facade()) as facade:
-            stash: BatchStash = facade.batch_stash
-            for batch in stash.values():
-                emb = batch['transformer_trainable_embedding']
-                if emb.size(1) == 173:
-                    batch.write()
-
     def _write_max_word_piece_token_length(self):
         logger.info('calculatating word piece length on data set...')
         with dealloc(self._create_facade()) as facade:
             mlen = facade.get_max_word_piece_len()
             print(f'max word piece token length: {mlen}')
 
-    def _test_preds(self, cache: bool = True):
-        facade: ModelFacade = self.get_cached_facade()
-        sents = (self.sent, self.sent2)
-        for s in sents: print(s)
-        res: Settings = facade.predict(sents)
-        anoner = NERAnnotationMapper()
-        for anon in anoner.map(res.classes, res.docs):
-            ftok = anon.tokens[0]
-            print(anon, ftok.i, ftok.i_sent, ftok.idx, anon.sent)
-            print('-' * 80)
-            #ftok.write()
-        if not cache:
-            self._clear_cached_facade()
-
-    def all(self):
+    def _test(self):
+        with dealloc(self._create_facade()) as facade:
+            facade.remove_metadata_mapping_field('glove_300_embedding')
+            facade.remove_metadata_mapping_field('word2vec_300_embedding')
         self._test_transform()
         self._test_decode()
-        self._test_batch_write()
+        # this takes a while since it iterates through the corpus
         self._write_max_word_piece_token_length()
 
-    def _mem_test(self):
-        self._batch_sample()
-        return
-        #self._test_preds()
-        import gc
-        from zensols.deeplearn import TorchConfig
-        gc.collect()
-        with open('memleak.txt', 'w') as f:
-            for arr in TorchConfig.in_memory_tensors():
-                print(arr.shape, arr.device, file=f)
-                print(gc.get_referrers(arr), file=f)
-                print('-' * 80, file=f)
-
-    def _tmp(self):
-        facade: ModelFacade = self.get_cached_facade()
-        print(facade.language_vectorizer_manager['entlabel_trans'].is_labeler)
-
     def proto(self):
-        self._test_preds()
+        self.predict()
