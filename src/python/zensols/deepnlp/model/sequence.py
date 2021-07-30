@@ -7,6 +7,9 @@ __author__ = 'plandes'
 from typing import Tuple, List
 from dataclasses import dataclass, field
 import logging
+import sys
+from itertools import chain
+from io import TextIOBase
 from spacy.tokens.doc import Doc
 from spacy.tokens import Token
 from zensols.persist import persisted, PersistableContainer
@@ -31,11 +34,6 @@ class SequenceAnnotation(PersistableContainer, Dictable):
     """The tokens annotated with ``label``."""
 
     @property
-    def spacy_doc(self) -> Doc:
-        """The spaCy document associated with this annotation."""
-        return self.doc.spacy_doc
-
-    @property
     @persisted('_sent', transient=True)
     def sent(self) -> FeatureSentence:
         """The sentence containing the annotated tokens."""
@@ -46,18 +44,74 @@ class SequenceAnnotation(PersistableContainer, Dictable):
     @property
     @persisted('_token_matches', transient=True)
     def token_matches(self) -> Tuple[FeatureToken, Token]:
-        """Pairs of matching feature token to token mapping."""
+        """Pairs of matching feature token to token mapping.  This is useful for
+        annotating spaCy documents.
+
+        """
         matches = []
-        sdoc: Doc = self.spacy_doc
+        sdoc: Doc = self.doc.spacy_doc
         tok: FeatureToken
         for tok in self.tokens:
             stok: Token = sdoc[tok.i]
             matches.append((tok, stok))
-        return matches
+        return tuple(matches)
+
+    @property
+    def mention(self) -> str:
+        """The mention text."""
+        return ' '.join(map(str, self.tokens))
+
+    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout,
+              short: bool = False):
+        if short:
+            s = f'{self.mention}: {self.label} ({self.tokens[0].i})'
+            self._write_line(s, depth, writer)
+        else:
+            self._write_line(f'label: {self.label}', depth, writer)
+            tok: FeatureToken
+            for tok in self.tokens:
+                sent = ''
+                if hasattr(tok, 'sent_i'):
+                    sent = f'sent index={tok.sent_i}, '
+                self._write_line(f'{tok.text}: {sent}index in doc={tok.i}',
+                                 depth + 1, writer)
 
     def __str__(self):
-        tokens = ', '.join(map(str, self.tokens))
-        return f'{tokens}: {self.label}'
+        return f'{self.mention} ({self.label})'
+
+
+@dataclass
+class SequenceDocumentAnnotation(Dictable):
+    doc: FeatureDocument = field()
+    """The feature document associated with this annotation."""
+
+    sequence_anons: Tuple[SequenceAnnotation] = field()
+    """The annotations for the respective :obj:`doc`."""
+
+    @property
+    def spacy_doc(self) -> Doc:
+        """The spaCy document associated with this annotation."""
+        return self.doc.spacy_doc
+
+    @property
+    @persisted('_token_matches', transient=True)
+    def token_matches(self) -> Tuple[str, FeatureToken, Token]:
+        """Triple of matching feature token to token mapping in the form (``label``,
+        ``feature token``, ``spacy token``).  This is useful for annotating
+        spaCy documents.
+
+        """
+        matches: List[Tuple[str, Tuple[FeatureToken, Token]]] = []
+        for sanon in self.sequence_anons:
+            for tok_matches in sanon.token_matches:
+                matches.append((sanon.label, *tok_matches))
+        return tuple(matches)
+
+    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout,
+              short: bool = False):
+        self._write_line(f'doc: {self.doc}', depth, writer)
+        for anon in self.sequence_anons:
+            anon.write(depth + 1, writer, short=short)
 
 
 @dataclass
@@ -113,7 +167,7 @@ class BioSequenceAnnotationMapper(object):
 
     def _collate(self, docs: Tuple[FeatureDocument],
                  ents: Tuple[str, int, Tuple[int, int]]) -> \
-            Tuple[SequenceAnnotation]:
+            List[SequenceAnnotation]:
         """Collate entity tokens in to groups.
 
         :param docs: the feature documents to assign labels
@@ -134,7 +188,7 @@ class BioSequenceAnnotationMapper(object):
         return anons
 
     def map(self, classes: Tuple[List[str]],
-            docs: Tuple[FeatureDocument]) -> Tuple[SequenceAnnotation]:
+            docs: Tuple[FeatureDocument]) -> Tuple[SequenceDocumentAnnotation]:
         """Map BIO entities and documents to pairings as annotations.
 
         :param docs: the feature documents to assign labels
@@ -148,4 +202,19 @@ class BioSequenceAnnotationMapper(object):
         """
         ents: Tuple[str, int, Tuple[int, int]] = \
             self._map_entities(classes, docs)
-        return self._collate(docs, ents)
+        sanons: List[SequenceAnnotation] = self._collate(docs, ents)
+        col_sanons: List[SequenceAnnotation] = []
+        danons: List[SequenceDocumentAnnotation] = []
+        last_doc: FeatureDocument = None
+        sanon: SequenceAnnotation
+        for sanon in sanons:
+            col_sanons.append(sanon)
+            if last_doc is not None and sanon.doc != last_doc:
+                danons.append(SequenceDocumentAnnotation(
+                    last_doc, tuple(col_sanons)))
+                col_sanons.clear()
+            last_doc = sanon.doc
+        if len(col_sanons) > 0:
+            danons.append(SequenceDocumentAnnotation(
+                last_doc, tuple(col_sanons)))
+        return danons
