@@ -94,8 +94,7 @@ To install the corpus:
 1. Download and install the corpora: `make corpus`.  This should download all
    the necessary corpora and [Glove] and [Word2Vec] word embeddings.
 1. Confirm there are no errors and the corpus directories exist:
-   * `corpus/stanfordSentimentTreebank/datasetSentences.txt`
-   * `corpus/rt-polaritydata/rt-polarity.{pos,neg}`
+   * `corpus/connl-2003`
    * `corpus/glove/glove.6B.300d.txt`
    * `corpus/word2vec/GoogleNews-vectors-negative300.bin.gz`
 
