@@ -33,12 +33,14 @@ class NERTokenFeatures(BasicTokenFeatures):
         4. The BIO named entity tag.
 
     """
-    WRITABLE_FIELD_IDS = 'i text norm tag_ ent_'.split()
+    WRITABLE_FIELD_IDS = 'i sent_i text norm tag_ ent_'.split()
     FIELD_SET = frozenset(set(WRITABLE_FIELD_IDS) | set('syn_'.split()))
 
     def __init__(self, i: int, text: str, tag_: str, syn_: str, ent_: str):
         super().__init__(text)
         self.i = i
+        # not one to one with token in sentence index, but works for this
+        # example
         self.i_sent = i
         self.tag_ = tag_
         self.syn_ = syn_
