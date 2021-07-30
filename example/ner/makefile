@@ -29,7 +29,7 @@ info:
 			@cat $(ENV_INC)
 
 $(CONNL_DIR):
-			@echo "downloading the CONNL 2003 corpus"
+			@echo "downloading the CoNNL 2003 corpus"
 			mkdir -p $(CONNL_DIR)
 			@for i in test train dev ; do \
 				curl "$(CONNL_SRC_URL)/$$i.txt" -L --output $(CONNL_DIR)/$$i.txt ; \
