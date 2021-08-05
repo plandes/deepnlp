@@ -6,9 +6,10 @@ __author__ = 'plandes'
 from dataclasses import dataclass
 import logging
 import itertools as it
+from pathlib import Path
 from torch import Tensor
 from zensols.persist import dealloc
-from zensols.config import Settings
+from zensols.config import Settings, ConfigFactory
 from zensols.nlp import FeatureDocument
 from zensols.deeplearn.model import ModelFacade
 from zensols.deeplearn.cli import FacadeApplication
@@ -33,11 +34,6 @@ class NERFacadeApplication(FacadeApplication):
         self.sent = "I'm Paul Landes.  I live in the United States."
         self.sent2 = 'West Indian all-rounder Phil Simmons took four for 38 on Friday as Leicestershire beat Somerset by an innings and 39 runs in two days to take over at the head of the county championship.'
 
-    def stats(self):
-        """Print out the corpus statistics."""
-        with dealloc(self.create_facade()) as facade:
-            facade.write_corpus_stats()
-
     def _print_train_stats(self):
         facade: ModelFacade = self.get_cached_facade()
         exc = facade.executor
@@ -45,35 +41,16 @@ class NERFacadeApplication(FacadeApplication):
         split.write()
         print(sum(map(lambda batch: len(batch), split.values())))
 
-    def assert_label_mapping(self):
-        """Confirm the the mapping of the labels is correct."""
+    def _write_max_word_piece_token_length(self):
         with dealloc(self.create_facade()) as facade:
-            facade.assert_label_mapping()
-
-    def predict(self, sentence: str):
-        """Create NER labeled predictions.
-
-        :param sentence: the sentence to classify
-
-        """
-        if sentence is None:
-            sents = (self.sent, self.sent2)
-        else:
-            sents = (sentence,)
-        if 0:
-            self.clear_cached_facade()
-        facade: ModelFacade = self.get_cached_facade()
-        res: Settings = facade.predict(sents)
-        anoner: BioSequenceAnnotationMapper = facade.config_factory('anon_mapper')
-        anon: SequenceDocumentAnnotation
-        for anon in anoner.map(res.classes, res.docs):
-            #anon.write(short=True)
-            print(anon.doc)
-            if 0:
-                for label, ftok, stok in anon.token_matches:
-                    print(ftok, stok, type(ftok), type(stok), label)
-            for sanon in anon.sequence_anons:
-                print('  ', sanon)
+            facade.remove_expensive_vectorizers()
+        self._test_transform()
+        self._test_decode()
+        logger.info('calculatating word piece length on data set...')
+        # this takes a while since it iterates through the corpus
+        with dealloc(self.create_facade()) as facade:
+            mlen = facade.get_max_word_piece_len()
+            print(f'max word piece token length: {mlen}')
 
     def _test_transform(self):
         with dealloc(self.create_facade()) as facade:
@@ -93,37 +70,47 @@ class NERFacadeApplication(FacadeApplication):
             with loglevel('zensols.deepnlp'):
                 vec.encode(doc)
 
-    def _write_max_word_piece_token_length(self):
-        logger.info('calculatating word piece length on data set...')
+    def stats(self):
+        """Print out the corpus statistics."""
         with dealloc(self.create_facade()) as facade:
-            mlen = facade.get_max_word_piece_len()
-            print(f'max word piece token length: {mlen}')
+            facade.write_corpus_stats()
 
-    def _test(self):
+    def assert_label_mapping(self):
+        """Confirm the the mapping of the labels is correct."""
         with dealloc(self.create_facade()) as facade:
-            facade.remove_metadata_mapping_field('glove_300_embedding')
-            facade.remove_metadata_mapping_field('word2vec_300_embedding')
-        self._test_transform()
-        self._test_decode()
-        # this takes a while since it iterates through the corpus
-        self._write_max_word_piece_token_length()
+            facade.assert_label_mapping()
+
+    def predict(self, sentence: str, path: Path = None):
+        """Create NER labeled predictions.
+
+        :param sentence: the sentence to classify
+
+        """
+        if sentence is None:
+            sents = (self.sent, self.sent2)
+        else:
+            sents = (sentence,)
+        if 0:
+            self.clear_cached_facade()
+        if path is not None:
+            self.facade_path = path
+        facade: ModelFacade = self.get_cached_facade()
+        fac: ConfigFactory = facade.config_factory
+        anoner: BioSequenceAnnotationMapper = fac('anon_mapper')
+        res: Settings = facade.predict(sents)
+        anon: SequenceDocumentAnnotation
+        for anon in anoner.map(res.classes, res.docs):
+            if 1:
+                anon.write(short=True)
+            else:
+                print(anon.doc)
+                if 0:
+                    for label, ftok, stok in anon.token_matches:
+                        print(ftok, stok, type(ftok), type(stok), label)
+                for sanon in anon.sequence_anons:
+                    print('  ', sanon)
 
     def proto(self):
-        facade: ModelFacade = self.get_cached_facade()
-        res = facade.last_result
-        print(res.train.n_iterations, 140410, res.train.n_iterations - 140410)
-        print(res.train.n_outcomes)
-        print(sum(map(lambda er: len(er.losses), res.train.results)))
-        print(len(res.train.losses))
-        res = res.train.results[0]
-        print(res)
-        print(len(res.losses), res.n_outcomes, res.predictions.shape)
-        print(res.batch_predictions[0].shape)
-        split = facade.executor.dataset_stash.splits['train']
-        split.write()
-        #return sum(map(lambda batch: len(batch), split.values()))
-        if 0:
-            for batch in split.values():
-                print(type(batch), len(batch), len(batch.get_data_points()))
-        print(len(split), len(split) * 10)#facade.executor.model_settings.epochs)
-        print(sum(map(lambda b: len(b), split.values())))
+        #path = 'target/results/model/ner-glove-50-1.model'
+        path = 'target/model/transformer_trainable_embedding'
+        self.predict(None, Path(path))

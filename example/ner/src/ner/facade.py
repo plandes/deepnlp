@@ -59,14 +59,23 @@ class NERModelFacade(LanguageModelFacade):
         """Computes the corpus statistics."""
         self.sent_stats.write()
 
-    def predict(self, datas: Iterable[Any]) -> Any:
-        # remove expensive to load vectorizers for prediction only when we're
-        # not using those models
+    def remove_expensive_vectorizers(self):
+        """Remove expensive to load vectorizers for prediction only when we're not
+        using those models.
+
+        """
         emb_conf = self.config.get_option('embedding', 'language_defaults')
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'removing expensive vectorizers, emb={emb_conf}')
         if emb_conf != 'glove_300_embedding':
             self.remove_metadata_mapping_field(NERBatch.GLOVE_300_EMBEDDING)
         if emb_conf != 'word2vec_300_embedding':
             self.remove_metadata_mapping_field(NERBatch.WORD2VEC_300_EMBEDDING)
+
+    def predict(self, datas: Iterable[Any]) -> Any:
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug('predicting...')
+        self.remove_expensive_vectorizers()
         return super().predict(datas)
 
     def assert_label_mapping(self, do_print: bool = False):

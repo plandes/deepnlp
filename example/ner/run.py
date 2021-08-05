@@ -40,10 +40,10 @@ class CliHarness(object):
             else:
                 self.proto()
 
-    def configure_logging(self):
+    def configure_logging(self, level: int = logging.INFO):
         """Configure the logging package system."""
         fmt = '%(asctime)-15s [%(name)s] %(message)s'
-        logging.basicConfig(format=fmt, level=logging.INFO)
+        logging.basicConfig(format=fmt, level=level)
 
     def invoke(self, args: List[str] = None, **factory_kwargs):
         """Invoke the application.

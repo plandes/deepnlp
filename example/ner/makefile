@@ -88,7 +88,7 @@ stop:
 
 .PHONY:			earlystop
 earlystop:
-			$(ENTRY) earlystop
+			$(ENTRY) stop -c models/transformer-trainable.conf
 
 .PHONY:			clean
 clean:
