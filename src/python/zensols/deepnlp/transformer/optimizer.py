@@ -52,7 +52,8 @@ class TransformerSchedulerFactory(ModelResourceFactory):
                  optimizer: Optimizer,
                  executor: ModelExecutor,
                  num_warmup_steps: Optional[int] = None,
-                 num_training_steps: Optional[int] = None):
+                 num_training_steps: Optional[int] = None,
+                 split_name: Optional[str] = 'train'):
         """
         Args:
             name (:obj:`str` or `:obj:`SchedulerType`):
@@ -65,16 +66,19 @@ class TransformerSchedulerFactory(ModelResourceFactory):
             num_training_steps (:obj:`int`, `optional`):
                 The number of training steps to do. This is not required by all schedulers (hence the argument being
                 optional), the function will raise an error if it's unset and the scheduler type requires it.
-
-            if num_training_steps is None:
-                n_epochs = executor.model_settings.epochs
-                bsize = executor.batch_stash.batch_size
-                num_training_steps = n_epochs * bsize
+            split_name (:obj:`str`, `optional`):
+                The name of the split to use to count training data points for the calculation of ``num_training_steps``
+                when ``None``.
         """
+        n_epochs = executor.model_settings.epochs
+        n_train_batches = len(executor.dataset_stash.splits[split_name])
         if num_training_steps is None:
-            n_epochs = executor.model_settings.epochs
-            bsize = executor.batch_stash.batch_size
-            num_training_steps = n_epochs * bsize
+            num_training_steps = n_epochs * n_train_batches
+        if isinstance(num_warmup_steps, float):
+            num_warmup_steps = int(num_warmup_steps * num_training_steps)
+        if logger.isEnabledFor(logging.INFO):
+            logger.info(f'epochs: {n_epochs}, batches: {n_train_batches}, ' +
+                        f'training steps: {num_training_steps}, ' +
+                        f'warm up steps: {num_warmup_steps}')
         return get_scheduler(name, optimizer, num_warmup_steps,
                              num_training_steps)
-
