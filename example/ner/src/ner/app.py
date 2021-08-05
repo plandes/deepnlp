@@ -38,6 +38,13 @@ class NERFacadeApplication(FacadeApplication):
         with dealloc(self.create_facade()) as facade:
             facade.write_corpus_stats()
 
+    def _print_train_stats(self):
+        facade: ModelFacade = self.get_cached_facade()
+        exc = facade.executor
+        split = exc.dataset_stash.splits['train']
+        split.write()
+        print(sum(map(lambda batch: len(batch), split.values())))
+
     def assert_label_mapping(self):
         """Confirm the the mapping of the labels is correct."""
         with dealloc(self.create_facade()) as facade:
@@ -102,4 +109,21 @@ class NERFacadeApplication(FacadeApplication):
         self._write_max_word_piece_token_length()
 
     def proto(self):
-        self.predict(None)
+        facade: ModelFacade = self.get_cached_facade()
+        res = facade.last_result
+        print(res.train.n_iterations, 140410, res.train.n_iterations - 140410)
+        print(res.train.n_outcomes)
+        print(sum(map(lambda er: len(er.losses), res.train.results)))
+        print(len(res.train.losses))
+        res = res.train.results[0]
+        print(res)
+        print(len(res.losses), res.n_outcomes, res.predictions.shape)
+        print(res.batch_predictions[0].shape)
+        split = facade.executor.dataset_stash.splits['train']
+        split.write()
+        #return sum(map(lambda batch: len(batch), split.values()))
+        if 0:
+            for batch in split.values():
+                print(type(batch), len(batch), len(batch.get_data_points()))
+        print(len(split), len(split) * 10)#facade.executor.model_settings.epochs)
+        print(sum(map(lambda b: len(b), split.values())))
