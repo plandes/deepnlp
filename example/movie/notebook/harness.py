@@ -7,7 +7,7 @@ class NotebookHarness(object):
     def __init__(self, app_root_dir: str = '..',
                  deepnlp_path: str = '../../../src/python'):
         """Set up the interpreter environment so we can import local packages.
-        
+
         :param app_root_dir: the application root directory
         :param deepnlp_path: the path to the DeepNLP source code
         """
