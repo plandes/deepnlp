@@ -86,6 +86,15 @@ class TextWordEmbedModel(WordEmbedModel, Primeable, metaclass=ABCMeta):
 
     def _populate_vec_lines(self, words: List[str], word2idx: Dict[str, int],
                             ds: Dataset):
+        """Add word vectors to the h5py dataset, vocab and vocab index.
+
+        :param words: the list of vocabulary words
+
+        :param word2idx: dictionary of word to word vector index (row)
+
+        :param ds: the h5py data structure to add the word vectors
+
+        """
         meta = self.metadata
         idx = 0
         lc = 0
