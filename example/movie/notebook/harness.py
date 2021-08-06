@@ -42,6 +42,7 @@ class NotebookHarness(object):
         class NBJupyterManager(JupyterManager):
             def _init_jupyter(self):
                 import logging
+                # turn off more logging so only the progress bar shows
                 logging.getLogger('zensols.deeplearn.model.executor.status').\
                     setLevel(logging.WARNING)
 
