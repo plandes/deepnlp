@@ -11,7 +11,8 @@ import logging
 from pathlib import Path
 import pickle
 import numpy as np
-import bcolz
+import h5py
+from h5py import Dataset
 from zensols.util import time
 from zensols.persist import Primeable
 from zensols.deepnlp.embed import WordVectorModel, WordEmbedModel
@@ -44,7 +45,7 @@ class TextWordModelMetadata(object):
     def __post_init__(self):
         sub_dir = Path('bin', f'{self.desc}.{self.dimension}')
         self.bin_dir = self.source_path.parent / sub_dir
-        self.bin_file = self.bin_dir / 'vec'
+        self.bin_file = self.bin_dir / 'vec.dat'
         self.words_file = self.bin_dir / 'words.dat'
         self.idx_file = self.bin_dir / 'idx.dat'
 
@@ -55,6 +56,9 @@ class TextWordEmbedModel(WordEmbedModel, Primeable, metaclass=ABCMeta):
     binary representation for fast loading.
 
     """
+    DATASET_NAME = 'vec'
+    """Name of the dataset in the HD5F file."""
+
     @abstractmethod
     def _get_metadata(self) -> TextWordModelMetadata:
         """Create the metadata used to construct paths both text source vector file and
@@ -73,13 +77,20 @@ class TextWordEmbedModel(WordEmbedModel, Primeable, metaclass=ABCMeta):
             self._metadata = self._get_metadata()
         return self._metadata
 
+    def _get_model_id(self) -> str:
+        """Return a string used to uniquely identify this model.
+
+        """
+        meta = self.metadata
+        return f'{meta.name}: description={meta.desc}, dim={meta.dimension}'
+
     def _populate_vec_lines(self, words: List[str], word2idx: Dict[str, int],
-                            vectors: bcolz.carray):
+                            ds: Dataset):
         meta = self.metadata
         idx = 0
         lc = 0
         with open(meta.source_path, 'rb') as f:
-            for ln in f:
+            for rix, ln in enumerate(f):
                 lc += 1
                 line = ln.decode().split(' ')
                 word = line[0]
@@ -87,19 +98,11 @@ class TextWordEmbedModel(WordEmbedModel, Primeable, metaclass=ABCMeta):
                 word2idx[word] = idx
                 idx += 1
                 try:
-                    vect = np.array(line[1:]).astype(np.float)
+                    ds[rix, :] = line[1:]
                 except Exception as e:
                     logger.error(f'could not parse line {lc} ' +
                                  f'(word: {word}): {e}; line: {ln}')
                     raise e
-                vectors.append(vect)
-
-    def _get_model_id(self) -> str:
-        """Return a string used to uniquely identify this model.
-
-        """
-        meta = self.metadata
-        return f'{meta.name}: description={meta.desc}, dim={meta.dimension}'
 
     def _write_vecs(self) -> np.ndarray:
         """Write the bcolz binary files.  Only when they do not exist on the files
@@ -113,13 +116,12 @@ class TextWordEmbedModel(WordEmbedModel, Primeable, metaclass=ABCMeta):
         if logger.isEnabledFor(logging.INFO):
             logger.info(f'writing binary vectors {meta.source_path} ' +
                         f'-> {meta.bin_dir}')
-        vectors = bcolz.carray(np.zeros(1), rootdir=meta.bin_file, mode='w')
-        self._populate_vec_lines(words, word2idx, vectors)
-        vectors = bcolz.carray(
-            vectors[1:].reshape((meta.n_vocab, meta.dimension)),
-            rootdir=meta.bin_file,
-            mode='w')
-        vectors.flush()
+        shape = (meta.n_vocab, meta.dimension)
+        with time(f'wrote h5py to {meta.bin_file}'):
+            with h5py.File(meta.bin_file, 'w') as f:
+                dset: Dataset = f.create_dataset(
+                    self.DATASET_NAME, shape, dtype='float64')
+                self._populate_vec_lines(words, word2idx, dset)
         pickle.dump(words[:], open(meta.words_file, 'wb'))
         pickle.dump(word2idx, open(meta.idx_file, 'wb'))
 
@@ -142,7 +144,9 @@ class TextWordEmbedModel(WordEmbedModel, Primeable, metaclass=ABCMeta):
         if logger.isEnabledFor(logging.INFO):
             logger.info(f'reading binary vector file: {meta.bin_file}')
         with time('loaded {cnt} vectors'):
-            vectors = bcolz.open(meta.bin_file)[:]
+            with h5py.File(meta.bin_file, 'r') as f:
+                ds: Dataset = f[self.DATASET_NAME]
+                vectors = ds[:]
             with open(meta.words_file, 'rb') as f:
                 words = pickle.load(f)
             with open(meta.idx_file, 'rb') as f:
