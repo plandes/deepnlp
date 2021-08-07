@@ -7,9 +7,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+
+## [0.0.4] - 2021-08-07
+### Added
+- Sequence/token classification for BiLSTM+CRF and HuggingFace transformers.
+  This has been tested with BERT/DistilBERT/RoBERTa and the large BERT models.
+- The HuggingFace transformers optimizer for `AdamW` and scheduler for
+  functionality such as fine tuning warm up.
+- More NLP facade specific support such as easier embedding model access.
+- Better support for Jupyter notebook rapid prototyping and experimentation.
+- Jupyter integration tests in review movie example.
+
+### Changed
+- Upgrade to spaCy 3 via the [zensols.nlparse] dependency.
+
 ### Removed
-- Move feature containers and parser to `zensols.nlparse`, including test
+- Move feature containers and parser to [zensols.nlparse], including test
   cases.
+- The dependency on [bcolz] as it is no longer maintained.  The caching of
+  binary word vectors was replaced with [H5PY].
 
 
 ## [0.0.3] - 2021-04-30
@@ -21,6 +37,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Added simple vectorizer example.
 - Multiprocessing vectorization now supports GPU access via torch
   multiprocessing subsystem.
+
 ### Changed
 - Refactored word embedding (sub) modules.
 - Moved BERT transformer embeddings to separate `transformer` module.
@@ -43,11 +60,15 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v0.0.3...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v0.0.4...HEAD
+[0.0.4]: https://github.com/plandes/deepnlp/compare/v0.0.3...v0.0.4
 [0.0.3]: https://github.com/plandes/deepnlp/compare/v0.0.2...v0.0.3
 [0.0.2]: https://github.com/plandes/deepnlp/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/plandes/deepnlp/compare/v0.0.0...v0.0.1
 
 [zensols.util]: https://github.com/plandes/util
+[zensols.nlparse]: https://github.com/plandes/nlparse
 [zensols.deeplearn]: https://github.com/plandes/deeplearn
 [PyTorch]: https://pytorch.org
+[bcolz]: https://github.com/Blosc/bcolz
+[H5PY]: https://www.h5py.org
