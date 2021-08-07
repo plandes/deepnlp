@@ -131,8 +131,10 @@ class TextWordEmbedModel(WordEmbedModel, Primeable, metaclass=ABCMeta):
                 dset: Dataset = f.create_dataset(
                     self.DATASET_NAME, shape, dtype='float64')
                 self._populate_vec_lines(words, word2idx, dset)
-        pickle.dump(words[:], open(meta.words_file, 'wb'))
-        pickle.dump(word2idx, open(meta.idx_file, 'wb'))
+        with open(meta.words_file, 'wb') as f:
+            pickle.dump(words[:], f)
+        with open(meta.idx_file, 'wb') as f:
+            pickle.dump(word2idx, f)
 
     def _assert_binary_vecs(self):
         meta = self.metadata
