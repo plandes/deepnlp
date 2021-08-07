@@ -6,8 +6,7 @@ ___author__ = 'Paul Landes'
 from typing import List, Dict
 from dataclasses import dataclass, field
 import logging
-import bcolz
-import numpy as np
+from h5py import Dataset
 from zensols.deepnlp.embed import TextWordEmbedModel, TextWordModelMetadata
 
 logger = logging.getLogger(__name__)
@@ -37,14 +36,14 @@ class FastTextEmbedModel(TextWordEmbedModel):
         return TextWordModelMetadata(name, desc, dim, vocab_size, path)
 
     def _populate_vec_lines(self, words: List[str], word2idx: Dict[str, int],
-                            vectors: bcolz.carray):
+                            ds: Dataset):
         meta = self.metadata
         idx = 0
         lc = 0
         with open(meta.source_path, encoding='utf-8',
                   newline='\n', errors='ignore') as f:
             n_vocab, dim = map(int, f.readline().split())
-            for ln in f:
+            for rix, ln in enumerate(f):
                 lc += 1
                 line = ln.rstrip().split(' ')
                 word = line[0]
@@ -52,9 +51,8 @@ class FastTextEmbedModel(TextWordEmbedModel):
                 word2idx[word] = idx
                 idx += 1
                 try:
-                    vect = np.array(line[1:]).astype(np.float)
+                    ds[rix, :] = line[1:]
                 except Exception as e:
                     logger.error(f'could not parse line {lc} ' +
                                  f'(word: {word}): {e}; line: {ln}')
                     raise e
-                vectors.append(vect)
