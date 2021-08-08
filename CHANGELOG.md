@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [0.0.5] - 2021-08-07
+### Changed
+- Update dependencies.
+
+
 ## [0.0.4] - 2021-08-07
 ### Added
 - Sequence/token classification for BiLSTM+CRF and HuggingFace transformers.
@@ -60,7 +65,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v0.0.4...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v0.0.5...HEAD
+[0.0.5]: https://github.com/plandes/deepnlp/compare/v0.0.4...v0.0.5
 [0.0.4]: https://github.com/plandes/deepnlp/compare/v0.0.3...v0.0.4
 [0.0.3]: https://github.com/plandes/deepnlp/compare/v0.0.2...v0.0.3
 [0.0.2]: https://github.com/plandes/deepnlp/compare/v0.0.1...v0.0.2
