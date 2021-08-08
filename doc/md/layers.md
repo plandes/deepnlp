@@ -40,8 +40,8 @@ package are listed below:
 [EmbeddedRecurrentCRFSettings]: ../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings
 [EmbeddedRecurrentCRF]: ../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRF
 [TransformerEmbeddingLayer]: ../api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.layer.TransformerEmbeddingLayer
-[TransformerResource.model_id]: ../api/deepnlp/api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerResource.model_id
-[ner embedding.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/embedding.conf
-[movie embedding.conf]: https://github.com/plandes/deepnlp/blob/master/example/movie/resources/embedding.conf
+[TransformerResource.model_id]: ../api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerResource.model_id
 [TransformerEmbedding.output]: ../api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.embed.TransformerEmbedding.output
 [TransformerSequence]: ../api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.layer.TransformerSequence
+[ner embedding.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/embedding.conf
+[movie embedding.conf]: https://github.com/plandes/deepnlp/blob/master/example/movie/resources/embedding.conf
