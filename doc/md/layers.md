@@ -6,8 +6,7 @@ package are listed below:
 * Convolution (1D):
   * [DeepConvolution1dNetworkSettings]: Configurable repeated series of
     1-dimension convolution, pooling, batch norm and activation layers.
-  * [DeepConvolution1d]: Conf
-  igurable repeated series of 1-dimension
+  * [DeepConvolution1d]: Configurable repeated series of 1-dimension
     convolution, pooling, batch norm and activation layers.
 * Word Embedding Layer:
   * [EmbeddingNetworkSettings]: A utility container settings class for models
@@ -23,9 +22,13 @@ package are listed below:
     layer.
 * Transformers:
   * [TransformerEmbeddingLayer]: A transformer (i.e. BERT) embedding layer that
-    allows for direct access to output embeddings.  The
+    allows for direct access to output embeddings.  Sentence and token
+    classification is supported out of the box and selected with the
+    [TransformerEmbedding.output] attribute.  The
     [TransformerResource.model_id] attribute gives a list of tested models.
-    See [ner embedding.conf] and [movie embedding.conf] for examples of how to
+  * [TransformerSequence]: A sequence based model for token classification use
+    HuggingFace transformers.
+  * See [ner embedding.conf] and [movie embedding.conf] for examples of how to
     configure transformer layers.
 
 <!-- links -->
@@ -39,3 +42,5 @@ package are listed below:
 [TransformerResource.model_id]: ../api/deepnlp/api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerResource.model_id
 [ner embedding.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/embedding.conf
 [movie embedding.conf]: https://github.com/plandes/deepnlp/blob/master/example/movie/resources/embedding.conf
+[TransformerEmbedding.output]: ../api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.embed.TransformerEmbedding.output
+[TransformerSequence]: ../api/zensols.deepnlp.transformer.html?highlight=transformersequence#zensols.deepnlp.transformer.layer.TransformerSequence
