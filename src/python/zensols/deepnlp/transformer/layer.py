@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 
 class TransformerEmbeddingLayer(EmbeddingLayer):
-    """A transformer (i.e. Bert) embedding layer.  This class generates embeddings
+    """A transformer (i.e. BERT) embedding layer.  This class generates embeddings
     on a per sentence basis.  See the initializer documentation for
     configuration requirements.
 
@@ -39,7 +39,7 @@ class TransformerEmbeddingLayer(EmbeddingLayer):
         """Initialize with an embedding model.  This embedding model must configured
         with :obj:`.TransformerEmbedding.output` to ``last_hidden_state``.
 
-        :param embed_model: used to generate the transformer (i.e. Bert)
+        :param embed_model: used to generate the transformer (i.e. BERT)
                             embeddings
 
         """

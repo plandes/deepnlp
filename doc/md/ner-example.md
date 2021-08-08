@@ -128,12 +128,12 @@ To run the [Jupyter NER notebook]:
 [batch.py]: https://github.com/plandes/deepnlp/blob/master/example/ner/src/ner/batch.py
 [facade.py]: https://github.com/plandes/deepnlp/blob/master/example/ner/src/ner/facade.py
 
-[batch.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/conf/batch.conf
-[model.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/conf/model.conf
-[vectorizer.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/conf/vectorizer.conf
-[main.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/conf/main.conf
-[lang.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/conf/lang.conf
-[corpus.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/conf/corpus.conf
+[batch.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/batch.conf
+[model.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/model.conf
+[vectorizer.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/vectorizer.conf
+[main.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/main.conf
+[lang.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/lang.conf
+[corpus.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/corpus.conf
 
 [Jupyter NER notebook]: https://github.com/plandes/deepnlp/blob/master/example/ner/notebook/ner.ipynb
 

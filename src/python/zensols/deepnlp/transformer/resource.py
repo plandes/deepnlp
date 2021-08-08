@@ -51,6 +51,8 @@ class TransformerResource(PersistableContainer, Dictable):
 
       * ``bert-base-cased``
 
+      * ``bert-large-cased``
+
       * ``roberta-base``
 
       * ``distilbert-base-cased``
