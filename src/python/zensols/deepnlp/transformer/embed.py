@@ -163,7 +163,7 @@ class TransformerEmbedding(PersistableContainer, Dictable):
         else:
             if not hasattr(output_res, self.output):
                 raise TransformerError(
-                    f'no such output attribte {self.output} for ' +
+                    f'No such output attribte {self.output} for ' +
                     f'output {type(output_res)}')
             output_res: Tensor = getattr(output_res, self.output)
             if logger.isEnabledFor(logging.DEBUG):
