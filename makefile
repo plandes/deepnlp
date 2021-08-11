@@ -15,11 +15,6 @@ CORPUS_DIR =	./corpus
 GLOVE_DIR =	$(CORPUS_DIR)/glove
 # glove
 GLOVE_SRC_URL =	http://downloads.cs.stanford.edu/nlp/data/glove.6B.zip
-
-## documentation
-# must locally install zensols.deeplearn and build under linux and bcolz no
-# longer builds under macOS
-
 #PY_SRC_TEST_PAT ?=	'test_trans*.py'
 
 
