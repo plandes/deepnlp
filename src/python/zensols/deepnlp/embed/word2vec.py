@@ -7,6 +7,7 @@ __author__ = 'Paul Landes'
 from dataclasses import dataclass, field
 import logging
 import numpy as np
+import gensim
 from gensim.models import KeyedVectors, Word2Vec
 from zensols.util import time
 from zensols.deepnlp.embed import WordVectorModel, WordEmbedModel
@@ -69,10 +70,14 @@ class Word2VecModel(WordEmbedModel):
     def _create_data(self) -> WordVectorModel:
         logger.info('reading binary vector file')
         # https://github.com/RaRe-Technologies/gensim/wiki/Migrating-from-Gensim-3.x-to-4
-        #wv = self._get_model().wv
-        wv = self._get_model()
-        #words = wv.index2entity
-        words = wv.index_to_key
+        if gensim.__version__[0] >= '4':
+            logger.debug('using version 4')
+            wv = self._get_model()
+            words = wv.index_to_key
+        else:
+            logger.debug('using version 3')
+            wv = self._get_model().wv
+            words = wv.index2entity
         word2vec = {}
         word2idx = {}
         vectors = []
