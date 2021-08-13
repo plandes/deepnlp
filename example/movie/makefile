@@ -79,7 +79,7 @@ help:
 
 .PHONY:			modelinfo
 modelinfo:
-			$(ENTRY) info
+			$(ENTRY) -c $(MDL_DIR)/glove50.conf info
 
 .PHONY:			rebatch
 rebatch:
