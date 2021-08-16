@@ -563,8 +563,8 @@ class OverlappingFeatureDocumentVectorizer(MultiDocumentVectorizer):
 
     @staticmethod
     def _lemmas(ac: TokensContainer, bc: TokensContainer) -> Tuple[int]:
-        a = set(map(lambda s: s.lemma.lower(), ac.token_iter()))
-        b = set(map(lambda s: s.lemma.lower(), bc.token_iter()))
+        a = set(map(lambda s: s.lemma_.lower(), ac.token_iter()))
+        b = set(map(lambda s: s.lemma_.lower(), bc.token_iter()))
         return a & b
 
     def _encode(self, docs: Tuple[FeatureDocument]) -> FeatureContext:
