@@ -17,13 +17,13 @@ from zensols.persist import (
     OneShotFactoryStash, PersistedWork, persisted, PersistableContainer
 )
 from zensols.config import Dictable
-from zensols.nlp import BasicTokenFeatures, FeatureToken, FeatureSentence
+from zensols.nlp import NormalizedTokenFeatures, FeatureToken, FeatureSentence
 from zensols.dataset import AbstractSplitKeyContainer, DatasetSplitStash
 
 logger = logging.getLogger(__name__)
 
 
-class NERTokenFeatures(BasicTokenFeatures):
+class NERTokenFeatures(NormalizedTokenFeatures):
     """Contains the data of a row of the NER data.
 
     Fields:
@@ -33,7 +33,7 @@ class NERTokenFeatures(BasicTokenFeatures):
         4. The BIO named entity tag.
 
     """
-    WRITABLE_FIELD_IDS = 'i sent_i text norm tag_ ent_'.split()
+    WRITABLE_FIELD_IDS = 'i norm tag_ ent_'.split()
     FIELD_SET = frozenset(set(WRITABLE_FIELD_IDS) | set('syn_'.split()))
 
     def __init__(self, i: int, text: str, tag_: str, syn_: str, ent_: str):
