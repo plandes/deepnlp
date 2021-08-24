@@ -31,7 +31,7 @@ class TransformerEmbedding(PersistableContainer, Dictable):
     transformms API.
 
     """
-    WRITABLE__DESCENDANTS = True
+    _DICTABLE_WRITABLE_DESCENDANTS = True
 
     name: str = field()
     """The name of the embedding as given in the configuration."""
