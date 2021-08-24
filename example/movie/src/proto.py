@@ -42,7 +42,7 @@ def create_facade(use_singleton: bool = True) -> ProtoModelFacade:
 
 
 def end_dealloc():
-    print('deallocations:', len(Deallocatable.ALLOCATIONS))
+    print('deallocations:', Deallocatable._num_deallocations())
     Deallocatable._print_undeallocated(True)
 
 
