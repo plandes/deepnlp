@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [0.0.6] - 2021-09-07
+### Changed
+- Revert to version 3.8.3 of gensim and support back/forward comparability.
+- Upgrade zensols libraries.
+- Documentation and clean up.
+
+
 ## [0.0.5] - 2021-08-07
 ### Changed
 - Update dependencies.
@@ -65,7 +72,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v0.0.5...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v0.0.6...HEAD
+[0.0.6]: https://github.com/plandes/deepnlp/compare/v0.0.5...v0.0.6
 [0.0.5]: https://github.com/plandes/deepnlp/compare/v0.0.4...v0.0.5
 [0.0.4]: https://github.com/plandes/deepnlp/compare/v0.0.3...v0.0.4
 [0.0.3]: https://github.com/plandes/deepnlp/compare/v0.0.2...v0.0.3

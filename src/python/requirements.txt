@@ -1,5 +1,5 @@
 gensim>=3.8.3
 h5py>=3.3.0
 transformers>=4.0.1
-zensols.nlp>=0.1.0
+zensols.nlp>=0.1.1
 zensols.deeplearn>=0.1.3
