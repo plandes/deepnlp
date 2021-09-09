@@ -8,6 +8,8 @@
 Deep learning utility library for natural language processing that aids in
 feature engineering and embedding layers (see the [full documentation]).
 
+Paper on [arXiv](http://arxiv.org/abs/2109.03383).
+
 Features:
 * Configurable layers with little to no need to write code.
 * [Natural language specific layers](doc/md/layers.md):
