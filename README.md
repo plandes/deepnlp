@@ -93,6 +93,11 @@ Corpora used include:
 }
 ```
 
+## Community
+
+Please star the project and let me know how and where you use this API.
+Contributions as pull requests, feedback and any input is welcome.
+
 
 ## Changelog
 
