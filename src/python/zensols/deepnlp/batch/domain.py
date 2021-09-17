@@ -8,7 +8,13 @@ import sys
 from io import TextIOBase
 from zensols.persist import persisted
 from zensols.nlp import FeatureDocument, FeatureSentence
-from zensols.deeplearn.batch import DataPoint
+from zensols.deeplearn.batch import (
+    DataPoint,
+    Batch,
+    BatchFeatureMapping,
+    ManagerFeatureMapping,
+    FieldFeatureMapping,
+)
 
 
 @dataclass
@@ -68,3 +74,23 @@ class FeatureDocumentDataPoint(DataPoint):
 
     def __repr__(self):
         return self.__str__()
+
+
+@dataclass
+class LabeledFeatureDocument(FeatureDocument):
+    label: str = field(default=None)
+
+    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
+        super().write(depth, writer)
+        self._write_line(f'label: {self.label}', depth + 1, writer)
+
+
+@dataclass
+class LabeledFeatureDocumentDataPoint(FeatureDocumentDataPoint):
+    """A representation of a data for a reivew document containing the sentiment
+    polarity as the label.
+
+    """
+    @property
+    def label(self) -> str:
+        return self.doc.label
