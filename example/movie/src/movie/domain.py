@@ -62,6 +62,7 @@ class Review(FeatureDocument):
     """
 
     confidence: float = field(default=None)
+    """A probably of the confidence of the prediction."""
 
     # we have to add this method to tell the framework how to combine multiple
     # instances of review 'documents' when batching many sentences (as
