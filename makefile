@@ -1,20 +1,21 @@
 ## makefile automates the build and deployment for python projects
 
 ## build
-PROJ_TYPE =	python
-PROJ_MODULES =	git python-resources python-doc python-doc-deploy
-PROJ_ARGS =	-c resources/deepnlp.conf
-CLEAN_DEPS +=	exampleclean
+PROJ_TYPE =		python
+PROJ_MODULES =		git python-resources python-doc python-doc-deploy
+PROJ_ARGS =		-c resources/deepnlp.conf
+CLEAN_ALL_DEPS +=	exampleclean
 
 ##doc
-PY_DOC_MD_SRC =	./doc/md
+PY_DOC_MD_SRC =		./doc/md
 
 
 ## models needed for testing
-CORPUS_DIR =	./corpus
-GLOVE_DIR =	$(CORPUS_DIR)/glove
+CORPUS_DIR =		./corpus
+GLOVE_DIR =		$(CORPUS_DIR)/glove
 # glove
-GLOVE_SRC_URL =	http://downloads.cs.stanford.edu/nlp/data/glove.6B.zip
+GLOVE_SRC_URL =		http://downloads.cs.stanford.edu/nlp/data/glove.6B.zip
+
 #PY_SRC_TEST_PAT ?=	'test_trans*.py'
 
 
