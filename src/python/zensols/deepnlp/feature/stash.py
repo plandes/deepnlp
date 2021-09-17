@@ -56,3 +56,17 @@ class DocumentFeatureStash(MultiProcessStash, metaclass=ABCMeta):
         for id, factory_data in map(lambda id: (id, self.factory[id]), chunk):
             data = self._parse_document(id, factory_data)
             yield (id, data)
+
+
+@dataclass
+class DataframeDocumentFeatureStash(DocumentFeatureStash):
+    text_column: str = field(default='text')
+    additional_columns: Tuple[str] = field(default=None)
+
+    def _parse_document(self, id: int, row: pd.Series) -> FeatureDocument:
+        # text to parse with SpaCy
+        text = row[self.text_column]
+        vals = ()
+        if self.additional_columns is not None:
+            vals = tuple(map(lambda c: row[c], self.additional_columns))
+        return self.vec_manager.parse(text, *vals)
