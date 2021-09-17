@@ -11,7 +11,7 @@ from io import TextIOBase
 import pandas as pd
 import numpy as np
 from zensols.config import Settings
-from zensols.dataframe import DataframeStash
+from zensols.dataframe import SplitKeyDataframeStash
 from zensols.deeplearn.batch import (
     Batch,
     BatchFeatureMapping,
@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class ReviewRowStash(DataframeStash):
+class ReviewRowStash(SplitKeyDataframeStash):
     """A dataframe based stash since our data happens to be composed of comma
     separate files.
 
