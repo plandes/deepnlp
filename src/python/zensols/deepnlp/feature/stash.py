@@ -1,8 +1,10 @@
-import logging
 from typing import Iterable, List, Tuple, Any
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+import logging
+import sys
 from abc import abstractmethod, ABCMeta
 import itertools as it
+import pandas as pd
 from zensols.persist import Stash, PrimeableStash
 from zensols.multi import MultiProcessStash
 from zensols.nlp import FeatureDocument
@@ -16,12 +18,25 @@ class DocumentFeatureStash(MultiProcessStash, metaclass=ABCMeta):
     """This class parses natural language text in to :class:`.FeatureDocument`
     instances in multiple sub processes.
 
+    .. document private functions
+    .. automethod:: _parse_document
+
     """
     ATTR_EXP_META = ('document_limit',)
 
-    factory: Stash
-    vec_manager: FeatureDocumentVectorizerManager
-    document_limit: int
+    factory: Stash = field()
+    """The stash that creates the ``factory_data`` given to
+    :meth:`_parse_document`.
+
+    """
+
+    vec_manager: FeatureDocumentVectorizerManager = field()
+    """Used to parse text in to :class:`.FeatureDocument` instances.
+
+    """
+
+    document_limit: int = field(default=sys.maxsize)
+    """The maximum number of documents to process."""
 
     def prime(self):
         if isinstance(self.factory, PrimeableStash):
