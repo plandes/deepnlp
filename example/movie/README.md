@@ -1,6 +1,7 @@
 # Movie Review Sentiment Example
 
-Example application to demonstrate classification using the deep NLP framework.
+Example application to demonstrate a sentiment analysis task using the
+DeepZensols NLP framework.
 
 See the [movie review sentiment documentation](../../doc/md/movie-example.md).
 
