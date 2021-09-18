@@ -1,5 +1,13 @@
+"""A facade for simple text classification tasks.
+
+"""
+__author__ = 'Paul Landes'
+
+from typing import Iterable, Any
 from dataclasses import dataclass
 import logging
+import pandas as pd
+from zensols.persist import Stash
 from zensols.deepnlp.model import (
     LanguageModelFacade, LanguageModelFacadeConfig,
 )
@@ -10,8 +18,8 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class ClassifywModelFacade(LanguageModelFacade):
-    """A facade for the movie review sentiment analysis task.  See super classes
-    for more information on the purprose of this class.
+    """A facade for the text classification.  See super classes for more
+    information on the purprose of this class.
 
     All the ``set_*`` methods set parameters in the model.
 
@@ -39,3 +47,29 @@ class ClassifywModelFacade(LanguageModelFacade):
 
     def _get_language_model_config(self) -> LanguageModelFacadeConfig:
         return self.LANGUAGE_MODEL_CONFIG
+
+    def get_predictions(self) -> pd.DataFrame:
+        """Return a Pandas dataframe of the predictions with columns that include the
+        correct label, the prediction, the text and the length of the text of
+        the review.
+
+        """
+        return super().get_predictions(
+            ('text', 'len'),
+            lambda dp: (dp.doc.text, len(dp.doc.text)))
+
+    @property
+    def feature_stash(self) -> Stash:
+        """The stash containing the :class:`.Review` feature instances."""
+        return super().feature_stash.delegate
+
+    def predict(self, datas: Iterable[Any]) -> Any:
+        # remove expensive to load vectorizers for prediction only when we're
+        # not using those models
+        emb_conf = self.config.get_option('embedding', 'model_defaults')
+        if emb_conf != 'glove_300_embedding':
+            self.remove_metadata_mapping_field(LabeledBatch.GLOVE_300_EMBEDDING)
+        if emb_conf != 'word2vec_300_embedding':
+            self.remove_metadata_mapping_field(
+                LabeledBatch.WORD2VEC_300_EMBEDDING)
+        return super().predict(datas)
