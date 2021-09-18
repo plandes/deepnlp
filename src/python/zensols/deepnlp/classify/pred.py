@@ -17,7 +17,8 @@ from zensols.deepnlp.vectorize import FeatureDocumentVectorizerManager
 
 @dataclass
 class ClassificationPredictionMapper(PredictionMapper):
-    """A prediction mapper for text classification.
+    """A prediction mapper for text classification.  This mapper works at any level
+    (document, sentence, token).
 
     """
     vec_manager: FeatureDocumentVectorizerManager = field()

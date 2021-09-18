@@ -20,7 +20,7 @@ from zensols.deeplearn.batch import (
 )
 from zensols.nlp import FeatureDocument
 from zensols.deepnlp.batch import FeatureDocumentDataPoint
-from zensols.deepnlp.pred import ClassificationPredictionMapper
+from zensols.deepnlp.classify import ClassificationPredictionMapper
 from zensols.deepnlp.feature import DocumentFeatureStash
 from . import DatasetFactory
 
@@ -56,8 +56,8 @@ class Review(FeatureDocument):
     review.  This takes values of ``None`` for ad-hoc predictions.
 
     Note we could have overridden
-    :class:`zensols.deepnlp.pred.ClassificationPredictionMapper` to create with
-    an additional ``None`` value.
+    :class:`zensols.deepnlp.classify.ClassificationPredictionMapper` to create
+    with an additional ``None`` value.
 
     """
 

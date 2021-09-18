@@ -24,7 +24,7 @@ from zensols.deeplearn.vectorize import (
     FeatureVectorizerManager, FeatureVectorizer
 )
 from zensols.deepnlp.batch import FeatureSentenceDataPoint
-from zensols.deepnlp.pred import ClassificationPredictionMapper
+from zensols.deepnlp.classify import ClassificationPredictionMapper
 
 
 @dataclass
