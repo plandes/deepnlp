@@ -1,6 +1,7 @@
 """Deep learning for NLP applications.
 
 """
+__author__ = 'Paul Landes'
 
 
 def init(*args, **kwargs):
