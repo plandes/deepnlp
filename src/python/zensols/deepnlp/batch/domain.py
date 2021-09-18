@@ -94,3 +94,37 @@ class LabeledFeatureDocumentDataPoint(FeatureDocumentDataPoint):
     @property
     def label(self) -> str:
         return self.doc.label
+
+
+@dataclass
+class LabeledBatch(Batch):
+    LANGUAGE_FEATURE_MANAGER_NAME = 'language_feature_manager'
+    GLOVE_50_EMBEDDING = 'glove_50_embedding'
+    TRANSFORMER_EMBEDDING = 'transformer_embedding'
+    EMBEDDING_ATTRIBUTES = {GLOVE_50_EMBEDDING,
+                            TRANSFORMER_EMBEDDING}
+    STATS_ATTRIBUTE = 'stats'
+    ENUMS_ATTRIBUTE = 'enums'
+    COUNTS_ATTRIBUTE = 'counts'
+    DEPENDENCIES_ATTRIBUTE = 'dependencies'
+    LANGUAGE_ATTRIBUTES = {STATS_ATTRIBUTE,
+                           ENUMS_ATTRIBUTE,
+                           COUNTS_ATTRIBUTE,
+                           DEPENDENCIES_ATTRIBUTE}
+    MAPPINGS = BatchFeatureMapping(
+        'label',
+        [ManagerFeatureMapping(
+            'label_vectorizer_manager',
+            (FieldFeatureMapping('label', 'lblabel', True),)),
+         ManagerFeatureMapping(
+             LANGUAGE_FEATURE_MANAGER_NAME,
+             (FieldFeatureMapping(GLOVE_50_EMBEDDING, 'wvglove50', True, 'doc'),
+              FieldFeatureMapping(TRANSFORMER_EMBEDDING, 'transformer_trainable', True, 'doc'),
+              FieldFeatureMapping(STATS_ATTRIBUTE, 'stats', False, 'doc'),
+              FieldFeatureMapping(ENUMS_ATTRIBUTE, 'enum', True, 'doc'),
+              FieldFeatureMapping(COUNTS_ATTRIBUTE, 'count', True, 'doc'),
+              FieldFeatureMapping(DEPENDENCIES_ATTRIBUTE, 'dep', True, 'doc'),
+              ))])
+
+    def _get_batch_feature_mappings(self) -> BatchFeatureMapping:
+        return self.MAPPINGS
