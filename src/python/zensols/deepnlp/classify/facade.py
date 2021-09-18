@@ -51,7 +51,7 @@ class ClassifywModelFacade(LanguageModelFacade):
     def get_predictions(self) -> pd.DataFrame:
         """Return a Pandas dataframe of the predictions with columns that include the
         correct label, the prediction, the text and the length of the text of
-        the review.
+        the text.
 
         """
         return super().get_predictions(

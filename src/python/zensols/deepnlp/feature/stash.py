@@ -60,8 +60,15 @@ class DocumentFeatureStash(MultiProcessStash, metaclass=ABCMeta):
 
 @dataclass
 class DataframeDocumentFeatureStash(DocumentFeatureStash):
+    """Creates :class:`.FeatureDocument` instances from :class:`pandas.Series` rows
+    from the :class:`pandas.DataFrame` stash values.
+
+    """
     text_column: str = field(default='text')
+    """The column name for the text to be parsed by the document parser."""
+
     additional_columns: Tuple[str] = field(default=None)
+    """A tuple of column names to add as position argument to the instance."""
 
     def _parse_document(self, id: int, row: pd.Series) -> FeatureDocument:
         # text to parse with SpaCy
