@@ -42,11 +42,17 @@ class ClassifywModelFacade(LanguageModelFacade):
         super()._configure_debug_logging()
         for i in ['zensols.deeplearn.layer',
                   'zensols.deepnlp.layer',
-                  'zensols.deepnlp.transformer']:
+                  'zensols.deepnlp.transformer',
+                  'zensols.deepnlp.classify']:
             logging.getLogger(i).setLevel(logging.DEBUG)
 
     def _get_language_model_config(self) -> LanguageModelFacadeConfig:
         return self.LANGUAGE_MODEL_CONFIG
+
+    @property
+    def feature_stash(self) -> Stash:
+        """The stash containing the :class:`.Review` feature instances."""
+        return super().feature_stash.delegate
 
     def get_predictions(self) -> pd.DataFrame:
         """Return a Pandas dataframe of the predictions with columns that include the
@@ -58,18 +64,13 @@ class ClassifywModelFacade(LanguageModelFacade):
             ('text', 'len'),
             lambda dp: (dp.doc.text, len(dp.doc.text)))
 
-    @property
-    def feature_stash(self) -> Stash:
-        """The stash containing the :class:`.Review` feature instances."""
-        return super().feature_stash.delegate
-
     def predict(self, datas: Iterable[Any]) -> Any:
         # remove expensive to load vectorizers for prediction only when we're
         # not using those models
-        emb_conf = self.config.get_option('embedding', 'model_defaults')
-        if emb_conf != 'glove_300_embedding':
-            self.remove_metadata_mapping_field(LabeledBatch.GLOVE_300_EMBEDDING)
-        if emb_conf != 'word2vec_300_embedding':
-            self.remove_metadata_mapping_field(
-                LabeledBatch.WORD2VEC_300_EMBEDDING)
+        if self.config.has_option('embedding', 'deeplearn_default'):
+            emb_conf = self.config.get_option('embedding', 'deeplearn_default')
+            attrs = 'glove_300_embedding word2vec_300_embedding'.split()
+            for feature_attr in attrs:
+                if emb_conf != feature_attr:
+                    self.remove_metadata_mapping_field(feature_attr)
         return super().predict(datas)
