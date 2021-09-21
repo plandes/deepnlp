@@ -12,8 +12,6 @@ from pathlib import Path
 from zensols.persist import dealloc
 from zensols.nlp import FeatureDocument
 from zensols.deeplearn.cli import FacadeApplication
-from zensols.deepnlp.batch import LabeledFeatureDocument
-from zensols.deepnlp.classify import ClassifywModelFacade
 
 logger = logging.getLogger(__name__)
 
@@ -54,16 +52,6 @@ class NLPFacadeModelApplication(FacadeApplication):
         """
         sents = self._get_sentences(text_input)
         with dealloc(self.create_facade()) as facade:
-            # if isinstance(facade, ClassifywModelFacade):
-            #     docs: Tuple[LabeledFeatureDocument] = facade.predict(sents)
-            #     for doc in facade.predict(sents):
-            #         if hasattr(doc, 'label'):
-            #             label = f'lab={doc.label}: '
-            #         else:
-            #             ''
-            #         print(f'{doc.pred}={doc.softmax_logits[doc.pred]} ' +
-            #               f'{label}{doc.text}')
-            # else:
             docs: Tuple[FeatureDocument] = facade.predict(sents)
             for doc in docs:
                 doc.write()
