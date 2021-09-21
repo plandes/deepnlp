@@ -15,8 +15,9 @@ import h5py
 from h5py import Dataset
 from zensols.util import time
 from zensols.persist import Primeable
-from zensols.deeplearn import DeepLearnError
+from zensols.install import Installer, Resource
 from zensols.deepnlp.embed import WordVectorModel, WordEmbedModel
+from . import WordEmbedError
 
 logger = logging.getLogger(__name__)
 
@@ -60,6 +61,15 @@ class TextWordEmbedModel(WordEmbedModel, Primeable, metaclass=ABCMeta):
     DATASET_NAME = 'vec'
     """Name of the dataset in the HD5F file."""
 
+    path: Path = field(default=None)
+    """The path to the model file(s)."""
+
+    installer: Installer = field(default=None)
+    """The installer used to for the text vector zip file."""
+
+    resource: Resource = field(default=None)
+    """The zip resource used to find the path to the model files."""
+
     @abstractmethod
     def _get_metadata(self) -> TextWordModelMetadata:
         """Create the metadata used to construct paths both text source vector file and
@@ -68,15 +78,23 @@ class TextWordEmbedModel(WordEmbedModel, Primeable, metaclass=ABCMeta):
         """
         pass
 
+    def _install(self) -> Path:
+        """Install any missing word vector models."""
+        self.installer()
+        return self.installer[self.resource]
+
     @property
     def metadata(self):
         """Return the metadata used to construct paths both text source vector file and
         all generated binary files.
 
         """
-        if self.path is None:
-            raise DeepLearnError(
-                f'No path is not set for {self.name} ({type(self)})')
+        if self.path is None and self.installer is None:
+            raise WordEmbedError('No path is not set')
+        if self.installer is not None and self.resource is None:
+            raise WordEmbedError("Installer given but not 'reesource''")
+        if self.installer is not None:
+            self.path = self._install()
         if not hasattr(self, '_metadata'):
             self._metadata = self._get_metadata()
         return self._metadata
@@ -113,9 +131,9 @@ class TextWordEmbedModel(WordEmbedModel, Primeable, metaclass=ABCMeta):
                 try:
                     ds[rix, :] = line[1:]
                 except Exception as e:
-                    logger.error(f'could not parse line {lc} ' +
-                                 f'(word: {word}): {e}; line: {ln}')
-                    raise e
+                    raise WordEmbedError(
+                        f'could not parse line {lc} (word: {word}): ' +
+                        f'{e}; line: {ln}') from e
 
     def _write_vecs(self) -> np.ndarray:
         """Write the bcolz binary files.  Only when they do not exist on the files

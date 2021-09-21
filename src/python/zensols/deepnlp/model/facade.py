@@ -316,6 +316,8 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
                                debug_loggers: List[str]):
         super()._configure_cli_logging(info_loggers, debug_loggers)
         info_loggers.extend([
+            # installed files
+            'zensols.install',
             # show (slow) embedding loading
             'zensols.deepnlp.embed',
             # LSI/LDA indexing

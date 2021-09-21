@@ -1,4 +1,4 @@
-"""Interface file for embedings.
+"""Interface file for word vectors, aka non-contextual word embeddings.
 
 """
 __author__ = 'Paul Landes'
@@ -6,14 +6,17 @@ __author__ = 'Paul Landes'
 from typing import List, Dict, Tuple
 from dataclasses import dataclass, field
 from abc import ABCMeta, abstractmethod
-from pathlib import Path
 import logging
 import numpy as np
 import torch
 from zensols.config import Deallocatable
-from zensols.deeplearn import TorchConfig
+from zensols.deeplearn import TorchConfig, DeepLearnError
 
 logger = logging.getLogger(__name__)
+
+
+class WordEmbedError(DeepLearnError):
+    """Raised for any errors pertaining to word vectors."""
 
 
 @dataclass
@@ -70,9 +73,6 @@ class WordEmbedModel(Deallocatable, metaclass=ABCMeta):
     across word vector type and dimension.
 
     """
-
-    path: Path = field(default=None)
-    """The path to the model file(s)."""
 
     cache: bool = field(default=True)
     """If ``True`` globally cache all data strucures, which should be ``False``
