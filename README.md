@@ -53,7 +53,7 @@ example, which is a working project that uses this library.  However, you'll
 either end up reading up on the [zensols deeplearn] library before or during
 the tutorial.
 
-The usage of this library is explained in terms of two examples:
+The usage of this library is explained in terms of the examples:
 * The [Movie Review Sentiment] trained and tested on the [Stanford movie
   review] and [Cornell sentiment polarity] data sets, which assigns a positive
   or negative score to a natural language movie review by critics.  Also see
@@ -62,6 +62,9 @@ The usage of this library is explained in terms of two examples:
 * The [Named Entity Recognizer] trained and tested on the [CoNLL 2003 data set]
   to label named entities on natural language text.  Also see the [Jupyter NER
   notebook].
+
+The unit test cases are also a good resource for the more detailed programming
+integration with various parts of the library.
 
 
 ## Attribution
