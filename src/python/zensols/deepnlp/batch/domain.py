@@ -86,6 +86,9 @@ class LabeledFeatureDocument(FeatureDocument):
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
         super().write(depth, writer)
         self._write_line(f'label: {self.label}', depth + 1, writer)
+        self._write_line(f'prediction: {self.pred}', depth + 1, writer)
+        self._write_line(f'softmax logits: {self.softmax_logits[self.pred]}',
+                         depth + 1, writer)
 
 
 @dataclass
