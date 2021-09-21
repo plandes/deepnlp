@@ -71,7 +71,7 @@ class WordEmbedModel(Deallocatable, metaclass=ABCMeta):
 
     """
 
-    path: Path = field()
+    path: Path = field(default=None)
     """The path to the model file(s)."""
 
     cache: bool = field(default=True)
@@ -85,7 +85,6 @@ class WordEmbedModel(Deallocatable, metaclass=ABCMeta):
     input.
 
     """
-
     @abstractmethod
     def _get_model_id(self) -> str:
         """Return a string that uniquely identifies this instance of the embedding
@@ -145,10 +144,13 @@ class WordEmbedModel(Deallocatable, metaclass=ABCMeta):
 
     @property
     def matrix(self) -> np.ndarray:
-        """Return the word vector matrix.
-
-        """
+        """The word vector matrix."""
         return self._data().vectors
+
+    @property
+    def shape(self) -> Tuple[int, int]:
+        """The shape of the word vector :obj"`matrix`."""
+        return self.matrix.shape
 
     def to_matrix(self, torch_config: TorchConfig) -> torch.Tensor:
         """Return a matrix the represents the entire vector embedding as a tensor.
