@@ -6,13 +6,14 @@
 [![Python 3.9][python39-badge]][python39-link]
 
 Deep learning utility library for natural language processing that aids in
-feature engineering and embedding layers (see the [full documentation]).
+feature engineering and embedding layers.
 
-Paper on [arXiv](http://arxiv.org/abs/2109.03383).
+* See the [full documentation].
+* Paper on [arXiv](http://arxiv.org/abs/2109.03383).
 
 Features:
 * Configurable layers with little to no need to write code.
-* [Natural language specific layers](doc/md/layers.md):
+* [Natural language specific layers]:
   * Easily configurable word embedding layers for [Glove], [Word2Vec],
     [fastText].
   * Huggingface transformer ([BERT]) context based word vector layer.
@@ -33,7 +34,14 @@ Features:
 
 ## Documentation
 
-See the [full documentation].
+* [Full documentation](https://plandes.github.io/deepnlp/index.html)
+* [Layers](https://plandes.github.io/deepnlp/doc/layers.html): NLP specific
+  layers such as embeddings and transformers
+* [vectorizers](https://plandes.github.io/deepnlp/doc/vectorizers.html):
+  specific vectorizers that digitize natural language text in to tensors ready
+  as [PyTorch] input
+* [API reference](https://plandes.github.io/install/api.html)
+* [Examples](#usage-and-examples)
 
 
 ## Obtaining
@@ -72,7 +80,7 @@ integration with various parts of the library.
 This project, or example code, uses:
 * [Gensim] for [Glove], [Word2Vec] and [fastText] word embeddings.
 * [Huggingface Transformers] for [BERT] contextual word embeddings.
-* [bcolz] for fast read access to word embedding vectors.
+* [h5py] for fast read access to word embedding vectors.
 * [zensols nlparse] for feature generation from [spaCy] parsing.
 * [zensols deeplearn] for deep learning network libraries.
 
@@ -84,6 +92,7 @@ Corpora used include:
 
 ## Citation
 
+If you use this project in your research please use the following BibTeX entry:
 ```
 @article{Landes_DiEugenio_Caragea_2021,
   title={DeepZensols: Deep Natural Language Processing Framework},
@@ -125,13 +134,14 @@ Copyright (c) 2020 - 2021 Paul Landes
 [python39-badge]: https://img.shields.io/badge/python-3.9-blue.svg
 [python39-link]: https://www.python.org/downloads/release/python-390
 
+[PyTorch]: https://pytorch.org
 [Gensim]: https://radimrehurek.com/gensim/
 [Huggingface Transformers]: https://huggingface.co
 [Glove]: https://nlp.stanford.edu/projects/glove/
 [Word2Vec]: https://code.google.com/archive/p/word2vec/
 [fastText]: https://fasttext.cc
 [BERT]: https://huggingface.co/transformers/model_doc/bert.html
-[bcolz]: https://pypi.org/project/bcolz/
+[h5py]: https://www.h5py.org
 [spaCy]: https://spacy.io
 [Pandas]: https://pandas.pydata.org
 
@@ -143,11 +153,12 @@ Copyright (c) 2020 - 2021 Paul Landes
 [zensols nlparse]: https://github.com/plandes/nlparse
 
 [full documentation]: https://plandes.github.io/deepnlp/index.html
-[Movie Review Sentiment]: doc/movie-example.md
-[Named Entity Recognizer]: doc/ner-example.md
+[Natural language specific layers]: https://plandes.github.io/deepnlp/doc/layers.html
+[Movie Review Sentiment]: https://plandes.github.io/deepnlp/doc/movie-example.html
+[Named Entity Recognizer]: https://plandes.github.io/deepnlp/doc/ner-example.html
 [Embedding+BiLSTM-CRF]: https://plandes.github.io/deepnlp/doc/ner-example.html#bilstm-crf
 [batched tensors]: https://plandes.github.io/deeplearn/doc/preprocess.html#batches
 [deep convolution layer]: https://plandes.github.io/deepnlp/api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1d
-[NLP specific vectorizers]: doc/vectorizers.md
+[NLP specific vectorizers]: https://plandes.github.io/deepnlp/doc/vectorizers.html
 [Jupyter NER notebook]: https://github.com/plandes/deepnlp/blob/master/example/ner/notebook/ner.ipynb
 [Jupyter movie notebook]: https://github.com/plandes/deepnlp/blob/master/example/movie/notebook/movie.ipynb
