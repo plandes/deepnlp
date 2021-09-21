@@ -13,6 +13,7 @@ from zensols.deeplearn.vectorize import CategoryEncodableFeatureVectorizer
 from zensols.deeplearn.model import PredictionMapper
 from zensols.deeplearn.result import ResultsContainer
 from zensols.deepnlp.vectorize import FeatureDocumentVectorizerManager
+from zensols.deepnlp.batch import LabeledFeatureDocument
 
 
 @dataclass
@@ -27,9 +28,23 @@ class ClassificationPredictionMapper(PredictionMapper):
     label_feature_id: str = field()
     """The feature ID for the label vectorizer."""
 
+    pred_attribute: str = field(default='pred')
+    """The prediction attribute to set on the :class:`.FeatureDocument` returned
+    from :meth:`map_results`.
+
+    """
+
+    softmax_logits_attribute: str = field(default='softmax_logits')
+    """The softmax of the logits attribute to set on the :class:`.FeatureDocument`
+    returned from :meth:`map_results`.
+
+    :see: `On Calibration of Modern Neural Networks <https://arxiv.org/abs/1706.04599>`_
+
+    """
+
     def __post_init__(self):
         super().__post_init__()
-        self._docs = []
+        self._docs: List[FeatureDocument] = []
 
     @property
     def label_vectorizer(self) -> CategoryEncodableFeatureVectorizer:
@@ -55,7 +70,8 @@ class ClassificationPredictionMapper(PredictionMapper):
         nominals: List[np.ndarray] = result.batch_predictions
         return list(map(lambda cl: vec.get_classes(cl).tolist(), nominals))
 
-    def map_results(self, result: ResultsContainer) -> Settings:
+    def map_results(self, result: ResultsContainer) -> \
+            Tuple[LabeledFeatureDocument]:
         """Map class predictions, logits, and documents generated during use of this
         instance.  Each data point is aggregated across batches.
 
@@ -66,6 +82,11 @@ class ClassificationPredictionMapper(PredictionMapper):
         class_groups: List[List[str]] = self._map_classes(result)
         classes: Iterable[str] = ch.from_iterable(class_groups)
         logits: Iterable[np.ndarray] = ch.from_iterable(result.batch_outputs)
-        return Settings(classes=tuple(classes),
-                        logits=tuple(logits),
-                        docs=tuple(self._docs))
+        docs: List[FeatureDocument] = self._docs
+        labels: List[str] = self.label_vectorizer.label_encoder.classes_
+        for cl, doc, logits in zip(classes, docs, logits):
+            conf = np.exp(logits) / sum(np.exp(logits))
+            sms = dict(zip(labels, conf))
+            setattr(doc, self.pred_attribute, cl)
+            setattr(doc, self.softmax_logits_attribute, sms)
+        return tuple(docs)
