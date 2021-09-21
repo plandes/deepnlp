@@ -18,9 +18,10 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class NLPFacadeModelApplication(FacadeApplication):
-    CLI_META = {'mnemonic_overrides':
-                {'predict_csv': 'predcsv',
-                 'predict_text': 'predtext'}}
+    CLI_META = {'mnemonic_overrides': {'predict_csv': 'predcsv',
+                                       'predict_text': 'predtext'},
+                'option_overrides': {'verbose': {'long_name': 'verbose',
+                                                 'short_name': None}}}
 
     def predict_csv(self, out_file: Path = None):
         """Write the predictinos from the test data set as a CSV.
@@ -44,14 +45,19 @@ class NLPFacadeModelApplication(FacadeApplication):
         else:
             return [text_input]
 
-    def predict_text(self, text_input: str = None):
+    def predict_text(self, text_input: str = None, verbose: bool = False):
         """Classify ad-hoc text and output the results..
 
         :param text_input: the sentence to classify or standard in if not given
+
+        :param verbose: if given, print the long format version of the document
 
         """
         sents = self._get_sentences(text_input)
         with dealloc(self.create_facade()) as facade:
             docs: Tuple[FeatureDocument] = facade.predict(sents)
             for doc in docs:
-                doc.write()
+                if verbose:
+                    doc.write()
+                else:
+                    print(doc)

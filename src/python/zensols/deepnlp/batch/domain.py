@@ -90,6 +90,13 @@ class LabeledFeatureDocument(FeatureDocument):
         self._write_line(f'softmax logits: {self.softmax_logits[self.pred]}',
                          depth + 1, writer)
 
+    def __str__(self) -> str:
+        label = ''
+        if hasattr(self, 'label'):
+            label = f'lab={self.label}: '
+        return (f'{self.pred}={self.softmax_logits[self.pred]} ' +
+                f'{label}{self.text}')
+
 
 @dataclass
 class LabeledFeatureDocumentDataPoint(FeatureDocumentDataPoint):
