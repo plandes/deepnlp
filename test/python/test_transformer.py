@@ -37,7 +37,7 @@ class TestWordPieceTokenization(unittest.TestCase):
             for (tok, ttoks), (should_tok, should_ttoks) in zip(tmap, should_sent):
                 self.assertEqual(FeatureToken, type(tok))
                 self.assertEqual(str, type(ttoks[0]))
-                self.assertEqual(str(tok), should_tok)
+                self.assertEqual(tok.norm, should_tok)
                 self.assertEqual(ttoks, should_ttoks)
         arr = vec.transform(doc)
         self.assertEqual((len(should), should_tok_len, 768), tuple(arr.shape))
