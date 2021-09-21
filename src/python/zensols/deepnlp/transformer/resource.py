@@ -16,12 +16,12 @@ from zensols.util.time import time
 from zensols.introspect import ClassImporter
 from zensols.config import Dictable
 from zensols.persist import persisted, PersistedWork, PersistableContainer
-from zensols.deeplearn import TorchConfig
+from zensols.deeplearn import TorchConfig, DeepLearnError
 
 logger = logging.getLogger(__name__)
 
 
-class TransformerError(Exception):
+class TransformerError(DeepLearnError):
     """Raised for any transformer specific errors in this and child modules of the
     parent.
 
