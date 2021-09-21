@@ -56,12 +56,16 @@ Binaries are also available on [pypi].
 
 ## Usage and Examples
 
-If you're in a rush, you can dive right in to the [Movie Review Sentiment]
-example, which is a working project that uses this library.  However, you'll
-either end up reading up on the [zensols deeplearn] library before or during
-the tutorial.
+If you're in a rush, you can dive right in to the [Clickbate Text
+Classification] example, which is a working project that uses this library.
+However, you'll either end up reading up on the [zensols deeplearn] library
+before or during the tutorial.
 
 The usage of this library is explained in terms of the examples:
+
+* The [Clickbate Text Classification] is the best example to start with because
+  the only code 
+
 * The [Movie Review Sentiment] trained and tested on the [Stanford movie
   review] and [Cornell sentiment polarity] data sets, which assigns a positive
   or negative score to a natural language movie review by critics.  Also see
@@ -154,6 +158,7 @@ Copyright (c) 2020 - 2021 Paul Landes
 
 [full documentation]: https://plandes.github.io/deepnlp/index.html
 [Natural language specific layers]: https://plandes.github.io/deepnlp/doc/layers.html
+[Clickbate Text Classification]: https://plandes.github.io/deepnlp/doc/clickbate-example.html
 [Movie Review Sentiment]: https://plandes.github.io/deepnlp/doc/movie-example.html
 [Named Entity Recognizer]: https://plandes.github.io/deepnlp/doc/ner-example.html
 [Embedding+BiLSTM-CRF]: https://plandes.github.io/deepnlp/doc/ner-example.html#bilstm-crf
