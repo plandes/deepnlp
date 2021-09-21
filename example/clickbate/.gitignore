@@ -1,0 +1,15 @@
+# jupyternotebooks
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+# default python
+*.pyc
+*_flymake.py
+
+# adds
+/target
+/data
+/model
+/corpus
+/results
+/*.log
