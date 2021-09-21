@@ -15,6 +15,7 @@ import h5py
 from h5py import Dataset
 from zensols.util import time
 from zensols.persist import Primeable
+from zensols.deeplearn import DeepLearnError
 from zensols.deepnlp.embed import WordVectorModel, WordEmbedModel
 
 logger = logging.getLogger(__name__)
@@ -73,6 +74,9 @@ class TextWordEmbedModel(WordEmbedModel, Primeable, metaclass=ABCMeta):
         all generated binary files.
 
         """
+        if self.path is None:
+            raise DeepLearnError(
+                f'No path is not set for {self.name} ({type(self)})')
         if not hasattr(self, '_metadata'):
             self._metadata = self._get_metadata()
         return self._metadata
