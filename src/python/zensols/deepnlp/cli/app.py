@@ -10,6 +10,7 @@ from io import TextIOBase
 import logging
 from pathlib import Path
 from zensols.persist import dealloc
+from zenosls.nlp import FeatureDocument
 from zensols.deeplearn.cli import FacadeApplication
 from zensols.deepnlp.batch import LabeledFeatureDocument
 from zensols.deepnlp.classify import ClassifywModelFacade
@@ -63,5 +64,6 @@ class NLPFacadeModelApplication(FacadeApplication):
                     print(f'{doc.pred}={doc.softmax_logits[doc.pred]} ' +
                           f'{label}{doc.text}')
             else:
+                docs: Tuple[FeatureDocument] = facade.predict(sents)
                 for doc in docs:
                     doc.write()
