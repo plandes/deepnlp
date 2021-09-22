@@ -11,7 +11,7 @@ from zensols.persist import Stash
 from zensols.deepnlp.model import (
     LanguageModelFacade, LanguageModelFacadeConfig,
 )
-from zensols.deepnlp.batch import LabeledBatch
+from . import LabeledBatch
 
 logger = logging.getLogger(__name__)
 
