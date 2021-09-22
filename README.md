@@ -37,7 +37,7 @@ Features:
 * [Full documentation](https://plandes.github.io/deepnlp/index.html)
 * [Layers](https://plandes.github.io/deepnlp/doc/layers.html): NLP specific
   layers such as embeddings and transformers
-* [vectorizers](https://plandes.github.io/deepnlp/doc/vectorizers.html):
+* [Vectorizers](https://plandes.github.io/deepnlp/doc/vectorizers.html):
   specific vectorizers that digitize natural language text in to tensors ready
   as [PyTorch] input
 * [API reference](https://plandes.github.io/install/api.html)
@@ -64,12 +64,14 @@ before or during the tutorial.
 The usage of this library is explained in terms of the examples:
 
 * The [Clickbate Text Classification] is the best example to start with because
-  the only code 
+  the only code consists of is the corpus reader and a module to remove
+  sentence chunking (corpus are newline delimited headlines).  Also see the
+  [Jupyter clickbate classification notebook].
 
 * The [Movie Review Sentiment] trained and tested on the [Stanford movie
   review] and [Cornell sentiment polarity] data sets, which assigns a positive
   or negative score to a natural language movie review by critics.  Also see
-  the [Jupyter movie notebook].
+  the [Jupyter movie sentiment notebook].
 
 * The [Named Entity Recognizer] trained and tested on the [CoNLL 2003 data set]
   to label named entities on natural language text.  Also see the [Jupyter NER
@@ -166,4 +168,5 @@ Copyright (c) 2020 - 2021 Paul Landes
 [deep convolution layer]: https://plandes.github.io/deepnlp/api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1d
 [NLP specific vectorizers]: https://plandes.github.io/deepnlp/doc/vectorizers.html
 [Jupyter NER notebook]: https://github.com/plandes/deepnlp/blob/master/example/ner/notebook/ner.ipynb
-[Jupyter movie notebook]: https://github.com/plandes/deepnlp/blob/master/example/movie/notebook/movie.ipynb
+[Jupyter movie sentiment notebook]: https://github.com/plandes/deepnlp/blob/master/example/movie/notebook/movie.ipynb
+[Jupyter clickbate classification notebook]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/notebook/clickbate.ipynb

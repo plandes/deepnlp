@@ -8,6 +8,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+### Changed
+- Refactored downstream renaming of files from `zensols.deeplearn`.
+- Moved `ClassificationPredictionMapper` class to new `classify` module.
+
+### Added
+- Classification module and classes now fully implement text classification
+  with RNN/LSTM/GRU network types or any HuggingFace transformer with pooler
+  output.  This means there is no coding necessary for text classification with
+  the exception of writing a data loader if not in a supported format like
+  Pandas dataframe (i.e. CSV file).
+- Configuration resource library.
+- Clickbate corpus example.
+
+
 ## [0.0.6] - 2021-09-07
 ### Changed
 - Revert to version 3.8.3 of gensim and support back/forward comparability.
