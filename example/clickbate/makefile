@@ -1,15 +1,19 @@
 PROG =		./run.py
-MODEL =		data/model
+MODEL_DIR =	data/model
+MODEL =		glove
 
 
 all:		predict
 
-$(MODEL):
-		$(PROG) -c models/transformer.conf traintest
+$(MODEL_DIR):	traintest
+
+.PHONY:		traintest
+traintest:
+		$(PROG) -c models/$(MODEL).conf traintest
 
 .PHONY:		predict
-predict:	$(MODEL)
-		cat sample.txt | $(PROG) -c models/transformer.conf predtext
+predict:	$(MODEL_DIR)
+		cat sample.txt | $(PROG) -c models/$(MODEL).conf predtext
 
 .PHONY:		help
 help:
