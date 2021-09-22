@@ -15,6 +15,10 @@ traintest:
 predict:	$(MODEL_DIR)
 		cat sample.txt | $(PROG) -c models/$(MODEL).conf predtext
 
+.PHONY:		transpredict
+transpredict:
+		make MODEL=transformer predict
+
 .PHONY:		help
 help:
 		$(PROG) --help
