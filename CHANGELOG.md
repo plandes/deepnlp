@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   the exception of writing a data loader if not in a supported format like
   Pandas dataframe (i.e. CSV file).
 - Configuration resource library.
-- Clickbate corpus example.
+- Clickbate corpus example and documentation.
 
 
 ## [0.0.6] - 2021-09-07

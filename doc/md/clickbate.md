@@ -105,16 +105,76 @@ it has the CLI predict action allowing ad-hoc text to be classified from the
 command line.
 
 
+## Model Definition
+
+The model specific configuration is located in the `models` directory.  Each
+has a file that's given with the `--config` flag to the [run.py] entry point
+Python file and contains configuration that overrides on a per model basis.
+
+The [glove.conf] defines an LSTM model that uses a fully connected decoder
+network to provide the output label.  The [transformer.conf] defines a
+HuggingFace BERT transformer model that is fine tuned during the training.
+
+In each of these files, the `clickbate_default` section is used for settings
+just in this configuration file.  The `batch_stash` section tells what features
+we want to use for this mode, which is how the *batch decoding* process knows
+which vectorized features to read from the file system.  The
+`classify_net_settings` tells it which embedding (layer) to and any additional
+network parameters such as the dropout.
+
+For the [glove.conf] model, we use the RNN settings defined in the [resource
+library] defined for the [zensols.deeplearn] package that has the network code
+and configuration.  For the [transformer.conf] the `recurrent_settings`
+property is left out, which defaults to `None` indicating not to use a
+recurrent network and rely on just the embedding layer has only the
+transformer networks.
+
+Finally the model settings provide configuration to the model, which is where
+to store the output of the model (i.e. weights) in the `path` property.  Number
+of epoch to train and other model specific parameters such as the learning rate
+and scheduler parameters can be given here.
+
+
+## Code
+
+The code is in the [cb] directory, and given its name to fit nicely as a Python
+module.  This directory only has the spaCy pipeline component for removing
+sentence boundaries and another file to read the corpus.  These files have
+inline comments that explain the simple tasks they do.
+
+
+## Notebook
+
+There is a [Jupyter notebook] that executes the entire download, train,
+validate, test and report process for both models.  In [notebook directory] is
+the notebook, a Python source `harness.py` file that "glues" the CLI to the
+notebook API, and the output of a previous run of the notebook.
+
+The `harness.py` file contains a convenience class used by the notebook to add
+directories to the Python path, which is useful for debugging when the package
+isn't installed.  It also has life cycle methods to manage instances of
+[ModelFacade] and configure the Jupyter notebook for things such as logging and
+page width.
+
+
 <!-- links -->
 [clickbate corpus]: https://github.com/bhargaviparanjape/clickbait/tree/master/dataset
 
 [Jupyter notebook example]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/notebook/clickbate.ipynb
 [resource libraries]: https://plandes.github.io/util/doc/config.html#resource-libraries
+[resource library]: https://plandes.github.io/util/doc/config.html#resource-libraries
+[cb]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/cb
 [run.py]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/run.py
 [app.conf]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/resources/app.conf
 [dataclasses]: https://docs.python.org/3/library/dataclasses.html
 [action with positional and optional parameters]: https://plandes.github.io/util/doc/command-line.html#application-class-and-actions
 [default.conf]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/resources/default.conf
 [feature.conf]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/resources/feature.conf
+[glove.conf]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/models/glove.conf
+[transformer.conf]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/models/transformer.conf
 [Stash]: https://plandes.github.io/util/api/zensols.persist.html#zensols.persist.domain.Stash
 [the paper]: https://arxiv.org/pdf/2109.03383.pdf
+[zensols.deeplearn]: https://github.com/plandes/deeplearn
+[Jupyter notebook]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/notebook/clickbate.ipynb
+[notebook directory]: https://github.com/plandes/deepnlp/tree/master/example/clickbate/notebook
+[ModelFacade]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.model.html#zensols.deeplearn.model.facade.ModelFacade

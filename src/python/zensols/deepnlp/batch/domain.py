@@ -24,7 +24,7 @@ class FeatureSentenceDataPoint(DataPoint):
     def doc(self) -> FeatureDocument:
         """Return the sentence as a single sentence document.
 
-        :param: :meth:`.FeatureSentence.as_document`
+        :param: :meth:`.FeatureSentence.to_document`
 
         """
         return self.sent.to_document()
@@ -53,7 +53,7 @@ class FeatureDocumentDataPoint(DataPoint):
     def combined_doc(self) -> FeatureDocument:
         """Return a document with sentences combined.
 
-        :see: :meth:`FeatureDocument.combine_sentences`
+        :see: :meth:`.FeatureDocument.combine_sentences`
 
         """
         return self.doc.combine_sentences()

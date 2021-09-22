@@ -1,3 +1,8 @@
+"""Contains a class to parse the corpus.
+
+"""
+__author__ = 'Paul Landes'
+
 from dataclasses import dataclass, field
 import logging
 from pathlib import Path
@@ -10,11 +15,32 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class ClickbateDataframeStash(AutoSplitDataframeStash):
+    """Create the dataframe by reading the newline delimited set of clickbate
+    headlines from the corpus files.
+
+    """
     installer: Installer = field()
-    cb_data_resource: Resource
-    non_cb_data_resource: Resource
+    """The installer used to download and uncompress the clickbate headlines.
+    """
+
+    cb_data_resource: Resource = field()
+    """Use to resolve the file that has the the positive clickbate headlines.
+
+    """
+
+    non_cb_data_resource: Resource = field()
+    """Use to resolve the file that has the the negative clickbate headlines.
+
+    """
 
     def _parse_corpus(self, path: Path, label: bool) -> pd.DataFrame:
+        """Parse the corpus file identified and give it a label.
+
+        :param path: the path to the corpus file to read
+
+        :param label: the label to add to the dataframe as a column
+
+        """
         logger.info(f'parsing {path} with label {label}')
         with open(path) as f:
             sents = filter(lambda ln: len(ln) > 0,
