@@ -3,4 +3,4 @@ h5py>=3.3.0
 transformers>=4.0.1
 zensols.nlp>=0.1.3
 zensols.deeplearn>=0.1.3
-zensols.install>=0.0.3
+zensols.install>=0.0.4
