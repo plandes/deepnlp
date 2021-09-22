@@ -160,7 +160,7 @@ Copyright (c) 2020 - 2021 Paul Landes
 
 [full documentation]: https://plandes.github.io/deepnlp/index.html
 [Natural language specific layers]: https://plandes.github.io/deepnlp/doc/layers.html
-[Clickbate Text Classification]: https://plandes.github.io/deepnlp/doc/clickbate-example.html
+[Clickbate Text Classification]: https://plandes.github.io/deepnlp/doc/clickbate.html
 [Movie Review Sentiment]: https://plandes.github.io/deepnlp/doc/movie-example.html
 [Named Entity Recognizer]: https://plandes.github.io/deepnlp/doc/ner-example.html
 [Embedding+BiLSTM-CRF]: https://plandes.github.io/deepnlp/doc/ner-example.html#bilstm-crf
