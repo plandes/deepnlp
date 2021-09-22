@@ -5,6 +5,7 @@ PROJ_TYPE =		python
 PROJ_MODULES =		git python-resources python-doc python-doc-deploy
 PROJ_ARGS =		-c resources/deepnlp.conf
 CLEAN_ALL_DEPS +=	exampleclean
+CLEAN_DEPS +=		pycleancache
 
 ##doc
 PY_DOC_MD_SRC =		./doc/md
