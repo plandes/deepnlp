@@ -5,6 +5,12 @@ conditional random field and other features in the DeepZenols NLP framework.
 Before working through this example, please first read through the
 [movie review example].
 
+Note that this project has a lot of configuration as it was written before
+[resource libraries], and the vast majority of its configuration is no longer
+necessary to write as demonstrated by the [clickbate example](clickbate.md).
+However, it gives a comprehensive example of how all the components are
+configured.
+
 The first thing you'll notice is that there is not one single configuration
 file like there is for the [movie review example] or any test project in the
 [deeplearn API].  Instead, all the files in this directory are read as one

@@ -9,6 +9,12 @@ section skipping those we have already covered in the [deeplearn API] and [deep
 NLP] APIs.  It is assumed you have read the [deeplearn API] documentation and
 are reading this in parallel with the [deep NLP] documentation.
 
+Note that this project has a lot of configuration as it was written before
+[resource libraries], and the vast majority of its configuration is no longer
+necessary to write as demonstrated by the [clickbate example](clickbate.md).
+However, it gives a comprehensive example of how all the components are
+configured.
+
 Note that there is quite a bit of inline documentation in the [configuration
 file] so it is recommended the reader follow it while reading this tutorial.
 
@@ -502,6 +508,7 @@ To run the [Jupyter movie notebook]:
 [deeplearn vectorizers]: https://plandes.github.io/deeplearn/doc/preprocess.html#vectorizers
 [deeplearn API batch]: https://plandes.github.io/deeplearn/doc/preprocess.html#batches
 [deeplearn API batch stash]: https://plandes.github.io/deeplearn/doc/preprocess.html#batch-stash
+[resource libraries]: https://plandes.github.io/util/doc/config.html#resource-libraries
 
 [deep NLP]: https://plandes.github.io/deepnlp/index.html
 [movie review task example]: https://github.com/plandes/deepnlp/blob/master/example/movie
