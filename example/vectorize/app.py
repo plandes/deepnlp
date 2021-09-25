@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 import logging
 from zensols.util.log import loglevel
-from zensols.deepnlp import FeatureDocument
+from zensols.nlp import FeatureDocument
 from zensols.deepnlp.vectorize import FeatureDocumentVectorizerManager
 from zensols.deepnlp.transformer import TransformerEmbeddingFeatureVectorizer
 
@@ -19,12 +19,12 @@ class Application(object):
     """The manager that vectorizes feature document."""
 
     def __post_init__(self):
-        self.sent = 'California is part of the United States.  I live in CA.'
+        self.sent = 'California is part of the United States. I live in CA.'
         self.sent2 = 'The work in the NLP lab is fun.'
-        self.sent3 = 'The gunships are nearing.  They\'re almost right here now.'
+        self.sent3 = 'The gunships are nearing. They\'re almost right here now.'
 
     def _vectorize(self, name: str):
-        vec = self.vec_mng.vectorizers[name]
+        vec = self.vec_mng[name]
         doc: FeatureDocument = self.vec_mng.doc_parser.parse(self.sent)
         doc2: FeatureDocument = self.vec_mng.doc_parser.parse(self.sent2)
         docs = (doc, doc2)
@@ -61,8 +61,7 @@ class Application(object):
 
         """
         from pprint import pprint
-        vec: TransformerEmbeddingFeatureVectorizer = \
-            self.vec_mng.vectorizers['transformer']
+        vec: TransformerEmbeddingFeatureVectorizer = self.vec_mng['transformer']
         doc: FeatureDocument = self.vec_mng.doc_parser.parse(self.sent3)
         tdoc_org = vec.tokenize(doc)
 

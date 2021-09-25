@@ -10,7 +10,10 @@ class_name = zensols.cli.ActionCliManager
 apps = list: app
 
 [import]
-files = parser.conf
+sections = imp_conf
+
+[imp_conf]
+config_file = parser.conf
 
 [app]
 class_name = app.Application
