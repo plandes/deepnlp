@@ -3,6 +3,7 @@ import logging
 import torch
 from torch import Tensor
 from zensols.util import loglevel
+from zensols.config import FactoryError
 from zensols.deeplearn.vectorize import (
     VectorizerError, EncodableFeatureVectorizer
 )
@@ -15,9 +16,12 @@ logger = logging.getLogger(__name__)
 class TestFeatureVectorizationParse(TestFeatureVectorization):
     def test_feature_mismatch(self):
         with loglevel('zensols.config.factory', logging.CRITICAL):
-            self.assertRaises(
-                VectorizerError,
-                lambda: self.fac.instance('skinny_feature_vectorizer_manager'))
+            with self.assertRaises(FactoryError) as ex:
+                self.fac.instance('skinny_feature_vectorizer_manager')
+            ex = ex.exception
+            cause = ex.__cause__
+            self.assertEqual(VectorizerError, type(cause))
+            self.assertRegex(str(cause), '^Parser token features do not exist in vectorizer')
 
     def test_no_vectorizers(self):
         vec = self.fac.instance('no_vectorizer_feature_vectorizer_manager')

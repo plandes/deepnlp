@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+### Changed
+- `FeatureDocumentVectorizerManager.token_feature_ids` default to its owned
+  `doc_parser`'s token features.
+
+
 ## [0.0.7] - 2021-09-22
 ### Changed
 - Refactored downstream renaming of files from `zensols.deeplearn`.

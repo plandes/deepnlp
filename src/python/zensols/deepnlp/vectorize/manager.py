@@ -171,24 +171,28 @@ class FeatureDocumentVectorizerManager(FeatureVectorizerManager):
 
     """
 
-    token_feature_ids: Set[str] = field(
-        default_factory=lambda: FeatureDocumentParser.TOKEN_FEATURE_IDS)
+    token_feature_ids: Set[str] = field(default=None)
     """Indicates which spaCy parsed features to generate in the vectorizers held in
     this instance.  Examples include ``norm``, ``ent``, ``dep``, ``tag``.
 
-    :see: :obj:`.FeatureDocumentParser.TOKEN_FEATURE_IDS`
+    If this is not set, it defaults to the the `token_feature_ids` in
+    :obj:`doc_parser`.
 
     :see: :obj:`.SpacyFeatureVectorizer.VECTORIZERS`
 
     """
-
     def __post_init__(self):
         super().__post_init__()
-        feat_diff = self.token_feature_ids - self.doc_parser.token_feature_ids
-        if len(feat_diff) > 0:
-            fdiffs = ', '.join(feat_diff)
-            raise VectorizerError(
-                f'Parser token features do not exist in vectorizer: {fdiffs}')
+        if self.token_feature_ids is None:
+            self.token_feature_ids = self.doc_parser.token_feature_ids
+        else:
+            feat_diff = self.token_feature_ids - self.doc_parser.token_feature_ids
+            if len(feat_diff) > 0:
+                fdiffs = ', '.join(feat_diff)
+                raise VectorizerError(
+                    'Parser token features do not exist in vectorizer: ' +
+                    f'{self.token_feature_ids} - ' +
+                    f'{self.doc_parser.token_feature_ids} = {fdiffs}')
         self._spacy_vectorizers = PersistedWork('_spacy_vectorizers', self)
 
     @property
