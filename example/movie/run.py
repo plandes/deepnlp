@@ -61,16 +61,20 @@ class CliHarness(object):
     def proto(self):
         """Called from the Python REPL to evaluate."""
         print('-->proto')
+        #self.configure_logging()
+        #logging.getLogger('zensols.config.importini').setLevel(logging.INFO)
+        #logging.getLogger('zensols.config.iniconfig').setLevel(logging.INFO)
         try:
             model = {0: 'glove50',
                      1: 'transformer-fixed',
                      2: 'transformer-trainable'
-                     }[2]
+                     }[0]
             action = {0: 'proto',
                       1: 'debug',
                       2: 'batch',
                       3: 'predictions',
-                      }[0]
+                      4: 'info -i conf',
+                      }[4]
             args = f'-c models/{model}.conf'
             # other reload patterns read from app.conf
             rl_mods = 'movie.app'.split()
