@@ -66,13 +66,14 @@ class CliHarness(object):
                      1: 'word2vec',
                      2: 'transformer-trainable',
                      3: 'transformer-trainable-large',
-                     }[2]
+                     }[0]
             action = {0: 'proto',
                       1: 'debug',
                       2: 'all',
                       3: 'batch',
                       4: 'train',
-                      }[0]
+                      5: 'info -i conf',
+                      }[5]
             args = f'-c models/{model}.conf'
             # other reload patterns read from app.conf
             rl_mods = 'ner.app'.split()
