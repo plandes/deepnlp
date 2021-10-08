@@ -8,7 +8,7 @@ from spacy.tokens.doc import Doc
 
 
 @Language.component('remove_sent_boundaries')
-def create_amr_component(doc: Doc):
+def create_remove_sent_boundaries_component(doc: Doc):
     """Remove sentence boundaries since the corpus already delimits the sentences
     by newlines.  Otherwise, spaCy will delimit incorrectly as it gets confused
     with the capitalization in the clickbate "headlines".
