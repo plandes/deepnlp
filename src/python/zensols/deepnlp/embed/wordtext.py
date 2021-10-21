@@ -5,7 +5,7 @@ vectors from text files.
 __author__ = 'Paul Landes'
 
 from typing import List, Dict
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, InitVar
 from abc import abstractmethod, ABCMeta
 import logging
 from pathlib import Path
@@ -14,6 +14,7 @@ import numpy as np
 import h5py
 from h5py import Dataset
 from zensols.util import time
+from zensols.config import Dictable
 from zensols.persist import Primeable
 from zensols.install import Installer, Resource
 from zensols.deepnlp.embed import WordVectorModel, WordEmbedModel
@@ -23,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class TextWordModelMetadata(object):
+class TextWordModelMetadata(Dictable):
     """Describes a text based :class:`.WordEmbedModel`.  This information in this
     class is used to construct paths both text source vector file and all
     generated binary files
@@ -44,9 +45,15 @@ class TextWordModelMetadata(object):
     source_path: Path = field()
     """The path to the text file."""
 
-    def __post_init__(self):
-        sub_dir = Path('bin', f'{self.desc}.{self.dimension}')
-        self.bin_dir = self.source_path.parent / sub_dir
+    sub_directory: InitVar[Path] = field(default=None)
+    """The subdirectory to be appended to :obj:`self.bin_dir`, which defaults to
+    the directory ``bin/<description>.<dimension>``.
+
+    """
+    def __post_init__(self, sub_directory: Path):
+        if sub_directory is None:
+            sub_directory = Path('bin', f'{self.desc}.{self.dimension}')
+        self.bin_dir = self.source_path.parent / sub_directory
         self.bin_file = self.bin_dir / 'vec.dat'
         self.words_file = self.bin_dir / 'words.dat'
         self.idx_file = self.bin_dir / 'idx.dat'
