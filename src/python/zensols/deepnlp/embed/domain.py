@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Iterable
 from dataclasses import dataclass, field
 from abc import ABCMeta, abstractmethod
 import logging
@@ -174,8 +174,7 @@ class WordEmbedModel(Deallocatable, metaclass=ABCMeta):
         """
         return self.matrix.shape[1]
 
-    @property
-    def keys(self):
+    def keys(self) -> Iterable[str]:
         """Return the keys, which are the word2vec words.
 
         """
