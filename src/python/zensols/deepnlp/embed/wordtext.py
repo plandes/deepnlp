@@ -132,7 +132,7 @@ class TextWordEmbedModel(WordEmbedModel, Primeable, metaclass=ABCMeta):
                     ds[rix, :] = line[1:]
                 except Exception as e:
                     raise WordEmbedError(
-                        f'could not parse line {lc} (word: {word}): ' +
+                        f'Could not parse line {lc} (word: {word}): ' +
                         f'{e}; line: {ln}') from e
 
     def _write_vecs(self) -> np.ndarray:
