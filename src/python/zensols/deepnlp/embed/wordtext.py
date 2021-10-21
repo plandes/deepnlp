@@ -92,7 +92,7 @@ class TextWordEmbedModel(WordEmbedModel, Primeable, metaclass=ABCMeta):
         if self.path is None and self.installer is None:
             raise WordEmbedError('No path is not set')
         if self.installer is not None and self.resource is None:
-            raise WordEmbedError("Installer given but not 'reesource''")
+            raise WordEmbedError("Installer given but not 'resource''")
         if self.installer is not None:
             self.path = self._install()
         if not hasattr(self, '_metadata'):
