@@ -136,7 +136,7 @@ class TextWordEmbedModel(WordEmbedModel, Primeable, metaclass=ABCMeta):
                         f'{e}; line: {ln}') from e
 
     def _write_vecs(self) -> np.ndarray:
-        """Write the bcolz binary files.  Only when they do not exist on the files
+        """Write the h5py binary files.  Only when they do not exist on the files
         system already are they calculated and written.
 
         """
