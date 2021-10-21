@@ -155,6 +155,9 @@ class TextWordEmbedModel(WordEmbedModel, Primeable, metaclass=ABCMeta):
             logger.info(f'writing binary vectors {meta.source_path} ' +
                         f'-> {meta.bin_dir}')
         shape = (meta.n_vocab, meta.dimension)
+        if logger.isEnabledFor(logging.INFO):
+            logger.info(f'creating h5py binary vec files with shape {shape}:')
+            meta.write_to_log(logger, logging.INFO, 1)
         with time(f'wrote h5py to {meta.bin_file}'):
             with h5py.File(meta.bin_file, 'w') as f:
                 dset: Dataset = f.create_dataset(
