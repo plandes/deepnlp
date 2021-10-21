@@ -174,6 +174,13 @@ class WordEmbedModel(Deallocatable, metaclass=ABCMeta):
         """
         return self.matrix.shape[1]
 
+    @property
+    def keys(self):
+        """Return the keys, which are the word2vec words.
+
+        """
+        return self.vectors.keys()
+
     def word2idx_or_unk(self, word: str) -> int:
         """Return the index of ``word`` or :obj:UNKONWN if not indexed.
 
