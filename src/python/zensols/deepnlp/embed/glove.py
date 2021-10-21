@@ -1,12 +1,12 @@
-"""This library contains the definition of a class that operates like a dict to
+"""This module contains the definition of a class that operates like a dict to
 retrieve GloVE word embeddings.  It also creates, stores and reads a binary
 representation for quick loading on start up.
 
 """
 __author__ = 'Paul Landes'
 
-import logging
 from dataclasses import dataclass, field
+import logging
 from pathlib import Path
 from . import TextWordEmbedModel, TextWordModelMetadata
 
