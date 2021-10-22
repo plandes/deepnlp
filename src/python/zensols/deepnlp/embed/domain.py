@@ -9,7 +9,8 @@ from abc import ABCMeta, abstractmethod
 import logging
 import numpy as np
 import torch
-from zensols.config import Deallocatable
+from gensim.models.keyedvectors import Word2VecKeyedVectors, KeyedVectors
+from zensols.persist import persisted, PersistableContainer, PersistedWork
 from zensols.deeplearn import TorchConfig, DeepLearnError
 
 logger = logging.getLogger(__name__)
@@ -27,7 +28,7 @@ class WordVectorModel(object):
     vectors: np.ndarray = field()
     """The word vectors."""
 
-    word2vec: List[str] = field()
+    word2vec: Dict[str, np.ndarray] = field()
     """The word to word vector mapping."""
 
     words: Dict[str, int] = field()
@@ -54,7 +55,31 @@ class WordVectorModel(object):
 
 
 @dataclass
-class WordEmbedModel(Deallocatable, metaclass=ABCMeta):
+class _WordEmbedVocabAdapter(object):
+    """Adapts a :class:`.WordEmbedModel` to a gensim :class:`.KeyedVectors`, which
+    is used in :meth:`.WordEmbedModel._create_keyed_vectors`.
+
+    """
+    model: WordVectorModel
+
+    def __post_init__(self):
+        self._index = -1
+
+    @property
+    def index(self):
+        return self._index
+
+    def __iter__(self):
+        words: List[str] = self.model.words
+        return iter(words)
+
+    def __getitem__(self, word: str):
+        self._index = self.model.word2idx[word]
+        return self
+
+
+@dataclass
+class WordEmbedModel(PersistableContainer, metaclass=ABCMeta):
     """This is an abstract base class that represents a set of word vectors
     (i.e. GloVe).
 
@@ -85,6 +110,10 @@ class WordEmbedModel(Deallocatable, metaclass=ABCMeta):
     input.
 
     """
+    def __post_init__(self):
+        super().__init__()
+        self._data_inst = PersistedWork('_data_inst', self, transient=True)
+
     @abstractmethod
     def _get_model_id(self) -> str:
         """Return a string that uniquely identifies this instance of the embedding
@@ -127,20 +156,14 @@ class WordEmbedModel(Deallocatable, metaclass=ABCMeta):
         """
         return self._get_model_id()
 
-    def _data(self) -> Tuple[np.ndarray, List[str],
-                             Dict[str, int], Dict[str, np.ndarray]]:
-        if not hasattr(self, '_data_inst'):
-            model_id = self.model_id
-            self._data_inst = self.CACHE.get(model_id)
-            if self._data_inst is None:
-                self._data_inst = self._create_data()
-                self.CACHE[model_id] = self._data_inst
-        return self._data_inst
-
-    def __getstate__(self):
-        state = dict(self.__dict__)
-        state.pop('_data_inst', None)
-        return state
+    @persisted('_data_inst', transient=True)
+    def _data(self) -> WordVectorModel:
+        model_id = self.model_id
+        wv_model = self.CACHE.get(model_id)
+        if wv_model is None:
+            wv_model = self._create_data()
+            self.CACHE[model_id] = wv_model
+        return wv_model
 
     @property
     def matrix(self) -> np.ndarray:
@@ -210,6 +233,18 @@ class WordEmbedModel(Deallocatable, metaclass=ABCMeta):
             key = self.UNKNOWN
         return self.vectors.get(key, default)
 
+    @property
+    @persisted('_keyed_vectors', transient=True)
+    def keyed_vectors(self) -> KeyedVectors:
+        return self._create_keyed_vectors()
+
+    def _create_keyed_vectors(self) -> KeyedVectors:
+        kv = Word2VecKeyedVectors(vector_size=self.vector_dimension)
+        kv.vocab = _WordEmbedVocabAdapter(self._data())
+        kv.vectors = self.matrix
+        kv.index2entity = list(self._data().words)
+        return kv
+
     def __getitem__(self, key: str):
         if self.lowercase:
             key = key.lower()
@@ -224,8 +259,8 @@ class WordEmbedModel(Deallocatable, metaclass=ABCMeta):
         return self.matrix.shape[0]
 
     def __str__(self):
-        if not hasattr(self, '_data_inst'):
-            return self.model_id
-        else:
+        if self._data_inst.is_set():
             return (f'word embed model: num words: {len(self)}, ' +
                     f'vector dim: {self.vector_dimension}')
+        else:
+            return self.model_id

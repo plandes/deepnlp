@@ -32,17 +32,14 @@ class Word2VecModel(WordEmbedModel):
     """The type of the embeddings, which is either ``keyed`` or ``gensim``."""
 
     def __post_init__(self):
+        super.__post_init__()
         if self.path is None:
             raise WordEmbedError('Missing path attribute')
 
     def _get_model_id(self) -> str:
         return f'word2vec: type={self.model_type}, dim={self.dimension}'
 
-    @property
-    def model(self) -> KeyedVectors:
-        return self._data()[1]
-
-    def _get_model(self):
+    def _get_model(self) -> KeyedVectors:
         """The word2vec model.
 
         """
@@ -50,7 +47,7 @@ class Word2VecModel(WordEmbedModel):
             if self.model_type == 'keyed':
                 model = self._get_keyed_model()
             else:
-                model = self._get_trained_model()
+                model = self._get_trained_model().wv
             return model
 
     def _get_keyed_model(self) -> KeyedVectors:
@@ -103,3 +100,6 @@ class Word2VecModel(WordEmbedModel):
         words.append(self.UNKNOWN)
         word2vec[self.UNKNOWN] = unknown_vec
         return WordVectorModel(vectors, word2vec, words, word2idx)
+
+    def _create_keyed_vectors(self) -> KeyedVectors:
+        return self._get_model()
