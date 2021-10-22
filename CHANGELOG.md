@@ -8,9 +8,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [0.0.8] - 2021-10-22
+### Added
+- Add gensim KeyedVectors factory method to `WordEmbedModel` to allow for word
+  vector utility methods.
+- Make sub directory in text embedding models configurable.
+- Glove model automatically downloads embeddings if not present on the file
+  system using `zensols.install`.
+
 ### Changed
 - `FeatureDocumentVectorizerManager.token_feature_ids` default to its owned
   `doc_parser`'s token features.
+- Pin dependencies to working huggingface transformers as new version breaks
+  this version.
+- Fix glove embedding factory create functionality.
 
 
 ## [0.0.7] - 2021-09-22
@@ -92,7 +103,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v0.0.7...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v0.0.8...HEAD
+[0.0.8]: https://github.com/plandes/deepnlp/compare/v0.0.7...v0.0.8
 [0.0.7]: https://github.com/plandes/deepnlp/compare/v0.0.6...v0.0.7
 [0.0.6]: https://github.com/plandes/deepnlp/compare/v0.0.5...v0.0.6
 [0.0.5]: https://github.com/plandes/deepnlp/compare/v0.0.4...v0.0.5
