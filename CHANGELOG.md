@@ -10,8 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.0.8] - 2021-10-22
 ### Added
-- Add gensim KeyedVectors factory method to `WordEmbedModel` to allow for word
-  vector utility methods.
+- A factory method in `zensols.deepnlp.WordEmbedModel` to create a Gensim
+  `KeyedVectors` instance to provide word vector operations for all embedding
+  model types.
 - Make sub directory in text embedding models configurable.
 - Glove model automatically downloads embeddings if not present on the file
   system using `zensols.install`.

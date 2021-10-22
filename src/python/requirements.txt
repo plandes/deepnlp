@@ -3,5 +3,5 @@ h5py>=3.3.0
 transformers==4.5.1
 huggingface-hub==0.0.19
 zensols.nlp~=1.0
+zensols.install>=0.0.7
 zensols.deeplearn>=0.1.6
-zensols.install>=0.0.5
