@@ -160,7 +160,6 @@ page width.
 <!-- links -->
 [clickbate corpus]: https://github.com/bhargaviparanjape/clickbait/tree/master/dataset
 
-[Jupyter notebook example]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/notebook/clickbate.ipynb
 [resource libraries]: https://plandes.github.io/util/doc/config.html#resource-libraries
 [resource library]: https://plandes.github.io/util/doc/config.html#resource-libraries
 [cb]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/cb
@@ -173,8 +172,10 @@ page width.
 [glove.conf]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/models/glove.conf
 [transformer.conf]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/models/transformer.conf
 [Stash]: https://plandes.github.io/util/api/zensols.persist.html#zensols.persist.domain.Stash
+[spaCy]: https://spacy.io
 [the paper]: https://arxiv.org/pdf/2109.03383.pdf
 [zensols.deeplearn]: https://github.com/plandes/deeplearn
+[Jupyter notebook example]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/notebook/clickbate.ipynb
 [Jupyter notebook]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/notebook/clickbate.ipynb
 [notebook directory]: https://github.com/plandes/deepnlp/tree/master/example/clickbate/notebook
 [ModelFacade]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.model.html#zensols.deeplearn.model.facade.ModelFacade
