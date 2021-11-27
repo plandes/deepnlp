@@ -38,7 +38,7 @@ $(STANFORD_DIR):
 $(CORNELL_DIR):
 			@echo "downloading the stanford movie review corpus"
 			mkdir -p $(CORNELL_DIR)
-			curl "$(CORNELL_SRC_URL)" --output $(CORPUS_DIR)/cornell.tar.gz
+			curl "$(CORNELL_SRC_URL)" --insecure --output $(CORPUS_DIR)/cornell.tar.gz
 			( cd $(CORPUS_DIR) ; tar zxf cornell.tar.gz )
 			rm $(CORPUS_DIR)/cornell.tar.gz
 
