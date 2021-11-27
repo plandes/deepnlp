@@ -77,6 +77,12 @@ class WordVectorEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
     :class:`.WordEmbedModel` or
     :class:`~zensols.deepnlp.transformer.TransformerEmbedding`.
 
+    The encoder returns the indicies of the word embedding for each token in
+    the input :class:`.FeatureDocument`.  The decoder returns the corresponding
+    word embedding vectors if :obj:`decode_embedding` is ``True``.  Otherwise
+    it returns the same indicies, which later used by the embedding layer
+    (usually :class:`~zensols.deepnlp.layer.EmbeddingLayer`).
+
     """
     DESCRIPTION = 'word vector document embedding'
     FEATURE_TYPE = TextFeatureType.EMBEDDING
@@ -111,7 +117,8 @@ class WordVectorEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
     def _decode(self, context: FeatureContext) -> Tensor:
         x: Tensor = super()._decode(context)
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'decoded word embedding: {x.shape}')
+            logger.debug(f'indexes: {x.shape} ({x.dtype}), ' +
+                         f'will decode in vectorizer: {self.decode_embedding}')
         if self.decode_embedding:
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'decoding using: {self.decode_embedding}')
@@ -120,7 +127,6 @@ class WordVectorEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
             vecs = []
             for batch_idx in x:
                 for idxt in batch_idx:
-                    #idx = idxt.item()
                     vecs.append(src_vecs[idxt])
                 batches.append(torch.stack(vecs))
                 vecs.clear()

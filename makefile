@@ -17,7 +17,7 @@ GLOVE_DIR =		$(CORPUS_DIR)/glove
 # glove
 GLOVE_SRC_URL =		http://downloads.cs.stanford.edu/nlp/data/glove.6B.zip
 
-PY_SRC_TEST_PAT ?=	'test_trans*.py'
+#PY_SRC_TEST_PAT ?=	'test_trans*.py'
 
 
 ## targets

@@ -170,9 +170,11 @@ class TextWordEmbedModel(WordEmbedModel, Primeable, metaclass=ABCMeta):
 
     def _assert_binary_vecs(self):
         meta = self.metadata
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'{meta.bin_file} exists: {meta.bin_file.exists()}')
         if not meta.bin_file.exists():
             if logger.isEnabledFor(logging.INFO):
-                logger.info(f'wriging binary vectors to: {meta.bin_file}')
+                logger.info(f'writing binary vectors to: {meta.bin_file}')
             self._write_vecs()
 
     def prime(self):
@@ -189,15 +191,20 @@ class TextWordEmbedModel(WordEmbedModel, Primeable, metaclass=ABCMeta):
         with time('loaded {cnt} vectors'):
             with h5py.File(meta.bin_file, 'r') as f:
                 ds: Dataset = f[self.DATASET_NAME]
-                vectors = ds[:]
+                vectors: np.ndarray = ds[:]
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug(f'word embedding type: {vectors.dtype}')
             with open(meta.words_file, 'rb') as f:
                 words = pickle.load(f)
             with open(meta.idx_file, 'rb') as f:
                 word2idx = pickle.load(f)
             cnt = len(word2idx)
         with time('prepared vectors'):
-            unknown_vec = np.expand_dims(np.zeros(self.dimension), axis=0)
-            vectors = np.concatenate((vectors, unknown_vec))
+            unknown_vec: np.ndarray = np.expand_dims(
+                np.zeros(self.dimension), axis=0)
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'unknown type: {unknown_vec.dtype}')
+            vectors: np.ndarray = np.concatenate((vectors, unknown_vec))
             word2idx[self.UNKNOWN] = len(words)
             words.append(self.UNKNOWN)
             word2vec = {w: vectors[word2idx[w]] for w in words}
