@@ -7,6 +7,8 @@ from typing import List, Dict, Any
 from dataclasses import dataclass, field
 import logging
 import torch
+from transformers import PreTrainedTokenizer, PreTrainedModel
+from transformers.tokenization_utils_base import BatchEncoding
 from zensols.nlp import FeatureDocument
 from zensols.deepnlp.transformer import TransformerResource
 from zensols.persist import persisted, PersistableContainer
@@ -67,7 +69,7 @@ class TransformerDocumentTokenizer(PersistableContainer):
             TokenizedFeatureDocument:
         torch_config = self.resource.torch_config
         tlen = self.word_piece_token_length
-        tokenizer = self.resource.tokenizer
+        tokenizer: PreTrainedTokenizer = self.resource.tokenizer
         params = {'return_offsets_mapping': True,
                   'is_split_into_words': True,
                   'return_special_tokens_mask': True}
@@ -93,7 +95,7 @@ class TransformerDocumentTokenizer(PersistableContainer):
 
         if tokenizer_kwargs is not None:
             params.update(tokenizer_kwargs)
-        tok_dat = tokenizer(sents, **params)
+        tok_dat: BatchEncoding = tokenizer(sents, **params)
 
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f"lengths: {[len(i) for i in tok_dat['input_ids']]}")
@@ -120,9 +122,10 @@ class TransformerDocumentTokenizer(PersistableContainer):
                     logger.debug(
                         f'sent={six}, idx={tix}, id={bid}: {wtok} -> {stok}')
 
-        arr = torch_config.singleton(
-            [input_ids, tok_dat.attention_mask, sent_offsets],
-            dtype=torch.long)
+        tok_data = [input_ids, tok_dat.attention_mask, sent_offsets]
+        if hasattr(tok_dat, 'token_type_ids'):
+            tok_data.append(tok_dat.token_type_ids)
+        arr = torch_config.singleton(tok_data, dtype=torch.long)
 
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'tok doc mat: shape={arr.shape}, dtype={arr.dtype}')

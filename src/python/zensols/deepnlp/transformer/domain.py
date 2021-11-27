@@ -73,6 +73,12 @@ class TokenizedDocument(PersistableContainer):
         return self.tensor[2]
 
     @property
+    def token_type_ids(self) -> Tensor:
+        """The token type IDs (0/1s)."""
+        if self.tensor.size(0) > 3:
+            return self.tensor[3]
+
+    @property
     def shape(self) -> torch.Size:
         """Return the shape of the vectorized document."""
         return self.tensor.shape
@@ -87,9 +93,11 @@ class TokenizedDocument(PersistableContainer):
 
     def params(self) -> Dict[str, Any]:
         dct = {}
-        atts = 'input_ids attention_mask'
+        atts = 'input_ids attention_mask token_type_ids'
         for att in atts.split():
-            dct[att] = getattr(self, att)
+            val = getattr(self, att)
+            if val is not None:
+                dct[att] = val
         return dct
 
     @staticmethod

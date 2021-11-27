@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Dict, Iterable, Tuple
+from typing import Dict, Iterable, Tuple, Any
 from dataclasses import dataclass, field
 import logging
 from itertools import chain
@@ -15,6 +15,7 @@ from transformers.modeling_outputs import \
     BaseModelOutputWithPoolingAndCrossAttentions
 from zensols.config import Dictable
 from zensols.nlp import FeatureDocument
+from zensols.deeplearn import TorchTypes
 from zensols.deepnlp.transformer import TransformerResource
 from zensols.persist import persisted, PersistedWork, PersistableContainer
 from . import (
@@ -110,6 +111,29 @@ class TransformerEmbedding(PersistableContainer, Dictable):
         """
         return self.tokenizer.tokenize(doc)
 
+    def _prep_model(self, model: nn.Module, params: Dict[str, Any]):
+        model_name: str = self.resource.model_id
+
+        if self.output_attentions:
+            params['output_attentions'] = True
+
+        if model_name.startswith('bert'):
+            # a bug in transformers 4.4.2 requires this; 4.12.5 still does
+            # https://github.com/huggingface/transformers/issues/2952
+            input_ids = params['input_ids']
+            seq_length = input_ids.size()[1]
+            position_ids = model.embeddings.position_ids
+            position_ids = position_ids[:, 0: seq_length].to(torch.long)
+            params['position_ids'] = position_ids
+        elif model_name.startswith('distilbert') and \
+             hasattr(model.embeddings, 'position_ids') and \
+             TorchTypes.is_float(model.embeddings.position_ids.dtype):
+            model.embeddings.position_ids = model.embeddings.position_ids.long()
+        elif model_name.startswith('roberta') and \
+             hasattr(model.embeddings, 'token_type_ids') and \
+             TorchTypes.is_float(model.embeddings.token_type_ids.dtype):
+            model.embeddings.token_type_ids = model.embeddings.token_type_ids.long()
+
     def transform(self, doc: TokenizedDocument, output: str = None) -> \
             BaseModelOutputWithPoolingAndCrossAttentions:
         """Transform the documents in to the transformer output.
@@ -127,17 +151,7 @@ class TransformerEmbedding(PersistableContainer, Dictable):
         model: nn.Module = self.resource.model
         params: Dict[str, Tensor] = doc.params()
 
-        if self.output_attentions:
-            params['output_attentions'] = True
-
-        if self.resource.model_id.startswith('bert'):
-            # a bug in transformers 4.4.2 requires this
-            # https://github.com/huggingface/transformers/issues/2952
-            input_ids = params['input_ids']
-            seq_length = input_ids.size()[1]
-            position_ids = model.embeddings.position_ids
-            position_ids = position_ids[:, 0: seq_length].to(torch.long)
-            params['position_ids'] = position_ids
+        self._prep_model(model, params)
 
         if logger.isEnabledFor(logging.DEBUG):
             for k, v in params.items():
