@@ -4,17 +4,16 @@ import unittest
 from zensols.config import ExtendedInterpolationConfig as AppConfig
 from zensols.config import ImportConfigFactory
 from zensols.nlp import FeatureToken, FeatureDocument, FeatureSentence
-from zensols.deepnlp.transformer import TokenizedFeatureDocument
-import zensols.deepnlp
-
-logger = logging.getLogger(__name__)
+from zensols.deepnlp.transformer import (
+    TokenizedFeatureDocument, suppress_warnings
+)
 
 if 0:
     logging.basicConfig(level=logging.WARNING)
     logging.getLogger('zensols.deepnlp.transformer').setLevel(logging.DEBUG)
 
 
-zensols.deepnlp.suppress_transformer_warnings()
+suppress_warnings()
 
 
 class TestWordPieceTokenization(unittest.TestCase):

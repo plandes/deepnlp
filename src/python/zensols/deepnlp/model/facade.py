@@ -18,6 +18,7 @@ from zensols.deeplearn.vectorize import (
     FeatureVectorizer,
 )
 from zensols.nlp import FeatureDocumentParser, FeatureDocument
+from zensols.deepnlp.transformer import suppress_warnings
 from zensols.deepnlp.transformer.vectorizers import \
     TransformerEmbeddingFeatureVectorizer
 from zensols.deepnlp.transformer import (
@@ -65,6 +66,16 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
     vectorizer naming.  See :obj:`embedding`.
 
     """
+    suppress_transformer_warnings: bool = field(default=True)
+    """If ``True``, suppress the ```Some weights of the model checkpoint...```
+    warnings from huggingface transformers library.
+
+    """
+    def __post_init__(self):
+        super().__post_init__()
+        if self.suppress_transformer_warnings:
+            suppress_warnings()
+
     @abstractmethod
     def _get_language_model_config(self) -> LanguageModelFacadeConfig:
         """Get the langauge model configuration.

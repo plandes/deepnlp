@@ -21,11 +21,6 @@ class NotebookHarness(object):
         # imported
         from zensols.deeplearn import TorchConfig
         TorchConfig.init()
-        # Suppress the ```Some weights of the model checkpoint...``` warnings
-        # from huggingface transformers
-        import zensols.deepnlp
-        zensols.deepnlp.suppress_transformer_warnings()
-
 
     def __call__(self, cuda_device_index: int = None,
                  temporary_dir_name: str = None):
