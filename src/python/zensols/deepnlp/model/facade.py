@@ -71,8 +71,8 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
     warnings from huggingface transformers library.
 
     """
-    def __post_init__(self):
-        super().__post_init__()
+    def __post_init__(self, *args, **kwargs):
+        super().__post_init__(*args, **kwargs)
         if self.suppress_transformer_warnings:
             suppress_warnings()
 

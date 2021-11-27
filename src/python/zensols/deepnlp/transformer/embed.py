@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Dict, Iterable, Tuple, Any
+from typing import Dict, Iterable, Tuple
 from dataclasses import dataclass, field
 import logging
 from itertools import chain
@@ -12,7 +12,7 @@ from torch import Tensor
 from torch import nn
 from transformers import PreTrainedModel
 from transformers.modeling_outputs import \
-    BaseModelOutputWithPoolingAndCrossAttentions
+    BaseModelOutput, BaseModelOutputWithPoolingAndCrossAttentions
 from zensols.config import Dictable
 from zensols.nlp import FeatureDocument
 from zensols.deeplearn import TorchTypes
@@ -111,7 +111,16 @@ class TransformerEmbedding(PersistableContainer, Dictable):
         """
         return self.tokenizer.tokenize(doc)
 
-    def _prep_model(self, model: nn.Module, params: Dict[str, Any]):
+    def _get_model(self, params: Dict[str, Tensor]) -> nn.Module:
+        """Prepare the model and parameters used for inference on it.
+
+        :param params: the tokenization output later used on the model's
+                       ``__call__`` method
+
+        :return: the model that is ready for inferencing
+
+        """
+        model: nn.Module = self.resource.model
         model_name: str = self.resource.model_id
 
         if self.output_attentions:
@@ -125,14 +134,30 @@ class TransformerEmbedding(PersistableContainer, Dictable):
             position_ids = model.embeddings.position_ids
             position_ids = position_ids[:, 0: seq_length].to(torch.long)
             params['position_ids'] = position_ids
-        elif model_name.startswith('distilbert') and \
-             hasattr(model.embeddings, 'position_ids') and \
-             TorchTypes.is_float(model.embeddings.position_ids.dtype):
-            model.embeddings.position_ids = model.embeddings.position_ids.long()
+        elif model_name.startswith('distilbert'):
+            if hasattr(model.embeddings, 'position_ids') and \
+               TorchTypes.is_float(model.embeddings.position_ids.dtype):
+                model.embeddings.position_ids = \
+                    model.embeddings.position_ids.long()
+            params.pop('token_type_ids', None)
         elif model_name.startswith('roberta') and \
              hasattr(model.embeddings, 'token_type_ids') and \
              TorchTypes.is_float(model.embeddings.token_type_ids.dtype):
             model.embeddings.token_type_ids = model.embeddings.token_type_ids.long()
+
+    def _infer_pooler(self, output: BaseModelOutput) -> Tensor:
+        """Create a pooler output if one is not available, such as with Distilbert (and
+        sounds like RoBERTa in the future).  This assumes the output has a
+        hidden state at index 0.
+
+        :param output: the output from the model
+
+        :return: the pooler output tensor taken from ``output``
+
+        """
+        hidden_state = output[0]  # (bs, seq_len, dim)
+        pooled_output = hidden_state[:, 0]  # (bs, dim)
+        return pooled_output
 
     def transform(self, doc: TokenizedDocument, output: str = None) -> \
             BaseModelOutputWithPoolingAndCrossAttentions:
@@ -148,10 +173,8 @@ class TransformerEmbedding(PersistableContainer, Dictable):
         """
         output = self.output if output is None else output
         output_res: BaseModelOutputWithPoolingAndCrossAttentions
-        model: nn.Module = self.resource.model
         params: Dict[str, Tensor] = doc.params()
-
-        self._prep_model(model, params)
+        model: nn.Module = self._get_model(params)
 
         if logger.isEnabledFor(logging.DEBUG):
             for k, v in params.items():
@@ -175,11 +198,15 @@ class TransformerEmbedding(PersistableContainer, Dictable):
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'transform output: {output_res}')
         else:
-            if not hasattr(output_res, self.output):
-                raise TransformerError(
-                    f'No such output attribte {self.output} for ' +
-                    f'output {type(output_res)}')
-            output_res: Tensor = getattr(output_res, self.output)
+            if self.output == 'pooler_output' and \
+               not hasattr(output_res, self.output):
+                output_res = self._infer_pooler(output_res)
+            else:
+                if not hasattr(output_res, self.output):
+                    raise TransformerError(
+                        f'No such output attribte {self.output} for ' +
+                        f'output {type(output_res)}')
+                output_res: Tensor = getattr(output_res, self.output)
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'embedding dim: {output_res.size()}')
 
