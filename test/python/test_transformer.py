@@ -5,12 +5,16 @@ from zensols.config import ExtendedInterpolationConfig as AppConfig
 from zensols.config import ImportConfigFactory
 from zensols.nlp import FeatureToken, FeatureDocument, FeatureSentence
 from zensols.deepnlp.transformer import TokenizedFeatureDocument
+import zensols.deepnlp
 
 logger = logging.getLogger(__name__)
 
 if 0:
     logging.basicConfig(level=logging.WARNING)
     logging.getLogger('zensols.deepnlp.transformer').setLevel(logging.DEBUG)
+
+
+zensols.deepnlp.suppress_model_checkpoint_warnings()
 
 
 class TestWordPieceTokenization(unittest.TestCase):
