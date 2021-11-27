@@ -9,16 +9,10 @@ MDL_DIR=		./models
 LOG_DIR = 		$(RESULTS_DIR)
 
 ## corpora and models
-# glove
-GLOVE_SRC_URL =		http://downloads.cs.stanford.edu/nlp/data/glove.6B.zip
 # movie review dataset
 STANFORD_SRC_URL =	https://nlp.stanford.edu/~socherr/stanfordSentimentTreebank.zip
 # cornells labels
 CORNELL_SRC_URL = 	https://www.cs.cornell.edu/people/pabo/movie-review-data/rt-polaritydata.tar.gz
-# google 300D word2vec
-W2V_SRC_URL = 		https://s3.amazonaws.com/dl4j-distribution/GoogleNews-vectors-negative300.bin.gz
-W2V_DIR =		$(dir $(W2V_PATH))
-W2V_FILE =		$(notdir $(W2V_PATH))
 
 include $(ENV_INC)
 
@@ -34,13 +28,6 @@ $(ENV_INC):
 info:
 			@cat $(ENV_INC)
 
-$(GLOVE_DIR):
-			@echo "downloading glove embeddings"
-			mkdir -p $(GLOVE_DIR)
-			curl "$(GLOVE_SRC_URL)" --output $(GLOVE_DIR)/glove.zip
-			( cd $(GLOVE_DIR) ; unzip glove.zip )
-			rm $(GLOVE_DIR)/glove.zip
-
 $(STANFORD_DIR):
 			@echo "downloading the stanford movie review corpus"
 			mkdir -p $(STANFORD_DIR)
@@ -54,12 +41,6 @@ $(CORNELL_DIR):
 			curl "$(CORNELL_SRC_URL)" --output $(CORPUS_DIR)/cornell.tar.gz
 			( cd $(CORPUS_DIR) ; tar zxf cornell.tar.gz )
 			rm $(CORPUS_DIR)/cornell.tar.gz
-
-$(W2V_PATH):
-			@echo "downloading the Google pretrained word vectors"
-			mkdir -p $(W2V_DIR)
-			curl "$(W2V_SRC_URL)" --output $(W2V_DIR)/$(W2V_FILE).gz
-			( cd $(W2V_DIR) ; gunzip $(W2V_FILE).gz )
 
 .PHONY:			corpus
 corpus:			$(STANFORD_DIR) $(CORNELL_DIR)
