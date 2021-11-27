@@ -28,7 +28,7 @@ include $(ENV_INC)
 $(ENV_INC):
 			mkdir -p $(MTARG)
 			$(ENTRY) -c $(MDL_DIR)/noop.conf export --expfmt \
-				make --expoutput $(ENV_INC)
+				make --expout $(ENV_INC)
 
 .PHONY:			info
 info:
@@ -62,7 +62,7 @@ $(W2V_PATH):
 			( cd $(W2V_DIR) ; gunzip $(W2V_FILE).gz )
 
 .PHONY:			corpus
-corpus:			$(GLOVE_DIR) $(STANFORD_DIR) $(CORNELL_DIR) $(W2V_PATH)
+corpus:			$(STANFORD_DIR) $(CORNELL_DIR)
 
 .PHONY:			stop
 stop:
