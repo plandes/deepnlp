@@ -14,7 +14,7 @@ if 0:
     logging.getLogger('zensols.deepnlp.transformer').setLevel(logging.DEBUG)
 
 
-zensols.deepnlp.suppress_model_checkpoint_warnings()
+zensols.deepnlp.suppress_transformer_warnings()
 
 
 class TestWordPieceTokenization(unittest.TestCase):

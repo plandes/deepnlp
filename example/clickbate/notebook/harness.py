@@ -17,10 +17,15 @@ class NotebookHarness(object):
         sys.path.append(str(self.app_root_dir / 'cb'))
         # add the deepnlp path
         sys.path.append(deepnlp_path)
-        from zensols.deeplearn import TorchConfig
         # reset random state for consistency before any other packages are
         # imported
+        from zensols.deeplearn import TorchConfig
         TorchConfig.init()
+        # Suppress the ```Some weights of the model checkpoint...``` warnings
+        # from huggingface transformers
+        import zensols.deepnlp
+        zensols.deepnlp.suppress_transformer_warnings()
+
 
     def __call__(self, cuda_device_index: int = None,
                  temporary_dir_name: str = None):
@@ -34,9 +39,10 @@ class NotebookHarness(object):
 
         """
         from pathlib import Path
-        from zensols.deeplearn.cli import JupyterManager
         from zensols.config import DictionaryConfig
-        from zensols.deeplearn.cli import FacadeApplicationFactory
+        from zensols.deeplearn.cli import (
+            JupyterManager, FacadeApplicationFactory
+        )
 
         # we use the CliHarness in the entry point ``run.py`` script, so define
         # the glue code here since there isn't a module with this example

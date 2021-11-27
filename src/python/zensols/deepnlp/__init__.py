@@ -4,9 +4,12 @@
 __author__ = 'Paul Landes'
 
 
-def suppress_model_checkpoint_warnings():
+def suppress_transformer_warnings():
+    """Suppress the ```Some weights of the model checkpoint...``` warnings from
+    huggingface transformers.
+
+    """
     from transformers import logging
-    # suppress the 'Some weights of the model checkpoint...' warnings
     logging.set_verbosity_error()
 
 
