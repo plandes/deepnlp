@@ -145,6 +145,8 @@ class TransformerEmbedding(PersistableContainer, Dictable):
              TorchTypes.is_float(model.embeddings.token_type_ids.dtype):
             model.embeddings.token_type_ids = model.embeddings.token_type_ids.long()
 
+        return model
+
     def _infer_pooler(self, output: BaseModelOutput) -> Tensor:
         """Create a pooler output if one is not available, such as with Distilbert (and
         sounds like RoBERTa in the future).  This assumes the output has a
