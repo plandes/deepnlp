@@ -19,8 +19,9 @@ class NotebookHarness(object):
         sys.path.append(deepnlp_path)
         # reset random state for consistency before any other packages are
         # imported
-        # from zensols.deeplearn import TorchConfig
-        # TorchConfig.init()
+        from zensols.deeplearn import TorchConfig
+        TorchConfig.init()
+        # initialize the NLP system
         from zensols.deepnlp import init
         init()
 

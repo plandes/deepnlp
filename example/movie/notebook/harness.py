@@ -18,9 +18,13 @@ class NotebookHarness(object):
         sys.path.append(str(self.app_root_dir / 'src'))
         # add the deepnlp path
         sys.path.append(deepnlp_path)
+        # reset random state for consistency before any other packages are
+        # imported
         from zensols.deeplearn import TorchConfig
-        # reset random state for consistency before any other packages are imported
         TorchConfig.init()
+        # initialize the NLP system
+        from zensols.deepnlp import init
+        init()
 
     def __call__(self, cuda_device_index: int = None,
                  temporary_dir_name: str = None):
