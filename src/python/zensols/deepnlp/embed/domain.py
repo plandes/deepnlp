@@ -9,6 +9,7 @@ from abc import ABCMeta, abstractmethod
 import logging
 import numpy as np
 import torch
+from torch import Tensor
 from gensim.models.keyedvectors import Word2VecKeyedVectors, KeyedVectors
 from zensols.persist import persisted, PersistableContainer, PersistedWork
 from zensols.deeplearn import TorchConfig, DeepLearnError
@@ -90,7 +91,7 @@ class WordEmbedModel(PersistableContainer, metaclass=ABCMeta):
     ZERO = UNKNOWN
     """The zero vector symbol used for padding vectors."""
 
-    CACHE = {}
+    _CACHE = {}
     """Contains cached embedding model that point to the same source."""
 
     name: str = field()
@@ -136,9 +137,9 @@ class WordEmbedModel(PersistableContainer, metaclass=ABCMeta):
         pass
 
     def clear_cache(self):
-        for model in self.CACHE.values():
+        for model in self._CACHE.values():
             self._try_deallocate(model)
-        self.CACHE.clear()
+        self._CACHE.clear()
 
     def deallocate(self):
         self.clear_cache()
@@ -159,10 +160,10 @@ class WordEmbedModel(PersistableContainer, metaclass=ABCMeta):
     @persisted('_data_inst', transient=True)
     def _data(self) -> WordVectorModel:
         model_id = self.model_id
-        wv_model = self.CACHE.get(model_id)
+        wv_model = self._CACHE.get(model_id)
         if wv_model is None:
             wv_model = self._create_data()
-            self.CACHE[model_id] = wv_model
+            self._CACHE[model_id] = wv_model
         return wv_model
 
     @property
@@ -175,7 +176,7 @@ class WordEmbedModel(PersistableContainer, metaclass=ABCMeta):
         """The shape of the word vector :obj"`matrix`."""
         return self.matrix.shape
 
-    def to_matrix(self, torch_config: TorchConfig) -> torch.Tensor:
+    def to_matrix(self, torch_config: TorchConfig) -> Tensor:
         """Return a matrix the represents the entire vector embedding as a tensor.
 
         :param torch_config: indicates where to load the new tensor
