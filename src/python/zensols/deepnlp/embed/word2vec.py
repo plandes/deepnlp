@@ -57,7 +57,8 @@ class Word2VecModel(WordEmbedModel):
         """Load a model from a pretrained word2vec model.
 
         """
-        logger.info(f'loading keyed file: {self.path}')
+        if logger.isEnabledFor(logging.INFO):
+            logger.info(f'loading keyed file: {self.path}')
         fname = str(self.path.absolute())
         with time(f'loaded key model from {fname}'):
             return KeyedVectors.load_word2vec_format(fname, binary=True)
@@ -68,11 +69,13 @@ class Word2VecModel(WordEmbedModel):
         """
         path = self.path
         if path.exists():
-            logger.info('loading trained file: {}'.format(path))
+            if logger.isEnabledFor(logging.INFO):
+                logger.info('loading trained file: {}'.format(path))
             model = Word2Vec.load(str(path.absolute()))
         else:
             model = self._train()
-            logger.info('saving trained vectors to: {}'.format(path))
+            if logger.isEnabledFor(logging.INFO):
+                logger.info('saving trained vectors to: {}'.format(path))
             model.save(str(path.absolute()))
         return model
 
