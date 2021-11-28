@@ -28,6 +28,8 @@ class CliHarness(object):
     @classmethod
     def run(cls):
         """The command line script entry point."""
+        from zensols.deeplearn import TorchConfig
+        TorchConfig.init()
         from zensols.deepnlp import init as nlp_init
         nlp_init()
         self = cls()

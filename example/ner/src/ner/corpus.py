@@ -45,6 +45,7 @@ class NERTokenFeatures(NormalizedTokenFeatures):
         self.tag_ = tag_
         self.syn_ = syn_
         self.ent_ = ent_
+        self.idx = i
 
 
 class NERFeatureToken(FeatureToken):

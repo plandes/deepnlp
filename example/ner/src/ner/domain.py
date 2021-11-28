@@ -49,7 +49,9 @@ class NERDataPoint(FeatureSentenceDataPoint):
 
     def __post_init__(self):
         self.sent = TokenAnnotatedFeatureSentence(
-            self.sent.sent_tokens, self.sent.text, self.ents)
+            sent_tokens=self.sent.sent_tokens,
+            text=self.sent.text,
+            annotations=self.ents)
         if self.is_pred:
             self._map_syn(self.sent)
             self._map_tag(self.sent)

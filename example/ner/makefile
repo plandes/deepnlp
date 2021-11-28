@@ -19,7 +19,7 @@ include $(ENV_INC)
 $(ENV_INC):
 			mkdir -p $(MTARG)
 			$(ENTRY) -c $(MDL_DIR)/noop.conf export --expfmt \
-				make --expoutput $(ENV_INC)
+				make --expout $(ENV_INC)
 
 $(LOG_DIR):
 			mkdir -p $(LOG_DIR)

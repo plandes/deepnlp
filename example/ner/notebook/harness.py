@@ -18,9 +18,13 @@ class NotebookHarness(object):
         sys.path.append(str(self.app_root_dir / 'src'))
         # add the deepnlp path
         sys.path.append(deepnlp_path)
+        # reset random state for consistency before any other packages are
+        # imported
         from zensols.deeplearn import TorchConfig
-        # reset random state for consistency before any other packages are imported
         TorchConfig.init()
+        # initialize the NLP system
+        from zensols.deepnlp import init
+        init()
 
     def __call__(self, cuda_device_index: int = None,
                  temporary_dir_name: str = None):
@@ -38,7 +42,15 @@ class NotebookHarness(object):
         factory_args = {'root_dir': self.app_root_dir}
         if temporary_dir_name is not None:
             factory_args['temporary_dir'] = self.app_root_dir / temporary_dir_name
-        mng = JupyterManager(
+
+        class NBJupyterManager(JupyterManager):
+            def _init_jupyter(self):
+                import logging
+                # turn off more logging so only the progress bar shows
+                logging.getLogger('zensols.deeplearn.model.executor.status').\
+                    setLevel(logging.WARNING)
+
+        mng = NBJupyterManager(
             allocation_tracking='counts',
             cli_class=CliFactory,
             factory_args=factory_args,
