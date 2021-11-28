@@ -13,7 +13,6 @@ from gensim.models import KeyedVectors, Word2Vec
 from zensols.util import time
 from zensols.install import Installer, Resource
 from zensols.deepnlp.embed import WordVectorModel, WordEmbedModel
-from . import WordEmbedError
 
 logger = logging.getLogger(__name__)
 
@@ -23,9 +22,6 @@ class Word2VecModel(WordEmbedModel):
     """Load keyed or non-keyed Gensim models.
 
     """
-    # path: Path = field(default=None)
-    # """The path to the model file(s)."""
-
     installer: Installer = field(default=None)
     """The installer used to for the text vector zip file."""
 
@@ -37,11 +33,6 @@ class Word2VecModel(WordEmbedModel):
 
     model_type: str = field(default='keyed')
     """The type of the embeddings, which is either ``keyed`` or ``gensim``."""
-
-    # def __post_init__(self):
-    #     super.__post_init__()
-    #     if self.path is None:
-    #         raise WordEmbedError('Missing path attribute')
 
     @property
     def path(self) -> Path:
