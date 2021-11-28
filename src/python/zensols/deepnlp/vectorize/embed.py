@@ -5,7 +5,7 @@ efficient retrival.
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, Any, Iterable
+from typing import Tuple, Any, Iterable, List
 from dataclasses import dataclass, field
 import logging
 from itertools import chain
@@ -74,8 +74,7 @@ class EmbeddingFeatureVectorizer(TransformableFeatureVectorizer,
 @dataclass
 class WordVectorEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
     """Vectorize sentences using an embedding model (:obj:`embed_model`) of type
-    :class:`.WordEmbedModel` or
-    :class:`~zensols.deepnlp.transformer.TransformerEmbedding`.
+    :class:`.WordEmbedModel`.
 
     The encoder returns the indicies of the word embedding for each token in
     the input :class:`.FeatureDocument`.  The decoder returns the corresponding
@@ -112,7 +111,8 @@ class WordVectorEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
     @property
     @persisted('_vectors')
     def vectors(self) -> Tensor:
-        return self.torch_config.from_numpy(self.embed_model.matrix)
+        embed_model: WordEmbedModel = self.embed_model
+        return embed_model.to_matrix(self.torch_config)
 
     def _decode(self, context: FeatureContext) -> Tensor:
         x: Tensor = super()._decode(context)
@@ -122,8 +122,8 @@ class WordVectorEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
         if self.decode_embedding:
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'decoding using: {self.decode_embedding}')
-            src_vecs = self.vectors
-            batches = []
+            src_vecs: Tensor = self.vectors
+            batches: List[Tensor] = []
             vecs = []
             for batch_idx in x:
                 for idxt in batch_idx:
