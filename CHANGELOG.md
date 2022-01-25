@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ## [1.0.0] - 2022-01-25
+Major stable release.
+
 ### Added
 - DistilBERT pooler output.
 - The `word2vec` model is installed programmatically.
