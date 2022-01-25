@@ -8,6 +8,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [0.0.9] - 2022-01-25
+### Added
+- DistilBERT pooler output.
+- The `word2vec` model is installed programmatically.
+- Clickbate example now also includes RoBERTa and DistilBERT.
+
+### Changed
+- Upgrade to transformers 4.12.5.
+- Fix duplicate word embeddings matrix copied to GPU, which saves space and
+  time.
+- Other efficiencies such as log guards and data structure creation checks.
+- Notebook example fixes and cleanup.
+
+### Removed
+- PyTorch init call in nlp package init so the client can do it before other
+  modules are loaded.
+
+
 ## [0.0.8] - 2021-10-22
 ### Added
 - A factory method in `zensols.deepnlp.WordEmbedModel` to create a Gensim
@@ -104,7 +122,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v0.0.8...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v0.0.9...HEAD
+[0.0.9]: https://github.com/plandes/deepnlp/compare/v0.0.8...v0.0.9
 [0.0.8]: https://github.com/plandes/deepnlp/compare/v0.0.7...v0.0.8
 [0.0.7]: https://github.com/plandes/deepnlp/compare/v0.0.6...v0.0.7
 [0.0.6]: https://github.com/plandes/deepnlp/compare/v0.0.5...v0.0.6
