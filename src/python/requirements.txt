@@ -4,4 +4,4 @@ transformers~=4.11
 huggingface-hub==0.0.19
 zensols.nlp~=1.0
 zensols.install>=0.0.8
-zensols.deeplearn>=0.1.7
+zensols.deeplearn>=0.1.8
