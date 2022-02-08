@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class ClassifywModelFacade(LanguageModelFacade):
+class ClassifyModelFacade(LanguageModelFacade):
     """A facade for the text classification.  See super classes for more
     information on the purprose of this class.
 
