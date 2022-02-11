@@ -26,8 +26,8 @@ Features:
   linguistic vectorized features.
 * Support for token, document and embedding level vectorized features.
 * Transformer word piece to linguistic token mapping.
-* Two full documented examples provided as both command line and [Jupyter
-  notebooks](#usage-and-examples).
+* Two full documented reference models provided as both command line and
+  [Jupyter notebooks](#usage-and-reference-models).
 * Command line support for training, testing, debugging, and creating
   predictions.
 
@@ -41,7 +41,7 @@ Features:
   specific vectorizers that digitize natural language text in to tensors ready
   as [PyTorch] input
 * [API reference](https://plandes.github.io/install/api.html)
-* [Examples](#usage-and-examples)
+* [Reference Models](#usage-and-reference-models)
 
 
 ## Obtaining
@@ -54,20 +54,21 @@ pip3 install zensols.deepnlp
 Binaries are also available on [pypi].
 
 
-## Usage and Examples
+## Usage and Reference Models
 
 If you're in a rush, you can dive right in to the [Clickbate Text
-Classification] example, which is a working project that uses this library.
-However, you'll either end up reading up on the [zensols deeplearn] library
-before or during the tutorial.
+Classification] reference model, which is a working project that uses this
+library.  However, you'll either end up reading up on the [zensols deeplearn]
+library before or during the tutorial.
 
-The usage of this library is explained in terms of the examples:
+The usage of this library is explained in terms of the reference models:
 
-* The [Clickbate Text Classification] is the best example to start with because
-  the only code consists of is the corpus reader and a module to remove
-  sentence chunking (corpus are newline delimited headlines).  It was also uses
-  [resource libraries], which greatly reduces complexity, where as the other
-  examples do not.  Also see the [Jupyter clickbate classification notebook].
+* The [Clickbate Text Classification] is the best reference model to start with
+  because the only code consists of is the corpus reader and a module to remove
+  sentence segmentation (corpus are newline delimited headlines).  It was also
+  uses [resource libraries], which greatly reduces complexity, where as the
+  other reference models do not.  Also see the [Jupyter clickbate
+  classification notebook].
 
 * The [Movie Review Sentiment] trained and tested on the [Stanford movie
   review] and [Cornell sentiment polarity] data sets, which assigns a positive
@@ -84,7 +85,7 @@ integration with various parts of the library.
 
 ## Attribution
 
-This project, or example code, uses:
+This project, or reference model code, uses:
 * [Gensim] for [Glove], [Word2Vec] and [fastText] word embeddings.
 * [Huggingface Transformers] for [BERT] contextual word embeddings.
 * [h5py] for fast read access to word embedding vectors.
