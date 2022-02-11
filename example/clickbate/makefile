@@ -1,6 +1,6 @@
 PROG =		./run.py
 MODEL_DIR =	data/model
-MODEL =		glove
+MODEL =		glove50
 
 
 all:		predict
@@ -26,7 +26,7 @@ help:
 .PHONY:		clean
 clean:
 		find . -type d -name __pycache__ -exec rm -r {} \; || true
-		rm -f *.log
+		rm -f *.log benchmark.conf
 
 .PHONY:		cleanall
 cleanall:	clean

@@ -13,3 +13,4 @@
 /corpus
 /results
 /*.log
+/benchmark.conf
