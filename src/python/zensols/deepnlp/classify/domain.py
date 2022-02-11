@@ -68,12 +68,18 @@ class LabeledBatch(Batch):
     :class:`~zensols.deepnlp.embed.GloveWordEmbedModel` class.
 
     """
+    GLOVE_300_EMBEDDING = 'glove_300_embedding'
+    """The configuration section name of the glove embedding
+    :class:`~zensols.deepnlp.embed.GloveWordEmbedModel` class.
+
+    """
     TRANSFORMER_EMBEDDING = 'transformer_embedding'
     """The configuration section name of the BERT transformer contextual embedding
     :class:`~zensols.deepnlp.transformer.TransformerEmbedding` class.
 
     """
     EMBEDDING_ATTRIBUTES = {GLOVE_50_EMBEDDING,
+                            GLOVE_300_EMBEDDING,
                             TRANSFORMER_EMBEDDING}
     """All embedding feature section names."""
 
@@ -103,6 +109,7 @@ class LabeledBatch(Batch):
          ManagerFeatureMapping(
              LANGUAGE_FEATURE_MANAGER_NAME,
              (FieldFeatureMapping(GLOVE_50_EMBEDDING, 'wvglove50', True, 'doc'),
+              FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', True, 'doc'),
               FieldFeatureMapping(TRANSFORMER_EMBEDDING, 'transformer_trainable', True, 'doc'),
               FieldFeatureMapping(STATS_ATTRIBUTE, 'stats', False, 'doc'),
               FieldFeatureMapping(ENUMS_ATTRIBUTE, 'enum', True, 'doc'),
@@ -113,6 +120,5 @@ class LabeledBatch(Batch):
     accessor information.
 
     """
-
     def _get_batch_feature_mappings(self) -> BatchFeatureMapping:
         return self.MAPPINGS
