@@ -65,8 +65,9 @@ The usage of this library is explained in terms of the examples:
 
 * The [Clickbate Text Classification] is the best example to start with because
   the only code consists of is the corpus reader and a module to remove
-  sentence chunking (corpus are newline delimited headlines).  Also see the
-  [Jupyter clickbate classification notebook].
+  sentence chunking (corpus are newline delimited headlines).  It was also uses
+  [resource libraries], which greatly reduces complexity, where as the other
+  examples do not.  Also see the [Jupyter clickbate classification notebook].
 
 * The [Movie Review Sentiment] trained and tested on the [Stanford movie
   review] and [Cornell sentiment polarity] data sets, which assigns a positive
@@ -159,6 +160,7 @@ Copyright (c) 2020 - 2021 Paul Landes
 [zensols nlparse]: https://github.com/plandes/nlparse
 
 [full documentation]: https://plandes.github.io/deepnlp/index.html
+[resource libraries]: https://plandes.github.io/util/doc/config.html#resource-libraries
 [Natural language specific layers]: https://plandes.github.io/deepnlp/doc/layers.html
 [Clickbate Text Classification]: https://plandes.github.io/deepnlp/doc/clickbate.html
 [Movie Review Sentiment]: https://plandes.github.io/deepnlp/doc/movie-example.html

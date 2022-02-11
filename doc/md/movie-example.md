@@ -4,16 +4,16 @@ This document describes the [movie review task example] to demonstrate the
 DeepZenols NLP framework on the sentiment analysis task using the Stanford
 sentiment analysis corpus.
 
-As before, we'll incrementally go through the [configuration file] section by
-section skipping those we have already covered in the [deeplearn API] and [deep
-NLP] APIs.  It is assumed you have read the [deeplearn API] documentation and
-are reading this in parallel with the [deep NLP] documentation.
-
 Note that this project has a lot of configuration as it was written before
 [resource libraries], and the vast majority of its configuration is no longer
 necessary to write as demonstrated by the [clickbate example](clickbate.md).
 However, it gives a comprehensive example of how all the components are
 configured.
+
+As before, we'll incrementally go through the [configuration file] section by
+section skipping those we have already covered in the [deeplearn API] and [deep
+NLP] APIs.  It is assumed you have read the [deeplearn API] documentation and
+are reading this in parallel with the [deep NLP] documentation.
 
 Note that there is quite a bit of inline documentation in the [configuration
 file] so it is recommended the reader follow it while reading this tutorial.
