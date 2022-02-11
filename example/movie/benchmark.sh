@@ -5,7 +5,7 @@
 
 PROG=./run.py
 CONF=benchmark.conf
-MODELS="glove300 transformer"
+MODELS="glove300 transformer-trainable"
 
 run() {
     model=$1

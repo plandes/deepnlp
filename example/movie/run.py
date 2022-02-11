@@ -4,6 +4,15 @@ from typing import List
 import sys
 from pathlib import Path
 import logging
+from zensols.deeplearn import TorchConfig
+from zensols import deepnlp
+
+
+# reset random state for consistency before any other packages are
+# imported
+TorchConfig.init()
+# initialize the NLP system
+deepnlp.init()
 
 
 class CliHarness(object):
@@ -28,8 +37,6 @@ class CliHarness(object):
     @classmethod
     def run(cls):
         """The command line script entry point."""
-        from zensols.deepnlp import init as nlp_init
-        nlp_init()
         self = cls()
         if (__name__ == '__main__'):
             # when running from a shell, run the CLI entry point
