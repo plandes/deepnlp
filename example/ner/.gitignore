@@ -12,3 +12,5 @@
 /data
 /*.log
 /prev-results
+/benchmark.conf
+/results
