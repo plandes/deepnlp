@@ -10,6 +10,7 @@ import logging
 import numpy as np
 import torch
 from torch import Tensor
+import gensim
 from gensim.models.keyedvectors import Word2VecKeyedVectors, KeyedVectors
 from zensols.persist import persisted, PersistableContainer, PersistedWork
 from zensols.deeplearn import TorchConfig, DeepLearnError
@@ -73,6 +74,9 @@ class _WordEmbedVocabAdapter(object):
     def __iter__(self):
         words: List[str] = self.model.words
         return iter(words)
+
+    def get(self, word: int, default: str):
+        self._index = self.model.word2idx.get(word, default)
 
     def __getitem__(self, word: str):
         self._index = self.model.word2idx[word]
@@ -241,7 +245,10 @@ class WordEmbedModel(PersistableContainer, metaclass=ABCMeta):
 
     def _create_keyed_vectors(self) -> KeyedVectors:
         kv = Word2VecKeyedVectors(vector_size=self.vector_dimension)
-        kv.vocab = _WordEmbedVocabAdapter(self._data())
+        if gensim.__version__[0] >= '4':
+            kv.key_to_index = self._data().word2idx
+        else:
+            kv.vocab = _WordEmbedVocabAdapter(self._data())
         kv.vectors = self.matrix
         kv.index2entity = list(self._data().words)
         return kv
