@@ -47,8 +47,6 @@ EOF
 }
 
 benchmark() {
-    run glove n y
-    exit 0
     echo "removing results dir"
     [ -d results ] && rm -r results
     for model in $MODELS ; do
