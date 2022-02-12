@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.0.1] - 2022-02-12
+### Added
+- Runtime bench marking.
+- Missing batch configuration in resource library from `zensols.deeplearn`.
+- Add observer pattern for logging and Pandas data frame / CSV output.
+
+### Changed
+- Word embedding model now compatible with gensim 4.
+
+
 ## [1.0.0] - 2022-01-25
 Major stable release.
 
@@ -124,7 +134,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/plandes/deepnlp/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/plandes/deepnlp/compare/v0.0.8...v1.0.0
 [0.0.8]: https://github.com/plandes/deepnlp/compare/v0.0.7...v0.0.8
 [0.0.7]: https://github.com/plandes/deepnlp/compare/v0.0.6...v0.0.7
