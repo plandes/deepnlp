@@ -19,7 +19,7 @@ from zensols.deeplearn.vectorize import (
     OneHotEncodedEncodableFeatureVectorizer,
 )
 from zensols.nlp import (
-    FeatureToken, FeatureSentence, FeatureDocument, TokensContainer,
+    FeatureToken, FeatureSentence, FeatureDocument, TokenContainer,
 )
 from . import (
     SpacyFeatureVectorizer, FeatureDocumentVectorizer,
@@ -559,13 +559,13 @@ class OverlappingFeatureDocumentVectorizer(MultiDocumentVectorizer):
         return 2,
 
     @staticmethod
-    def _norms(ac: TokensContainer, bc: TokensContainer) -> Tuple[int]:
+    def _norms(ac: TokenContainer, bc: TokenContainer) -> Tuple[int]:
         a = set(map(lambda s: s.norm.lower(), ac.token_iter()))
         b = set(map(lambda s: s.norm.lower(), bc.token_iter()))
         return a & b
 
     @staticmethod
-    def _lemmas(ac: TokensContainer, bc: TokensContainer) -> Tuple[int]:
+    def _lemmas(ac: TokenContainer, bc: TokenContainer) -> Tuple[int]:
         a = set(map(lambda s: s.lemma_.lower(), ac.token_iter()))
         b = set(map(lambda s: s.lemma_.lower(), bc.token_iter()))
         return a & b

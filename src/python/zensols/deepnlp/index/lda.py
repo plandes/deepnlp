@@ -5,7 +5,7 @@ import torch
 import gensim.corpora as corpora
 from gensim.models.ldamodel import LdaModel
 from zensols.util import time
-from zensols.nlp import TokensContainer, FeatureDocument
+from zensols.nlp import TokenContainer, FeatureDocument
 from zensols.deeplearn import TorchConfig
 from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
 from zensols.deepnlp.vectorize import TextFeatureType
@@ -83,7 +83,7 @@ class TopicModelDocumentIndexerVectorizer(DocumentIndexVectorizer):
         corpus_q = tuple(map(lambda doc: id2word.doc2bow(doc), docs_q))
         return lda.get_document_topics(corpus_q, minimum_probability=0)[0]
 
-    def _encode(self, containers: Tuple[TokensContainer]) -> FeatureContext:
+    def _encode(self, containers: Tuple[TokenContainer]) -> FeatureContext:
         arrs = []
         for container in containers:
             terms = tuple(map(lambda t: t.lemma, container.tokens))

@@ -7,7 +7,7 @@ from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.preprocessing import Normalizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from zensols.util import time
-from zensols.nlp import FeatureDocument, TokensContainer
+from zensols.nlp import FeatureDocument, TokenContainer
 from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
 from zensols.deepnlp.vectorize import TextFeatureType
 from . import DocumentIndexVectorizer
@@ -84,7 +84,7 @@ class LatentSemanticDocumentIndexerVectorizer(DocumentIndexVectorizer):
         emb_b = self._transform_doc(b, vectorizer, lsa)
         return np.dot(emb_a, emb_b.T)[0][0]
 
-    def _encode(self, containers: Tuple[TokensContainer]) -> FeatureContext:
+    def _encode(self, containers: Tuple[TokenContainer]) -> FeatureContext:
         measure = self.similarity(*containers)
         arr = self.torch_config.singleton([measure])
         return TensorFeatureContext(self.feature_id, arr)

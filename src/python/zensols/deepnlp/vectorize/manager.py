@@ -12,7 +12,6 @@ import logging
 import collections
 from torch import Tensor
 from zensols.persist import persisted, PersistedWork
-from zensols.nlp import LanguageResource
 from zensols.deeplearn.vectorize import (
     FeatureContext,
     EncodableFeatureVectorizer,
@@ -55,7 +54,7 @@ class TextFeatureType(Enum):
 @dataclass
 class FeatureDocumentVectorizer(EncodableFeatureVectorizer, metaclass=ABCMeta):
     """Creates document or sentence level features using instances of
-    :class:`.TokensContainer`.
+    :class:`.TokenContainer`.
 
     """
     @abstractmethod
@@ -183,6 +182,8 @@ class FeatureDocumentVectorizerManager(FeatureVectorizerManager):
     """
     def __post_init__(self):
         super().__post_init__()
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug('creating fd vec manager')
         if self.token_feature_ids is None:
             self.token_feature_ids = self.doc_parser.token_feature_ids
         else:
@@ -236,13 +237,6 @@ class FeatureDocumentVectorizerManager(FeatureVectorizerManager):
         return self.doc_parser.parse(text, *args, **kwargs)
 
     @property
-    def langres(self) -> LanguageResource:
-        """Used to create spaCy documents.
-
-        """
-        return self.doc_parser.langres
-
-    @property
     @persisted('_spacy_vectorizers')
     def spacy_vectorizers(self) -> Dict[str, SpacyFeatureVectorizer]:
         """Return vectorizers based on the :obj:`token_feature_ids` configured on this
@@ -252,18 +246,24 @@ class FeatureDocumentVectorizerManager(FeatureVectorizerManager):
         :return: an :class:`collections.OrderedDict` of vectorizers
 
         """
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug('creating spacy vectorizers')
         token_feature_ids = set(SpacyFeatureVectorizer.VECTORIZERS.keys())
         token_feature_ids = token_feature_ids & self.token_feature_ids
         token_feature_ids = sorted(token_feature_ids)
         vectorizers = collections.OrderedDict()
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'creating token features: {token_feature_ids}')
         for feature_id in sorted(token_feature_ids):
             cls = SpacyFeatureVectorizer.VECTORIZERS[feature_id]
             inst = cls(name=f'spacy vectorizer: {feature_id}',
                        config_factory=self.config_factory,
                        feature_id=feature_id,
                        torch_config=self.torch_config,
-                       vocab=self.langres.model.vocab)
+                       vocab=self.doc_parser.model.vocab)
             vectorizers[feature_id] = inst
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'created {len(vectorizers)} vectorizers')
         return vectorizers
 
     def deallocate(self):
