@@ -10,7 +10,7 @@ class_name = zensols.cli.ActionCliManager
 apps = list: app
 
 [import]
-sections = imp_conf
+sections = list: imp_conf
 
 [imp_conf]
 config_file = parser.conf
@@ -29,7 +29,7 @@ def silencewarn():
 
 def main():
     print()
-    silencewarn()
+    #silencewarn()
     rl_mods = 'app zensols.deepnlp.transformer zensols.deepnlp.vectorize.layer'.split()
     reload_pattern = f'^(?:{"|".join(rl_mods)})'
     cli = ApplicationFactory(
