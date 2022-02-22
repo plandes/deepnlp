@@ -17,13 +17,14 @@ from zensols.persist import (
     OneShotFactoryStash, PersistedWork, persisted, PersistableContainer
 )
 from zensols.config import Dictable
-from zensols.nlp import NormalizedTokenFeatures, FeatureToken, FeatureSentence
+from zensols.nlp import FeatureToken, FeatureSentence
 from zensols.dataset import AbstractSplitKeyContainer, DatasetSplitStash
 
 logger = logging.getLogger(__name__)
 
 
-class NERTokenFeatures(NormalizedTokenFeatures):
+#class NERTokenFeatures(NormalizedTokenFeatures):
+class NERFeatureToken(FeatureToken):
     """Contains the data of a row of the NER data.
 
     Fields:
@@ -33,27 +34,20 @@ class NERTokenFeatures(NormalizedTokenFeatures):
         4. The BIO named entity tag.
 
     """
-    WRITABLE_FIELD_IDS = 'i norm tag_ ent_'.split()
-    FIELD_SET = frozenset(set(WRITABLE_FIELD_IDS) | set('syn_'.split()))
+    WRITABLE_FEATURE_IDS = 'i norm tag_ ent_'.split()
+    FEATURE_SET = frozenset(set(WRITABLE_FEATURE_IDS) | set('syn_'.split()))
 
     def __init__(self, i: int, text: str, tag_: str, syn_: str, ent_: str):
-        super().__init__(text)
-        self.i = i
+        super().__init__(i, i, i, text)
+        #self.i = i
+
         # not one to one with token in sentence index, but works for this
         # example
-        self.i_sent = i
+        # self.i_sent = i
         self.tag_ = tag_
         self.syn_ = syn_
         self.ent_ = ent_
-        self.idx = i
-
-
-class NERFeatureToken(FeatureToken):
-    """A feature token that uses :class:`.NERTokenFeatures` as the features class.
-
-    """
-    def __init__(self, features: NERTokenFeatures):
-        super().__init__(features, NERTokenFeatures.FIELD_SET)
+        # self.idx = i
 
 
 @dataclass
@@ -92,7 +86,7 @@ class SentenceFactoryStash(OneShotFactoryStash, AbstractSplitKeyContainer):
                 if self.DOC_START.match(line) is not None:
                     continue
                 if len(line) > 0:
-                    feats = NERTokenFeatures(len(toks), *line.split())
+                    feats = NERFeatureToken(len(toks), *line.split())
                     toks.append(NERFeatureToken(feats))
                 else:
                     sent = NERFeatureSentence(
