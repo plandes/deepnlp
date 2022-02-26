@@ -8,6 +8,7 @@ from dataclasses import dataclass
 import logging
 import pandas as pd
 from zensols.persist import Stash
+from zensols.deeplearn import NetworkSettings
 from zensols.deepnlp.model import (
     LanguageModelFacade, LanguageModelFacadeConfig,
 )
@@ -35,8 +36,10 @@ class ClassifyModelFacade(LanguageModelFacade):
     """
     def __post_init__(self, *args, **kwargs):
         super().__post_init__(*args, **kwargs)
-        # set to trigger writeback through to sub settings (linear, recur)
-        self.dropout = self.executor.net_settings.dropout
+        settings: NetworkSettings = self.executor.net_settings
+        if hasattr(settings, 'dropout'):
+            # set to trigger writeback through to sub settings (linear, recur)
+            self.dropout = self.executor.net_settings.dropout
 
     def _configure_debug_logging(self):
         super()._configure_debug_logging()
@@ -51,7 +54,7 @@ class ClassifyModelFacade(LanguageModelFacade):
 
     @property
     def feature_stash(self) -> Stash:
-        """The stash containing the :class:`.Review` feature instances."""
+        """The stash containing feature instances."""
         return super().feature_stash.delegate
 
     def get_predictions(self) -> pd.DataFrame:
