@@ -53,7 +53,8 @@ fasttrain:
 
 .PHONY:			predict
 predict:
-			$(ENTRY) predict --config $(MDL_DIR)/transformer-trainable.conf
+			$(ENTRY) predict 'Barack Obama was the 45th president of the US.' \
+				--config $(MDL_DIR)/transformer-trainable.conf 
 
 .PHONY:			glove50
 glove50:
