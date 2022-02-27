@@ -81,6 +81,10 @@ class SequenceAnnotation(PersistableContainer, Dictable):
 
 @dataclass
 class SequenceDocumentAnnotation(Dictable):
+    """Contains token annotations for a :class:`~zensols.nlp.FeatureDocument` as a
+    duple of :class:`.SequenceAnnotation`.
+
+    """
     doc: FeatureDocument = field()
     """The feature document associated with this annotation."""
 
@@ -108,7 +112,7 @@ class SequenceDocumentAnnotation(Dictable):
 
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout,
               short: bool = False):
-        self._write_line(f'doc: {self.doc}', depth, writer)
+        self._write_line(f'doc: {self.doc} S={short}', depth, writer)
         for anon in self.sequence_anons:
             anon.write(depth + 1, writer, short=short)
 
@@ -190,10 +194,10 @@ class BioSequenceAnnotationMapper(object):
             docs: Tuple[FeatureDocument]) -> Tuple[SequenceDocumentAnnotation]:
         """Map BIO entities and documents to pairings as annotations.
 
-        :param docs: the feature documents to assign labels
+        :param classes: a tuple of lists, each list containing the class of the
+                        token in BIO format
 
-        :param ents: a tuple of label, sentence index and lexical feature
-                     document index interval of tokens
+        :param docs: the feature documents to assign labels
 
         :return: a tuple of annotation instances, each with coupling of label,
                  feature token and spaCy token
