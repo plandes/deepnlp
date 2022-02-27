@@ -80,7 +80,7 @@ class NERFacadeApplication(FacadeApplication):
         with dealloc(self.create_facade()) as facade:
             facade.assert_label_mapping()
 
-    def predict(self, sentence: str, path: Path = None):
+    def predict(self, sentence: str):
         """Create NER labeled predictions.
 
         :param sentence: the sentence to classify
@@ -92,8 +92,6 @@ class NERFacadeApplication(FacadeApplication):
             sents = (sentence,)
         if 0:
             self.clear_cached_facade()
-        if path is not None:
-            self.facade_path = path
         facade: ModelFacade = self.get_cached_facade()
         fac: ConfigFactory = facade.config_factory
         anoner: BioSequenceAnnotationMapper = fac('anon_mapper')
