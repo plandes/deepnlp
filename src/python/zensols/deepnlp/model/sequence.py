@@ -8,7 +8,6 @@ from typing import Tuple, List
 from dataclasses import dataclass, field
 import logging
 import sys
-from itertools import chain
 from io import TextIOBase
 from spacy.tokens.doc import Doc
 from spacy.tokens import Token
