@@ -2,7 +2,7 @@
 labels.
 
 """
-__author__ = 'plandes'
+__author__ = 'Paul Landes'
 
 from typing import Tuple, List
 from dataclasses import dataclass, field
