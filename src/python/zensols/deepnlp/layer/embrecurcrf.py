@@ -40,7 +40,6 @@ class EmbeddedRecurrentCRFSettings(EmbeddingNetworkSettings):
     be counted as results.
 
     """
-
     def get_module_class_name(self) -> str:
         return __name__ + '.EmbeddedRecurrentCRF'
 
@@ -48,7 +47,7 @@ class EmbeddedRecurrentCRFSettings(EmbeddingNetworkSettings):
 class EmbeddedRecurrentCRF(EmbeddingNetworkModule, SequenceNetworkModule):
     """A recurrent neural network composed of an embedding input, an recurrent
     network, and a linear conditional random field output layer.  When
-    configured with an LSTM, this becomes a (Bi)LSTM CRF.  More specifically,
+    configured with an LSTM, this becomes a (Bi)LSTM-CRF.  More specifically,
     this network has the following:
 
       1. Input embeddings mapped from tokens.
@@ -62,7 +61,7 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, SequenceNetworkModule):
       5. Output the labels.
 
     """
-    MODULE_NAME = 'emb recur crf'
+    MODULE_NAME = 'emb-recur-crf'
 
     def __init__(self, net_settings: EmbeddedRecurrentCRFSettings,
                  sub_logger: logging.Logger = None):
