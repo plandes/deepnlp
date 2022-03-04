@@ -13,7 +13,7 @@ from zensols.deeplearn.model import (
     SequenceNetworkModule, SequenceNetworkContext, SequenceNetworkOutput
 )
 from zensols.deeplearn.batch import Batch
-from zensols.deeplearn.layer import RecurrentCRFNetworkSettings, RecurrentCRF
+from zensols.deeplearn.layer import RecurrentCRFNetworkSettings
 from zensols.deeplearn.vectorize import AggregateEncodableFeatureVectorizer
 from zensols.deepnlp.layer import (
     EmbeddingNetworkSettings,
@@ -72,7 +72,7 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, SequenceNetworkModule):
         self.mask_attribute = ns.mask_attribute
         if self.logger.isEnabledFor(logging.DEBUG):
             self._debug(f'recur settings: {rc}')
-        self.recurcrf = RecurrentCRF(rc, self.logger)
+        self.recurcrf = rc.create_module(sub_logger=sub_logger)
 
     def deallocate(self):
         super().deallocate()
