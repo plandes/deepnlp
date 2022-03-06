@@ -79,8 +79,8 @@ class LabeledBatch(Batch):
 
     """
     TRANSFORMER_FIXED_EMBEDDING = 'transformer_fixed_embedding'
-    """Liek :obj:`TRANSFORMER_TRAINBLE_EMBEDDING`, but all layers of theh
-    tranformer are frozen and only the static embeddings are used..
+    """Like :obj:`TRANSFORMER_TRAINBLE_EMBEDDING`, but all layers of the
+    tranformer are frozen and only the static embeddings are used.
 
     """
     EMBEDDING_ATTRIBUTES = {GLOVE_50_EMBEDDING,
@@ -117,7 +117,7 @@ class LabeledBatch(Batch):
              (FieldFeatureMapping(GLOVE_50_EMBEDDING, 'wvglove50', True, 'doc'),
               FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', True, 'doc'),
               FieldFeatureMapping(TRANSFORMER_TRAINBLE_EMBEDDING, 'transformer_trainable', True, 'doc'),
-              FieldFeatureMapping(TRANSFORMER_FIXED_EMBEDDING, 'transformer_fixed', True, 'doc'),
+              #FieldFeatureMapping(TRANSFORMER_FIXED_EMBEDDING, 'transformer_fixed', True, 'doc'),
               FieldFeatureMapping(STATS_ATTRIBUTE, 'stats', False, 'doc'),
               FieldFeatureMapping(ENUMS_ATTRIBUTE, 'enum', True, 'doc'),
               FieldFeatureMapping(COUNTS_ATTRIBUTE, 'count', True, 'doc'),
