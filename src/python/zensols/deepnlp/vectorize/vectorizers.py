@@ -452,10 +452,14 @@ class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
 class OneHotEncodedFeatureDocumentVectorizer(
         FeatureDocumentVectorizer, OneHotEncodedEncodableFeatureVectorizer):
     """Vectorize nominal enumerated features in to a one-hot encoded vectors.  The
-    feature is taken another vectorizer indicated by the feature ID specified
-    with the :obj:`feature_id`.
+    feature is taken from a :class:`~zensols.nlp.FeatureToken`.  After the
+    batch dimension, rows are sentnces, columns are featues.  If :obj:`level`
+    is ``token`` then the features are token attributes identified by
+    :obj:`feature_attribute`.  If the :obj:`level` is ``document`` or
+    ``sentence``, the feature is taken from the document or sentence
+    (respectively) and repeated for the length of the sentence.
 
-    :shape: (-1, |token length|, |categories|)
+    :shape: (-1, <token length>, |categories|)
 
     """
     DESCRIPTION = 'encoded feature document vectorizer'
@@ -464,6 +468,11 @@ class OneHotEncodedFeatureDocumentVectorizer(
     feature_attribute: Tuple[str] = field(default=None)
     """The feature attributes to vectorize."""
 
+    level: bool = field(default='token')
+    """The level at which to take the attribute value, which is ``document``,
+    ``sentence`` or ``token``.
+
+    """
     def __post_init__(self):
         super().__post_init__()
         self.optimize_bools = False
@@ -476,11 +485,20 @@ class OneHotEncodedFeatureDocumentVectorizer(
         tlen = self.manager.get_token_length(doc)
         attr = self.feature_attribute
         arr = self.torch_config.zeros((slen, tlen, self.shape[2]))
+        doc_val = getattr(doc, attr) if self.level == 'document' else None
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'vectorizing: {attr} for token length: {tlen} ' +
                          f'in to {arr.shape}')
         for six, sent in enumerate(doc.sents):
-            feats = tuple(map(lambda s: getattr(s, attr), sent))
+            if self.level == 'document':
+                feats = [doc_val] * len(sent)
+            elif self.level == 'sentenece':
+                sent_val = getattr(sent, attr)
+                feats = [sent_val] * len(sent)
+            elif self.level == 'token':
+                feats = tuple(map(lambda s: getattr(s, attr), sent))
+            else:
+                raise VectorizerError(f'Unknown doc level: {self.level}')
             self._encode_cats(feats, arr[six])
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'vectorized: {len(doc)} sents in to {arr.shape}')
