@@ -73,14 +73,20 @@ class LabeledBatch(Batch):
     :class:`~zensols.deepnlp.embed.GloveWordEmbedModel` class.
 
     """
-    TRANSFORMER_EMBEDDING = 'transformer_embedding'
+    TRANSFORMER_TRAINBLE_EMBEDDING = 'transformer_trainable_embedding'
     """The configuration section name of the BERT transformer contextual embedding
     :class:`~zensols.deepnlp.transformer.TransformerEmbedding` class.
 
     """
+    TRANSFORMER_FIXED_EMBEDDING = 'transformer_fixed_embedding'
+    """Liek :obj:`TRANSFORMER_TRAINBLE_EMBEDDING`, but all layers of theh
+    tranformer are frozen and only the static embeddings are used..
+
+    """
     EMBEDDING_ATTRIBUTES = {GLOVE_50_EMBEDDING,
                             GLOVE_300_EMBEDDING,
-                            TRANSFORMER_EMBEDDING}
+                            TRANSFORMER_TRAINBLE_EMBEDDING,
+                            TRANSFORMER_FIXED_EMBEDDING}
     """All embedding feature section names."""
 
     STATS_ATTRIBUTE = 'stats'
@@ -110,12 +116,12 @@ class LabeledBatch(Batch):
              LANGUAGE_FEATURE_MANAGER_NAME,
              (FieldFeatureMapping(GLOVE_50_EMBEDDING, 'wvglove50', True, 'doc'),
               FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', True, 'doc'),
-              FieldFeatureMapping(TRANSFORMER_EMBEDDING, 'transformer_trainable', True, 'doc'),
+              FieldFeatureMapping(TRANSFORMER_TRAINBLE_EMBEDDING, 'transformer_trainable', True, 'doc'),
+              FieldFeatureMapping(TRANSFORMER_FIXED_EMBEDDING, 'transformer_fixed', True, 'doc'),
               FieldFeatureMapping(STATS_ATTRIBUTE, 'stats', False, 'doc'),
               FieldFeatureMapping(ENUMS_ATTRIBUTE, 'enum', True, 'doc'),
               FieldFeatureMapping(COUNTS_ATTRIBUTE, 'count', True, 'doc'),
-              FieldFeatureMapping(DEPENDENCIES_ATTRIBUTE, 'dep', True, 'doc'),
-              ))])
+              FieldFeatureMapping(DEPENDENCIES_ATTRIBUTE, 'dep', True, 'doc')))])
     """The mapping from the labeled data's feature attribute to feature ID and
     accessor information.
 
