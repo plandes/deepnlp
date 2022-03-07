@@ -4,15 +4,16 @@ from typing import List
 import sys
 from pathlib import Path
 import logging
-from zensols.deeplearn import TorchConfig
-from zensols import deepnlp
 
 
-# reset random state for consistency before any other packages are
-# imported
-TorchConfig.init()
-# initialize the NLP system
-deepnlp.init()
+def init():
+    from zensols.deeplearn import TorchConfig
+    # reset random state for consistency before any other packages are
+    # imported
+    TorchConfig.init()
+    from zensols import deepnlp
+    # initialize the NLP system
+    deepnlp.init()
 
 
 class CliHarness(object):
@@ -77,10 +78,10 @@ class CliHarness(object):
             action = {0: 'proto',
                       1: 'debug',
                       2: 'all',
-                      3: 'batch',
+                      3: 'batch --clear',
                       4: 'train',
                       5: 'info -i conf',
-                      }[5]
+                      }[3]
             args = f'-c models/{model}.conf'
             # other reload patterns read from app.conf
             rl_mods = 'ner.app'.split()
@@ -90,4 +91,6 @@ class CliHarness(object):
             print(f'Prevented exit: {e}')
 
 
-CliHarness.run()
+if (__name__ == '__main__'):
+    init()
+    CliHarness.run()

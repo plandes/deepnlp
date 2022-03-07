@@ -23,7 +23,6 @@ from zensols.dataset import AbstractSplitKeyContainer, DatasetSplitStash
 logger = logging.getLogger(__name__)
 
 
-#class NERTokenFeatures(NormalizedTokenFeatures):
 class NERFeatureToken(FeatureToken):
     """Contains the data of a row of the NER data.
 
@@ -86,8 +85,7 @@ class SentenceFactoryStash(OneShotFactoryStash, AbstractSplitKeyContainer):
                 if self.DOC_START.match(line) is not None:
                     continue
                 if len(line) > 0:
-                    feats = NERFeatureToken(len(toks), *line.split())
-                    toks.append(NERFeatureToken(feats))
+                    toks.append(NERFeatureToken(len(toks), *line.split()))
                 else:
                     sent = NERFeatureSentence(
                         sent_tokens=tuple(toks), sent_id=len(sents))
