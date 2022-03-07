@@ -37,7 +37,6 @@ class TransformerFeatureContext(FeatureContext, Deallocatable):
     """The document used to create the transformer embeddings.
 
     """
-
     def deallocate(self):
         super().deallocate()
         self._try_deallocate(self.document)
@@ -57,7 +56,6 @@ class TransformerFeatureVectorizer(EmbeddingFeatureVectorizer,
     labels.
 
     """
-
     def _assert_token_output(self, expected: str = 'last_hidden_state'):
         if self.embed_model.output != expected:
             raise VectorizerError(f"""\
@@ -93,7 +91,7 @@ transformer embedding, is required, got: {self.embed_model.output}""")
 
 @dataclass
 class TransformerEmbeddingFeatureVectorizer(TransformerFeatureVectorizer):
-    """A feature vectorizer used to create transformer (i.e. Bert) embeddings.  The
+    """A feature vectorizer used to create transformer (i.e. BERT) embeddings.  The
     class uses the :obj:`.embed_model`, which is of type
     :class:`.TransformerEmbedding`.
 
@@ -148,7 +146,6 @@ class TransformerExpanderFeatureContext(MultiFeatureContext):
     """The document used to create the transformer embeddings.
 
     """
-
     def deallocate(self):
         super().deallocate()
         self._try_deallocate(self.document)
@@ -300,7 +297,6 @@ class TransformerNominalFeatureVectorizer(
     ignored by the loss function when calculating loss.
 
     """
-
     def __post_init__(self):
         super().__post_init__()
         if self.delegate_feature_id is None:
