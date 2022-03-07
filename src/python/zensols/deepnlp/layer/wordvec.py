@@ -1,4 +1,5 @@
-"""
+"""Glue betweeen :class:`~zensols.deepnlp.embed.WordEmbedModel` and
+:clas:`torch.nn.Embedding`.
 
 """
 __author__ = 'Paul Landes'
@@ -15,10 +16,11 @@ logger = logging.getLogger(__name__)
 
 
 class WordVectorEmbeddingLayer(TrainableEmbeddingLayer):
-    """An input embedding layer.  This uses an instance of :class:`.WordEmbedModel`
-    to compose the word embeddings from indexes.  Each index is that of word
-    vector, which is stacked to create the embedding.  This happens in the
-    PyTorch framework, and is fast.
+    """An input embedding layer.  This uses an instance of
+    :class:`~zensols.deepnlp.embed.WordEmbedModel` to compose the word
+    embeddings from indexes.  Each index is that of word vector, which is
+    stacked to create the embedding.  This happens in the PyTorch framework,
+    and is fast.
 
     This class overrides PyTorch methods that disable persistance of the
     embedding weights when configured to be frozen (not trainable).  Otherwise,
@@ -40,15 +42,17 @@ class WordVectorEmbeddingLayer(TrainableEmbeddingLayer):
         self.num_embeddings = embed_model.matrix.shape[0]
         self.vecs = embed_model.to_matrix(self.torch_config)
         if self.trainable:
-            self._debug('cloning embedding for trainability')
+            self.logger.info('cloning embedding for trainability')
             self.vecs = torch.clone(self.vecs)
         else:
-            self._debug('layer is not trainable')
-            self.requires_grad = False
-        self._debug(f'setting tensors: {self.vecs.shape}, ' +
-                    f'device={self.vecs.device}')
-        self.emb = nn.Embedding.from_pretrained(self.vecs)
-        self.emb.freeze = self.trainable
+            self.logger.info('layer is not trainable')
+        self.requires_grad = not self.trainable
+        if self.logger.isEnabledFor(logging.INFO):
+            self.logger.info(f'setting embedding matrix: {self.vecs.shape}, ' +
+                             f'device={self.vecs.device}, ' +
+                             f'trainble: {self.trainable}')
+        self.emb = nn.Embedding.from_pretrained(
+            self.vecs, freeze=not self.trainable)
 
     def forward(self, x: Tensor) -> Tensor:
         if logger.isEnabledFor(logging.DEBUG):
