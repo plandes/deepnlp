@@ -37,7 +37,6 @@ class TransformerDocumentTokenizer(PersistableContainer):
     If this value is less than 0, than do not fix sentence lengths.
 
     """
-
     def __post_init__(self):
         super().__init__()
 

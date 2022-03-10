@@ -29,7 +29,6 @@ class TokenizedDocument(PersistableContainer):
     :class:`.TransformerEmbedding`.
 
     """
-
     tensor: Tensor = field()
     """Encodes the input IDs, attention mask, and word piece offset map."""
 
@@ -38,7 +37,6 @@ class TokenizedDocument(PersistableContainer):
     Bert.
 
     """
-
     def __post_init__(self):
         super().__init__()
 
@@ -90,6 +88,15 @@ class TokenizedDocument(PersistableContainer):
     def detach(self) -> TokenizedDocument:
         """Return a version of the document that is pickleable."""
         return self
+
+    def truncate(self, size: int) -> TokenizedDocument:
+        """Truncate the the last (token) dimension to ``size``.
+
+        :return: a new instance of this class truncated to size
+
+        """
+        cls = self.__class__
+        return cls(self.tensor[:, :, 0:size], self.boundary_tokens)
 
     def params(self) -> Dict[str, Any]:
         dct = {}
@@ -201,7 +208,6 @@ class TokenizedFeatureDocument(TokenizedDocument, Writable):
     always nulled out after being persisted.
 
     """
-
     char_offsets: Tuple[Tuple[int, int]] = field()
     """The valid character offsets for each word piece token."""
 

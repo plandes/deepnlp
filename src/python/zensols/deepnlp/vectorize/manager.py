@@ -66,6 +66,10 @@ class FeatureDocumentVectorizer(EncodableFeatureVectorizer, metaclass=ABCMeta):
         """Return ``True`` or not the input is a tuple (multiple) documents."""
         return isinstance(doc, (tuple, list))
 
+    def _combine_documents(self, docs: Tuple[FeatureDocument]) -> \
+            FeatureDocument:
+        return FeatureDocument.combine_documents(docs)
+
     def encode(self, doc: Union[Tuple[FeatureDocument], FeatureDocument]) -> \
             FeatureContext:
         """Encode by combining documents in to one monolithic document when a tuple is
@@ -74,7 +78,7 @@ class FeatureDocumentVectorizer(EncodableFeatureVectorizer, metaclass=ABCMeta):
         """
         self._assert_doc(doc)
         if self._is_mult(doc):
-            doc = FeatureDocument.combine_documents(doc)
+            doc = self._combine_documents(doc)
         return super().encode(doc)
 
     def _assert_doc(self, doc: Union[Tuple[FeatureDocument], FeatureDocument]):
