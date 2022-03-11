@@ -16,7 +16,7 @@ from zensols.deeplearn.vectorize import (
     FeatureContext, MultiFeatureContext, AggregateEncodableFeatureVectorizer,
     NominalEncodedEncodableFeatureVectorizer
 )
-from zensols.nlp import FeatureDocument, TokenAnnotatedFeatureSentence
+from zensols.nlp import FeatureDocument, FeatureSentence
 from zensols.deepnlp.vectorize import (
     EmbeddingFeatureVectorizer, TextFeatureType, FeatureDocumentVectorizer
 )
@@ -138,7 +138,7 @@ class TransformerEmbeddingFeatureVectorizer(TransformerFeatureVectorizer):
 
 @dataclass
 class TransformerExpanderFeatureContext(MultiFeatureContext):
-    """A vectorizer feature contex used with
+    """A vectorizer feature context used with
     :class:`.TransformerExpanderFeatureVectorizer`.
 
     """
@@ -284,13 +284,19 @@ class TransformerNominalFeatureVectorizer(
     delegate_feature_id: str = field(default=None)
     """The feature ID for the aggregate encodeable feature vectorizer."""
 
+    annotations_attribute: str = field(default='annotations')
+    """The attribute used to get the features from the
+    :class:`~zensols.nlp.FeatureSentence`.  For example,
+    :class:`~zensols.nlp.TokenAnnotatedFeatureSentence` has an ``annotations``
+    attribute.
+
+    """
     is_labeler: bool = field(default=True)
     """If ``True``, make this a labeling specific vectorizer.  Otherwise, certain
     layers will use the output of the vectorizer as features rather than the
     labels.
 
     """
-
     label_all_tokens: bool = field(default=False)
     """If ``True``, label all word piece tokens with the corresponding linguistic
     token label.  Otherwise, the default padded value is used, and thus,
@@ -323,9 +329,9 @@ class TransformerNominalFeatureVectorizer(
         arr = self.create_padded_tensor((n_sents, n_toks, 1), dtype)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'output shape: {arr.shape}/{self.shape}')
-        sent: TokenAnnotatedFeatureSentence
+        sent: FeatureSentence
         for six, sent in enumerate(doc):
-            sent_labels = sent.annotations
+            sent_labels = getattr(sent, self.annotations_attribute)
             word_ids = tdoc.offsets[six]
             previous_word_idx = None
             for tix, word_idx in enumerate(word_ids):
