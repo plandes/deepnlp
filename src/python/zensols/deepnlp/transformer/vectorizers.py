@@ -310,8 +310,7 @@ class TransformerNominalFeatureVectorizer(
         self._assert_token_output()
 
     def _get_shape(self) -> Tuple[int, int]:
-        shape = super()._get_shape()
-        return (-1, self.word_piece_token_length, shape[-1])
+        return (-1, self.word_piece_token_length)
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
         delegate: NominalEncodedEncodableFeatureVectorizer = self.delegate
