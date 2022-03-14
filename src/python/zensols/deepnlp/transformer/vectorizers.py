@@ -306,7 +306,7 @@ class TransformerNominalFeatureVectorizer(
     def __post_init__(self):
         super().__post_init__()
         if self.delegate_feature_id is None:
-            raise VectorizerError('expected attribute: delegate_feature_id')
+            raise VectorizerError('Expected attribute: delegate_feature_id')
         self._assert_token_output()
 
     def _get_shape(self) -> Tuple[int, int]:
