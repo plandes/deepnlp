@@ -17,13 +17,13 @@ from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
 from zensols.nlp import FeatureDocument, FeatureSentence
 from zensols.deepnlp.embed import WordEmbedModel
 from zensols.deepnlp.vectorize import TextFeatureType
-from . import FeatureDocumentVectorizer
+from . import TokenContainerVectorizer
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass
-class EmbeddingFeatureVectorizer(FeatureDocumentVectorizer,
+class EmbeddingFeatureVectorizer(TokenContainerVectorizer,
                                  Primeable, Dictable):
     """Vectorize a :class:`~zensols.nlp.container.FeatureDocument` as a vector of
     embedding indexes.  Later, these indexes are used in a
@@ -36,9 +36,8 @@ class EmbeddingFeatureVectorizer(FeatureDocumentVectorizer,
 
     Types for this value include:
 
-      * :class:`.WordEmbedModel`
-
-      * :class:`~zensols.deepnlp.transformer.TransformerEmbedding`
+      * :class:`~znesols.deepnlp.embed.domain.WordEmbedModel`
+      * :class:`~zensols.deepnlp.transformer.embed.TransformerEmbedding`
 
     """
     decode_embedding: bool = field(default=False)

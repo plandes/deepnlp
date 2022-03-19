@@ -4,12 +4,13 @@ natural language.
 """
 __author__ = 'Paul Landes'
 
-from typing import List, Union, Set, Dict, Tuple
+from typing import List, Union, Set, Dict, Tuple, Sequence
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from abc import abstractmethod, ABCMeta
 import logging
 import collections
+import torch
 from torch import Tensor
 from zensols.persist import persisted, PersistedWork
 from zensols.deeplearn.vectorize import (
@@ -17,8 +18,9 @@ from zensols.deeplearn.vectorize import (
     FeatureVectorizerManager,
     VectorizerError,
     TransformableFeatureVectorizer,
+    MultiFeatureContext,
 )
-from zensols.nlp import FeatureDocument, FeatureDocumentParser
+from zensols.nlp import FeatureSentence, FeatureDocument, FeatureDocumentParser
 from . import SpacyFeatureVectorizer
 
 logger = logging.getLogger(__name__)
@@ -54,7 +56,9 @@ class TextFeatureType(Enum):
 class FeatureDocumentVectorizer(TransformableFeatureVectorizer,
                                 metaclass=ABCMeta):
     """Creates document or sentence level features using instances of
-    :class:`.TokenContainer`.
+    :class:`.TokenContainer`.  If more than one document is given during
+    encoding, then documents will be combined in to one using
+    :meth:`~zensols.nlp.container.FeatureDocument.combine_documents`.
 
     """
     @abstractmethod
@@ -64,7 +68,7 @@ class FeatureDocumentVectorizer(TransformableFeatureVectorizer,
     def _is_mult(self, doc: Union[Tuple[FeatureDocument], FeatureDocument]) \
             -> bool:
         """Return ``True`` or not the input is a tuple (multiple) documents."""
-        return isinstance(doc, (tuple, list))
+        return isinstance(doc, (Tuple, List))
 
     def _combine_documents(self, docs: Tuple[FeatureDocument]) -> \
             FeatureDocument:
@@ -122,6 +126,111 @@ class FeatureDocumentVectorizer(TransformableFeatureVectorizer,
     def __str__(self):
         return (f'{super().__str__()}, ' +
                 f'feature type: {self.feature_type.name} ')
+
+
+@dataclass
+class TokenContainerVectorizer(FeatureDocumentVectorizer, metaclass=ABCMeta):
+    """Encodes just like the superclass if :obj:`.encode_level` is ``doc``.
+    However, if :obj:`.encode_level` is ``sentence``
+
+    """
+    encode_level: str = field()
+    """The level at which to encode data, which is one of: ``doc`` or
+    ``sentence``.  See class docs.
+
+    """
+    def _encode_sentence(self, sent: FeatureSentence) -> FeatureContext:
+        """Raise, truncate or otherwise take care of sentences that are too long.
+
+        """
+        sent_doc: FeatureDocument = sent.to_document()
+        return super().encode(sent_doc)
+
+    def _encode_sentences(self, doc: FeatureDocument) -> FeatureContext:
+        docs: Sequence[FeatureDocument] = doc if self._is_mult(doc) else [doc]
+        doc_ctxs: List[List[FeatureContext]] = []
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'encoding {len(docs)} documents')
+        # iterate over each document passed (usually as an aggregate from the
+        # batch framework)
+        doc: FeatureDocument
+        for doc in docs:
+            sent_ctxs: List[FeatureContext] = []
+            # concatenate each encoded sentence to become the document
+            sent: FeatureSentence
+            for sent in doc.sents:
+                sent_ctxs.append(self._encode_sentence(sent))
+            # add the multi-context of the sentences
+            doc_ctxs.append(MultiFeatureContext(
+                feature_id=None, contexts=tuple(sent_ctxs)))
+        return MultiFeatureContext(self.feature_id, tuple(doc_ctxs))
+
+    def encode(self, doc: FeatureDocument) -> FeatureContext:
+        ctx: FeatureContext
+        if self.encode_level == 'doc':
+            ctx = super().encode(doc)
+        elif self.encode_level == 'sentence':
+            self._assert_doc(doc)
+            ctx = self._encode_sentences(doc)
+        else:
+            raise VectorizerError(f'No such encode level: {self.encode_level}')
+        return ctx
+
+    def _decode_sentences(self, context: MultiFeatureContext) -> Tensor:
+        sent_dim = 1
+        darrs: List[Tensor] = []
+        # each multi-context represents a document with sentence context
+        # elements
+        doc_ctx: Tuple[MultiFeatureContext]
+        for doc_ctx in context.contexts:
+            sent_arrs: List[Tensor] = []
+            # decode each sentence and track their decoded tensors for later
+            # concatenation
+            sent_ctx: FeatureContext
+            for sent_ctx in doc_ctx.contexts:
+                arr = super().decode(sent_ctx)
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug(f'decoded sub context: {sent_ctx} ' +
+                                 f'-> {arr.size()}')
+                sent_arrs.append(arr)
+            # concat all sentences for this document in to one long vector with
+            # shape (batch, |tokens|, transformer dim)
+            sent_arr = torch.cat(sent_arrs, dim=sent_dim)
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'sentence cat: {sent_arr.size()}')
+            darrs.append(sent_arr)
+        # create document array of shape (batch, |tokens|, transformer dim) by
+        # first finding the longest document token count
+        max_sent_len = max(map(lambda t: t.size(sent_dim), darrs))
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'max sent len: {max_sent_len}')
+        arr = self.torch_config.zeros((
+            len(context.contexts),
+            max_sent_len,
+            darrs[0][0].size(-1)))
+        # copy over each document (from sentence concats) to the decoded tensor
+        for dix, doc_arr in enumerate(darrs):
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'sent array: {doc_arr.shape}')
+            arr[dix, :doc_arr.size(1), :] = doc_arr
+        n_squeeze = len(arr.shape) - len(self.shape)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'squeezing {n_squeeze}, {arr.shape} -> {self.shape}')
+        for _ in range(n_squeeze):
+            arr = arr.squeeze(dim=-1)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'vectorized shape: {arr.shape}')
+        return arr
+
+    def decode(self, context: FeatureContext) -> Tensor:
+        arr: Tensor
+        if self.encode_level == 'doc':
+            arr = super().decode(context)
+        elif self.encode_level == 'sentence':
+            arr = self._decode_sentences(context)
+        else:
+            raise VectorizerError(f'No such encode level: {self.encode_level}')
+        return arr
 
 
 @dataclass

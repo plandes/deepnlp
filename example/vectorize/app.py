@@ -61,7 +61,7 @@ class Application(object):
 
         """
         from pprint import pprint
-        vec: TransformerEmbeddingFeatureVectorizer = self.vec_mng['transformer']
+        vec: TransformerEmbeddingFeatureVectorizer = self.vec_mng['transformer_fixed']
         doc: FeatureDocument = self.vec_mng.doc_parser.parse(self.sent3)
         tdoc_org = vec.tokenize(doc)
 
@@ -94,7 +94,6 @@ class Application(object):
 
             labels.append(label_ids)
         print(labels)
-        return
 
         tdoc = tdoc_org.detach()
         tdoc.id2tok = tdoc_org.id2tok
@@ -102,8 +101,6 @@ class Application(object):
         pprint(tdoc.map_to_word_pieces(ex))
         pprint(tdoc.map_to_word_pieces(ex, tdoc_org.id2tok))
         tdoc_org.write()
-        #tdoc.write()
-        return
         out = vec.transform(doc)
         print(type(out))
         print(out.shape)
@@ -132,4 +129,4 @@ class Application(object):
 
     def proto(self):
         """Prototype entry point."""
-        self.bert()
+        self.all()

@@ -28,8 +28,8 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class TransformerEmbedding(PersistableContainer, Dictable):
-    """An model for transformer (i.e. Bert) embeddings that wraps the HuggingFace
-    transformms API.
+    """An model for transformer embeddings (such as BERT) that wraps the
+    HuggingFace transformms API.
 
     """
     _DICTABLE_WRITABLE_DESCENDANTS = True
@@ -46,7 +46,7 @@ class TransformerEmbedding(PersistableContainer, Dictable):
     This is set to one of:
 
        * ``last_hidden_state``: with the output embeddings of the last layer
-         with shape: ``(batch, N sentences, hidden layer dimension)
+         with shape: ``(batch, N sentences, hidden layer dimension)``
 
        * ``pooler_output``: the last layer hidden-state of the first token of
          the sequence (classification token) further processed by a Linear
