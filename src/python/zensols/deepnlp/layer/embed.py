@@ -34,14 +34,14 @@ class EmbeddingLayer(DebugModule, Deallocatable):
     network.
 
     **Important**: you must always check for attributes in
-    :meth:`.Deallocatable.deallocate` since it might be called more than once
-    (i.e. from directly deallocating and then from the factory).
+    :meth:`~zensols.persist.dealloc.Deallocatable.deallocate` since it might be
+    called more than once (i.e. from directly deallocating and then from the
+    factory).
 
     **Implementation note**: No datacasses are usable since pytorch is picky
     about initialization order.
 
     """
-
     def __init__(self, feature_vectorizer: FeatureDocumentVectorizer,
                  embedding_dim: int, sub_logger: logging.Logger = None,
                  trainable: bool = False):
