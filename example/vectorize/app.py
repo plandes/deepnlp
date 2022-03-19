@@ -103,10 +103,11 @@ class Application(object):
         tdoc_org.write()
         out = vec.transform(doc)
         print(type(out))
-        print(out.shape)
+        print(out.shape, out.device)
         n_labels = 9
         from torch import nn
         linear = nn.Linear(768, n_labels)
+        linear = linear.to(out.device)
         logits = linear.forward(out)
         print(logits.shape)
 
