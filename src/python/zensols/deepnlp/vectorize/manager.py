@@ -131,7 +131,8 @@ class FeatureDocumentVectorizer(TransformableFeatureVectorizer,
 @dataclass
 class TokenContainerVectorizer(FeatureDocumentVectorizer, metaclass=ABCMeta):
     """Encodes just like the superclass if :obj:`.encode_level` is ``doc``.
-    However, if :obj:`.encode_level` is ``sentence``
+    However, if :obj:`.encode_level` is ``sentence`` then encode each sentence
+    using the subclass ``_encode`` and ``_decode`` methods.
 
     """
     encode_level: str = field()
