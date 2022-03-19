@@ -33,7 +33,6 @@ class TextFeatureType(Enum):
     concatenated with the embedding layer.
 
     """
-
     DOCUMENT = auto()
     """Document level, typically added to a join layer."""
 
