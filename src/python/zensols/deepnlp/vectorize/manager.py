@@ -14,9 +14,9 @@ from torch import Tensor
 from zensols.persist import persisted, PersistedWork
 from zensols.deeplearn.vectorize import (
     FeatureContext,
-    EncodableFeatureVectorizer,
     FeatureVectorizerManager,
     VectorizerError,
+    TransformableFeatureVectorizer,
 )
 from zensols.nlp import FeatureDocument, FeatureDocumentParser
 from . import SpacyFeatureVectorizer
@@ -52,7 +52,8 @@ class TextFeatureType(Enum):
 
 
 @dataclass
-class FeatureDocumentVectorizer(EncodableFeatureVectorizer, metaclass=ABCMeta):
+class FeatureDocumentVectorizer(TransformableFeatureVectorizer,
+                                metaclass=ABCMeta):
     """Creates document or sentence level features using instances of
     :class:`.TokenContainer`.
 

@@ -13,9 +13,7 @@ import torch
 from torch import Tensor
 from zensols.config import Dictable
 from zensols.persist import persisted, Primeable
-from zensols.deeplearn.vectorize import (
-    FeatureContext, TensorFeatureContext, TransformableFeatureVectorizer
-)
+from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
 from zensols.nlp import FeatureDocument, FeatureSentence
 from zensols.deepnlp.embed import WordEmbedModel
 from zensols.deepnlp.vectorize import TextFeatureType
@@ -25,8 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class EmbeddingFeatureVectorizer(TransformableFeatureVectorizer,
-                                 FeatureDocumentVectorizer,
+class EmbeddingFeatureVectorizer(FeatureDocumentVectorizer,
                                  Primeable, Dictable):
     """Vectorize a :class:`.FeatureDocument` as a vector of embedding indexes.
     Later, these indexes are used in a :class:`WordEmbeddingLayer` to create
@@ -43,7 +40,6 @@ class EmbeddingFeatureVectorizer(TransformableFeatureVectorizer,
       * :class:`~zensols.deepnlp.transformer.TransformerEmbedding`
 
     """
-
     decode_embedding: bool = field(default=False)
     """Whether or not to decode the embedding during the decode phase, which is
     helpful when caching batches; otherwise, the data is decoded from indexes
@@ -58,7 +54,6 @@ class EmbeddingFeatureVectorizer(TransformableFeatureVectorizer,
     done for every epoch.
 
     """
-
     def _get_shape(self) -> Tuple[int, int]:
         return self.manager.token_length, self.embed_model.vector_dimension
 

@@ -8,6 +8,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+### Added
+- A recurrent CRF and default classify facade to the resource library.
+- Tokenized transformer document truncation.
+- Token classification resource library.
+
+### Changed
+- Recurrent embedded CRF uses a new network settings factory method.
+- Update examples.
+- Pin `zensols.nlp` version dependency to minor (second component) release.
+- All deep NLP vectorizers inherit from `TransformableFeatureVectorizer` to
+  simplify class hierarchy.  This change now requires `encode_transformed` in
+  respective vectorizer configurations.
+
+
 ## [1.0.1] - 2022-02-12
 ### Added
 - Runtime bench marking.

@@ -19,6 +19,9 @@ predict:	$(MODEL_DIR)
 transpredict:
 		make MODEL=transformer predict
 
+.PHONY:		testall
+testall:	cleanall traintest
+
 .PHONY:		help
 help:
 		$(PROG) --help

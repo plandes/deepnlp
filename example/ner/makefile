@@ -91,6 +91,9 @@ stop:
 earlystop:
 			$(ENTRY) stop -c models/transformer-trainable.conf
 
+.PHONY:			testall
+testall:		cleandata glove50
+
 .PHONY:			clean
 clean:
 			rm -fr $(MTARG) *.log
