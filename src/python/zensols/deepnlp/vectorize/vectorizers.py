@@ -465,11 +465,6 @@ class OneHotEncodedFeatureDocumentVectorizer(
     DESCRIPTION = 'encoded feature document vectorizer'
     FEATURE_TYPE = TextFeatureType.TOKEN
 
-    encode_transformed: bool = field()
-    """If ``True``, enable the transformed output of the encoding step as the
-    decode step (see class docs).
-
-    """
     feature_attribute: Tuple[str] = field(default=None)
     """The feature attributes to vectorize."""
 
