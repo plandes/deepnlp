@@ -269,8 +269,22 @@ class TransformerExpanderFeatureVectorizer(TransformerFeatureVectorizer):
 
 
 @dataclass
-class TransformerNominalFeatureVectorizer(
-        AggregateEncodableFeatureVectorizer, TransformerFeatureVectorizer):
+class LabelTransformerFeatureVectorizer(TransformerFeatureVectorizer):
+    FEATURE_TYPE = TextFeatureType.TOKEN
+
+    is_labeler: bool = field(default=True)
+    """If ``True``, make this a labeling specific vectorizer.  Otherwise, certain
+    layers will use the output of the vectorizer as features rather than the
+    labels.
+
+    """
+    def _get_shape(self) -> Tuple[int, int]:
+        return (-1, self.word_piece_token_length)
+
+
+@dataclass
+class TransformerNominalFeatureVectorizer(AggregateEncodableFeatureVectorizer,
+                                          LabelTransformerFeatureVectorizer):
     """This creates word piece (maps to tokens) labels.  This class uses a
     :class:`~zensols.deeplearn.vectorize.NominalEncodedEncodableFeatureVectorizer``
     to map from string labels to their nominal long values.  This allows a
@@ -279,7 +293,6 @@ class TransformerNominalFeatureVectorizer(
 
     """
     DESCRIPTION = 'transformer seq labeler'
-    FEATURE_TYPE = TextFeatureType.TOKEN
 
     delegate_feature_id: str = field(default=None)
     """The feature ID for the aggregate encodeable feature vectorizer."""
@@ -289,12 +302,6 @@ class TransformerNominalFeatureVectorizer(
     :class:`~zensols.nlp.FeatureSentence`.  For example,
     :class:`~zensols.nlp.TokenAnnotatedFeatureSentence` has an ``annotations``
     attribute.
-
-    """
-    is_labeler: bool = field(default=True)
-    """If ``True``, make this a labeling specific vectorizer.  Otherwise, certain
-    layers will use the output of the vectorizer as features rather than the
-    labels.
 
     """
     label_all_tokens: bool = field(default=False)
@@ -309,13 +316,16 @@ class TransformerNominalFeatureVectorizer(
             raise VectorizerError('Expected attribute: delegate_feature_id')
         self._assert_token_output()
 
-    def _get_shape(self) -> Tuple[int, int]:
-        return (-1, self.word_piece_token_length)
+    def _get_labels_type(self) -> Tuple[Dict[str, int], torch.dtype]:
+        delegate: NominalEncodedEncodableFeatureVectorizer = self.delegate
+        return (delegate.by_label, delegate.data_type)
+
+    def _get_attributes(self, sent: FeatureSentence):
+        return getattr(sent, self.annotations_attribute)
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
-        delegate: NominalEncodedEncodableFeatureVectorizer = self.delegate
         tdoc: TokenizedDocument = self.tokenize(doc)
-        by_label: Dict[str, int] = delegate.by_label
+        by_label, dtype = self._get_labels_type()
         n_sents = len(doc)
         if self.word_piece_token_length > 0:
             n_toks = self.word_piece_token_length
@@ -324,13 +334,12 @@ class TransformerNominalFeatureVectorizer(
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug('encoding using {n_toks} tokens with wp len: ' +
                          f'{self.word_piece_token_length}')
-        dtype: torch.dtype = delegate.data_type
         arr = self.create_padded_tensor((n_sents, n_toks, 1), dtype)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'output shape: {arr.shape}/{self.shape}')
         sent: FeatureSentence
         for six, sent in enumerate(doc):
-            sent_labels = getattr(sent, self.annotations_attribute)
+            sent_labels = self._get_attributes(sent)
             word_ids = tdoc.offsets[six]
             previous_word_idx = None
             for tix, word_idx in enumerate(word_ids):
@@ -352,3 +361,12 @@ class TransformerNominalFeatureVectorizer(
 
     def _decode(self, context: TransformerFeatureContext) -> Tensor:
         return TransformerFeatureVectorizer._decode(self, context)
+
+
+@dataclass
+class MaskFeatureVectorizer(LabelTransformerFeatureVectorizer):
+    def _get_labels_type(self) -> Tuple[Dict[str, int], torch.dtype]:
+        return ({'T': True}, bool)
+
+    def _get_attributes(self, sent: FeatureSentence):
+        print('S', sent)

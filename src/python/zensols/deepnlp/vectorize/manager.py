@@ -166,6 +166,10 @@ class TokenContainerVectorizer(FeatureDocumentVectorizer, metaclass=ABCMeta):
                 feature_id=None, contexts=tuple(sent_ctxs)))
         return MultiFeatureContext(self.feature_id, tuple(doc_ctxs))
 
+    # def _combine_documents(self, docs: Tuple[FeatureDocument]) -> \
+    #         FeatureDocument:
+    #     return FeatureDocument.combine_documents(docs)
+
     def encode(self, doc: FeatureDocument) -> FeatureContext:
         ctx: FeatureContext
         if self.encode_level == 'doc':
