@@ -9,6 +9,7 @@ CLEAN_DEPS +=		pycleancache
 
 ## project
 EXAMPLE_DIR = 		example
+EXAMPLE_NAMES = 	vectorize clickbate movie ner 
 
 ## doc
 PY_DOC_MD_SRC =		./doc/md
@@ -28,7 +29,16 @@ exampleclean:
 
 .PHONY:		testall
 testall:	test
-		@for i in vectorize clickbate movie ner ; do \
+		@for i in $(EXAMPLE_NAMES) ; do \
 			echo testing $$i ; \
 			make -C $(EXAMPLE_DIR)/$$i testall ; \
+		done
+
+.PHONY:		restnb
+resetnb:
+		@for i in $(EXAMPLE_NAMES) ; do \
+			echo resetting $$i ; \
+			if [ -d $(EXAMPLE_DIR)/$$i/notebook ] ; then \
+				( cd $(EXAMPLE_DIR)/$$i/notebook ; git checkout . ) ; \
+			fi ; \
 		done
