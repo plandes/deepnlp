@@ -272,6 +272,10 @@ class TransformerExpanderFeatureVectorizer(TransformerFeatureVectorizer):
 @dataclass
 class LabelTransformerFeatureVectorizer(TransformerFeatureVectorizer,
                                         metaclass=ABCMeta):
+    """A base class for vectorizing by mapping tokens to transformer consumable
+    word piece tokens.  This includes creating labels and masks.
+
+    """
     is_labeler: bool = field(default=True)
     """If ``True``, make this a labeling specific vectorizer.  Otherwise, certain
     layers will use the output of the vectorizer as features rather than the
