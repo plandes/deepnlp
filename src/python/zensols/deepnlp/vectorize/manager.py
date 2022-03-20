@@ -239,8 +239,14 @@ class FoldingDocumentVectorizer(FeatureDocumentVectorizer, metaclass=ABCMeta):
             ctx = self._encode_sentences(doc)
         return ctx
 
+    def _decode_sentence(self, sent_ctx: FeatureContext) -> Tensor:
+        return super().decode(sent_ctx)
+
+    def _create_decoded_pad(self, shape: Tuple[int]) -> Tensor:
+        return self.torch_config.zeros(shape)
+
     def _decode_sentences(self, context: MultiFeatureContext) -> Tensor:
-        sent_dim = 1
+        sent_dim: int = 1
         darrs: List[Tensor] = []
         # each multi-context represents a document with sentence context
         # elements
@@ -251,14 +257,14 @@ class FoldingDocumentVectorizer(FeatureDocumentVectorizer, metaclass=ABCMeta):
             # concatenation
             sent_ctx: FeatureContext
             for sent_ctx in doc_ctx.contexts:
-                arr = super().decode(sent_ctx)
+                arr = self._decode_sentence(sent_ctx)
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.debug(f'decoded sub context: {sent_ctx} ' +
                                  f'-> {arr.size()}')
                 sent_arrs.append(arr)
             # concat all sentences for this document in to one long vector with
             # shape (batch, |tokens|, transformer dim)
-            sent_arr = torch.cat(sent_arrs, dim=sent_dim)
+            sent_arr: Tensor = torch.cat(sent_arrs, dim=sent_dim)
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'sentence cat: {sent_arr.size()}')
             darrs.append(sent_arr)
@@ -267,7 +273,7 @@ class FoldingDocumentVectorizer(FeatureDocumentVectorizer, metaclass=ABCMeta):
         max_sent_len = max(map(lambda t: t.size(sent_dim), darrs))
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'max sent len: {max_sent_len}')
-        arr = self.torch_config.zeros((
+        arr = self._create_decoded_pad((
             len(context.contexts),
             max_sent_len,
             darrs[0][0].size(-1)))

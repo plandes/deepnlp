@@ -13,7 +13,7 @@ EXAMPLE_DIR = 		example
 ## doc
 PY_DOC_MD_SRC =		./doc/md
 
-#PY_SRC_TEST_PAT ?=	'test_lab*.py'
+PY_SRC_TEST_PAT ?=	'test_lab*.py'
 
 
 ## targets
