@@ -100,7 +100,7 @@ trantrain:
 			$(ENTRY) traintest -p --config $(MDL_DIR)/transformer-trainable.conf
 
 .PHONY:
-testall:		cleanall fasttrain
+testall:		cleanall glove50
 
 .PHONY:			allmodels
 allmodels:		glove50 glove300 word2vec transformer
