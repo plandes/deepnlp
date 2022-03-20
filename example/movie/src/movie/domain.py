@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, Type
+from typing import Tuple
 from dataclasses import dataclass, field
 import logging
 import sys
@@ -63,13 +63,6 @@ class Review(FeatureDocument):
 
     confidence: float = field(default=None)
     """A probably of the confidence of the prediction."""
-
-    # we have to add this method to tell the framework how to combine multiple
-    # instances of review 'documents' when batching many sentences (as
-    # documents) in to one document (the entire batch)
-    def _combine_documents(self, docs: Tuple[FeatureDocument],
-                           cls: Type[FeatureDocument]) -> FeatureDocument:
-        return super()._combine_documents(docs, FeatureDocument)
 
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
         if self.polarity is None:
