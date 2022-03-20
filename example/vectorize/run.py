@@ -19,9 +19,10 @@ config_file = parser.conf
 type = importini
 config_files = list:
   resource(zensols.nlp): resources/obj.conf,
+  resource(zensols.deeplearn): resources/default.conf,
   resource(zensols.deeplearn): resources/obj.conf,
-  resource(zensols.deepnlp): resources/obj.conf,
-  resource(zensols.deepnlp): resources/transformer.conf
+  resource(zensols.deepnlp): resources/default.conf,
+  resource(zensols.deepnlp): resources/obj.conf
 
 [app]
 class_name = app.Application
