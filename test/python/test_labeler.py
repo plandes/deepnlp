@@ -59,10 +59,8 @@ class TestLabelVectorizer(TestFeatureVectorization):
         vec.encode_transformed = self.encode_transformed
         return vec
 
-    def _test_single(self, doc, vec, boolify=False, squeeze=True):
+    def _test_single(self, doc, vec, boolify=False):
         tensor: Tensor = vec.transform(doc)
-        if squeeze:
-            tensor = tensor.squeeze(2)
         self.assertEqual((2, 16), tensor.shape)
         should = self.should_single
         if boolify:
@@ -79,27 +77,23 @@ class TestLabelVectorizer(TestFeatureVectorization):
         self._test_single(self.docs[0], vec)
 
         tensor: Tensor = vec.transform(self.docs)
-        self.assertEqual((2, 26, 1), tensor.shape)
-        tensor = tensor.squeeze(2)
+        self.assertEqual((2, 26), tensor.shape)
         self.assertTensorEquals(torch.tensor(self.should_concat), tensor)
 
         vec = self._get_vec('ent_label_trans_sentence_vectorizer')
         self._test_single(self.docs[0], vec)
         tensor: Tensor = vec.transform(self.docs)
-        self.assertEqual((3, 16, 1), tensor.shape)
-        tensor = tensor.squeeze(2)
+        self.assertEqual((3, 16), tensor.shape)
         self.assertTensorEquals(torch.tensor(self.should_sentence), tensor)
 
         vec = self._get_vec('ent_label_trans_separate_vectorizer')
         tensor: Tensor = vec.transform(self.docs[0])
-        self.assertEqual((1, 28, 1), tensor.shape)
-        tensor = tensor.squeeze(2)
+        self.assertEqual((1, 28), tensor.shape)
         self.assertTensorEquals(torch.tensor(self.should_separate[0]), tensor.squeeze(0))
 
         with loglevel('zensols.deepnlp.vectorize', init=True, enable=False):
             tensor: Tensor = vec.transform(self.docs)
-        self.assertEqual((2, 28, 1), tensor.shape)
-        tensor = tensor.squeeze(2)
+        self.assertEqual((2, 28), tensor.shape)
         self.assertTensorEquals(torch.tensor(self.should_separate), tensor)
 
     def test_labeler(self):
@@ -112,14 +106,14 @@ class TestLabelVectorizer(TestFeatureVectorization):
         vec: TransformerNominalFeatureVectorizer
 
         vec = self._get_vec('ent_mask_trans_concat_tokens_vectorizer')
-        self._test_single(self.docs[0], vec, True, False)
+        self._test_single(self.docs[0], vec, True)
 
         tensor: Tensor = vec.transform(self.docs)
         self.assertEqual((2, 26), tensor.shape)
         self.assertTensorEquals(torch.tensor(self._to_bool(self.should_concat)), tensor)
 
         vec = self._get_vec('ent_mask_trans_sentence_vectorizer')
-        self._test_single(self.docs[0], vec, True, False)
+        self._test_single(self.docs[0], vec, True)
         tensor: Tensor = vec.transform(self.docs)
         self.assertEqual((3, 16), tensor.shape)
         self.assertTensorEquals(torch.tensor(self._to_bool(self.should_sentence)), tensor)

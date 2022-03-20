@@ -347,7 +347,7 @@ class TransformerNominalFeatureVectorizer(AggregateEncodableFeatureVectorizer,
     single instance and centralized location where the label mapping happens in
     case other (non-transformer) components need to vectorize labels.
 
-    :shape: (|sentences|, |max word peice length|, 1)
+    :shape: (|sentences|, |max word peice length|)
 
     """
     FEATURE_TYPE = TextFeatureType.TOKEN
@@ -376,7 +376,7 @@ class TransformerNominalFeatureVectorizer(AggregateEncodableFeatureVectorizer,
         self._assert_token_output()
 
     def _get_shape(self) -> Tuple[int, int]:
-        return (-1, self.word_piece_token_length, 1)
+        return (-1, self.word_piece_token_length)
 
     def _get_labels_type_all(self) -> Tuple[Dict[str, int], torch.dtype, bool]:
         delegate: NominalEncodedEncodableFeatureVectorizer = self.delegate
@@ -387,10 +387,14 @@ class TransformerNominalFeatureVectorizer(AggregateEncodableFeatureVectorizer,
 
     def _create_padded_tensor(self, n_sents: int, n_toks: int,
                               data_type: torch.dtype) -> Tensor:
-        return self.create_padded_tensor((n_sents, n_toks, 1), data_type)
+        return self.create_padded_tensor((n_sents, n_toks), data_type)
 
     def _create_decoded_pad(self, shape: Tuple[int]) -> Tensor:
         return self.create_padded_tensor(shape, self.delegate.data_type)
+
+    def _decode_sentence(self, sent_ctx: FeatureContext) -> Tensor:
+        arr: Tensor = super()._decode_sentence(sent_ctx)
+        return arr.unsqueeze(2)
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
         return LabelTransformerFeatureVectorizer._encode(self, doc)
