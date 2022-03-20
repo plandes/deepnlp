@@ -7,7 +7,10 @@ PROJ_ARGS =		-c resources/deepnlp.conf
 CLEAN_ALL_DEPS +=	exampleclean
 CLEAN_DEPS +=		pycleancache
 
-##doc
+## project
+EXAMPLE_DIR = 		example
+
+## doc
 PY_DOC_MD_SRC =		./doc/md
 
 #PY_SRC_TEST_PAT ?=	'test_lab*.py'
@@ -19,6 +22,13 @@ include ./zenbuild/main.mk
 
 .PHONY:		exampleclean
 exampleclean:
-		@for i in example/* ; do \
+		@for i in $(EXAMPLE_DIR)/* ; do \
 			make -C $$i clean ; \
 		done || true
+
+.PHONY:		testall
+testall:	test
+		@for i in vectorize clickbate movie ner ; do \
+			echo testing $$i ; \
+			make -C $(EXAMPLE_DIR)/$$i testall ; \
+		done
