@@ -332,9 +332,10 @@ class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
     congruence with the token length, which is used in its shape.
 
     **Important**: do not combine sentences in to a single document with
-    :meth:`FeatureDocument.combine_sentences` since features are created as a
-    dependency parse tree at the sentence level.  Otherwise, the dependency
-    relations are broken and results in a zeored tensor.
+    :meth:`~zensols.nlp.container.FeatureDocument.combine_sentences` since
+    features are created as a dependency parse tree at the sentence level.
+    Otherwise, the dependency relations are broken and results in a zeored
+    tensor.
 
     :shape: (|sentences|, token length, 1)
 

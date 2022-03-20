@@ -56,9 +56,21 @@ class TextFeatureType(Enum):
 class FeatureDocumentVectorizer(TransformableFeatureVectorizer,
                                 metaclass=ABCMeta):
     """Creates document or sentence level features using instances of
-    :class:`.TokenContainer`.  If more than one document is given during
-    encoding, then documents will be combined in to one using
-    :meth:`~zensols.nlp.container.FeatureDocument.combine_documents`.
+    :class:`.TokenContainer`.
+
+    Subclasses implement specific vectorization on a single document using
+    :meth:`_encode`, and it is up to the subclass to decide how to vectorize
+    the document.
+
+    Multiple documents as an aggregrate given as a list or tuple of documents
+    is supported.  Only the document level vectorization is supported to
+    provide one standard contract across framework components and vectorizers.
+
+    If more than one document is given during encoding it and will be combined
+    in to one document as described using an
+    :obj:`.TokenContainerVectorizer.encoding_level` = ``concat_tokens``.
+
+    :see: :class:`.TokenContainerVectorizer`
 
     """
     @abstractmethod
@@ -130,18 +142,61 @@ class FeatureDocumentVectorizer(TransformableFeatureVectorizer,
 
 @dataclass
 class TokenContainerVectorizer(FeatureDocumentVectorizer, metaclass=ABCMeta):
-    """Encodes just like the superclass if :obj:`.encode_level` is ``doc``.
-    However, if :obj:`.encode_level` is ``sentence`` then encode each sentence
-    using the subclass ``_encode`` and ``_decode`` methods.
+    """This class is like :class:`.FeatureDocumentVectorizer`, but provides more
+    options in how to fold multiple documents in a single document for
+    vectorization.
+
+    Based on the value of :obj:`encode_level`, this class encodes a sequence of
+    :class:`~zensols.nlp.container.FeatureDocument` instances differently.
+
+    Subclasses must implement :meth:`_encode`.
 
     """
+    _ENCODE_LEVELS = frozenset('concat_tokens sentence separate'.split())
+
     encode_level: str = field()
-    """The level at which to encode data, which is one of: ``doc`` or
-    ``sentence``.  See class docs.
+    """How multiple documents are merged in to a single document for vectorization,
+    which is one of:
+
+        * ``raise``: raise an error allowing only single documents to be
+          vectorized
+
+        * ``concat_tokens``: concatenate tokens of each document in to
+          singleton sentence documents; uses
+          :meth:`~zensols.nlp.container.FeatureDocument.combine_documents` with
+          ``concat_tokens = True``
+
+        * ``sentence``: all sentences of all documents become singleton
+          sentence documents; uses
+          :meth:`~zensols.nlp.container.FeatureDocument.combine_documents` with
+          ``concat_tokens = False``
+
+        * ``separate``: every sentence of each document is encoded separately,
+          then the each sentence output is concatenated as the respsective
+          document during decoding; this uses the :meth:`_encode` for each
+          sentence of each document and :meth:`_decode` to decode back in to
+          the same represented document structure as the original
 
     """
+    def __post_init__(self):
+        super().__post_init__()
+        if self.encode_level not in self._ENCODE_LEVELS:
+            raise VectorizerError(f'No such encode level: {self.encode_level}')
+
+    def _combine_documents(self, docs: Tuple[FeatureDocument]) -> \
+            FeatureDocument:
+        if self.encode_level == 'raise' and len(docs) > 1:
+            raise VectorizerError(
+                f'Configured to support single document but got {len(docs)}')
+        concat_tokens = self.encode_level == 'concat_tokens'
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'encode level: {self.encode_level}, ' +
+                         f'concat_tokens={concat_tokens}')
+        return FeatureDocument.combine_documents(
+            docs, concat_tokens=concat_tokens)
+
     def _encode_sentence(self, sent: FeatureSentence) -> FeatureContext:
-        """Raise, truncate or otherwise take care of sentences that are too long.
+        """Encode a single sentence document.
 
         """
         sent_doc: FeatureDocument = sent.to_document()
@@ -160,25 +215,24 @@ class TokenContainerVectorizer(FeatureDocumentVectorizer, metaclass=ABCMeta):
             # concatenate each encoded sentence to become the document
             sent: FeatureSentence
             for sent in doc.sents:
-                sent_ctxs.append(self._encode_sentence(sent))
+                ctx = self._encode_sentence(sent)
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug(f'encoded {sent}: {ctx}')
+                sent_ctxs.append(ctx)
             # add the multi-context of the sentences
             doc_ctxs.append(MultiFeatureContext(
                 feature_id=None, contexts=tuple(sent_ctxs)))
         return MultiFeatureContext(self.feature_id, tuple(doc_ctxs))
 
-    # def _combine_documents(self, docs: Tuple[FeatureDocument]) -> \
-    #         FeatureDocument:
-    #     return FeatureDocument.combine_documents(docs)
-
-    def encode(self, doc: FeatureDocument) -> FeatureContext:
+    def encode(self, doc: Union[Tuple[FeatureDocument], FeatureDocument]) -> \
+            FeatureContext:
         ctx: FeatureContext
-        if self.encode_level == 'doc':
+        if self.encode_level == 'concat_tokens' or \
+           self.encode_level == 'sentence':
             ctx = super().encode(doc)
-        elif self.encode_level == 'sentence':
+        elif self.encode_level == 'separate':
             self._assert_doc(doc)
             ctx = self._encode_sentences(doc)
-        else:
-            raise VectorizerError(f'No such encode level: {self.encode_level}')
         return ctx
 
     def _decode_sentences(self, context: MultiFeatureContext) -> Tensor:
@@ -229,12 +283,11 @@ class TokenContainerVectorizer(FeatureDocumentVectorizer, metaclass=ABCMeta):
 
     def decode(self, context: FeatureContext) -> Tensor:
         arr: Tensor
-        if self.encode_level == 'doc':
+        if self.encode_level == 'concat_tokens' or \
+           self.encode_level == 'sentence':
             arr = super().decode(context)
-        elif self.encode_level == 'sentence':
+        elif self.encode_level == 'separate':
             arr = self._decode_sentences(context)
-        else:
-            raise VectorizerError(f'No such encode level: {self.encode_level}')
         return arr
 
 
