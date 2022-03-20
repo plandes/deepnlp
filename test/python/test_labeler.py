@@ -54,6 +54,11 @@ class TestLabelVectorizer(TestFeatureVectorization):
                 s.annotations = tuple(map(lambda t: t.ent_, s))
         return docs
 
+    def _get_vec(self, name: str):
+        vec = self.fac(name)
+        vec.encode_transformed = self.encode_transformed
+        return vec
+
     def _test_single(self, doc, vec, boolify=False, squeeze=True):
         tensor: Tensor = vec.transform(doc)
         if squeeze:
@@ -65,10 +70,11 @@ class TestLabelVectorizer(TestFeatureVectorization):
         self.assertEqual((2, 16), tensor.shape)
         self.assertTensorEquals(torch.tensor(should), tensor)
 
-    def test_labeler(self):
+    def _test_labeler(self):
         vec: TransformerNominalFeatureVectorizer
 
-        vec = self.fac('ent_label_trans_concat_tokens_vectorizer')
+        vec = self._get_vec('ent_label_trans_concat_tokens_vectorizer')
+        vec.encode_transformed = self.encode_transformed
         self.assertEqual(vec.feature_type, TextFeatureType.NONE)
         self._test_single(self.docs[0], vec)
 
@@ -77,14 +83,14 @@ class TestLabelVectorizer(TestFeatureVectorization):
         tensor = tensor.squeeze(2)
         self.assertTensorEquals(torch.tensor(self.should_concat), tensor)
 
-        vec = self.fac('ent_label_trans_sentence_vectorizer')
+        vec = self._get_vec('ent_label_trans_sentence_vectorizer')
         self._test_single(self.docs[0], vec)
         tensor: Tensor = vec.transform(self.docs)
         self.assertEqual((3, 16, 1), tensor.shape)
         tensor = tensor.squeeze(2)
         self.assertTensorEquals(torch.tensor(self.should_sentence), tensor)
 
-        vec = self.fac('ent_label_trans_separate_vectorizer')
+        vec = self._get_vec('ent_label_trans_separate_vectorizer')
         tensor: Tensor = vec.transform(self.docs[0])
         self.assertEqual((1, 28, 1), tensor.shape)
         tensor = tensor.squeeze(2)
@@ -96,23 +102,29 @@ class TestLabelVectorizer(TestFeatureVectorization):
         tensor = tensor.squeeze(2)
         self.assertTensorEquals(torch.tensor(self.should_separate), tensor)
 
-    def test_masker(self):
+    def test_labeler(self):
+        self.encode_transformed = False
+        self._test_labeler()
+        self.encode_transformed = True
+        self._test_labeler()
+
+    def _test_masker(self):
         vec: TransformerNominalFeatureVectorizer
 
-        vec = self.fac('ent_mask_trans_concat_tokens_vectorizer')
+        vec = self._get_vec('ent_mask_trans_concat_tokens_vectorizer')
         self._test_single(self.docs[0], vec, True, False)
 
         tensor: Tensor = vec.transform(self.docs)
         self.assertEqual((2, 26), tensor.shape)
         self.assertTensorEquals(torch.tensor(self._to_bool(self.should_concat)), tensor)
 
-        vec = self.fac('ent_mask_trans_sentence_vectorizer')
+        vec = self._get_vec('ent_mask_trans_sentence_vectorizer')
         self._test_single(self.docs[0], vec, True, False)
         tensor: Tensor = vec.transform(self.docs)
         self.assertEqual((3, 16), tensor.shape)
         self.assertTensorEquals(torch.tensor(self._to_bool(self.should_sentence)), tensor)
 
-        vec = self.fac('ent_mask_trans_separate_vectorizer')
+        vec = self._get_vec('ent_mask_trans_separate_vectorizer')
         tensor: Tensor = vec.transform(self.docs[0])
         self.assertEqual((1, 28), tensor.shape)
         self.assertTensorEquals(torch.tensor(self._to_bool(self.should_separate)[0]), tensor.squeeze(0))
@@ -120,3 +132,9 @@ class TestLabelVectorizer(TestFeatureVectorization):
         tensor: Tensor = vec.transform(self.docs)
         self.assertEqual((2, 28), tensor.shape)
         self.assertTensorEquals(torch.tensor(self._to_bool(self.should_separate)), tensor)
+
+    def test_masker(self):
+        self.encode_transformed = False
+        self._test_masker()
+        self.encode_transformed = True
+        self._test_masker()
