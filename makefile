@@ -37,8 +37,8 @@ testall:	test
 .PHONY:		restnb
 resetnb:
 		@for i in $(EXAMPLE_NAMES) ; do \
-			echo resetting $$i ; \
 			if [ -d $(EXAMPLE_DIR)/$$i/notebook ] ; then \
+				echo resetting $$i ; \
 				( cd $(EXAMPLE_DIR)/$$i/notebook ; git checkout . ) ; \
 			fi ; \
 		done
