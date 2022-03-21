@@ -34,7 +34,7 @@ testall:	test
 			make -C $(EXAMPLE_DIR)/$$i testall ; \
 		done
 
-.PHONY:		restnb
+.PHONY:		resetnb
 resetnb:
 		@for i in $(EXAMPLE_NAMES) ; do \
 			if [ -d $(EXAMPLE_DIR)/$$i/notebook ] ; then \
