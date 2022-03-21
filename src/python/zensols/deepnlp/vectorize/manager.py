@@ -353,7 +353,6 @@ class FeatureDocumentVectorizerManager(FeatureVectorizerManager):
     :see: :meth:`get_token_length`
 
     """
-
     token_feature_ids: Set[str] = field(default=None)
     """Indicates which spaCy parsed features to generate in the vectorizers held in
     this instance.  Examples include ``norm``, ``ent``, ``dep``, ``tag``.
