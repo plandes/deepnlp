@@ -114,17 +114,21 @@ class TestLabelVectorizer(TestFeatureVectorization):
         self.assertTensorEquals(self._create_mask((12, 16)), tensor)
 
         tensor: Tensor = vec.transform(self.docs)
+        self.assertEqual(torch.bool, tensor.dtype)
         self.assertTensorEquals(self._create_mask((26, 10)), tensor)
 
         vec = self._get_vec('ent_mask_trans_sentence_vectorizer')
         tensor: Tensor = vec.transform(self.docs)
+        self.assertEqual(torch.bool, tensor.dtype)
         self.assertTensorEquals(self._create_mask((12, 16, 10)), tensor)
 
         vec = self._get_vec('ent_mask_trans_separate_vectorizer')
         tensor: Tensor = vec.transform(self.docs[0])
+        self.assertEqual(torch.bool, tensor.dtype)
         self.assertTensorEquals(self._create_mask((28,)), tensor)
 
         tensor: Tensor = vec.transform(self.docs)
+        self.assertEqual(torch.bool, tensor.dtype)
         self.assertTensorEquals(self._create_mask((28, 10)), tensor)
 
     def test_masker_non_transformed(self):

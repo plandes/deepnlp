@@ -401,8 +401,15 @@ class TransformerMaskFeatureVectorizer(LabelTransformerFeatureVectorizer):
         super().__post_init__()
         self.data_type = MaskFeatureVectorizer.str_to_dtype(
             self.data_type, self.manager.torch_config)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'init mask data type: {self.data_type}')
+
+    def _create_decoded_pad(self, shape: Tuple[int]) -> Tensor:
+        return self.torch_config.zeros(shape, dtype=self.data_type)
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
         tdoc: TokenizedDocument = self.tokenize(doc)
         arr: Tensor = tdoc.attention_mask.type(dtype=self.data_type)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'mask type: {arr.dtype}')
         return TensorFeatureContext(self.feature_id, arr)
