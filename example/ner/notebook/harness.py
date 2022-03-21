@@ -51,7 +51,7 @@ class NotebookHarness(object):
                     setLevel(logging.WARNING)
 
         mng = NBJupyterManager(
-            allocation_tracking='counts',
+            #allocation_tracking='counts',
             cli_class=CliFactory,
             factory_args=factory_args,
             cli_args_fn=lambda model: ['-c', str(
