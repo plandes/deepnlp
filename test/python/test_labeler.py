@@ -45,9 +45,6 @@ class TestLabelVectorizer(TestFeatureVectorization):
             [[-100, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, -100, -100, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, -100],
              [-100, 2, 0, 0, 0, 0, 0, 0, 0, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]]
 
-    def _to_bool(self, lst):
-        return list(map(lambda e: list(map(lambda x: x != -100, e)), lst))
-
     def _set_attributes(self, docs: List[FeatureDocument]):
         for doc in docs:
             for s in doc.sents:
@@ -59,12 +56,10 @@ class TestLabelVectorizer(TestFeatureVectorization):
         vec.encode_transformed = self.encode_transformed
         return vec
 
-    def _test_single(self, doc, vec, boolify=False):
+    def _test_single(self, doc, vec):
         tensor: Tensor = vec.transform(doc)
         self.assertEqual((2, 16), tensor.shape)
         should = self.should_single
-        if boolify:
-            should = self._to_bool(should)
         self.assertEqual((2, 16), tensor.shape)
         self.assertTensorEquals(torch.tensor(should), tensor)
 
@@ -96,39 +91,46 @@ class TestLabelVectorizer(TestFeatureVectorization):
         self.assertEqual((2, 28), tensor.shape)
         self.assertTensorEquals(torch.tensor(self.should_separate), tensor)
 
-    def test_labeler(self):
+    def test_labeler_non_transformed(self):
         self.encode_transformed = False
         self._test_labeler()
+
+    def test_labeler_transformed(self):
         self.encode_transformed = True
         self._test_labeler()
+
+    def _create_mask(self, lns):
+        ml = max(lns)
+        arrs = torch.zeros((len(lns), ml), dtype=bool)
+        for ix, ln in enumerate(lns):
+            arrs[ix, :ln] = torch.ones(ln, dtype=bool)
+        return arrs
 
     def _test_masker(self):
         vec: TransformerNominalFeatureVectorizer
 
         vec = self._get_vec('ent_mask_trans_concat_tokens_vectorizer')
-        self._test_single(self.docs[0], vec, True)
+        tensor: Tensor = vec.transform(self.docs[0])
+        self.assertTensorEquals(self._create_mask((12, 16)), tensor)
 
         tensor: Tensor = vec.transform(self.docs)
-        self.assertEqual((2, 26), tensor.shape)
-        self.assertTensorEquals(torch.tensor(self._to_bool(self.should_concat)), tensor)
+        self.assertTensorEquals(self._create_mask((26, 10)), tensor)
 
         vec = self._get_vec('ent_mask_trans_sentence_vectorizer')
-        self._test_single(self.docs[0], vec, True)
         tensor: Tensor = vec.transform(self.docs)
-        self.assertEqual((3, 16), tensor.shape)
-        self.assertTensorEquals(torch.tensor(self._to_bool(self.should_sentence)), tensor)
+        self.assertTensorEquals(self._create_mask((12, 16, 10)), tensor)
 
         vec = self._get_vec('ent_mask_trans_separate_vectorizer')
         tensor: Tensor = vec.transform(self.docs[0])
-        self.assertEqual((1, 28), tensor.shape)
-        self.assertTensorEquals(torch.tensor(self._to_bool(self.should_separate)[0]), tensor.squeeze(0))
+        self.assertTensorEquals(self._create_mask((28,)), tensor)
 
         tensor: Tensor = vec.transform(self.docs)
-        self.assertEqual((2, 28), tensor.shape)
-        self.assertTensorEquals(torch.tensor(self._to_bool(self.should_separate)), tensor)
+        self.assertTensorEquals(self._create_mask((28, 10)), tensor)
 
-    def test_masker(self):
+    def test_masker_non_transformed(self):
         self.encode_transformed = False
         self._test_masker()
+
+    def test_masker_transformed(self):
         self.encode_transformed = True
         self._test_masker()

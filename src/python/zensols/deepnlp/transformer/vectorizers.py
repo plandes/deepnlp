@@ -275,6 +275,8 @@ class LabelTransformerFeatureVectorizer(TransformerFeatureVectorizer,
     """A base class for vectorizing by mapping tokens to transformer consumable
     word piece tokens.  This includes creating labels and masks.
 
+    :shape: (|sentences|, |max word peice length|)
+
     """
     is_labeler: bool = field(default=True)
     """If ``True``, make this a labeling specific vectorizer.  Otherwise, certain
@@ -282,27 +284,65 @@ class LabelTransformerFeatureVectorizer(TransformerFeatureVectorizer,
     labels.
 
     """
-    @abstractmethod
-    def _get_labels_type_all(self) -> Tuple[Dict[str, int], torch.dtype, bool]:
-        pass
+    FEATURE_TYPE = TextFeatureType.TOKEN
 
-    @abstractmethod
+    def _get_shape(self) -> Tuple[int, int]:
+        return (-1, self.word_piece_token_length)
+
+    def _decode_sentence(self, sent_ctx: FeatureContext) -> Tensor:
+        arr: Tensor = super()._decode_sentence(sent_ctx)
+        return arr.unsqueeze(2)
+
+
+@dataclass
+class TransformerNominalFeatureVectorizer(AggregateEncodableFeatureVectorizer,
+                                          LabelTransformerFeatureVectorizer):
+    """This creates word piece (maps to tokens) labels.  This class uses a
+    :class:`~zensols.deeplearn.vectorize.NominalEncodedEncodableFeatureVectorizer``
+    to map from string labels to their nominal long values.  This allows a
+    single instance and centralized location where the label mapping happens in
+    case other (non-transformer) components need to vectorize labels.
+
+    :shape: (|sentences|, |max word peice length|)
+
+    """
+    DESCRIPTION = 'transformer seq labeler'
+
+    delegate_feature_id: str = field(default=None)
+    """The feature ID for the aggregate encodeable feature vectorizer."""
+
+    label_all_tokens: bool = field(default=False)
+    """If ``True``, label all word piece tokens with the corresponding linguistic
+    token label.  Otherwise, the default padded value is used, and thus,
+    ignored by the loss function when calculating loss.
+
+    """
+    annotations_attribute: str = field(default='annotations')
+    """The attribute used to get the features from the
+    :class:`~zensols.nlp.FeatureSentence`.  For example,
+    :class:`~zensols.nlp.TokenAnnotatedFeatureSentence` has an ``annotations``
+    attribute.
+
+    """
+    def __post_init__(self):
+        super().__post_init__()
+        if self.delegate_feature_id is None:
+            raise VectorizerError('Expected attribute: delegate_feature_id')
+        self._assert_token_output()
+
     def _get_attributes(self, sent: FeatureSentence) -> Sequence[Any]:
-        pass
-
-    @abstractmethod
-    def _create_padded_tensor(self, n_sents: int, n_toks: int,
-                              data_type: torch.dtype) -> Tensor:
-        pass
+        return getattr(sent, self.annotations_attribute)
 
     def _create_decoded_pad(self, shape: Tuple[int]) -> Tensor:
-        by_label, dtype, lab_all = self._get_labels_type_all()
-        return self.torch_config.zeros(shape, dtype=dtype)
+        return self.create_padded_tensor(shape, self.delegate.data_type)
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
+        delegate: NominalEncodedEncodableFeatureVectorizer = self.delegate
         tdoc: TokenizedDocument = self.tokenize(doc)
-        by_label, dtype, lab_all = self._get_labels_type_all()
-        n_sents = len(doc)
+        by_label: Dict[str, int] = delegate.by_label
+        dtype: torch.dtype = delegate.data_type
+        lab_all: bool = self.label_all_tokens
+        n_sents: int = len(doc)
         if self.word_piece_token_length > 0:
             n_toks = self.word_piece_token_length
         else:
@@ -310,7 +350,7 @@ class LabelTransformerFeatureVectorizer(TransformerFeatureVectorizer,
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug('encoding using {n_toks} tokens with wp len: ' +
                          f'{self.word_piece_token_length}')
-        arr = self._create_padded_tensor(n_sents, n_toks, dtype)
+        arr = self.create_padded_tensor((n_sents, n_toks), dtype)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'output shape: {arr.shape}/{self.shape}')
         sent: FeatureSentence
@@ -337,68 +377,6 @@ class LabelTransformerFeatureVectorizer(TransformerFeatureVectorizer,
                 previous_word_idx = word_idx
         return TensorFeatureContext(self.feature_id, arr)
 
-
-@dataclass
-class TransformerNominalFeatureVectorizer(AggregateEncodableFeatureVectorizer,
-                                          LabelTransformerFeatureVectorizer):
-    """This creates word piece (maps to tokens) labels.  This class uses a
-    :class:`~zensols.deeplearn.vectorize.NominalEncodedEncodableFeatureVectorizer``
-    to map from string labels to their nominal long values.  This allows a
-    single instance and centralized location where the label mapping happens in
-    case other (non-transformer) components need to vectorize labels.
-
-    :shape: (|sentences|, |max word peice length|)
-
-    """
-    FEATURE_TYPE = TextFeatureType.TOKEN
-    DESCRIPTION = 'transformer seq labeler'
-
-    delegate_feature_id: str = field(default=None)
-    """The feature ID for the aggregate encodeable feature vectorizer."""
-
-    label_all_tokens: bool = field(default=False)
-    """If ``True``, label all word piece tokens with the corresponding linguistic
-    token label.  Otherwise, the default padded value is used, and thus,
-    ignored by the loss function when calculating loss.
-
-    """
-    annotations_attribute: str = field(default='annotations')
-    """The attribute used to get the features from the
-    :class:`~zensols.nlp.FeatureSentence`.  For example,
-    :class:`~zensols.nlp.TokenAnnotatedFeatureSentence` has an ``annotations``
-    attribute.
-
-    """
-    def __post_init__(self):
-        super().__post_init__()
-        if self.delegate_feature_id is None:
-            raise VectorizerError('Expected attribute: delegate_feature_id')
-        self._assert_token_output()
-
-    def _get_shape(self) -> Tuple[int, int]:
-        return (-1, self.word_piece_token_length)
-
-    def _get_labels_type_all(self) -> Tuple[Dict[str, int], torch.dtype, bool]:
-        delegate: NominalEncodedEncodableFeatureVectorizer = self.delegate
-        return (delegate.by_label, delegate.data_type, self.label_all_tokens)
-
-    def _get_attributes(self, sent: FeatureSentence) -> Sequence[Any]:
-        return getattr(sent, self.annotations_attribute)
-
-    def _create_padded_tensor(self, n_sents: int, n_toks: int,
-                              data_type: torch.dtype) -> Tensor:
-        return self.create_padded_tensor((n_sents, n_toks), data_type)
-
-    def _create_decoded_pad(self, shape: Tuple[int]) -> Tensor:
-        return self.create_padded_tensor(shape, self.delegate.data_type)
-
-    def _decode_sentence(self, sent_ctx: FeatureContext) -> Tensor:
-        arr: Tensor = super()._decode_sentence(sent_ctx)
-        return arr.unsqueeze(2)
-
-    def _encode(self, doc: FeatureDocument) -> FeatureContext:
-        return LabelTransformerFeatureVectorizer._encode(self, doc)
-
     def _decode(self, context: TransformerFeatureContext) -> Tensor:
         return LabelTransformerFeatureVectorizer._decode(self, context)
 
@@ -424,19 +402,7 @@ class TransformerMaskFeatureVectorizer(LabelTransformerFeatureVectorizer):
         self.data_type = MaskFeatureVectorizer.str_to_dtype(
             self.data_type, self.manager.torch_config)
 
-    def _get_shape(self) -> Tuple[int, int]:
-        return (-1, self.word_piece_token_length)
-
-    def _get_labels_type_all(self) -> Tuple[Dict[str, int], torch.dtype, bool]:
-        return ({True: True}, bool, True)
-
-    def _get_attributes(self, sent: FeatureSentence) -> Sequence[Any]:
-        return [True] * len(sent)
-
-    def _create_padded_tensor(self, n_sents: int, n_toks: int,
-                              data_type: torch.dtype) -> Tensor:
-        return self.torch_config.zeros((n_sents, n_toks), dtype=self.data_type)
-
-    def _decode_sentence(self, sent_ctx: FeatureContext) -> Tensor:
-        arr: Tensor = super()._decode_sentence(sent_ctx)
-        return arr.unsqueeze(2)
+    def _encode(self, doc: FeatureDocument) -> FeatureContext:
+        tdoc: TokenizedDocument = self.tokenize(doc)
+        arr: Tensor = tdoc.attention_mask.type(dtype=self.data_type)
+        return TensorFeatureContext(self.feature_id, arr)
