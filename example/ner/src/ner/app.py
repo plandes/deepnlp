@@ -6,7 +6,6 @@ __author__ = 'plandes'
 from dataclasses import dataclass
 import logging
 import itertools as it
-from pathlib import Path
 from torch import Tensor
 from zensols.persist import dealloc
 from zensols.config import Settings, ConfigFactory
@@ -108,7 +107,31 @@ class NERFacadeApplication(FacadeApplication):
                 for sanon in anon.sequence_anons:
                     print('  ', sanon)
 
+    def _analyze_results(self):
+        from zensols.deeplearn.result import EpochResult
+        facade: ModelFacade = self.get_cached_facade()
+        res: EpochResult = facade.last_result.test.converged_epoch
+        labs = res.labels
+        preds = res.predictions
+        if 0:
+            print(labs)
+            print(preds)
+        batch = facade.batch_stash[res.batch_ids[0]]
+        batch.write()
+        print('--')
+        print('labels:')
+        print(batch['ents'])
+        for dp in batch.get_data_points()[:2]:
+            doc = dp.doc
+            print(doc[0].annotations)
+            print(doc)
+            print('--')
+        n_corr = sum(1 for _ in filter(lambda x: x, labs == preds))
+        assert len(labs) == len(preds)
+        tot = len(labs)
+        acc = n_corr / len(labs)
+        print(f'correct: {n_corr}, total: {tot}, acc: {acc}')
+        res.write(include_metrics=True)
+
     def proto(self):
-        #path = 'target/results/model/ner-glove-50-1.model'
-        path = 'target/model/transformer_trainable_embedding'
-        self.predict(None, Path(path))
+        self._analyze_results()
