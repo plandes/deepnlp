@@ -6,7 +6,7 @@ __author__ = 'Paul Landes'
 
 from typing import Tuple, List, Dict, Union, Sequence, Any
 from dataclasses import dataclass, field
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
 import logging
 from itertools import chain
 import torch
