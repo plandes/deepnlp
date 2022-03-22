@@ -5,14 +5,12 @@ __author__ = 'Paul Landes'
 
 from typing import Type
 from dataclasses import dataclass, field
-from itertools import chain
 import numpy as np
 import pandas as pd
 import sklearn.metrics as mt
 from sklearn.preprocessing import LabelEncoder
 from zensols.persist import persisted
-from zensols.nlp import TokenAnnotatedFeatureDocuemnt
-from zensols.deeplearn.batch import Batch
+from zensols.deeplearn.batch import Batch, DataPoint
 from zensols.deeplearn.model import ModelFacade
 from zensols.deeplearn.vectorize import CategoryEncodableFeatureVectorizer
 from zensols.deeplearn.result import EpochResult
@@ -24,9 +22,8 @@ class EpochResultAnalyzer(object):
     vectorizer_name: str = field()
     result: EpochResult = field()
 
-    def _add_doc_artifacts(self, doc: TokenAnnotatedFeatureDocuemnt,
-                           batch: Batch, df: pd.DataFrame):
-        pass
+    def _add_data_point(self, batch: Batch, dp: DataPoint, df: pd.DataFrame):
+        df['batch_id'] = batch.id
 
     @property
     @persisted('_predictions')
@@ -43,15 +40,11 @@ class EpochResultAnalyzer(object):
         for bid in self.result.batch_ids:
             batch: Batch = self.facade.batch_stash[bid]
             for dp in batch.data_points:
-                doc: TokenAnnotatedFeatureDocuemnt = dp.doc
-                anns = tuple(chain.from_iterable(
-                    map(lambda s: s.annotations, doc)))
-                end = start + len(anns)
+                end = start + len(dp)
                 doc_labs = le.inverse_transform(labs[start:end])
                 doc_preds = le.inverse_transform(preds[start:end])
-                assert tuple(doc_labs.tolist()) == anns
                 df = pd.DataFrame({'label': doc_labs, 'pred': doc_preds})
-                self._add_doc_artifacts(doc, batch, df)
+                self._add_data_point(batch, dp, df)
                 dfs.append(df)
                 start = end
         df = pd.concat(dfs)
