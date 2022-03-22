@@ -97,7 +97,7 @@ class NERModelFacade(LanguageModelFacade):
             if do_print:
                 batch.write()
             blabs = batch.get_labels().squeeze()
-            for six, dp in enumerate(batch.get_data_points()):
+            for six, dp in enumerate(batch.data_points):
                 sent = dp.sent
                 assert len(sent) == len(sent.annotations)
                 end = start + len(sent)

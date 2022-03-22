@@ -121,7 +121,7 @@ class NERFacadeApplication(FacadeApplication):
         print('--')
         print('labels:')
         print(batch['ents'])
-        for dp in batch.get_data_points()[:2]:
+        for dp in batch.data_points[:2]:
             doc = dp.doc
             print(doc[0].annotations)
             print(doc)

@@ -45,7 +45,7 @@ class ReviewApplication(FacadeApplication):
                     batch.write()
                     print(classes)
                     print(batch.has_labels)
-                    for dp in batch.get_data_points():
+                    for dp in batch.data_points:
                         if len(dp.doc) > 1:
                             print(dp.doc.polarity)
                             for s in dp.doc:

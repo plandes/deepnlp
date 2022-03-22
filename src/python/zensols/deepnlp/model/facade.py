@@ -276,7 +276,7 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
                   'truncation': False}
         for bn, batch in enumerate(batch_stash.values()):
             sents = map(lambda dp: getattr(dp, attr_name).to_sentence(),
-                        batch.get_data_points())
+                        batch.data_points)
             doc = FeatureDocument(sents)
             tok_doc = tokenizer.tokenize(doc, params)
             if logger.isEnabledFor(logging.DEBUG):

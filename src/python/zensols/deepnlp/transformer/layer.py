@@ -166,7 +166,7 @@ class TransformerSequence(EmbeddingNetworkModule, SequenceNetworkModule):
         vocab: Dict[str, int] = self.embedding.embed_model.resource.tokenizer.vocab
         vocab = {vocab[k]: k for k in vocab.keys()}
         input_ids = tdoc.input_ids
-        fsents = tuple(map(lambda d: d.doc.sents[0], batch.get_data_points()))
+        fsents = tuple(map(lambda d: d.doc.sents[0], batch.data_points))
         for six, pred in enumerate(it.islice(preds, limit)):
             print(fsents[six])
             print('sent', ', '.join(
@@ -180,7 +180,7 @@ class TransformerSequence(EmbeddingNetworkModule, SequenceNetworkModule):
         DEBUG = False
 
         if DEBUG and self.logger.isEnabledFor(logging.DEBUG):
-            for dp in batch.get_data_points():
+            for dp in batch.data_points:
                 self.logger.debug(f'data point: {dp}')
 
         emb: Tensor = super()._forward(batch)
