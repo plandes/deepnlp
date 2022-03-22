@@ -8,7 +8,6 @@ from dataclasses import dataclass
 import sys
 from io import TextIOBase
 import logging
-from pathlib import Path
 from zensols.persist import dealloc
 from zensols.nlp import FeatureDocument
 from zensols.deeplearn.cli import FacadeApplication
