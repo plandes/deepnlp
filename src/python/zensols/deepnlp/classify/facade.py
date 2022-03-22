@@ -57,7 +57,7 @@ class ClassifyModelFacade(LanguageModelFacade):
         """The stash containing feature instances."""
         return super().feature_stash.delegate
 
-    def get_predictions(self) -> pd.DataFrame:
+    def get_predictions(self, *args, **kwargs) -> pd.DataFrame:
         """Return a Pandas dataframe of the predictions with columns that include the
         correct label, the prediction, the text and the length of the text of
         the text.
@@ -65,7 +65,8 @@ class ClassifyModelFacade(LanguageModelFacade):
         """
         return super().get_predictions(
             ('text', 'len'),
-            lambda dp: (dp.doc.text, len(dp.doc.text)))
+            lambda dp: (dp.doc.text, len(dp.doc.text)),
+            *args, **kwargs)
 
     def predict(self, datas: Iterable[Any]) -> Any:
         # remove expensive to load vectorizers for prediction only when we're

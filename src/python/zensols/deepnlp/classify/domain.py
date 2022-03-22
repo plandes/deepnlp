@@ -3,6 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
+from typing import Any
 from dataclasses import dataclass, field
 import sys
 from io import TextIOBase
@@ -22,20 +23,32 @@ class LabeledFeatureDocument(FeatureDocument):
 
     """
     label: str = field(default=None)
+    """The document level classification gold label."""
 
+    pred: str = field(default=None)
+    """The document level prediction label.
+
+    :see: :obj:`.ClassificationPredictionMapper.pred_attribute`
+
+    """
+    softmax_logit: float = field(default=None)
+    """The document level softmax of the logits.
+
+    :see: :obj:`.ClassificationSoftmax_LogitictionMapper.softmax_logit_attribute`
+
+    """
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
         super().write(depth, writer)
         self._write_line(f'label: {self.label}', depth + 1, writer)
         self._write_line(f'prediction: {self.pred}', depth + 1, writer)
-        self._write_line(f'softmax logits: {self.softmax_logits[self.pred]}',
+        self._write_line(f'softmax logits: {self.softmax_logit[self.pred]}',
                          depth + 1, writer)
 
     def __str__(self) -> str:
-        label = ''
-        if hasattr(self, 'label'):
-            label = f'lab={self.label}: '
-        return (f'{self.pred}={self.softmax_logits[self.pred]} ' +
-                f'{label}{self.text}')
+        pred = ''
+        if self.pred is not None:
+            pred = f', pred={self.pred}, logit={self.softmax_logit[self.pred]}'
+        return (f'label: {self.label}{pred}: {self.text}')
 
 
 @dataclass

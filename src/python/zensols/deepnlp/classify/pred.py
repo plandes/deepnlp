@@ -32,15 +32,13 @@ class ClassificationPredictionMapper(PredictionMapper):
     from :meth:`map_results`.
 
     """
-
-    softmax_logits_attribute: str = field(default='softmax_logits')
+    softmax_logit_attribute: str = field(default='softmax_logit')
     """The softmax of the logits attribute to set on the :class:`.FeatureDocument`
     returned from :meth:`map_results`.
 
     :see: `On Calibration of Modern Neural Networks <https://arxiv.org/abs/1706.04599>`_
 
     """
-
     def __post_init__(self):
         super().__post_init__()
         self._docs: List[FeatureDocument] = []
@@ -87,5 +85,5 @@ class ClassificationPredictionMapper(PredictionMapper):
             conf = np.exp(logits) / sum(np.exp(logits))
             sms = dict(zip(labels, conf))
             setattr(doc, self.pred_attribute, cl)
-            setattr(doc, self.softmax_logits_attribute, sms)
+            setattr(doc, self.softmax_logit_attribute, sms)
         return tuple(docs)
