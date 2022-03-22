@@ -3,12 +3,16 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Iterable, Any
-from dataclasses import dataclass
+from typing import Iterable, Any, Type
+from dataclasses import dataclass, field
 import logging
 import pandas as pd
 from zensols.persist import Stash
 from zensols.deeplearn import NetworkSettings
+from zensols.deeplearn.result import (
+    PredictionsDataFrameFactory,
+    SequencePredictionsDataFrameFactory,
+)
 from zensols.deepnlp.model import (
     LanguageModelFacade, LanguageModelFacadeConfig,
 )
@@ -78,3 +82,24 @@ class ClassifyModelFacade(LanguageModelFacade):
                 if emb_conf != feature_attr:
                     self.remove_metadata_mapping_field(feature_attr)
         return super().predict(datas)
+
+
+@dataclass
+class TokenClassifyModelFacade(ClassifyModelFacade):
+    """A token level classification model facade.
+
+    """
+    predictions_datafrmae_factory_class: Type[PredictionsDataFrameFactory] = \
+        field(default=SequencePredictionsDataFrameFactory)
+
+    def get_predictions(self, *args, **kwargs) -> pd.DataFrame:
+        """Return a Pandas dataframe of the predictions with columns that include the
+        correct label, the prediction, the text and the length of the text of
+        the text.
+
+        """
+        return LanguageModelFacade.get_predictions(
+            self,
+            ('text',),
+            lambda dp: tuple(map(lambda t: (t.norm,), dp.doc.token_iter())),
+            *args, **kwargs)
