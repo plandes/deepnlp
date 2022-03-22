@@ -9,7 +9,7 @@ $(MODEL_DIR):	traintest
 
 .PHONY:		traintest
 traintest:
-		$(PROG) -c models/$(MODEL).conf traintest
+		$(PROG) -c models/$(MODEL).conf -p traintest
 
 .PHONY:		predict
 predict:	$(MODEL_DIR)
