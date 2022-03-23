@@ -4,12 +4,16 @@
 __author__ = 'Paul Landes'
 
 from typing import Tuple
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import sys
 from io import TextIOBase
 import logging
 from zensols.persist import dealloc
+from zensols.config import Settings
 from zensols.nlp import FeatureDocument
+from zensols.deepnlp.model import (
+    BioSequenceAnnotationMapper, SequenceDocumentAnnotation
+)
 from zensols.deeplearn.cli import FacadeApplication
 
 logger = logging.getLogger(__name__)
@@ -30,6 +34,8 @@ class NLPFacadeModelApplication(FacadeApplication):
         else:
             return [text_input]
 
+
+class NLPClassifyFacadeModelApplication(FacadeApplication):
     def predict_text(self, text_input: str, verbose: bool = False):
         """Classify ad-hoc text and output the results..
 
@@ -46,3 +52,23 @@ class NLPFacadeModelApplication(FacadeApplication):
                     doc.write()
                 else:
                     print(doc)
+
+
+@dataclass
+class NLPSequenceClassifyFacadeModelApplication(NLPFacadeModelApplication):
+    def predict_text(self, text_input: str, verbose: bool = False):
+        """Classify ad-hoc text and output the results..
+
+        :param text_input: the sentence to classify or standard in if not given
+
+        :param verbose: if given, print the long format version of the document
+
+        """
+        sents = self._get_sentences(text_input)
+        with dealloc(self.create_facade()) as facade:
+            pred: Settings = facade.predict(sents)
+            docs: Tuple[FeatureDocument] = pred.docs
+            classes: Tuple[str] = pred.classes
+            for labels, doc in zip(classes, docs):
+                for label, tok in zip(labels, doc.token_iter()):
+                    print(label, tok)
