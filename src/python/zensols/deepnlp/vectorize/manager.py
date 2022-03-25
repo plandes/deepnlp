@@ -109,7 +109,7 @@ class FeatureDocumentVectorizer(TransformableFeatureVectorizer,
                 self._assert_doc(doc)
         elif not isinstance(doc, FeatureDocument):
             raise VectorizerError(
-                f'expecting document, but got type: {type(doc)}')
+                f'Expecting document, but got type: {type(doc)}')
 
     def _assert_decoded_doc_dim(self, arr: Tensor, expect: int):
         """Check the decoded document dimesion and rase an error for those that do not
@@ -117,7 +117,7 @@ class FeatureDocumentVectorizer(TransformableFeatureVectorizer,
 
         """
         if len(arr.size()) != expect:
-            raise VectorizerError(f'expecting {expect} tensor dimensions, ' +
+            raise VectorizerError(f'Expecting {expect} tensor dimensions, ' +
                                   f'but got shape: {arr.shape}')
 
     @property
@@ -156,7 +156,7 @@ class FoldingDocumentVectorizer(FeatureDocumentVectorizer, metaclass=ABCMeta):
     documents in to document level features.
 
     """
-    _FOLD_METHODS = frozenset('concat_tokens sentence separate'.split())
+    _FOLD_METHODS = frozenset('raise concat_tokens sentence separate'.split())
 
     fold_method: str = field()
     """How multiple documents are merged in to a single document for vectorization,
@@ -237,6 +237,11 @@ class FoldingDocumentVectorizer(FeatureDocumentVectorizer, metaclass=ABCMeta):
         elif self.fold_method == 'separate':
             self._assert_doc(doc)
             ctx = self._encode_sentences(doc)
+        elif self.fold_method == 'raise':
+            if self._is_mult(doc):
+                raise VectorizerError(
+                    f'Expecting single document but got: {len(doc)} documents')
+            ctx = super().encode(doc)
         return ctx
 
     def _decode_sentence(self, sent_ctx: FeatureContext) -> Tensor:
@@ -245,8 +250,8 @@ class FoldingDocumentVectorizer(FeatureDocumentVectorizer, metaclass=ABCMeta):
     def _create_decoded_pad(self, shape: Tuple[int]) -> Tensor:
         return self.torch_config.zeros(shape)
 
-    def _decode_sentences(self, context: MultiFeatureContext) -> Tensor:
-        sent_dim: int = 1
+    def _decode_sentences(self, context: MultiFeatureContext,
+                          sent_dim: int = 1) -> Tensor:
         darrs: List[Tensor] = []
         # each multi-context represents a document with sentence context
         # elements
@@ -262,6 +267,8 @@ class FoldingDocumentVectorizer(FeatureDocumentVectorizer, metaclass=ABCMeta):
                     logger.debug(f'decoded sub context: {sent_ctx} ' +
                                  f'-> {arr.size()}')
                 sent_arrs.append(arr)
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'concat {len(sent_arrs)} along dim {sent_dim}')
             # concat all sentences for this document in to one long vector with
             # shape (batch, |tokens|, transformer dim)
             sent_arr: Tensor = torch.cat(sent_arrs, dim=sent_dim)
@@ -293,11 +300,10 @@ class FoldingDocumentVectorizer(FeatureDocumentVectorizer, metaclass=ABCMeta):
 
     def decode(self, context: FeatureContext) -> Tensor:
         arr: Tensor
-        if self.fold_method == 'concat_tokens' or \
-           self.fold_method == 'sentence':
-            arr = super().decode(context)
-        elif self.fold_method == 'separate':
+        if self.fold_method == 'separate':
             arr = self._decode_sentences(context)
+        else:
+            arr = super().decode(context)
         return arr
 
 
