@@ -67,7 +67,6 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
     :obj:`~.FeatureDocumentVectorizerManager.spacy_vectorizers`.
 
     """
-
     def _get_shape_with_feature_ids(self, feature_ids: Set[str]):
         """Compute the shape based on what spacy feature ids are given.
 
