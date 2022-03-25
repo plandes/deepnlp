@@ -54,7 +54,6 @@ class TransformerEmbedding(PersistableContainer, Dictable):
          layer dimension)``
 
     """
-
     output_attentions: bool = field(default=False)
     """Whether or not to output the attention layer."""
 
