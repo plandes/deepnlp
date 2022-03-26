@@ -10,6 +10,7 @@ import sys
 import logging
 import itertools as it
 from io import TextIOBase
+import numpy as np
 import torch
 from torch import Tensor
 from zensols.nlp import FeatureDocument
@@ -21,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class TokenizedDocument(PersistableContainer):
+class TokenizedDocument(PersistableContainer, Writable):
     """This is the tokenized document output of
     :class:`.TransformerDocumentTokenizer`.  Instances of this class are
     pickelable, in a feature context.  Then give to the in the decoding phase
@@ -187,6 +188,28 @@ class TokenizedDocument(PersistableContainer):
         super().deallocate()
         del self.tensor
 
+    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout,
+              include_tokens: bool = True, id2tok: Dict[int, str] = None):
+        def maptok(tup: int) -> str:
+            s = id2tok[tup[0]]
+            if s.startswith('##'):
+                s = s[2:]
+            return s
+
+        for sent_map in self.map_to_word_pieces():
+            sent: np.ndarray = sent_map['sent']
+            tmap: Tuple[int, Tuple[str]] = sent_map['map']
+            self._write_line(f'sentence len: {sent.shape[0]}', depth, writer)
+            if include_tokens:
+                self._write_line('tokens:', depth, writer)
+                if id2tok is not None:
+                    toks = ' '.join(map(maptok, tmap))
+                else:
+                    toks = ' '.join(map(lambda t: str(t[0]), tmap))
+                self._write_line(toks, depth + 1, writer)
+            else:
+                self._write_line(f'tokens: {len(tmap)}', depth + 1, writer)
+
     def __str__(self) -> str:
         return f'doc: {self.tensor.shape}'
 
@@ -195,7 +218,7 @@ class TokenizedDocument(PersistableContainer):
 
 
 @dataclass
-class TokenizedFeatureDocument(TokenizedDocument, Writable):
+class TokenizedFeatureDocument(TokenizedDocument):
     """Instance of this class are created, then a picklable version returned with
     :meth:`detach` as an instance of the super class.
 
@@ -246,14 +269,20 @@ class TokenizedFeatureDocument(TokenizedDocument, Writable):
 
         return super().map_to_word_pieces(self.feature, id2tok)
 
-    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
+    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout,
+              include_tokens: bool = True, id2tok: Dict[int, str] = None):
+        id2tok = self.id2tok if id2tok is None else id2tok
         sent_map: Dict[str, Union[FeatureSentence,
                                   Tuple[FeatureToken, Tuple[str]]]]
         for sent_map in self.map_word_pieces_to_tokens():
             sent: FeatureSentence = sent_map['sent']
             tmap: Tuple[FeatureToken, Tuple[str]] = sent_map['map']
             self._write_line(f'sentence: {sent}', depth, writer)
-            tok: FeatureToken
-            ttoks: Tuple[str]
-            for tok, ttoks in tmap:
-                self._write_line(f'{tok.text} -> {ttoks}', depth + 1, writer)
+            if include_tokens:
+                self._write_line('tokens:', depth, writer)
+                tok: FeatureToken
+                ttoks: Tuple[str]
+                for tok, ttoks in tmap:
+                    stext = tok.text.replace('\n', '\\n')
+                    stext = f'<{stext}>'
+                    self._write_line(f'{stext} -> {ttoks}', depth + 1, writer)
