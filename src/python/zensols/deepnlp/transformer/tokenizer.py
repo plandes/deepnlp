@@ -7,7 +7,7 @@ from typing import List, Dict, Any
 from dataclasses import dataclass, field
 import logging
 import torch
-from transformers import PreTrainedTokenizer, PreTrainedModel
+from transformers import PreTrainedTokenizer
 from transformers.tokenization_utils_base import BatchEncoding
 from zensols.nlp import FeatureDocument
 from zensols.deepnlp.transformer import TransformerResource
@@ -136,3 +136,8 @@ class TransformerDocumentTokenizer(PersistableContainer):
             char_offsets=char_offsets,
             feature=doc,
             id2tok=self.id2tok)
+
+    def __call__(self, doc: FeatureDocument,
+                 tokenizer_kwargs: Dict[str, Any] = None) -> \
+            TokenizedFeatureDocument:
+        return self.tokenize(doc, tokenizer_kwargs)
