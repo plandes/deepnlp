@@ -244,11 +244,11 @@ class FoldingDocumentVectorizer(FeatureDocumentVectorizer, metaclass=ABCMeta):
             ctx = super().encode(doc)
         return ctx
 
-    def _decode_sentence(self, sent_ctx: FeatureContext) -> Tensor:
-        return super().decode(sent_ctx)
-
     def _create_decoded_pad(self, shape: Tuple[int]) -> Tensor:
         return self.torch_config.zeros(shape)
+
+    def _decode_sentence(self, sent_ctx: FeatureContext) -> Tensor:
+        return super().decode(sent_ctx)
 
     def _decode_sentences(self, context: MultiFeatureContext,
                           sent_dim: int = 1) -> Tensor:
