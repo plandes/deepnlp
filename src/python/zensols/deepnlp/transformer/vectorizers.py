@@ -22,7 +22,8 @@ from zensols.deepnlp.vectorize import (
     EmbeddingFeatureVectorizer, TextFeatureType, FeatureDocumentVectorizer
 )
 from . import (
-    TransformerEmbedding, TokenizedDocument, TokenizedFeatureDocument
+    TransformerEmbedding, TransformerResource,
+    TransformerDocumentTokenizer, TokenizedDocument, TokenizedFeatureDocument,
 )
 
 logger = logging.getLogger(__name__)
@@ -78,9 +79,12 @@ transformer embedding, is required, got: {self.embed_model.output}""")
     def _get_shape(self) -> Tuple[int, int]:
         return self.word_piece_token_length, self.embed_model.vector_dimension
 
-    def _get_tokenizer(self):
+    def _get_tokenizer(self) -> TransformerDocumentTokenizer:
         emb: TransformerEmbedding = self.embed_model
         return emb.tokenizer
+
+    def _get_resource(self) -> TransformerResource:
+        return self._get_tokenizer().resource
 
     def tokenize(self, doc: FeatureDocument) -> TokenizedFeatureDocument:
         """Tokenize the document in to a token document used by the encoding phase.
