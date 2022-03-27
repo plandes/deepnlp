@@ -60,26 +60,22 @@ class TransformerResource(PersistableContainer, Dictable):
     :see: `Pretrained Models <https://huggingface.co/transformers/pretrained_models.html>`_
 
     """
-
     cased: bool = field(default=None)
     """``True`` for the case sensitive, ``False`` (default) otherwise.  The negated
     value of it is also used as the ``do_lower_case`` parameter in the
     ``*.from_pretrained`` calls to huggingface transformers.
 
     """
-
     trainable: bool = field(default=False)
     """If ``False`` the weights on the transformer model are frozen and the use of
     the model (including in subclasses) turn off autograd when executing..
 
     """
-
     args: Dict[str, Any] = field(default_factory=dict)
     """Additional arguments to pass to the `from_pretrained` method for the
     tokenizer and the model.
 
     """
-
     tokenizer_args: Dict[str, Any] = field(default_factory=dict)
     """Additional arguments to pass to the `from_pretrained` method for the
     tokenizer.
@@ -91,25 +87,21 @@ class TransformerResource(PersistableContainer, Dictable):
     model.
 
     """
-
     model_class: str = field(default='transformers.AutoModel')
     """The model fully qualified class used to create models with the
     ``from_pretrained`` static method.
 
     """
-
     tokenizer_class: str = field(default='transformers.AutoTokenizer')
     """The model fully qualified class used to create tokenizers with the
     ``from_pretrained`` static method.
 
     """
-
     cache: InitVar[bool] = field(default=False)
     """When set to ``True`` cache a global space model using the parameters from
     the first instance creation.
 
     """
-
     cache_dir: Path = field(default=None)
     """The directory that is contains the BERT model(s)."""
 
