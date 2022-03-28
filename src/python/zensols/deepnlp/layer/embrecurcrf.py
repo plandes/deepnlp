@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, List, Optional
+from typing import Tuple, List, Optional, Union
 from dataclasses import dataclass, field
 import logging
 import torch
@@ -13,7 +13,12 @@ from zensols.deeplearn.model import (
     SequenceNetworkModule, SequenceNetworkContext, SequenceNetworkOutput
 )
 from zensols.deeplearn.batch import Batch
-from zensols.deeplearn.layer import RecurrentCRFNetworkSettings, RecurrentCRF
+from zensols.deeplearn.layer import (
+    DeepLinear,
+    RecurrentAggregation,
+    RecurrentCRFNetworkSettings,
+    RecurrentCRF,
+)
 from zensols.deeplearn.vectorize import AggregateEncodableFeatureVectorizer
 from zensols.deepnlp.layer import (
     EmbeddingNetworkSettings,
@@ -40,6 +45,8 @@ class EmbeddedRecurrentCRFSettings(EmbeddingNetworkSettings):
     be counted as results.
 
     """
+    use_crf: bool = field(default=True)
+
     def get_module_class_name(self) -> str:
         return __name__ + '.EmbeddedRecurrentCRF'
 
@@ -83,7 +90,7 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, SequenceNetworkModule):
         self._shape_debug('mask', mask)
         return mask
 
-    def _forward_train(self, batch: Batch) -> Tensor:
+    def _forward_train_with_crf(self, batch: Batch) -> Tensor:
         labels = batch.get_labels()
         self._shape_debug('labels', labels)
 
@@ -97,6 +104,37 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, SequenceNetworkModule):
         self._shape_debug('recur', x)
 
         return x
+
+    def _forward_train_no_crf(self, batch: Batch,
+                              context: SequenceNetworkContext) -> Tensor:
+        labels: Optional[List[List[int]]] = batch.get_labels()
+        recur_crf: RecurrentCRF = self.recurcrf
+        recur: RecurrentAggregation = recur_crf.recur
+        decoder: DeepLinear = recur_crf.decoder
+
+        x = EmbeddingNetworkModule._forward(self, batch)
+        self._shape_debug('embedding', x)
+
+        x = recur.forward(x)[0]
+        self._shape_debug('recurrent', x)
+
+        logits = decoder.forward(x)
+        self._shape_debug('decoder', logits)
+
+        logits_flat = logits.flatten(0, 1)
+        labels_flat = labels.flatten(0, 1)
+        self._shape_debug('logits', logits_flat)
+        self._shape_debug('labels', labels_flat)
+
+        loss = context.criterion(logits_flat, labels_flat)
+
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self._debug(f'loss: {loss}')
+
+        pred_labels = logits.argmax(dim=2)
+        self._shape_debug('predictions (max)', pred_labels)
+
+        return pred_labels, labels, loss
 
     def _decode(self, batch: Batch, add_loss: bool) -> Tuple[Tensor, Tensor]:
         loss = None
@@ -128,31 +166,58 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, SequenceNetworkModule):
             arr[rix, :blen] = tc.singleton(plist, dtype=labels.dtype)
         return arr
 
+    def _map_labels(self, batch: Batch, context: SequenceNetworkContext,
+                    labels: Union[List[List[int]], Tensor]) -> List[List[int]]:
+        return labels
+
     def _forward(self, batch: Batch, context: SequenceNetworkContext) -> \
             SequenceNetworkOutput:
+        use_crf = self.net_settings.use_crf
         split_type: DatasetSplitType = context.split_type
         preds: List[List[int]] = None
         labels: Optional[List[List[int]]] = batch.get_labels()
         loss: Tensor = None
         score: Tensor = None
         tensor_preds = self.net_settings.tensor_predictions
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self.logger.debug(f'forward on splt: {context.split_type}')
         if context.split_type != DatasetSplitType.train and self.training:
             raise ModelError(
                 f'Attempting to use split {split_type} while training')
         if context.split_type == DatasetSplitType.train:
-            loss = self._forward_train(batch)
+            if use_crf:
+                loss = self._forward_train_with_crf(batch)
+            else:
+                preds, labels, loss = self._forward_train_no_crf(batch, context)
         elif context.split_type == DatasetSplitType.validation:
-            preds, loss, score = self._decode(batch, True)
-            if tensor_preds:
-                preds = self._pred_tensor(batch, preds)
+            if use_crf:
+                preds, loss, score = self._decode(batch, True)
+                if tensor_preds:
+                    preds = self._pred_tensor(batch, preds)
+            else:
+                preds, labels, loss = self._forward_train_no_crf(batch, context)
         elif context.split_type == DatasetSplitType.test:
-            preds, _, score = self._decode(batch, False)
-            if tensor_preds:
-                preds = self._pred_tensor(batch, preds)
-            loss = batch.torch_config.singleton([0], dtype=torch.float32)
+            if use_crf:
+                preds, _, score = self._decode(batch, False)
+                if tensor_preds:
+                    preds = self._pred_tensor(batch, preds)
+                loss = batch.torch_config.singleton([0], dtype=torch.float32)
+            else:
+                preds, labels, loss = self._forward_train_no_crf(batch, context)
         else:
             raise ModelError(f'Unknown data split type: {split_type}')
+        if self.logger.isEnabledFor(logging.DEBUG):
+            for name, lsts in zip('preds labels'.split(), (preds, labels)):
+                if lsts is None:
+                    self.logger.debug(f'output: {name}: {None}')
+                else:
+                    for lst in lsts:
+                        from zensols.deeplearn import printopts
+                        with printopts(profile='full'):
+                            self.logger.debug(f'output: {name}: {len(lst)} {lst}')
+        preds = self._map_labels(batch, context, preds)
+        labels = self._map_labels(batch, context, labels)
         out = SequenceNetworkOutput(preds, loss, score, labels)
-        if preds is not None and labels is not None:
+        if use_crf and preds is not None and labels is not None:
             out.righsize_labels(preds)
         return out
