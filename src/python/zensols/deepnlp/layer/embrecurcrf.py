@@ -107,10 +107,12 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, SequenceNetworkModule):
 
     def _forward_train_no_crf(self, batch: Batch,
                               context: SequenceNetworkContext) -> Tensor:
-        labels: Optional[List[List[int]]] = batch.get_labels()
         recur_crf: RecurrentCRF = self.recurcrf
         recur: RecurrentAggregation = recur_crf.recur
         decoder: DeepLinear = recur_crf.decoder
+        # no implementation yet for prediction sans-training
+        labels: Optional[Tensor] = batch.get_labels()
+        pred_lists: List[List[int]]
 
         x = EmbeddingNetworkModule._forward(self, batch)
         self._shape_debug('embedding', x)
@@ -134,14 +136,14 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, SequenceNetworkModule):
         pred_labels = logits.argmax(dim=2)
         self._shape_debug('predictions (max)', pred_labels)
 
-        return pred_labels, labels, loss
+        return pred_labels, loss
 
     def _decode(self, batch: Batch, add_loss: bool) -> Tuple[Tensor, Tensor]:
-        loss = None
-        mask = self._get_mask(batch)
+        loss: Tensor = None
+        mask: Tensor = self._get_mask(batch)
         self._shape_debug('mask', mask)
 
-        x = super()._forward(batch)
+        x: Tensor = super()._forward(batch)
         self._shape_debug('super emb', x)
 
         if add_loss:
@@ -154,31 +156,42 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, SequenceNetworkModule):
 
         return x, loss, score
 
-    def _pred_tensor(self, batch: Batch, preds: List[List[int]]) -> Tensor:
-        vec: AggregateEncodableFeatureVectorizer = \
-            batch.get_label_feature_vectorizer()
-        labels: Tensor = batch.get_labels()
-        tc: TorchConfig = batch.torch_config
-        arr: Tensor = vec.create_padded_tensor(
-            labels.shape, labels.dtype, labels.device)
-        for rix, plist in enumerate(preds):
-            blen = len(plist)
-            arr[rix, :blen] = tc.singleton(plist, dtype=labels.dtype)
-        return arr
-
     def _map_labels(self, batch: Batch, context: SequenceNetworkContext,
                     labels: Union[List[List[int]], Tensor]) -> List[List[int]]:
         return labels
+
+    def _shape_or_list_debug(self, msg: str,
+                             data: Union[List[List[int]], Tensor],
+                             full: bool = False):
+        if self.logger.isEnabledFor(logging.DEBUG) or True:
+            if data is None:
+                self.logger.debug(f'{msg}: None')
+            else:
+                if isinstance(data, Tensor):
+                    self._shape_debug(msg, data)
+                    print(f'{msg}: {data.shape} (T)')
+                else:
+                    dtype = 'none'
+                    if len(data) > 0:
+                        dtype = type(data[0])
+                        if dtype == list:
+                            dtype = f'{dtype} ({len(data)})'
+                    self.logger.debug(
+                        f'{msg}: length={len(data)}, type={dtype}')
+                    print(f'{msg}: length={len(data)}, type={dtype}')
+                if full:
+                    from zensols.deeplearn import printopts
+                    with printopts(profile='full'):
+                        self.logger.debug(str(data))
 
     def _forward(self, batch: Batch, context: SequenceNetworkContext) -> \
             SequenceNetworkOutput:
         use_crf = self.net_settings.use_crf
         split_type: DatasetSplitType = context.split_type
         preds: List[List[int]] = None
-        labels: Optional[List[List[int]]] = batch.get_labels()
+        labels: Optional[Tensor] = batch.get_labels()
         loss: Tensor = None
         score: Tensor = None
-        tensor_preds = self.net_settings.tensor_predictions
         if self.logger.isEnabledFor(logging.DEBUG):
             self.logger.debug(f'forward on splt: {context.split_type}')
         if context.split_type != DatasetSplitType.train and self.training:
@@ -188,37 +201,29 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, SequenceNetworkModule):
             if use_crf:
                 loss = self._forward_train_with_crf(batch)
             else:
-                preds, labels, loss = self._forward_train_no_crf(batch, context)
+                preds, loss = self._forward_train_no_crf(batch, context)
         elif context.split_type == DatasetSplitType.validation:
             if use_crf:
                 preds, loss, score = self._decode(batch, True)
-                if tensor_preds:
-                    preds = self._pred_tensor(batch, preds)
             else:
-                preds, labels, loss = self._forward_train_no_crf(batch, context)
+                preds, loss = self._forward_train_no_crf(batch, context)
         elif context.split_type == DatasetSplitType.test:
             if use_crf:
                 preds, _, score = self._decode(batch, False)
-                if tensor_preds:
-                    preds = self._pred_tensor(batch, preds)
                 loss = batch.torch_config.singleton([0], dtype=torch.float32)
             else:
-                preds, labels, loss = self._forward_train_no_crf(batch, context)
+                preds, loss = self._forward_train_no_crf(batch, context)
         else:
             raise ModelError(f'Unknown data split type: {split_type}')
-        if self.logger.isEnabledFor(logging.DEBUG):
-            for name, lsts in zip('preds labels'.split(), (preds, labels)):
-                if lsts is None:
-                    self.logger.debug(f'output: {name}: {None}')
-                else:
-                    for lst in lsts:
-                        from zensols.deeplearn import printopts
-                        with printopts(profile='full'):
-                            self.logger.debug(f'output: {name}: {len(lst)} {lst}')
+        # list of lists of the predictions, which are the CRF output when
+        # enabled
         if preds is not None:
             preds = self._map_labels(batch, context, preds)
+        # padded tensor of shape (batch, data i.e. token length)
         if labels is not None:
             labels = self._map_labels(batch, context, labels)
+        self._shape_or_list_debug('output preds', preds)
+        self._shape_or_list_debug('output labels', labels)
         out = SequenceNetworkOutput(preds, loss, score, labels)
         if use_crf and preds is not None and labels is not None:
             out.righsize_labels(preds)
