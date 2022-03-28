@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 import logging
 import torch
 from torch import Tensor
-from zensols.deeplearn import ModelError, DatasetSplitType, TorchConfig
+from zensols.deeplearn import ModelError, DatasetSplitType
 from zensols.deeplearn.model import (
     SequenceNetworkModule, SequenceNetworkContext, SequenceNetworkOutput
 )
@@ -19,7 +19,6 @@ from zensols.deeplearn.layer import (
     RecurrentCRFNetworkSettings,
     RecurrentCRF,
 )
-from zensols.deeplearn.vectorize import AggregateEncodableFeatureVectorizer
 from zensols.deepnlp.layer import (
     EmbeddingNetworkSettings,
     EmbeddingNetworkModule,
@@ -106,7 +105,8 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, SequenceNetworkModule):
         return x
 
     def _forward_train_no_crf(self, batch: Batch,
-                              context: SequenceNetworkContext) -> Tensor:
+                              context: SequenceNetworkContext) -> \
+            List[List[int]]:
         recur_crf: RecurrentCRF = self.recurcrf
         recur: RecurrentAggregation = recur_crf.recur
         decoder: DeepLinear = recur_crf.decoder
@@ -121,7 +121,7 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, SequenceNetworkModule):
         self._shape_debug('recurrent', x)
 
         logits = decoder.forward(x)
-        self._shape_debug('decoder', logits)
+        self._shape_debug('decoder logits', logits)
 
         logits_flat = logits.flatten(0, 1)
         labels_flat = labels.flatten(0, 1)
@@ -134,9 +134,24 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, SequenceNetworkModule):
             self._debug(f'loss: {loss}')
 
         pred_labels = logits.argmax(dim=2)
-        self._shape_debug('predictions (max)', pred_labels)
+        self._shape_debug('predictions (agg)', pred_labels)
 
-        return pred_labels, loss
+        mask = self._get_mask(batch)
+        assert len(mask.size()) == 2
+
+        pred_lsts: List[List[int]] = []
+        for bix in range(mask.size(0)):
+            bmask = mask[bix]
+            plst = torch.masked_select(pred_labels[bix], bmask)
+            pred_lsts.append(plst.tolist())
+
+        if 0:
+            from zensols.deeplearn import printopts
+            with printopts(profile='full'):
+                print(pred_labels)
+                print(mask)
+
+        return pred_lsts, loss
 
     def _decode(self, batch: Batch, add_loss: bool) -> Tuple[Tensor, Tensor]:
         loss: Tensor = None
