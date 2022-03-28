@@ -184,7 +184,6 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, SequenceNetworkModule):
             else:
                 if isinstance(data, Tensor):
                     self._shape_debug(msg, data)
-                    print(f'{msg}: {data.shape} (T)')
                 else:
                     dtype = 'none'
                     if len(data) > 0:
@@ -193,11 +192,10 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, SequenceNetworkModule):
                             dtype = f'{dtype} ({len(data)})'
                     self.logger.debug(
                         f'{msg}: length={len(data)}, type={dtype}')
-                    print(f'{msg}: length={len(data)}, type={dtype}')
                 if full:
                     from zensols.deeplearn import printopts
                     with printopts(profile='full'):
-                        self.logger.debug(str(data))
+                        self.logger.debug('full data:\n' + str(data))
 
     def _forward(self, batch: Batch, context: SequenceNetworkContext) -> \
             SequenceNetworkOutput:
@@ -240,6 +238,6 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, SequenceNetworkModule):
         self._shape_or_list_debug('output preds', preds)
         self._shape_or_list_debug('output labels', labels)
         out = SequenceNetworkOutput(preds, loss, score, labels)
-        if use_crf and preds is not None and labels is not None:
+        if preds is not None and labels is not None and len(labels.size()) > 1:
             out.righsize_labels(preds)
         return out
