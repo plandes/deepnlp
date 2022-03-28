@@ -215,8 +215,10 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, SequenceNetworkModule):
                         from zensols.deeplearn import printopts
                         with printopts(profile='full'):
                             self.logger.debug(f'output: {name}: {len(lst)} {lst}')
-        preds = self._map_labels(batch, context, preds)
-        labels = self._map_labels(batch, context, labels)
+        if preds is not None:
+            preds = self._map_labels(batch, context, preds)
+        if labels is not None:
+            labels = self._map_labels(batch, context, labels)
         out = SequenceNetworkOutput(preds, loss, score, labels)
         if use_crf and preds is not None and labels is not None:
             out.righsize_labels(preds)
