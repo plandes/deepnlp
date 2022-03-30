@@ -8,12 +8,10 @@ from dataclasses import dataclass, field
 import sys
 from io import TextIOBase
 import logging
+from pathlib import Path
 from zensols.persist import dealloc
 from zensols.config import Settings
 from zensols.nlp import FeatureDocument
-from zensols.deepnlp.model import (
-    BioSequenceAnnotationMapper, SequenceDocumentAnnotation
-)
 from zensols.deeplearn.cli import FacadeApplication
 
 logger = logging.getLogger(__name__)
@@ -23,7 +21,8 @@ logger = logging.getLogger(__name__)
 class NLPFacadeModelApplication(FacadeApplication):
     CLI_META = {'mnemonic_overrides': {'predict_text': 'predtext'},
                 'option_overrides': {'verbose': {'long_name': 'verbose',
-                                                 'short_name': None}}}
+                                                 'short_name': None}}
+                | FacadeApplication.CLI_META['option_overrides']}
 
     def _get_sentences(self, text_input: str) -> Tuple[str]:
         def map_sents(din: TextIOBase):
@@ -56,6 +55,10 @@ class NLPClassifyFacadeModelApplication(FacadeApplication):
 
 @dataclass
 class NLPSequenceClassifyFacadeModelApplication(NLPFacadeModelApplication):
+    model_path: Path = field(default=None)
+    """The path to the model or use the last trained model if not provided.
+
+    """
     def predict_text(self, text_input: str, verbose: bool = False):
         """Classify ad-hoc text and output the results..
 
