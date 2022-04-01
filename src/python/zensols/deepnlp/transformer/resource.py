@@ -146,7 +146,7 @@ class TransformerResource(PersistableContainer, Dictable):
         self._model.cache_global = cached
 
     def _is_roberta(self):
-        return self.model_id.startswith('roberta')
+        return self.model_id.find('roberta') > -1
 
     def _create_tokenizer_class(self) -> Type[PreTrainedTokenizer]:
         """Create the huggingface class used for tokenizer."""
