@@ -77,7 +77,7 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, SequenceNetworkModule):
         rc.input_size = self.embedding_output_size
         self.mask_attribute = ns.mask_attribute
         if self.logger.isEnabledFor(logging.DEBUG):
-            self._debug(f'recur settings: {rc}')
+            self.logger.debug(f'recur emb settings: {rc}')
         self.recurcrf: RecurrentCRF = rc.create_module(sub_logger=sub_logger)
 
     def deallocate(self):
