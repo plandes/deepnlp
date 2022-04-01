@@ -144,6 +144,7 @@ class TransformerEmbedding(PersistableContainer, Dictable):
              TorchTypes.is_float(model.embeddings.token_type_ids.dtype):
             model.embeddings.token_type_ids = model.embeddings.token_type_ids.long()
         elif model_name.startswith('google/bigbird-roberta'):
+            model.embeddings.token_type_ids = model.embeddings.token_type_ids.long()
             model.embeddings.position_ids = model.embeddings.position_ids.long()
 
         return model
