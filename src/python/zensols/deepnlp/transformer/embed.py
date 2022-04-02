@@ -120,32 +120,17 @@ class TransformerEmbedding(PersistableContainer, Dictable):
 
         """
         model: nn.Module = self.resource.model
-        model_name: str = self.resource.model_id
 
         if self.output_attentions:
             params['output_attentions'] = True
 
-        if model_name.startswith('bert'):
-            # a bug in transformers 4.4.2 requires this; 4.12.5 still does
-            # https://github.com/huggingface/transformers/issues/2952
-            input_ids = params['input_ids']
-            seq_length = input_ids.size()[1]
-            position_ids = model.embeddings.position_ids
-            position_ids = position_ids[:, 0: seq_length].to(torch.long)
-            params['position_ids'] = position_ids
-        elif model_name.startswith('distilbert'):
-            if hasattr(model.embeddings, 'position_ids') and \
-               TorchTypes.is_float(model.embeddings.position_ids.dtype):
-                model.embeddings.position_ids = \
-                    model.embeddings.position_ids.long()
-            params.pop('token_type_ids', None)
-        elif model_name.startswith('roberta') and \
-             hasattr(model.embeddings, 'token_type_ids') and \
-             TorchTypes.is_float(model.embeddings.token_type_ids.dtype):
-            model.embeddings.token_type_ids = model.embeddings.token_type_ids.long()
-        elif model_name.startswith('google/bigbird-roberta'):
-            model.embeddings.token_type_ids = model.embeddings.token_type_ids.long()
-            model.embeddings.position_ids = model.embeddings.position_ids.long()
+        # a bug in transformers 4.4.2 requires this; 4.12.5 still does
+        # https://github.com/huggingface/transformers/issues/2952
+        for attr in 'position_ids token_type_ids'.split():
+            if hasattr(model.embeddings, attr):
+                arr: Tensor = getattr(model.embeddings, attr)
+                if TorchTypes.is_float(arr.dtype):
+                    setattr(model.embeddings, attr, arr.long())
 
         return model
 
