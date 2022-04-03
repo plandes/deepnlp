@@ -250,6 +250,13 @@ class DeepConvolution1d(BaseNetworkModule):
         return tuple(self.seq_layers)
 
     def _forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Forward convolution, batch normalization, pool, activation and dropout for
+        those layers that are configured.
+
+        :see: `Sunghean et al <http://mipal.snu.ac.kr/images/1/16/Dropout_ACCV2016.pdf>`_
+        :see: `Ioffe et al <https://arxiv.org/pdf/1502.03167.pdf>`_
+
+        """
         layer_sets = self.layer_sets
         ls_len = len(layer_sets)
 
@@ -259,20 +266,20 @@ class DeepConvolution1d(BaseNetworkModule):
             x = conv(x)
             self._shape_debug('conv', x)
 
+            if batch_norm is not None:
+                if self.logger.isEnabledFor(logging.DEBUG):
+                    self._debug(f'batch norm: {batch_norm}')
+                x = batch_norm(x)
+
             x = x.view(x.shape[0], 1, -1)
             self._shape_debug('flatten', x)
 
             x = pool(x)
             self._shape_debug('pool', x)
 
-            self._forward_dropout(x)
-
-            if batch_norm is not None:
-                if self.logger.isEnabledFor(logging.DEBUG):
-                    self._debug(f'batch norm: {batch_norm}')
-                x = batch_norm(x)
-
             self._forward_activation(x)
+
+            self._forward_dropout(x)
 
             if i < ls_len - 1:
                 x = x.unsqueeze(3)
