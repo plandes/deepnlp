@@ -25,7 +25,8 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class ClassifyNetworkSettings(DropoutNetworkSettings, EmbeddingNetworkSettings):
-    """A utility container settings class for convulsion network models.
+    """A utility container settings class for convulsion network models.  This
+    class also updates the recurrent network's drop out settings when changed.
 
     """
     recurrent_settings: RecurrentAggregationNetworkSettings = field()
