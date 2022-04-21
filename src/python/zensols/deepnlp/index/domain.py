@@ -68,7 +68,6 @@ class DocumentIndexVectorizer(FeatureDocumentVectorizer,
     """The path to the pickeled cache file of the trained model.
 
     """
-
     def __post_init__(self):
         PersistableContainer.__init__(self)
         self.index_path.parent.mkdir(parents=True, exist_ok=True)
