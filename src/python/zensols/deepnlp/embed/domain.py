@@ -111,8 +111,9 @@ class WordEmbedModel(PersistableContainer, metaclass=ABCMeta):
     """
 
     lowercase: bool = field(default=False)
-    """If ``True``, downcase each word for all methods that take a word as
-    input.
+    """If ``True``, downcase each word for all methods that take a word as input.
+    Use this for embeddings that are only lower case in order to find more hits
+    when querying for words that have uppercase characters.
 
     """
     def __post_init__(self):

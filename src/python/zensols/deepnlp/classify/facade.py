@@ -77,7 +77,8 @@ class ClassifyModelFacade(LanguageModelFacade):
         # not using those models
         if self.config.has_option('embedding', 'deeplearn_default'):
             emb_conf = self.config.get_option('embedding', 'deeplearn_default')
-            attrs = 'glove_300_embedding word2vec_300_embedding'.split()
+            attrs = ('glove_300_embedding fasttext_news_300 ' +
+                     'fasttext_crawl_300 word2vec_300_embedding').split()
             for feature_attr in attrs:
                 if emb_conf != feature_attr:
                     self.remove_metadata_mapping_field(feature_attr)

@@ -86,6 +86,16 @@ class LabeledBatch(Batch):
     :class:`~zensols.deepnlp.embed.GloveWordEmbedModel` class.
 
     """
+    FASTTEXT_NEWS_300_EMBEDDING = 'fasttext_news_300_embedding'
+    """The configuration section name of the fasttext news embedding
+    :class:`~zensols.deepnlp.embed.FastTextEmbedModel` class.
+
+    """
+    FASTTEXT_CRAWL_300_EMBEDDING = 'fasttext_crawl_300_embedding'
+    """The configuration section name of the fasttext crawl embedding
+    :class:`~zensols.deepnlp.embed.FastTextEmbedModel` class.
+
+    """
     TRANSFORMER_TRAINBLE_EMBEDDING = 'transformer_trainable_embedding'
     """The configuration section name of the BERT transformer contextual embedding
     :class:`~zensols.deepnlp.transformer.TransformerEmbedding` class.
@@ -98,6 +108,9 @@ class LabeledBatch(Batch):
     """
     EMBEDDING_ATTRIBUTES = {GLOVE_50_EMBEDDING,
                             GLOVE_300_EMBEDDING,
+                            GLOVE_300_EMBEDDING,
+                            FASTTEXT_NEWS_300_EMBEDDING,
+                            FASTTEXT_CRAWL_300_EMBEDDING,
                             TRANSFORMER_TRAINBLE_EMBEDDING,
                             TRANSFORMER_FIXED_EMBEDDING}
     """All embedding feature section names."""
@@ -129,6 +142,8 @@ class LabeledBatch(Batch):
              LANGUAGE_FEATURE_MANAGER_NAME,
              (FieldFeatureMapping(GLOVE_50_EMBEDDING, 'wvglove50', True, 'doc'),
               FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', True, 'doc'),
+              FieldFeatureMapping(FASTTEXT_NEWS_300_EMBEDDING, 'wvftnews300', True, 'doc'),
+              #FieldFeatureMapping(FASTTEXT_CRAWL_300_EMBEDDING, 'wvftcrawl300', True, 'doc'),
               FieldFeatureMapping(TRANSFORMER_TRAINBLE_EMBEDDING, 'transformer_trainable', True, 'doc'),
               #FieldFeatureMapping(TRANSFORMER_FIXED_EMBEDDING, 'transformer_fixed', True, 'doc'),
               FieldFeatureMapping(STATS_ATTRIBUTE, 'stats', False, 'doc'),

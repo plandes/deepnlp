@@ -17,7 +17,8 @@ if (__name__ == '__main__'):
     init()
     CliHarness(
         app_config_resource='resources/app.conf',
-        proto_args='-c models/transformer.conf traintest',
+        #proto_args='-c models/transformer.conf traintest',
+        proto_args='batch --clear -c models/fasttext.conf',
         proto_factory_kwargs={'reload_pattern': '^cb'},
         app_factory_class='zensols.deeplearn.cli.FacadeApplicationFactory',
     ).run()

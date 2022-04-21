@@ -27,12 +27,10 @@ class ClickbateDataframeStash(AutoSplitDataframeStash):
     """Use to resolve the file that has the the positive clickbate headlines.
 
     """
-
     non_cb_data_resource: Resource = field()
     """Use to resolve the file that has the the negative clickbate headlines.
 
     """
-
     def _parse_corpus(self, path: Path, label: bool) -> pd.DataFrame:
         """Parse the corpus file identified and give it a label.
 

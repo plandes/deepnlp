@@ -18,17 +18,24 @@ class FastTextEmbedModel(TextWordEmbedModel):
     instances of a :class:`.WordEmbedModel`.  Files that have the format that
     look like ``crawl-300d-2M.vec`` can be downloaded with the link below.
 
-    :see: `FastText word vectors <https://fasttext.cc/docs/en/english-vectors.html>`_
+    :see: `English word vectors <https://fasttext.cc/docs/en/english-vectors.html>`_
 
     """
     desc: str = field(default='2M')
-    corpus: str = field(default='crawl')
-    dimension: str = field(default=300)
+    """The size description (i.e. 6B for the six billion word trained vectors).
 
+    """
+    dimension: str = field(default=300)
+    """The word vector dimension."""
+
+    corpus: str = field(default='crawl')
+    """The corpus the embeddings were trained on, such as ``crawl`` and ``web``.
+
+    """
     def _get_metadata(self) -> TextWordModelMetadata:
         name = 'fasttext'
         # crawl-300d-2M.vec
-        path = self.path / f'{self.corpus}-{self.dimension}d-{self.desc}.vec'
+        path = self.path
         desc = f'{self.corpus}-{self.desc}'
         with open(path, encoding='utf-8',
                   newline='\n', errors='ignore') as f:

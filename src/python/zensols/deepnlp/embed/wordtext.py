@@ -52,7 +52,7 @@ class TextWordModelMetadata(Dictable):
     """
     def __post_init__(self, sub_directory: Path):
         if sub_directory is None:
-            sub_directory = Path('bin', f'{self.desc}.{self.dimension}')
+            sub_directory = Path('bin', f'{self.name}.{self.desc}.{self.dimension}')
         self.bin_dir = self.source_path.parent / sub_directory
         self.bin_file = self.bin_dir / 'vec.dat'
         self.words_file = self.bin_dir / 'words.dat'
