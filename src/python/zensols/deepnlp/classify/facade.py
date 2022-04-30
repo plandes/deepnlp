@@ -98,6 +98,12 @@ class TokenClassifyModelFacade(ClassifyModelFacade):
         correct label, the prediction, the text and the length of the text of
         the text.
 
+        :see: :meth:`get_predictions_factory`
+
+        :param args: arguments passed to :meth:`get_predictions_factory`
+
+        :param kwargs: arguments passed to :meth:`get_predictions_factory`
+
         """
         return LanguageModelFacade.get_predictions(
             self,
