@@ -8,10 +8,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.1.0] - 2022-05-04
 ### Added
 - A recurrent CRF and default classify facade to the resource library.
 - Tokenized transformer document truncation.
 - Token classification resource library.
+- More huggingface support, models and tests.
+- Facebook fastText embeddings.
 
 ### Changed
 - Recurrent embedded CRF uses a new network settings factory method.
@@ -20,6 +23,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - All deep NLP vectorizers inherit from `TransformableFeatureVectorizer` to
   simplify class hierarchy.  This change now requires `encode_transformed` in
   respective vectorizer configurations.
+- Embedded Bi{LSTM,GRU,RNN}-CRF}: utilize `recurcrf` module decode over
+  re-implementation.
+- Change default dropout, activation order (that use them) in all layers per
+  the literature.
 
 
 ## [1.0.1] - 2022-02-12
@@ -148,7 +155,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/plandes/deepnlp/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/plandes/deepnlp/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/plandes/deepnlp/compare/v0.0.8...v1.0.0
 [0.0.8]: https://github.com/plandes/deepnlp/compare/v0.0.7...v0.0.8
