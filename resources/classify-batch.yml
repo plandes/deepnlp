@@ -1,0 +1,18 @@
+class_batch_default:
+  sections:
+    - classify_label_batch_mappings
+    - classify_batch_mappings
+
+classify_label_batch_mappings:
+  label_attribute_name: label
+  manager_mappings:
+    - vectorizer_manager_name: classify_label_vectorizer_manager
+      fields:
+        - attr: label
+          feature_id: lblabel
+          is_agg: true
+
+classify_batch_mappings:
+  batch_feature_mapping_adds:
+    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): classify_label_batch_mappings'
+    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): lang_batch_mappings'

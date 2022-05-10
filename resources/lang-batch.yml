@@ -1,0 +1,48 @@
+lang_batch_mappings:
+  manager_mappings:
+    - vectorizer_manager_name: language_feature_manager
+      fields:
+        - attr: glove_50_embedding
+          feature_id: ${glove_50_feature_vectorizer:feature_id}
+          is_agg: true
+          attr_access: doc
+        - attr: glove_300_embedding
+          feature_id: ${glove_300_feature_vectorizer:feature_id}
+          is_agg: true
+          attr_access: doc
+        - attr: fasttext_news_300_embedding
+          feature_id: ${fasttext_news_300_feature_vectorizer:feature_id}
+          is_agg: true
+          attr_access: doc
+        - attr: fasttext_crawl_300_embedding
+          feature_id: ${fasttext_crawl_300_feature_vectorizer:feature_id}
+          is_agg: true
+          attr_access: doc
+        - attr: word2vec_300_embedding
+          feature_id: ${word2vec_300_feature_vectorizer:feature_id}
+          is_agg: true
+          attr_access: doc
+        - attr: transformer_trainable_embedding
+          feature_id: ${transformer_trainable_feature_vectorizer:feature_id}
+          is_agg: true
+          attr_access: doc
+        - attr: transformer_fixed_embedding
+          feature_id: ${transformer_fixed_feature_vectorizer:feature_id}
+          is_agg: true
+          attr_access: doc
+        - attr: stats
+          feature_id: stats
+          is_agg: false
+          attr_access: doc
+        - attr: enums
+          feature_id: enum
+          is_agg: true
+          attr_access: doc
+        - attr: counts
+          feature_id: count
+          is_agg: true
+          attr_access: doc
+        - attr: dependencies
+          feature_id: dep
+          is_agg: true
+          attr_access: doc
