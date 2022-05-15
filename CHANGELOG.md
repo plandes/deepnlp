@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.1.1] - 2022-05-15
+### Changed
+- Retrofit resource library and examples with batch metadata changes from
+  `zensols.deeplearn`.
+
+
 ## [1.1.0] - 2022-05-04
 ### Added
 - A recurrent CRF and default classify facade to the resource library.
@@ -155,7 +161,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/plandes/deepnlp/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/plandes/deepnlp/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/plandes/deepnlp/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/plandes/deepnlp/compare/v0.0.8...v1.0.0
