@@ -22,6 +22,8 @@ from zensols.deepnlp.layer import (
     EmbeddingNetworkModule,
 )
 
+logger = logging.getLogger(__name__)
+
 
 @dataclass
 class EmbeddedRecurrentCRFSettings(EmbeddingNetworkSettings):

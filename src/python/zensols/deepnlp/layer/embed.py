@@ -20,6 +20,7 @@ from zensols.deeplearn.batch import (
     BatchFieldMetadata,
     MetadataNetworkSettings,
 )
+from zensols.deepnlp.embed import WordEmbedModel
 from zensols.deepnlp.vectorize import (
     TextFeatureType,
     FeatureDocumentVectorizer,
@@ -199,9 +200,13 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         super().__init__(net_settings, module_logger)
         self.embedding = net_settings.embedding_layer
         self.embedding_output_size = self.embedding.embedding_dim
-        if logger.isEnabledFor(logging.DEBUG):
+        if self.logger.isEnabledFor(logging.DEBUG):
             self._debug(f'embedding dim: {self.embedding.embedding_dim} ' +
                         f'output size: {self.embedding_output_size}')
+            self._debug(f'embedding model: {self.embedding.embed_model}')
+        if self.logger.isEnabledFor(logging.INFO):
+            we_model: WordEmbedModel = self.embedding.embed_model
+            self.logger.info(f'embeddings: {we_model.name}')
         self.join_size = 0
         meta: BatchMetadata = self.net_settings.batch_metadata
         self.token_attribs = []
