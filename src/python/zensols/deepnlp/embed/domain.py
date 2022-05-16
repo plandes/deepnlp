@@ -268,8 +268,7 @@ class WordEmbedModel(PersistableContainer, metaclass=ABCMeta):
         return self.matrix.shape[0]
 
     def __str__(self):
+        s = f'{self.__class__.__name__} ({self.name}): id={self.model_id}'
         if self._data_inst.is_set():
-            return (f'word embed model: num words: {len(self)}, ' +
-                    f'vector dim: {self.vector_dimension}')
-        else:
-            return self.model_id
+            s += f', num words={len(self)}, dim={self.vector_dimension}'
+        return s
