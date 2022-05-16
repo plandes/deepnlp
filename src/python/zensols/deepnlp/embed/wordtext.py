@@ -87,6 +87,8 @@ class TextWordEmbedModel(WordEmbedModel, Primeable, metaclass=ABCMeta):
 
     def _install(self) -> Path:
         """Install any missing word vector models."""
+        if logger.isEnabledFor(logger.DEBUG):
+            logger.debug(f'install resource for {self.name}: {self.resource}')
         self.installer()
         return self.installer[self.resource]
 
