@@ -61,7 +61,8 @@ class Application(object):
 
         """
         from pprint import pprint
-        vec: TransformerEmbeddingFeatureVectorizer = self.vec_mng['transformer_fixed']
+        vec: TransformerEmbeddingFeatureVectorizer = self.vec_mng['transformer_bigbird']
+        #vec: TransformerEmbeddingFeatureVectorizer = self.vec_mng['transformer_fixed']
         doc: FeatureDocument = self.vec_mng.doc_parser.parse(self.sent3)
         tdoc_org = vec.tokenize(doc)
 
@@ -106,7 +107,7 @@ class Application(object):
         print(out.shape, out.device)
         n_labels = 9
         from torch import nn
-        linear = nn.Linear(768, n_labels)
+        linear = nn.Linear(10, n_labels)
         linear = linear.to(out.device)
         logits = linear.forward(out)
         print(logits.shape)
