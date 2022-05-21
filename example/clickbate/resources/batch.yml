@@ -3,8 +3,6 @@ clickbate_batch_mappings:
     - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): classify_label_batch_mappings'
     - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): lang_batch_mappings'
   field_remove:
-    - fasttext_news_300_embedding
     - fasttext_crawl_300_embedding
     - word2vec_300_embedding
-    - transformer_trainable_embedding
     - transformer_fixed_embedding

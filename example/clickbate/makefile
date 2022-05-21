@@ -22,6 +22,14 @@ transpredict:
 .PHONY:		testall
 testall:	cleanall traintest
 
+.PHONY:		testconfig
+testconfig:
+		@for i in models/*.conf ; do \
+			echo "testing $$i" ; \
+			$(PROG) traintest -p -c $$i \
+				--override model_settings.epochs=2,batch_limit=2 ; \
+		done
+
 .PHONY:		help
 help:
 		$(PROG) --help

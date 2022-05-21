@@ -22,10 +22,10 @@ if (__name__ == '__main__'):
             0: ['batch',
                 '--clear',
                 '--override=batch_stash.workers=1,batch_stash.batch_limit=1,batch_stash.batch_size=2'],
-            1: 'proto',
+            1: 'batch',
             2: 'debug',
             3: 'traintest',
-        }[3],
+        }[1],
         proto_factory_kwargs={'reload_pattern': '^cb'},
         app_factory_class='zensols.deeplearn.cli.FacadeApplicationFactory',
     ).run()
