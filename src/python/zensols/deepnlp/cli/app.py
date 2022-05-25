@@ -11,6 +11,7 @@ import logging
 from pathlib import Path
 from zensols.persist import dealloc
 from zensols.config import Settings
+from zensols.cli import ActionCliManager
 from zensols.nlp import FeatureDocument
 from zensols.deeplearn.cli import FacadeApplication
 
@@ -19,22 +20,23 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class NLPFacadeModelApplication(FacadeApplication):
-    CLI_META = {'mnemonic_overrides': {'predict_text': 'predtext'},
-                'option_overrides': {'verbose': {'long_name': 'verbose',
-                                                 'short_name': None}}
-                | FacadeApplication.CLI_META['option_overrides']}
+    CLI_META = ActionCliManager.combine_meta(
+        FacadeApplication,
+        {'mnemonic_overrides': {'predict_text': 'predtext'},
+         'option_overrides': {'verbose': {'long_name': 'verbose',
+                                          'short_name': None}}})
 
     def _get_sentences(self, text_input: str) -> Tuple[str]:
         def map_sents(din: TextIOBase):
             return map(lambda ln: ln.strip(), sys.stdin.readlines())
 
-        if text_input is None:
+        if text_input == '-':
             return tuple(map_sents(sys.stdin))
         else:
             return [text_input]
 
 
-class NLPClassifyFacadeModelApplication(FacadeApplication):
+class NLPClassifyFacadeModelApplication(NLPFacadeModelApplication):
     def predict_text(self, text_input: str, verbose: bool = False):
         """Classify ad-hoc text and output the results..
 

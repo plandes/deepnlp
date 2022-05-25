@@ -3,7 +3,6 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Any
 from dataclasses import dataclass, field
 import sys
 from io import TextIOBase
@@ -45,10 +44,12 @@ class LabeledFeatureDocument(FeatureDocument):
                          depth + 1, writer)
 
     def __str__(self) -> str:
+        lab = '' if self.label is None else f'label: {self.label}'
         pred = ''
         if self.pred is not None:
-            pred = f', pred={self.pred}, logit={self.softmax_logit[self.pred]}'
-        return (f'label: {self.label}{pred}: {self.text}')
+            pred = f'pred={self.pred}, logit={self.softmax_logit[self.pred]}'
+        mid = ', ' if len(lab) > 0 and len(pred) > 0 else ''
+        return (f'{lab}{mid}{pred}: {self.text}')
 
 
 @dataclass
