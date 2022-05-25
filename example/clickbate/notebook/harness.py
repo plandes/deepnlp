@@ -68,8 +68,10 @@ class NotebookHarness(object):
             allocation_tracking='counts',
             cli_class=CliFactory,
             factory_args=factory_args,
-            cli_args_fn=lambda model: ['-c', str(
-                self.app_root_dir / 'models' / f'{model}.conf')])
+            cli_args_fn=lambda cnf, name: [
+                '-c', str(self.app_root_dir / 'models' / f'{cnf}.conf'),
+                '--override', f'clickbate_default.name={name}'
+            ])
         if cuda_device_index is not None:
             # tell which GPU to use
             mng.config('gpu_torch_config', cuda_device_index=cuda_device_index)
