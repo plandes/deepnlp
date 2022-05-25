@@ -18,15 +18,6 @@ if (__name__ == '__main__'):
     ConfigurationImporterCliHarness(
         src_dir_name='cb',
         config_path='models/wordvec.conf',
-        proto_args={
-            0: ['batch',
-                '--clear',
-                '--override=batch_stash.workers=1,batch_stash.batch_limit=1,batch_stash.batch_size=2'],
-            1: 'batch --override clickbate_default.name=glove_50',
-            2: 'info -i conf --override clickbate_default.name=fasttext_news_300',
-            3: 'debug',
-            4: 'traintest',
-        }[2],
+        proto_args='debug --override clickbate_default.name=glove_50',
         proto_factory_kwargs={'reload_pattern': '^cb'},
-        app_factory_class='zensols.deeplearn.cli.FacadeApplicationFactory',
     ).run()
