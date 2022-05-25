@@ -9,7 +9,8 @@ $(MODEL_DIR):	traintest
 
 .PHONY:		traintest
 traintest:
-		$(PROG) -c models/$(MODEL).conf -p traintest
+		$(PROG) traintest -p -c models/wordvec.conf \
+		  --override=clickbate_default.name=glove_50
 
 .PHONY:		predict
 predict:	$(MODEL_DIR)
