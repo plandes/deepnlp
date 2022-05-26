@@ -35,7 +35,7 @@ modelparams() {
 	glove300) mname=glove_300;;
 	fasttext) mname=fasttext_news_300;;
 	bert)
-	    mname=none
+	    mname=None
 	    conf=models/transformer.conf
 	    ;;
 	*)
@@ -61,13 +61,12 @@ stop() {
 predict() {
     modelparams $1
     sample="\
-19 Things You'll Only Understand If You're A Woman Who Hates Shaving
-Snapchat Ran An Ad For Booze During Its Hajj Story
-Poison sue Capitol Records and EMI Music Marketing over royalties
-History Of Santa
-16 Chocolate Chip Cookies That Prove God Exists
-New York City reaches $33 million strip search settlement
-21 Movies And Shows To Stream When It's Too Cold Out"
+If you sometimes like to go to the movies to have fun , Wasabi is a good place to start.,
+There are a few stabs at absurdist comedy ... but mostly the humor is of the sweet , gentle and occasionally cloying kind that has become an Iranian specialty .,
+Terrible,
+Great movie,
+Wonderful, great, awesome, 100%,
+Terrible, aweful, worst movie"
     echo "$sample" | $HARNESS predtext - $retval
 }
 
@@ -88,7 +87,7 @@ clean() {
 	fi
     done
     find . -type d -name __pycache__ -exec rm -fr {} \;
-    rm -f *.log benchmark.conf
+    rm -f *.log
 }
 
 case $ACTION in

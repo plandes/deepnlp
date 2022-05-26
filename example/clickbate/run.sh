@@ -8,7 +8,7 @@ PY_BIN=python
 HARNESS=./harness.py
 
 usage() {
-# usage doc
+    # usage doc
     echo -e "usage:
 $0 batch
 $0 <traintest|predict> [glove50|glove300|fasttext|bert]

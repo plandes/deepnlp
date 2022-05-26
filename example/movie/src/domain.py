@@ -65,6 +65,13 @@ class Review(FeatureDocument):
         self._write_line(f'polarity: {pol}', depth + 1, writer)
         self._write_line(f'confidence: {self.confidence}', depth + 1, writer)
 
+    def __str__(self):
+        s = '(+)' if self.polarity == 'p' else '(-)'
+        if self.confidence is not None:
+            s += f' ({self.confidence[self.polarity]*100:.0f}%)'
+        s += f': {super().__str__()}'
+        return s
+
 
 @dataclass
 class ReviewFeatureStash(DocumentFeatureStash):
@@ -93,6 +100,9 @@ class ReviewPredictionMapper(ClassificationPredictionMapper):
     """
     def map_results(self, *args, **kwargs) -> Tuple[Review]:
         res: Settings = super().map_results(*args, **kwargs)
+        from pprint import pprint
+        pprint(res.asdict())
+        print('R', res)
         for cl, doc, logits in zip(res.classes, res.docs, res.logits):
             conf = np.exp(logits) / sum(np.exp(logits))
             # negative label is the first nominal
