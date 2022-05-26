@@ -7,6 +7,7 @@ mr_batch_mappings:
     - enums
     - dependencies
     - glove_50_embedding
+    - transformer_trainable_embedding
   # field_remove:
   #   - fasttext_crawl_300_embedding
   #   - word2vec_300_embedding

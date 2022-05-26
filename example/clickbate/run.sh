@@ -22,7 +22,7 @@ prompt() {
 }
 
 batch() {
-    echo "rebatching using $BATCH_WORKERS workers"
+    echo "rebatching"
     $HARNESS batch --clear --override=clickbate_default.name=glove_50
 }
 

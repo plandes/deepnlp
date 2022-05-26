@@ -8,7 +8,7 @@ PY_BIN=python
 HARNESS=./harness.py
 
 usage() {
-# usage doc
+    # usage doc
     echo -e "usage:
 $0 batch
 $0 <traintest|predict> [glove50|glove300|fasttext|bert]
@@ -22,15 +22,16 @@ prompt() {
 }
 
 batch() {
-    echo "rebatching using $BATCH_WORKERS workers"
-    $HARNESS batch --clear --override=clickbate_default.name=glove_50
+    echo "rebatching"
+    $HARNESS batch --clear
 }
 
 modelparams() {
     model=$1
     conf=models/wordvec.conf
     case $1 in
-	glove50|'') mname=glove_50;;
+	'') ;;
+	glove50) mname=glove_50;;
 	glove300) mname=glove_300;;
 	fasttext) mname=fasttext_news_300;;
 	bert)
@@ -41,7 +42,10 @@ modelparams() {
 	    echo "unkown model: $1"
 	    exit 1
     esac
-    retval="--config $conf --override clickbate_default.name=$mname"
+    if [ ! -z "$mname" ] ; then
+	override" --override mr_default.name=$mname"
+    fi
+    retval="--config ${conf}${override}"
 }
 
 traintest() {
