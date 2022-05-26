@@ -34,7 +34,10 @@ modelparams() {
 	glove300) mname=glove_300;;
 	fasttext) mname=fasttext_news_300;;
 	bert)
-	    conf=models/transformer.conf
+	    conf=models/transformer-trainable.conf
+	    ;;
+	bert-fixed)
+	    conf=models/transformer-fixed.conf
 	    ;;
 	*)
 	    echo "unkown model: $1"

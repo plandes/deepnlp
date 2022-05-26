@@ -1,0 +1,12 @@
+transformer_expander_batch_mapping:
+  manager_mappings:
+    - vectorizer_manager_name: transformer_expander_feature_manager
+      fields:
+        - attr: transformer_dep_expander
+          feature_id: ${transformer_dep_expander_vectorizer:feature_id}
+          is_agg: true
+          attr_access: doc
+        - attr: transformer_enum_expander
+          feature_id: ${transformer_enum_expander_vectorizer:feature_id}
+          is_agg: true
+          attr_access: doc
