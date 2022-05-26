@@ -28,24 +28,25 @@ batch() {
 
 modelparams() {
     model=$1
-    conf=models/wordvec.conf
     case $1 in
 	'') ;;
 	glove50) mname=glove_50;;
 	glove300) mname=glove_300;;
 	fasttext) mname=fasttext_news_300;;
 	bert)
-	    mname=None
 	    conf=models/transformer.conf
 	    ;;
 	*)
 	    echo "unkown model: $1"
 	    exit 1
     esac
-    if [ ! -z "$mname" ] ; then
-	override" --override mr_default.name=$mname"
+    if [ ! -z "$conf" ] ; then
+	conf="--config $conf"
     fi
-    retval="--config ${conf}${override}"
+    if [ ! -z "$mname" ] ; then
+	override="--override mr_default.name=$mname"
+    fi
+    retval="${conf} ${override}"
 }
 
 traintest() {

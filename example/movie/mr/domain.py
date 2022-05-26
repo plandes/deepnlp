@@ -12,13 +12,13 @@ from zensols.dataframe import SplitKeyDataframeStash
 from zensols.nlp import FeatureDocument
 from zensols.deepnlp.batch import FeatureDocumentDataPoint
 from zensols.deepnlp.feature import DocumentFeatureStash
-from dataset import DatasetFactory
+from . import DatasetFactory
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass
-class ReviewRowStash(SplitKeyDataframeStash):
+class MovieReviewRowStash(SplitKeyDataframeStash):
     """A dataframe based stash since our data happens to be composed of comma
     separate files.
 
@@ -35,7 +35,7 @@ class ReviewRowStash(SplitKeyDataframeStash):
 
 
 @dataclass
-class Review(FeatureDocument):
+class MovieReview(FeatureDocument):
     """Represents a movie review containing the text of that review, and the label
     (good/bad => positive/negative).
 
@@ -70,18 +70,18 @@ class Review(FeatureDocument):
 
 
 @dataclass
-class ReviewFeatureStash(DocumentFeatureStash):
+class MovieReviewFeatureStash(DocumentFeatureStash):
     """A stash that spawns processes to parse the utterances and creates instances
-    of :class:`.Review`.
+    of :class:`.MovieReview`.
 
     """
     def __post_init__(self):
         super().__post_init__()
-        # tell the document parser to create instances of `Review` rather than
-        # the default `FeatureDocument`.
-        self.vec_manager.doc_parser.doc_class = Review
+        # tell the document parser to create instances of `MovieReview` rather
+        # than the default `FeatureDocument`.
+        self.vec_manager.doc_parser.doc_class = MovieReview
 
-    def _parse_document(self, id: int, row: pd.Series) -> Review:
+    def _parse_document(self, id: int, row: pd.Series) -> MovieReview:
         # text to parse with SpaCy
         text = row['sentence']
         # the class label
@@ -90,7 +90,7 @@ class ReviewFeatureStash(DocumentFeatureStash):
 
 
 @dataclass
-class ReviewDataPoint(FeatureDocumentDataPoint):
+class MovieReviewDataPoint(FeatureDocumentDataPoint):
     """A representation of a data for a reivew document containing the sentiment
     polarity as the label.
 

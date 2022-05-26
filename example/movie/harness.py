@@ -17,6 +17,6 @@ if (__name__ == '__main__'):
     init()
     ConfigurationImporterCliHarness(
         src_dir_name='src',
-        proto_args='proto',
+        proto_args='debug',
         proto_factory_kwargs={'reload_pattern': '^(?:app|dataset|domain)'},
     ).run()

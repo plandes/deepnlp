@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple
+from typing import Tuple, Any
 from dataclasses import dataclass, field
 import sys
 from io import TextIOBase
@@ -11,8 +11,10 @@ import logging
 from pathlib import Path
 from zensols.persist import dealloc
 from zensols.config import Settings
-from zensols.cli import ActionCliManager
+from zensols.cli import ActionCliManager, ApplicationError
 from zensols.nlp import FeatureDocument
+from zensols.deeplearn import ModelError
+from zensols.deeplearn.model import ModelFacade
 from zensols.deeplearn.cli import FacadeApplication
 
 logger = logging.getLogger(__name__)
@@ -35,6 +37,14 @@ class NLPFacadeModelApplication(FacadeApplication):
         else:
             return [text_input]
 
+    def _predict(self, facade: ModelFacade, data: Any) -> Any:
+        try:
+            return facade.predict(data)
+        except ModelError as e:
+            raise ApplicationError(
+                'Could not predict, probably need to train a model ' +
+                f'first: {e}') from e
+
 
 class NLPClassifyFacadeModelApplication(NLPFacadeModelApplication):
     def predict_text(self, text_input: str, verbose: bool = False):
@@ -47,7 +57,7 @@ class NLPClassifyFacadeModelApplication(NLPFacadeModelApplication):
         """
         sents = self._get_sentences(text_input)
         with dealloc(self.create_facade()) as facade:
-            docs: Tuple[FeatureDocument] = facade.predict(sents)
+            docs: Tuple[FeatureDocument] = self._predict(facade, sents)
             for doc in docs:
                 if verbose:
                     doc.write()
@@ -71,7 +81,7 @@ class NLPSequenceClassifyFacadeModelApplication(NLPFacadeModelApplication):
         """
         sents = self._get_sentences(text_input)
         with dealloc(self.create_facade()) as facade:
-            pred: Settings = facade.predict(sents)
+            pred: Settings = self._predict(facade, sents)
             docs: Tuple[FeatureDocument] = pred.docs
             classes: Tuple[str] = pred.classes
             for labels, doc in zip(classes, docs):
