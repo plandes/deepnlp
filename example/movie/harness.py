@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from typing import Union, Dict, Any, List
 from zensols.cli import ConfigurationImporterCliHarness
 
 
@@ -13,10 +14,16 @@ def init():
     deepnlp.init()
 
 
-if (__name__ == '__main__'):
-    init()
-    ConfigurationImporterCliHarness(
+def create_harness(*args, **kwargs):
+    return ConfigurationImporterCliHarness(
+        *args,
         src_dir_name='src',
         proto_args='debug',
         proto_factory_kwargs={'reload_pattern': '^(?:app|dataset|domain)'},
-    ).run()
+        **kwargs,
+    )
+
+
+if (__name__ == '__main__'):
+    init()
+    create_harness().run()

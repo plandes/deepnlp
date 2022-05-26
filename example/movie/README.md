@@ -10,7 +10,7 @@ See the [movie review sentiment documentation](../../doc/md/movie-example.md).
 
 [MIT License]
 
-Copyright (c) 2021 Paul Landes
+Copyright (c) 2021-2022 Paul Landes
 
 
 <!-- links -->
