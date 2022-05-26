@@ -3,18 +3,14 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple
 from dataclasses import dataclass, field
 import logging
 import sys
 from io import TextIOBase
 import pandas as pd
-import numpy as np
-from zensols.config import Settings
 from zensols.dataframe import SplitKeyDataframeStash
 from zensols.nlp import FeatureDocument
 from zensols.deepnlp.batch import FeatureDocumentDataPoint
-from zensols.deepnlp.classify import ClassificationPredictionMapper
 from zensols.deepnlp.feature import DocumentFeatureStash
 from dataset import DatasetFactory
 
@@ -91,24 +87,6 @@ class ReviewFeatureStash(DocumentFeatureStash):
         # the class label
         polarity = row['polarity']
         return self.vec_manager.parse(text, polarity)
-
-
-@dataclass
-class ReviewPredictionMapper(ClassificationPredictionMapper):
-    """Adds the ``polarity`` attribute as the review's sentiment prediction.
-
-    """
-    def map_results(self, *args, **kwargs) -> Tuple[Review]:
-        res: Settings = super().map_results(*args, **kwargs)
-        from pprint import pprint
-        pprint(res.asdict())
-        print('R', res)
-        for cl, doc, logits in zip(res.classes, res.docs, res.logits):
-            conf = np.exp(logits) / sum(np.exp(logits))
-            # negative label is the first nominal
-            doc.confidence = conf[0 if cl == 'n' else 1]
-            doc.polarity = cl
-        return tuple(res.docs)
 
 
 @dataclass
