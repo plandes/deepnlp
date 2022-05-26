@@ -10,6 +10,7 @@ import re
 import shutil
 from pathlib import Path
 import pandas as pd
+from zensols.install import Installer, Resource
 
 logger = logging.getLogger(__name__)
 
@@ -21,13 +22,19 @@ class DatasetFactory(object):
     """
     FILE_NAME = re.compile(r'^(.+)\.csv$')
 
-    rt_pol_path: Path
-    stanford_path: Path
+    installer: Installer
+    standford_resource: Resource
+    cornell_resource: Resource
     dataset_path: Path
     tok_len: int
     throw_out: Set[str] = field(repr=False)
     repls: dict = field(repr=False)
     split_col: str
+
+    def __post_init__(self):
+        self.installer()
+        self.stanford_path = self.installer[self.standford_resource]
+        self.rt_pol_path = self.installer[self.cornell_resource]
 
     @staticmethod
     def split_sents(line: str) -> str:
@@ -55,8 +62,8 @@ class DatasetFactory(object):
         sent = filter(lambda x: len(x) > 0, sent)
         sent = filter(lambda x: x not in self.throw_out, sent)
 
-        # I tried to take every other word for utterances that start the same,
-        # but this brought down matches
+        # tried taking every other word for utterances that start the same, but
+        # this brought down matches
         sent = tuple(sent)[0:self.tok_len]
         sent = '><'.join(sent)
         return sent
@@ -76,7 +83,7 @@ class DatasetFactory(object):
                 lines.append(line)
 
         for line in lines:
-            # I tried to split on mulitple sentences that were joined, but that
+            # tried to split on mulitple sentences that were joined, but that
             # makes things worse
             for sent in self.split_sents(line):
                 key = self.sent2bow(sent)

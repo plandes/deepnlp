@@ -8,9 +8,9 @@
 
 # adds
 /target
-/corpus
 /data
-/*.log
+/model
+/corpus
 /results
-/prev-results
+/*.log
 /benchmark.conf

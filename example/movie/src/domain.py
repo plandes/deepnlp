@@ -22,7 +22,7 @@ from zensols.nlp import FeatureDocument
 from zensols.deepnlp.batch import FeatureDocumentDataPoint
 from zensols.deepnlp.classify import ClassificationPredictionMapper
 from zensols.deepnlp.feature import DocumentFeatureStash
-from . import DatasetFactory
+from dataset import DatasetFactory
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +50,6 @@ class Review(FeatureDocument):
     (good/bad => positive/negative).
 
     """
-
     polarity: str = field(default=None)
     """The polarity, either posititive (``p`)` or negative (``n``) of the
     review.  This takes values of ``None`` for ad-hoc predictions.
@@ -60,7 +59,6 @@ class Review(FeatureDocument):
     with an additional ``None`` value.
 
     """
-
     confidence: float = field(default=None)
     """A probably of the confidence of the prediction."""
 
@@ -120,46 +118,46 @@ class ReviewDataPoint(FeatureDocumentDataPoint):
         return self.doc.polarity
 
 
-@dataclass
-class ReviewBatch(Batch):
-    LANGUAGE_FEATURE_MANAGER_NAME = 'language_feature_manager'
-    GLOVE_50_EMBEDDING = 'glove_50_embedding'
-    GLOVE_300_EMBEDDING = 'glove_300_embedding'
-    WORD2VEC_300_EMBEDDING = 'word2vec_300_embedding'
-    TRANSFORMER_FIXED_EMBEDDING = 'transformer_fixed_embedding'
-    TRANSFORMER_TRAINABLE_EMBEDDING = 'transformer_trainable_embedding'
-    EMBEDDING_ATTRIBUTES = {GLOVE_50_EMBEDDING, GLOVE_300_EMBEDDING,
-                            WORD2VEC_300_EMBEDDING,
-                            TRANSFORMER_FIXED_EMBEDDING,
-                            TRANSFORMER_TRAINABLE_EMBEDDING}
-    STATS_ATTRIBUTE = 'stats'
-    ENUMS_ATTRIBUTE = 'enums'
-    COUNTS_ATTRIBUTE = 'counts'
-    DEPENDENCIES_ATTRIBUTE = 'dependencies'
-    ENUM_EXPANDER_ATTRIBUTE = 'enum_expander'
-    DEPENDENCY_EXPANDER_ATTRIBTE = 'dep_expander'
-    LANGUAGE_ATTRIBUTES = {STATS_ATTRIBUTE, ENUMS_ATTRIBUTE, COUNTS_ATTRIBUTE,
-                           DEPENDENCIES_ATTRIBUTE, ENUM_EXPANDER_ATTRIBUTE,
-                           DEPENDENCY_EXPANDER_ATTRIBTE}
-    MAPPINGS = BatchFeatureMapping(
-        'label',
-        [ManagerFeatureMapping(
-            'label_vectorizer_manager',
-            (FieldFeatureMapping('label', 'rvlabel', True),)),
-         ManagerFeatureMapping(
-             LANGUAGE_FEATURE_MANAGER_NAME,
-             (FieldFeatureMapping(GLOVE_50_EMBEDDING, 'wvglove50', True, 'doc'),
-              FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', True, 'doc'),
-              FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', True, 'doc'),
-              FieldFeatureMapping(TRANSFORMER_FIXED_EMBEDDING, 'transformer_fixed', True, 'doc'),
-              FieldFeatureMapping(TRANSFORMER_TRAINABLE_EMBEDDING, 'transformer_trainable', True, 'doc'),
-              FieldFeatureMapping(STATS_ATTRIBUTE, 'stats', False, 'doc'),
-              FieldFeatureMapping(ENUMS_ATTRIBUTE, 'enum', True, 'doc'),
-              FieldFeatureMapping(COUNTS_ATTRIBUTE, 'count', True, 'doc'),
-              FieldFeatureMapping(DEPENDENCIES_ATTRIBUTE, 'dep', True, 'doc'),
-              FieldFeatureMapping(ENUM_EXPANDER_ATTRIBUTE, 'transformer_enum_expander', True, 'doc'),
-              FieldFeatureMapping(DEPENDENCY_EXPANDER_ATTRIBTE, 'transformer_dep_expander', True, 'doc'),
-              ))])
+# @dataclass
+# class ReviewBatch(Batch):
+#     LANGUAGE_FEATURE_MANAGER_NAME = 'language_feature_manager'
+#     GLOVE_50_EMBEDDING = 'glove_50_embedding'
+#     GLOVE_300_EMBEDDING = 'glove_300_embedding'
+#     WORD2VEC_300_EMBEDDING = 'word2vec_300_embedding'
+#     TRANSFORMER_FIXED_EMBEDDING = 'transformer_fixed_embedding'
+#     TRANSFORMER_TRAINABLE_EMBEDDING = 'transformer_trainable_embedding'
+#     EMBEDDING_ATTRIBUTES = {GLOVE_50_EMBEDDING, GLOVE_300_EMBEDDING,
+#                             WORD2VEC_300_EMBEDDING,
+#                             TRANSFORMER_FIXED_EMBEDDING,
+#                             TRANSFORMER_TRAINABLE_EMBEDDING}
+#     STATS_ATTRIBUTE = 'stats'
+#     ENUMS_ATTRIBUTE = 'enums'
+#     COUNTS_ATTRIBUTE = 'counts'
+#     DEPENDENCIES_ATTRIBUTE = 'dependencies'
+#     ENUM_EXPANDER_ATTRIBUTE = 'enum_expander'
+#     DEPENDENCY_EXPANDER_ATTRIBTE = 'dep_expander'
+#     LANGUAGE_ATTRIBUTES = {STATS_ATTRIBUTE, ENUMS_ATTRIBUTE, COUNTS_ATTRIBUTE,
+#                            DEPENDENCIES_ATTRIBUTE, ENUM_EXPANDER_ATTRIBUTE,
+#                            DEPENDENCY_EXPANDER_ATTRIBTE}
+#     MAPPINGS = BatchFeatureMapping(
+#         'label',
+#         [ManagerFeatureMapping(
+#             'label_vectorizer_manager',
+#             (FieldFeatureMapping('label', 'rvlabel', True),)),
+#          ManagerFeatureMapping(
+#              LANGUAGE_FEATURE_MANAGER_NAME,
+#              (FieldFeatureMapping(GLOVE_50_EMBEDDING, 'wvglove50', True, 'doc'),
+#               FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', True, 'doc'),
+#               FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', True, 'doc'),
+#               FieldFeatureMapping(TRANSFORMER_FIXED_EMBEDDING, 'transformer_fixed', True, 'doc'),
+#               FieldFeatureMapping(TRANSFORMER_TRAINABLE_EMBEDDING, 'transformer_trainable', True, 'doc'),
+#               FieldFeatureMapping(STATS_ATTRIBUTE, 'stats', False, 'doc'),
+#               FieldFeatureMapping(ENUMS_ATTRIBUTE, 'enum', True, 'doc'),
+#               FieldFeatureMapping(COUNTS_ATTRIBUTE, 'count', True, 'doc'),
+#               FieldFeatureMapping(DEPENDENCIES_ATTRIBUTE, 'dep', True, 'doc'),
+#               FieldFeatureMapping(ENUM_EXPANDER_ATTRIBUTE, 'transformer_enum_expander', True, 'doc'),
+#               FieldFeatureMapping(DEPENDENCY_EXPANDER_ATTRIBTE, 'transformer_dep_expander', True, 'doc'),
+#               ))])
 
-    def _get_batch_feature_mappings(self) -> BatchFeatureMapping:
-        return self.MAPPINGS
+#     def _get_batch_feature_mappings(self) -> BatchFeatureMapping:
+#         return self.MAPPINGS
