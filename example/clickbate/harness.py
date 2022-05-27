@@ -18,7 +18,7 @@ def create_harness(*args, **kwargs):
         *args,
         src_dir_name='cb',
         proto_args='debug',
-        proto_factory_kwargs={'reload_pattern': '^cb'},
+        proto_factory_kwargs={'reload_pattern': '^corpus'},
         **kwargs
     )
 

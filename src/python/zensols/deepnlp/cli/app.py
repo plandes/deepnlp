@@ -48,7 +48,7 @@ class NLPFacadeModelApplication(FacadeApplication):
 
 class NLPClassifyFacadeModelApplication(NLPFacadeModelApplication):
     def predict_text(self, text_input: str, verbose: bool = False):
-        """Classify ad-hoc text and output the results..
+        """Classify ad-hoc text and output the results.
 
         :param text_input: the sentence to classify or standard in if not given
 
@@ -72,7 +72,7 @@ class NLPSequenceClassifyFacadeModelApplication(NLPFacadeModelApplication):
 
     """
     def predict_text(self, text_input: str, verbose: bool = False):
-        """Classify ad-hoc text and output the results..
+        """Classify ad-hoc text and output the results.
 
         :param text_input: the sentence to classify or standard in if not given
 
