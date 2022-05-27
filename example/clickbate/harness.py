@@ -3,26 +3,11 @@
 from zensols.cli import ConfigurationImporterCliHarness
 
 
-def init():
-    # reset random state for consistency before any other packages are
-    # imported
-    from zensols.deeplearn import TorchConfig
-    TorchConfig.init()
+if (__name__ == '__main__'):
     # initialize the NLP system
     from zensols import deepnlp
     deepnlp.init()
-
-
-def create_harness(*args, **kwargs):
-    return ConfigurationImporterCliHarness(
-        *args,
-        src_dir_name='cb',
+    ConfigurationImporterCliHarness(
         proto_args='debug',
         proto_factory_kwargs={'reload_pattern': '^corpus'},
-        **kwargs
-    )
-
-
-if (__name__ == '__main__'):
-    init()
-    create_harness().run()
+    ).run()
