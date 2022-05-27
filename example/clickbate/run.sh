@@ -11,7 +11,7 @@ usage() {
     # usage doc
     echo -e "usage:
 $0 batch
-$0 <traintest|predict> [glove50|glove300|fasttext|bert]
+$0 <traintest|predict> [glove50|glove300|fasttext]
 $0 stop
 $0 clean [--all]"
 }
@@ -31,18 +31,11 @@ modelparams() {
     case $1 in
 	'') ;;
 	glove50|'') mname=glove_50;;
-	glove300) mname=glove_300;;
 	fasttext) mname=fasttext_news_300;;
-	bert)
-	    conf=models/transformer.conf
-	    ;;
 	*)
-	    echo "unkown model: $1"
+	    echo "$0: unkown model: $1"
 	    exit 1
     esac
-    if [ ! -z "$conf" ] ; then
-	conf="--config $conf"
-    fi
     if [ ! -z "$mname" ] ; then
 	override="--override mr_default.name=$mname"
     fi

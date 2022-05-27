@@ -42,13 +42,11 @@ class LanguageModelFacadeConfig(object):
     ``language_feature_manager``.
 
     """
-
     attribs: Set[str] = field()
     """The language attributes (all levels: token, document etc), such as
     ``enum``, ``count``, ``dep`` etc.
 
     """
-
     embedding_attribs: Set[str] = field()
     """All embedding attributes using in the configuration, such as
     ``glove_50_embedding``, ``word2vec_300``, ``bert_embedding``, etc.
@@ -158,7 +156,9 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
             self.clear()
 
     def _get_default_token_length(self, embedding: str) -> int:
-        return self.config.get_option_int('token_length', 'language_defaults')
+        lvm: FeatureVectorizerManager = self.language_vectorizer_manager
+        #return self.config.get_option_int('token_length', 'language_defaults')
+        return lvm.token_length
 
     @property
     def embedding(self) -> str:
