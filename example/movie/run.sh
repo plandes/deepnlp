@@ -11,7 +11,7 @@ usage() {
     # usage doc
     echo -e "usage:
 $0 batch
-$0 <traintest|predict> [glove50|glove300|fasttext|bert]
+$0 <traintest|predict> [glove|word2vec|fasttext|bert]
 $0 stop
 $0 clean [--all]"
 }
@@ -30,8 +30,8 @@ modelparams() {
     model=$1
     case $1 in
 	'') ;;
-	glove50) mname=glove_50;;
-	glove300) mname=glove_300;;
+	glove) mname=glove_50;;
+	word2vec) mname=word2vec_300;;
 	fasttext) mname=fasttext_news_300;;
 	bert)
 	    conf=models/transformer-trainable.conf
