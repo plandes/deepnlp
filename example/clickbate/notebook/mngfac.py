@@ -6,6 +6,9 @@ from pathlib import Path
 
 
 class JupyterManagerFactory(object):
+    """Bootstrap and import libraries to automate notebook testing.
+
+    """
     def __init__(self, app_root_dir: Path = Path('..')):
         """Set up the interpreter environment so we can import local packages.
 
@@ -18,6 +21,7 @@ class JupyterManagerFactory(object):
         self._harness = ConfigurationImporterCliHarness(root_dir=app_root_dir)
 
     def __call__(self):
+        """Create a new ``JupyterManager`` instance and return it."""
         from zensols.deeplearn.cli import JupyterManager
 
         def map_args(embedding: str = None):
@@ -26,6 +30,5 @@ class JupyterManagerFactory(object):
                 args.extend(['--override', f'cb_default.name={embedding}'])
             return args
 
-        mng = JupyterManager(self._harness, cli_args_fn=map_args,
-                             reduce_logging=True)
-        return mng
+        return JupyterManager(self._harness, cli_args_fn=map_args,
+                              reduce_logging=True)
