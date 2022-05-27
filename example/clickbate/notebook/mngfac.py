@@ -20,7 +20,7 @@ class JupyterManagerFactory(object):
     def __call__(self):
         from zensols.deeplearn.cli import JupyterManager
 
-        def map_args(model: str = None, embedding: str = None):
+        def map_args(embedding: str = None):
             args = []
             if embedding is not None:
                 args.extend(['--override', f'cb_default.name={embedding}'])
