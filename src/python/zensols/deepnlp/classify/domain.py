@@ -38,10 +38,11 @@ class LabeledFeatureDocument(FeatureDocument):
     """
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
         super().write(depth, writer)
+        sl = self.softmax_logit
+        sm = sl[self.pred] if sl is not None else ''
         self._write_line(f'label: {self.label}', depth + 1, writer)
         self._write_line(f'prediction: {self.pred}', depth + 1, writer)
-        self._write_line(f'softmax logits: {self.softmax_logit[self.pred]}',
-                         depth + 1, writer)
+        self._write_line(f'softmax logits: {sm}', depth + 1, writer)
 
     def __str__(self) -> str:
         lab = '' if self.label is None else f'label: {self.label}'
