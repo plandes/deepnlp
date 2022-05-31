@@ -8,7 +8,7 @@ feature_resource:
 
 ## Feature creation
 #
-# massages the CSV in to a usable dataframe (only code in this project)
+# massages the CSV into a usable dataframe (only code in this project)
 dataframe_stash:
   class_name: sp.SouthParkDataframeStash
   characters: 'list: stan, kyle, cartman'
@@ -17,10 +17,6 @@ dataframe_stash:
 feature_factory_stash:
   text_column: 'line'
   additional_columns: 'list: character'
-
-feature_split_key_container:
-  partition_attr: label
-  stratified_write: true
 
 
 ## Batch
@@ -31,7 +27,7 @@ batch_stash:
   decoded_attributes: 'set: label, ${sp_default:lang_features} ${sp_default:embedding}'
   workers: -2
 
-# batch mappings
+# batch mappings from attribute to feature IDs and which to use from resource libs
 sp_batch_mappings:
   batch_feature_mapping_adds:
     - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): classify_label_batch_mappings'

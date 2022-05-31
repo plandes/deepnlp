@@ -1,5 +1,0 @@
-cb_batch_mappings:
-  batch_feature_mapping_adds:
-    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): classify_label_batch_mappings'
-    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): lang_batch_mappings'
-  field_keep: [label, enums, dependencies, glove_50_embedding, fasttext_news_300_embedding]

@@ -1,0 +1,83 @@
+## Install the corpus
+#
+# declare resources to be downloaded
+cb_data_resource:
+  class_name: zensols.install.Resource
+  url: 'https://github.com/bhargaviparanjape/clickbait/raw/master/dataset/clickbait_data.gz'
+
+non_cb_data_resource:
+  class_name: zensols.install.Resource
+  url: 'https://github.com/bhargaviparanjape/clickbait/raw/master/dataset/non_clickbait_data.gz'
+
+# the installer downloads and uncompresses the files
+feature_installer:
+  resources: 'instance: list: cb_data_resource, non_cb_data_resource'
+
+
+## feature creation
+#
+# massages the corpora into a usable dataframe (only code in this project)
+dataframe_stash:
+  class_name: cb.ClickbateDataframeStash
+  cb_data_resource: 'instance: cb_data_resource'
+  non_cb_data_resource: 'instance: non_cb_data_resource'
+
+# the stash of extracted language features in child processes for SpaCy parsing
+feature_factory_stash:
+  text_column: 'sent'
+  additional_columns: 'list: label'
+
+
+## Batch
+#
+# map feature attributes (sections) to feature IDs to connect features to vectorizers
+batch_stash:
+  batch_feature_mappings: 'dataclass(zensols.deeplearn.batch.ConfigBatchFeatureMapping): cb_batch_mappings'
+  decoded_attributes: 'set: label, ${cb_default:lang_features} ${cb_default:embedding}'
+  workers: -2
+
+# batch mappings from attribute to feature IDs and which to use from resource libs
+cb_batch_mappings:
+  batch_feature_mapping_adds:
+    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): classify_label_batch_mappings'
+    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): lang_batch_mappings'
+  field_keep: [label, enums, dependencies, glove_50_embedding, fasttext_news_300_embedding]
+
+
+## Natural language parsing
+#
+# override for creating instances of a class that have an attribute for the
+# label of the text classification
+doc_parser:
+  doc_class: 'class: zensols.deepnlp.classify.LabeledFeatureDocument'
+  # override to use the component
+  components: 'instance: list: remove_sent_boundaries_component'
+
+# override to provide the labels to vectorize
+classify_label_vectorizer:
+  categories: 'list: y, n'
+
+
+## Model
+#
+# let our decoder (last fully connected feed forward network) the output
+# dimension as the number of labels to classify
+linear_settings:
+  out_features: "eval: '${classify_label_vectorizer:categories}'.count(',') + 1"
+
+# tell the model to use a feature prediction mapper for our classification
+model_settings:
+  model_name: ${cb_default:name}
+  learning_rate: 0.001
+  epochs: 50
+  prediction_mapper_name: classify_feature_prediction_mapper
+
+# overrides for classification LSTM network
+classify_net_settings:
+  embedding_layer: 'instance: ${cb_default:embedding}_layer'
+  recurrent_settings: 'instance: recurrent_settings'
+  dropout: 0.2
+
+# tell the model automation API which model to use
+executor:
+  net_settings: 'instance: classify_net_settings'
