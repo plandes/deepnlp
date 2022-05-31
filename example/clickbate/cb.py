@@ -8,13 +8,15 @@ import logging
 from pathlib import Path
 import pandas as pd
 from zensols.install import Installer, Resource
-from zensols.dataframe import AutoSplitDataframeStash
+from zensols.dataframe import ResourceFeatureDataframeStash
 
 logger = logging.getLogger(__name__)
 
+logger.debug('HERE')
+
 
 @dataclass
-class ClickbateDataframeStash(AutoSplitDataframeStash):
+class ClickbateDataframeStash(ResourceFeatureDataframeStash):
     """Create the dataframe by reading the newline delimited set of clickbate
     headlines from the corpus files.
 

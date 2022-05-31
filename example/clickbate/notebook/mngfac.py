@@ -1,5 +1,7 @@
 """Environemnt configuration and set up: add this (deepnlp) library to the
-Python path and framework entry point."""
+Python path and framework entry point.
+
+"""
 __author__ = 'Paul Landes'
 
 from pathlib import Path
