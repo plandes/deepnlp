@@ -32,7 +32,7 @@ sp_batch_mappings:
   batch_feature_mapping_adds:
     - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): classify_label_batch_mappings'
     - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): lang_batch_mappings'
-  field_keep: [label, enums, dependencies, stats, counts, glove_50_embedding]
+  field_keep: [label, enums, dependencies, stats, counts, glove_50_embedding, transformer_trainable_embedding]
 
 
 ## Natural language parsing
@@ -49,6 +49,10 @@ classify_label_vectorizer:
 
 ## Model
 #
+# tell the model automation API which model to use
+executor:
+  net_settings: 'instance: classify_net_settings'
+
 # last dense network has an output dimension as number of labels
 linear_settings:
   out_features: "eval: '${dataframe_stash:characters}'.count(',') + 1"
@@ -61,12 +65,22 @@ model_settings:
   prediction_mapper_name: classify_feature_prediction_mapper
 
 # overrides for classification LSTM network
-classify_net_settings:
-  embedding_layer: 'instance: ${sp_default:embedding}_layer'
-  recurrent_settings: 'instance: recurrent_settings'
-  # set the dropout for the classification network propogates to sub networks
-  dropout: 0.1
+condition:
+  if: "eval: '${sp_default:name}' == 'transformer'"
+  then:
+    classify_net_settings:
+      embedding_layer: 'instance: ${sp_default:embedding}_layer'
+      # set the dropout for the classification network propogates to sub networks
+      dropout: 0.1
+  else:
+    classify_net_settings:
+      embedding_layer: 'instance: ${sp_default:embedding}_layer'
+      recurrent_settings: 'instance: recurrent_settings'
+      # set the dropout for the classification network propogates to sub networks
+      dropout: 0.1
 
-# tell the model automation API which model to use
-executor:
-  net_settings: 'instance: classify_net_settings'
+transformer_trainable_resource:
+  args:
+    local_files_only: true
+
+
