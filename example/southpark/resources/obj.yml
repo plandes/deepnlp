@@ -24,7 +24,12 @@ feature_factory_stash:
 # map feature attributes (sections) to feature IDs to connect features to vectorizers
 batch_stash:
   batch_feature_mappings: 'dataclass(zensols.deeplearn.batch.ConfigBatchFeatureMapping): sp_batch_mappings'
-  decoded_attributes: 'set: label, ${sp_default:lang_features} ${sp_default:embedding}'
+  condition:
+    if: "eval: '${sp_default:name}'.startswith('transformer')"
+    then:
+      decoded_attributes: 'set: label, ${sp_default:embedding}'
+    else:
+      decoded_attributes: 'set: label, ${sp_default:lang_features} ${sp_default:embedding}'
   workers: -2
 
 # batch mappings from attribute to feature IDs and which to use from resource libs
@@ -58,26 +63,36 @@ linear_settings:
   out_features: "eval: '${dataframe_stash:characters}'.count(',') + 1"
 
 # tell the model to use a feature prediction mapper for our classification
-model_settings:
-  model_name: '${sp_default:name}'
-  learning_rate: 0.01
-  epochs: 20
-  prediction_mapper_name: classify_feature_prediction_mapper
+0.condition:
+  if: "eval: '${sp_default:name}'.startswith('transformer')"
+  then:
+    model_settings:
+      model_name: 'transformer: ${transformer_trainable_resource:model_id}'
+      learning_rate: 0.1
+      epochs: 6
+      prediction_mapper_name: classify_feature_prediction_mapper
+  else:
+    model_settings:
+      model_name: '${sp_default:name}'
+      learning_rate: 0.01
+      epochs: 20
+      prediction_mapper_name: classify_feature_prediction_mapper
 
 # overrides for classification LSTM network
-condition:
-  if: "eval: '${sp_default:name}' == 'transformer'"
+1.condition:
+  if: "eval: '${sp_default:name}'.startswith('transformer')"
   then:
     classify_net_settings:
       embedding_layer: 'instance: ${sp_default:embedding}_layer'
-      # set the dropout for the classification network propogates to sub networks
       dropout: 0.1
   else:
     classify_net_settings:
       embedding_layer: 'instance: ${sp_default:embedding}_layer'
       recurrent_settings: 'instance: recurrent_settings'
-      # set the dropout for the classification network propogates to sub networks
       dropout: 0.1
+
+2.condition:
+
 
 transformer_trainable_resource:
   args:
