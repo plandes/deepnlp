@@ -31,7 +31,9 @@ batch_stash:
       decoded_attributes: 'set: label, ${sp_default:embedding}'
     else:
       decoded_attributes: 'set: label, ${sp_default:lang_features} ${sp_default:embedding}'
+  # use all but two cores
   workers: -2
+  batch_size: 30
 
 # batch mappings from attribute to feature IDs and which to use from resource
 # libs
@@ -64,22 +66,6 @@ executor:
 linear_settings:
   out_features: "eval: '${dataframe_stash:characters}'.count(',') + 1"
 
-# tell the model to use a feature prediction mapper for our classification
-0.condition:
-  if: "eval: '${sp_default:name}'.startswith('transformer')"
-  then:
-    model_settings:
-      model_name: 'transformer: ${transformer_trainable_resource:model_id}'
-      learning_rate: 0.1
-      epochs: 6
-      prediction_mapper_name: classify_feature_prediction_mapper
-  else:
-    model_settings:
-      model_name: '${sp_default:name}'
-      learning_rate: 0.01
-      epochs: 20
-      prediction_mapper_name: classify_feature_prediction_mapper
-
 # overrides for classification LSTM network
 1.condition:
   if: "eval: '${sp_default:name}'.startswith('transformer')"
@@ -92,3 +78,24 @@ linear_settings:
       embedding_layer: 'instance: ${sp_default:embedding}_layer'
       recurrent_settings: 'instance: recurrent_settings'
       dropout: 0.1
+
+# tell the model to use a feature prediction mapper for our classification
+2.condition:
+  if: "eval: '${sp_default:name}'.startswith('transformer')"
+  then:
+    model_settings:
+      model_name: 'transformer: ${transformer_trainable_resource:model_id}'
+      learning_rate: 1e-6
+      epochs: 10
+      optimizer_class_name: zensols.deepnlp.transformer.TransformerAdamFactory
+      optimizer_params:
+        weight_decay: 0.01
+      scheduler_params:
+        patience: 4
+      prediction_mapper_name: classify_feature_prediction_mapper
+  else:
+    model_settings:
+      model_name: southpark: '${sp_default:name}'
+      learning_rate: 0.01
+      epochs: 20
+      prediction_mapper_name: classify_feature_prediction_mapper
