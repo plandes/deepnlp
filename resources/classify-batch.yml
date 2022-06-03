@@ -1,8 +1,3 @@
-class_batch_default:
-  sections:
-    - classify_label_batch_mappings
-    - classify_batch_mappings
-
 classify_label_batch_mappings:
   label_attribute_name: label
   manager_mappings:
