@@ -43,7 +43,7 @@ class NERDataPoint(FeatureSentenceDataPoint):
         self.sent = TokenAnnotatedFeatureSentence(
             sent_tokens=self.sent.sent_tokens,
             text=self.sent.text,
-            annotations=self.ents)
+            annotations=self.tok_labels)
         if self.is_pred:
             self._map_syn(self.sent)
             self._map_tag(self.sent)
@@ -82,8 +82,8 @@ class NERDataPoint(FeatureSentenceDataPoint):
                 t.tag_ = ','
 
     @property
-    @persisted('_ents', transient=True)
-    def ents(self) -> Tuple[str]:
+    @persisted('_tok_labels', transient=True)
+    def tok_labels(self) -> Tuple[str]:
         """The label: the fourth the named entity tag."""
         if self.is_pred:
             return tuple([None] * len(self.sent))

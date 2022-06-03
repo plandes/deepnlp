@@ -35,7 +35,7 @@ feature_factory_stash:
   key_path: 'path: ${default:data_dir}/feature/split-keys'
   pattern: '{name}.dat'
   installer: 'instance: feature_installer'
-#  dataset_limit: 50
+#  dataset_limit: 10
 
 # a stash that splits along dataset type (i.e. train, validation, test)
 feature_stash:
@@ -50,20 +50,39 @@ feature_stats:
   stash: 'instance: feature_stash'
   path: 'path: ${default:data_dir}/feature/stats.dat'
 
+
+## Language parsing
+#
+# language resource, which loads the SpacCy model and token normalizers
+filter_token_mapper:
+  remove_space: True
+
+map_filter_token_normalizer:
+  embed_entities: False
+
+# creates features from documents by invoking by using SpaCy to parse the text
+doc_parser:
+  # remove empty sentences or sentences with only whitespace
+  remove_empty_sentences: True
+  # indicate which features to keep after the parsing
+  token_feature_ids: 'set: sent_i, tag, tag_, idx'
+
+
 ## Vectorizers
 #
 conll_label_batch_mappings:
   manager_mappings:
     - vectorizer_manager_name: ner_label_vectorizer_manager
       fields:
-        - attr: ents
-          feature_id: entlabel
+        - attr: tok_labels
+          feature_id: tclabel
           is_agg: true
           is_label: True
-        - attr: mask
-          feature_id: mask
+        - attr: tok_mask
+          feature_id: tmask
           is_agg: true
-          attr_access: ents
+          attr_access: tok_labels
+
 conll_lang_batch_mappings:
   manager_mappings:
     - vectorizer_manager_name: language_feature_manager
@@ -76,26 +95,12 @@ conll_lang_batch_mappings:
           feature_id: syn
           is_agg: true
           attr_access: doc
+
 vectorizer_manager_set:
   names:
     - language_feature_manager
     - ner_label_vectorizer_manager
 
-
-# batch mappings from attribute to feature IDs and which to use from resource
-# libs
-ner_batch_mappings:
-  label_attribute_name: ents
-  batch_feature_mapping_adds:
-    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): conll_label_batch_mappings'
-    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): conll_lang_batch_mappings'
-    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): lang_batch_mappings'
-  field_keep:
-    - ents
-    - mask
-    - tags
-    - syns
-    - glove_50_embedding
 
 ## Batch
 #
@@ -105,7 +110,7 @@ batch_dir_stash:
   groups:
     # there will be N (batch_stash:batch_size) batch labels in one file in a
     # directory of just label files
-    - [ents, mask]
+    - [tok_labels, tok_mask]
     - [syns, tags]
     # we might want to switch between embeddings, separate them
     - [glove_50_embedding]
@@ -114,19 +119,46 @@ batch_dir_stash:
     - [tags_expander, syns_expander]
     - [ents_trans, transformer_trainable_embedding]
 
+# batch mappings from attribute to feature IDs and which to use from resource
+# libs
+ner_batch_mappings:
+  label_attribute_name: tok_labels
+  batch_feature_mapping_adds:
+    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): conll_label_batch_mappings'
+    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): conll_lang_batch_mappings'
+    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): lang_batch_mappings'
+  field_keep:
+    - tok_labels
+    - tok_mask
+    - tags
+    - syns
+    - glove_50_embedding
+
 # map feature attributes (sections) to feature IDs to connect features to
 # vectorizers
 batch_stash:
   batch_feature_mappings: 'dataclass(zensols.deeplearn.batch.ConfigBatchFeatureMapping): ner_batch_mappings'
   # the class that contains the feature data, one for each data instance
   data_point_type: "eval({'import': ['ner']}): ner.NERDataPoint"
-  #decoded_attributes: 'set: ents, mask, tags, syns, ${ner_default:embedding}'
-  decoded_attributes: 'set: ents, mask, syns, ${ner_default:embedding}'
+  decoded_attributes: 'set: tok_labels, tok_mask, syns, ${ner_default:embedding}'
   # use only two cores
   workers: -2
   batch_size: 32
 
 
+## Model
+#
+executor:
+  # the datasets by name found in `dataset_stash`
+  # *Important:* order must be: training, validation/development, test
+  dataset_split_names: [train, dev, test]
+  # configures the neural network
+  net_settings: 'instance: recurrent_crf_net_settings'
+
 # declare the ModelFacade to use for the application
 facade:
   class_name: zensols.deepnlp.classify.ClassifyModelFacade
+
+model_settings:
+  learning_rate: 0.001
+  epochs: 35

@@ -11,7 +11,6 @@ import sys
 import random
 import re
 import collections
-import itertools as it
 from io import TextIOBase
 from zensols.util import time
 from zensols.persist import (
