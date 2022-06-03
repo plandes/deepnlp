@@ -1,0 +1,128 @@
+## Resource library defaults
+#
+deeplearn_default:
+  model_name: '${mr_default:embedding}'
+
+
+## Install the corpus: declare resources to be downloaded
+#
+# stanford corpus resource
+mr_standford_resource:
+  class_name: zensols.install.Resource
+  url: 'https://nlp.stanford.edu/~socherr/stanfordSentimentTreebank.zip'
+  name: stanfordSentimentTreebank
+  clean_up: false
+
+# polarity labels resource
+mr_cornell_resource:
+  class_name: zensols.install.Resource
+  url: 'https://www.cs.cornell.edu/people/pabo/movie-review-data/rt-polaritydata.tar.gz'
+  name: rt-polaritydata
+  clean_up: false
+
+# the installer downloads and uncompresses the files
+feature_installer:
+  resources: 'instance: list: mr_standford_resource, mr_cornell_resource'
+
+
+## Project specific corpus
+#
+# configuration needed to create the corpus and a Pandas dataframe used by the
+# framework
+dataset_factory:
+  class_name: mr.DatasetFactory
+  installer: 'instance: feature_installer'
+  # stanford corpus resource
+  standford_resource: 'instance: mr_standford_resource'
+  # polarity labels resource
+  cornell_resource: 'instance: mr_cornell_resource'
+  # path to input dataset CSV corpus files
+  dataset_path: 'path: ${deepnlp_default:corpus_dir}/dataset'
+  # total number of tokens for each sentence key
+  tok_len: 10
+
+
+## Feature stashes
+#
+# a stash of rows from a Pandas dataset for each movie review
+dataframe_stash:
+  class_name: mr.MovieReviewRowStash
+  dataset_factory: 'instance: dataset_factory'
+  resource: None
+
+feature_factory_stash:
+  class_name: mr.MovieReviewFeatureStash
+
+# create stratified datasets along the label
+feature_split_key_container:
+  partition_attr: polarity
+
+
+## Vectorization
+#
+# override to provide the labels to vectorize
+classify_label_vectorizer:
+  categories: "list: n, p"
+
+# maintains a collection of all vectorizers for the framework
+vectorizer_manager_set:
+  names: 'list: language_feature_manager, transformer_expander_feature_manager, classify_label_vectorizer_manager'
+
+
+## Batch
+#
+batch_stash:
+  data_point_type: "eval({'import': ['mr']}): mr.MovieReviewDataPoint"
+  # map feature attributes (sections) to feature IDs to connect features to vectorizers
+  batch_feature_mappings: 'dataclass(zensols.deeplearn.batch.ConfigBatchFeatureMapping): mr_batch_mappings'
+  decoded_attributes: 'set: label, ${mr_default:lang_features} ${mr_default:embedding}'
+  workers: 2
+
+mr_batch_mappings:
+  batch_feature_mapping_adds:
+    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): classify_label_batch_mappings'
+    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): lang_batch_mappings'
+    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): transformer_expander_batch_mapping'
+  field_keep:
+    - label
+    - enums
+    - dependencies
+    - glove_50_embedding
+    - word2vec_300_embedding
+    - transformer_trainable_embedding
+    - transformer_fixed_embedding
+    - transformer_enum_expander
+    - transformer_dep_expander
+
+
+## Model
+#
+# let our decoder (last fully connected feed forward network) the output
+# dimension as the number of labels to classify
+linear_settings:
+  out_features: "eval: '${classify_label_vectorizer:categories}'.count(',') + 1"
+
+# declare (override) the ModelFacade to use for the application
+facade:
+  class_name: zensols.deepnlp.classify.ClassifyModelFacade
+
+# tell the model to use a feature prediction mapper for our classification
+model_settings:
+  prediction_mapper_name: classify_feature_prediction_mapper
+
+# set the dropout for the classification network, which propogates down to the
+# sub/owned networks
+classify_net_settings:
+  dropout: 0.2
+
+# tell the model automation API which model to use
+executor:
+  net_settings: 'instance: classify_net_settings'
+
+
+## Prediction mapper
+#
+# create data points from the client
+classify_feature_prediction_mapper:
+  pred_attribute: polarity
+  softmax_logit_attribute: confidence
