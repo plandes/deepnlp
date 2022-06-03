@@ -26,7 +26,7 @@ class App(object):
     def proto(self):
         "Test"
         import itertools as it
-        if 0:
+        if 1:
             self._clean()
         o = self._inst('dataset_stash')
         o.write()
