@@ -95,7 +95,7 @@ linear_settings:
       prediction_mapper_name: classify_feature_prediction_mapper
   else:
     model_settings:
-      model_name: southpark: '${sp_default:name}'
+      model_name: 'southpark: ${sp_default:name}'
       learning_rate: 0.01
       epochs: 20
       prediction_mapper_name: classify_feature_prediction_mapper

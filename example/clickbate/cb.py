@@ -3,6 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
+from typing import Tuple
 from dataclasses import dataclass, field
 import logging
 from pathlib import Path
@@ -11,8 +12,6 @@ from zensols.install import Installer, Resource
 from zensols.dataframe import ResourceFeatureDataframeStash
 
 logger = logging.getLogger(__name__)
-
-logger.debug('HERE')
 
 
 @dataclass
@@ -23,8 +22,8 @@ class ClickbateDataframeStash(ResourceFeatureDataframeStash):
     """
     installer: Installer = field()
     """The installer used to download and uncompress the clickbate headlines.
-    """
 
+    """
     cb_data_resource: Resource = field()
     """Use to resolve the file that has the the positive clickbate headlines.
 
@@ -33,6 +32,8 @@ class ClickbateDataframeStash(ResourceFeatureDataframeStash):
     """Use to resolve the file that has the the negative clickbate headlines.
 
     """
+    labels: Tuple[str] = field()
+
     def _parse_corpus(self, path: Path, label: bool) -> pd.DataFrame:
         """Parse the corpus file identified and give it a label.
 
@@ -52,8 +53,9 @@ class ClickbateDataframeStash(ResourceFeatureDataframeStash):
         self.installer()
         cb_path: Path = self.installer[self.cb_data_resource]
         non_cb_path: Path = self.installer[self.non_cb_data_resource]
+        cb_lab, non_cb_lab = self.labels
         # the "right" way to do this would be to also stratify across labels,
         # but this a simple example
-        return pd.concat([self._parse_corpus(cb_path, 'y'),
-                          self._parse_corpus(non_cb_path, 'n')],
+        return pd.concat([self._parse_corpus(cb_path, cb_lab),
+                          self._parse_corpus(non_cb_path, non_cb_lab)],
                          ignore_index=True)

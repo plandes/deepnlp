@@ -4,7 +4,6 @@
 cb_data_resource:
   class_name: zensols.install.Resource
   url: 'https://github.com/bhargaviparanjape/clickbait/raw/master/dataset/clickbait_data.gz'
-
 non_cb_data_resource:
   class_name: zensols.install.Resource
   url: 'https://github.com/bhargaviparanjape/clickbait/raw/master/dataset/non_clickbait_data.gz'
@@ -21,6 +20,7 @@ dataframe_stash:
   class_name: cb.ClickbateDataframeStash
   cb_data_resource: 'instance: cb_data_resource'
   non_cb_data_resource: 'instance: non_cb_data_resource'
+  labels: 'list: y, n'
 
 # the stash of extracted language features in child processes for SpaCy parsing
 feature_factory_stash:
@@ -55,22 +55,19 @@ doc_parser:
 
 # override to provide the labels to vectorize
 classify_label_vectorizer:
-  categories: 'list: y, n'
+  categories: ${dataframe_stash:labels}
 
 
 ## Model
 #
+# tell the model automation API which model to use
+executor:
+  net_settings: 'instance: classify_net_settings'
+
 # let our decoder (last fully connected feed forward network) the output
 # dimension as the number of labels to classify
 linear_settings:
-  out_features: "eval: '${classify_label_vectorizer:categories}'.count(',') + 1"
-
-# tell the model to use a feature prediction mapper for our classification
-model_settings:
-  model_name: ${cb_default:name}
-  learning_rate: 0.001
-  epochs: 50
-  prediction_mapper_name: classify_feature_prediction_mapper
+  out_features: "eval: '${dataframe_stash:labels}'.count(',') + 1"
 
 # overrides for classification LSTM network
 classify_net_settings:
@@ -78,6 +75,9 @@ classify_net_settings:
   recurrent_settings: 'instance: recurrent_settings'
   dropout: 0.2
 
-# tell the model automation API which model to use
-executor:
-  net_settings: 'instance: classify_net_settings'
+# tell the model to use a feature prediction mapper for our classification
+model_settings:
+  model_name: 'clickbate: ${cb_default:name}'
+  learning_rate: 1e-3
+  epochs: 50
+  prediction_mapper_name: classify_feature_prediction_mapper
