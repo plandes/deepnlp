@@ -44,7 +44,7 @@ tok_label_vectorizer_manager:
 # add new feature vectorizer managers
 vectorizer_manager_set:
   names:
-    - language_feature_manager
+    - language_vectorizer_manager
     - tok_label_vectorizer_manager
 
 
@@ -69,7 +69,7 @@ recurrent_crf_net_settings:
 # create data points from the client
 feature_prediction_mapper:
   class_name: ner.NERPredictionMapper
-  vec_manager: 'instance: language_feature_manager'
+  vec_manager: 'instance: language_vectorizer_manager'
   label_feature_id: 'tok_label_vectorizer_manager.tclabel1'
 
 # maps BIO labels to NER mentions

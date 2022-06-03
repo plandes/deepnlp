@@ -89,7 +89,7 @@ syn_replace_vectorizer:
   categories: 'eval: (${category_settings:syn})'
   feature_attribute: 'syn_'
 
-language_feature_manager:
+language_vectorizer_manager:
   configured_vectorizers:
     - glove_50_feature_vectorizer
     - glove_300_feature_vectorizer
@@ -103,7 +103,7 @@ language_feature_manager:
 #
 conll_lang_batch_mappings:
   manager_mappings:
-    - vectorizer_manager_name: language_feature_manager
+    - vectorizer_manager_name: language_vectorizer_manager
       fields:
         - attr: tags
           feature_id: tag

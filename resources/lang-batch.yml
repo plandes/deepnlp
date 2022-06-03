@@ -1,6 +1,6 @@
 lang_batch_mappings:
   manager_mappings:
-    - vectorizer_manager_name: language_feature_manager
+    - vectorizer_manager_name: language_vectorizer_manager
       fields:
         - attr: glove_50_embedding
           feature_id: ${glove_50_feature_vectorizer:feature_id}

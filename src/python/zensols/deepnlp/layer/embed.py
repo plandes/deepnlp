@@ -20,6 +20,7 @@ from zensols.deeplearn.batch import (
     BatchFieldMetadata,
     MetadataNetworkSettings,
 )
+from zensols.deepnlp.vectorize import FeatureDocumentVectorizerManager
 from zensols.deepnlp.embed import WordEmbedModel
 from zensols.deepnlp.vectorize import (
     TextFeatureType,
@@ -43,13 +44,13 @@ class EmbeddingLayer(DebugModule, Deallocatable):
     about initialization order.
 
     """
-    def __init__(self, feature_vectorizer: FeatureDocumentVectorizer,
+    def __init__(self, feature_vectorizer_manager: FeatureDocumentVectorizerManager,
                  embedding_dim: int, sub_logger: logging.Logger = None,
                  trainable: bool = False):
         """Initialize.
 
-        :param feature_vectorizer: the feature vectorizer that manages this
-                                   instance
+        :param feature_vectorizer_manager: the feature vectorizer manager that
+                                           manages this instance
 
         :param embedding_dim: the vector dimension of the embedding
 
@@ -58,8 +59,8 @@ class EmbeddingLayer(DebugModule, Deallocatable):
         """
         super().__init__(sub_logger)
         self.embedding_dim = embedding_dim
-        self.token_length = feature_vectorizer.token_length
-        self.torch_config = feature_vectorizer.torch_config
+        self.token_length = feature_vectorizer_manager.token_length
+        self.torch_config = feature_vectorizer_manager.torch_config
         self.trainable = trainable
 
     def deallocate(self):

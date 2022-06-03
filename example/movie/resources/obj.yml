@@ -68,7 +68,7 @@ classify_label_vectorizer:
 # maintains a collection of all vectorizers for the framework
 vectorizer_manager_set:
   names:
-    - language_feature_manager
+    - language_vectorizer_manager
     - transformer_expander_feature_manager
     - classify_label_vectorizer_manager
 

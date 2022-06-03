@@ -39,7 +39,7 @@ class LanguageModelFacadeConfig(object):
     """
     manager_name: str = field()
     """The name of the language based feature vectorizer, such as
-    ``language_feature_manager``.
+    ``language_vectorizer_manager``.
 
     """
     attribs: Set[str] = field()

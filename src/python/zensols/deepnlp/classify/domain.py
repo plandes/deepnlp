@@ -73,7 +73,7 @@ class LabeledBatch(Batch):
     for your custom application.
 
     """
-    LANGUAGE_FEATURE_MANAGER_NAME = 'language_feature_manager'
+    LANGUAGE_FEATURE_MANAGER_NAME = 'language_vectorizer_manager'
     """The configuration section of the definition of the
     :class:`~zensols.deepnlp.vectorize.FeatureDocumentVectorizerManager`.
 

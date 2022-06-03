@@ -28,7 +28,7 @@ config_files = list:
 
 [app]
 class_name = app.Application
-vec_mng = instance: language_feature_manager
+vec_mng = instance: language_vectorizer_manager
 """
 
 
