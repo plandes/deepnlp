@@ -88,9 +88,14 @@ vectorizer_manager_set:
 ner_batch_mappings:
   batch_feature_mapping_adds:
     - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): conll_label_batch_mappings'
+    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): conll_lang_batch_mappings'
     - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): lang_batch_mappings'
-  field_keep: [ents, syns, glove_50_embedding]
-
+  field_keep:
+    - ents
+    - mask
+    - tags
+    - syns
+    - glove_50_embedding
 
 ## Batch
 #
@@ -104,11 +109,10 @@ batch_dir_stash:
     - [syns, tags]
     # we might want to switch between embeddings, separate them
     - [glove_50_embedding]
-    # - [glove_300_embedding]
-    # - [word2vec_300_embedding]
-    # - [tags_expander, syns_expander]
-    # - [ents_trans]
-    # - [transformer_trainable_embedding]
+    - [glove_300_embedding]
+    - [word2vec_300_embedding]
+    - [tags_expander, syns_expander]
+    - [ents_trans, transformer_trainable_embedding]
 
 # map feature attributes (sections) to feature IDs to connect features to
 # vectorizers
@@ -116,10 +120,8 @@ batch_stash:
   batch_feature_mappings: 'dataclass(zensols.deeplearn.batch.ConfigBatchFeatureMapping): ner_batch_mappings'
   # the class that contains the feature data, one for each data instance
   data_point_type: "eval({'import': ['ner']}): ner.NERDataPoint"
-  # the class taht contains the batch data, which will have N instances of
-  # `data_point_type` where N is the `batch_size`
-  #batch_type: "eval({'import': ['ner']}): ner.NERBatch"
-  decoded_attributes: 'set: ents, mask, tags, syns, ${ner_default:lang_features} ${ner_default:embedding}'
+  #decoded_attributes: 'set: ents, mask, tags, syns, ${ner_default:embedding}'
+  decoded_attributes: 'set: ents, mask, syns, ${ner_default:embedding}'
   # use only two cores
   workers: -2
   batch_size: 32

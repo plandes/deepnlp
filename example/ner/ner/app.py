@@ -25,7 +25,10 @@ class App(object):
 
     def proto(self):
         "Test"
+        import itertools as it
         if 0:
             self._clean()
         o = self._inst('dataset_stash')
         o.write()
+        for b in it.islice(o.values(), 2):
+            b.write()
