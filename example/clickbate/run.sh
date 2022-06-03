@@ -21,11 +21,6 @@ prompt() {
     read
 }
 
-batch() {
-    echo "rebatching"
-    $HARNESS batch --clear
-}
-
 modelparams() {
     model=$1
     case $1 in
@@ -37,7 +32,7 @@ modelparams() {
 	    exit 1
     esac
     if [ ! -z "$mname" ] ; then
-	override="--override mr_default.name=$mname"
+	override="--override cb_default.name=$mname"
     fi
     retval="${conf} ${override}"
 }
@@ -66,23 +61,13 @@ New York City reaches $33 million strip search settlement
 }
 
 clean() {
-    prompt "Extremely destruction deletion about to occur, are you sure?"
+    prompt "Destructive deletion about to occur, are you sure?"
     if [ "$1" == "--all" ] ; then
-	for i in corpus data ; do
-	    if [ -d $i ] ; then
-		echo "removing $i..."
-		rm -r $i
-	    fi
-	done
+	level=2
+    else
+	level=1
     fi
-    for i in results data/model ; do
-	if [ -d $i ] ; then
-	    echo "removing $i..."
-	    rm -r $i
-	fi
-    done
-    find . -type d -name __pycache__ -exec rm -fr {} \;
-    rm -f *.log benchmark.conf
+    $HARNESS clean --clevel $level
 }
 
 case $ACTION in
