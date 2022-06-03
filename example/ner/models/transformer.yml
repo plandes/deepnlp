@@ -18,3 +18,36 @@ model_settings:
   scheduler_params:
     name: linear
     num_warmup_steps: 500
+
+trans_decoder_settings:
+  class_name: zensols.deeplearn.layer.DeepLinearNetworkSettings
+  # number deep linear layers configured after the LSTM
+  middle_features: 'eval: ()'
+  # number of output features
+  out_features: ${deepnlp_default:num_labels}
+  # the number of input features to the deep linear layer; set to null since
+  # calculated in the model
+  in_features: None
+  # whether to treat each middle layer as a scalar multiplier of the previous or
+  # to interpret them as a constant number of parameters
+  proportions: True
+  # number of times to repeat the middle layers
+  repeats: 1
+  # drop out used for the middle layers (set by root level settings)
+  dropout: 0.1
+  # activation
+  activation: None
+  # 1d batch normalize
+  batch_norm_d: None
+  batch_norm_features: None
+
+trans_net_settings:
+  class_name: zensols.deepnlp.transformer.TransformerSequenceNetworkSettings
+  # embedding layer used as the input layer
+  embedding_layer: 'instance: ${ner_default:name}_embedding_layer'
+  # dropout used on the output from the embedding layer
+  dropout: 0.1
+  # single fully connected linear decoder layer
+  decoder_settings: 'instance: trans_decoder_settings'
+  # contains the metadata factory helps configure the network (see that configuration)
+  batch_stash: 'instance: batch_stash'

@@ -1,0 +1,3 @@
+# app defaults, used in obj.yml
+ner_default:
+  embedding: ${name}_embedding

@@ -35,7 +35,7 @@ feature_factory_stash:
   key_path: 'path: ${default:data_dir}/feature/split-keys'
   pattern: '{name}.dat'
   installer: 'instance: feature_installer'
-  dataset_limit: 10
+#  dataset_limit: 10
 
 # a stash that splits along dataset type (i.e. train, validation, test)
 feature_stash:
@@ -121,36 +121,6 @@ conll_lang_batch_mappings:
           attr_access: trans_doc
           is_label: true
 
-# condition:
-#   if: "eval: '${ner_default:name}'.startswith('transformer')"
-#   then:
-#     tok_label_batch_mappings:
-#       manager_mappings:
-#         - vectorizer_manager_name: tok_label_vectorizer_manager
-#           fields:
-#             - attr: tok_label_transformer
-#               feature_id: language_vectorizer_manager.tclabel_trans
-#               is_agg: true
-#               attr_access: trans_doc
-#               is_label: true
-#             - attr: tok_mask
-#               feature_id: tmask
-#               is_agg: true
-#               attr_access: tok_labels
-#   else:
-#     tok_label_batch_mappings:
-#       manager_mappings:
-#         - vectorizer_manager_name: tok_label_vectorizer_manager
-#           fields:
-#             - attr: tok_labels
-#               feature_id: tclabel
-#               is_agg: true
-#               is_label: True
-#             - attr: tok_mask
-#               feature_id: tmask
-#               is_agg: true
-#               attr_access: tok_labels
-
 # batch mappings from attribute to feature IDs and which to use from resource
 # libs
 ner_batch_mappings:
@@ -233,39 +203,3 @@ tok_label_transformer_vectorizer:
   embed_model: 'instance: transformer_trainable_embedding'
   encode_transformed: false
   label_all_tokens: true
-
-
-## Transformer model
-#
-trans_decoder_settings:
-  class_name: zensols.deeplearn.layer.DeepLinearNetworkSettings
-  # number deep linear layers configured after the LSTM
-  middle_features: 'eval: ()'
-  # number of output features
-  out_features: ${deepnlp_default:num_labels}
-  # the number of input features to the deep linear layer; set to null since
-  # calculated in the model
-  in_features: None
-  # whether to treat each middle layer as a scalar multiplier of the previous or
-  # to interpret them as a constant number of parameters
-  proportions: True
-  # number of times to repeat the middle layers
-  repeats: 1
-  # drop out used for the middle layers (set by root level settings)
-  dropout: 0.1
-  # activation
-  activation: None
-  # 1d batch normalize
-  batch_norm_d: None
-  batch_norm_features: None
-
-trans_net_settings:
-  class_name: zensols.deepnlp.transformer.TransformerSequenceNetworkSettings
-  # embedding layer used as the input layer
-  embedding_layer: 'instance: ${ner_default:name}_embedding_layer'
-  # dropout used on the output from the embedding layer
-  dropout: 0.1
-  # single fully connected linear decoder layer
-  decoder_settings: 'instance: trans_decoder_settings'
-  # contains the metadata factory helps configure the network (see that configuration)
-  batch_stash: 'instance: batch_stash'
