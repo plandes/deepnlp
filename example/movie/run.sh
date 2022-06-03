@@ -75,23 +75,13 @@ Terrible, aweful, worst movie"
 }
 
 clean() {
-    prompt "Extremely destruction deletion about to occur, are you sure?"
+    prompt "Destructive deletion about to occur, are you sure?"
     if [ "$1" == "--all" ] ; then
-	for i in corpus data ; do
-	    if [ -d $i ] ; then
-		echo "removing $i..."
-		rm -r $i
-	    fi
-	done
+	level=2
+    else
+	level=1
     fi
-    for i in results data/model ; do
-	if [ -d $i ] ; then
-	    echo "removing $i..."
-	    rm -r $i
-	fi
-    done
-    find . -type d -name __pycache__ -exec rm -fr {} \;
-    rm -f *.log
+    $HARNESS clean --clevel $level
 }
 
 case $ACTION in
