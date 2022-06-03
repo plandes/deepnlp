@@ -68,21 +68,39 @@ doc_parser:
   token_feature_ids: 'set: sent_i, tag, tag_, idx'
 
 
-## Vectorizers
+# Vectorization
 #
-conll_label_batch_mappings:
-  manager_mappings:
-    - vectorizer_manager_name: ner_label_vectorizer_manager
-      fields:
-        - attr: tok_labels
-          feature_id: tclabel
-          is_agg: true
-          is_label: True
-        - attr: tok_mask
-          feature_id: tmask
-          is_agg: true
-          attr_access: tok_labels
+tok_label_1_vectorizer:
+  categories: 'eval: (${category_settings:ent})'
 
+tag_replace_vectorizer:
+  class_name: 'zensols.deepnlp.vectorize.OneHotEncodedFeatureDocumentVectorizer'
+  feature_id: 'tag'
+  encode_transformed: 'False'
+  optimize_bools: 'True'
+  categories: 'eval: (${category_settings:tag})'
+  feature_attribute: 'tag_'
+
+syn_replace_vectorizer:
+  class_name: 'zensols.deepnlp.vectorize.OneHotEncodedFeatureDocumentVectorizer'
+  feature_id: 'syn'
+  encode_transformed: 'False'
+  optimize_bools: 'True'
+  categories: 'eval: (${category_settings:syn})'
+  feature_attribute: 'syn_'
+
+language_feature_manager:
+  configured_vectorizers:
+    - glove_50_feature_vectorizer
+    - glove_300_feature_vectorizer
+    - word2vec_300_feature_vectorizer
+    - transformer_trainable_feature_vectorizer
+    - tag_replace_vectorizer
+    - syn_replace_vectorizer
+
+
+## Batch
+#
 conll_lang_batch_mappings:
   manager_mappings:
     - vectorizer_manager_name: language_feature_manager
@@ -96,14 +114,24 @@ conll_lang_batch_mappings:
           is_agg: true
           attr_access: doc
 
-vectorizer_manager_set:
-  names:
-    - language_feature_manager
-    - ner_label_vectorizer_manager
+# batch mappings from attribute to feature IDs and which to use from resource
+# libs
+ner_batch_mappings:
+  label_attribute_name: tok_labels
+  batch_feature_mapping_adds:
+    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): tok_label_batch_mappings'
+    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): conll_lang_batch_mappings'
+    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): lang_batch_mappings'
+  field_keep:
+    - tok_labels
+    - tok_mask
+    - tags
+    - syns
+    - glove_50_embedding
+#    - glove_300_embedding
+#    - word2vec_300_embedding
+#    - transformer_trainable_embedding
 
-
-## Batch
-#
 # a stash that groups features across directories, with each directory
 # containing batch files of the respective feature group
 batch_dir_stash:
@@ -118,21 +146,6 @@ batch_dir_stash:
     - [word2vec_300_embedding]
     - [tags_expander, syns_expander]
     - [ents_trans, transformer_trainable_embedding]
-
-# batch mappings from attribute to feature IDs and which to use from resource
-# libs
-ner_batch_mappings:
-  label_attribute_name: tok_labels
-  batch_feature_mapping_adds:
-    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): conll_label_batch_mappings'
-    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): conll_lang_batch_mappings'
-    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): lang_batch_mappings'
-  field_keep:
-    - tok_labels
-    - tok_mask
-    - tags
-    - syns
-    - glove_50_embedding
 
 # map feature attributes (sections) to feature IDs to connect features to
 # vectorizers

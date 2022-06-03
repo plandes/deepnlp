@@ -102,7 +102,7 @@ class NLPClassifyFacadeModelApplication(NLPFacadeModelApplication):
     def predict_text(self, text_input: str, verbose: bool = False):
         """Classify ad-hoc text and output the results.
 
-        :param text_input: the sentence to classify or standard in if not given
+        :param text_input: the sentence to classify or standard in a dash (-)
 
         :param verbose: if given, print the long format version of the document
 
@@ -126,7 +126,7 @@ class NLPSequenceClassifyFacadeModelApplication(NLPFacadeModelApplication):
     def predict_text(self, text_input: str, verbose: bool = False):
         """Classify ad-hoc text and output the results.
 
-        :param text_input: the sentence to classify or standard in if not given
+        :param text_input: the sentence to classify or standard in a dash (-)
 
         :param verbose: if given, print the long format version of the document
 

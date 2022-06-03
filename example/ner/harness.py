@@ -14,7 +14,8 @@ if (__name__ == '__main__'):
         #proto_args='info -i config',
         proto_args={0: 'proto',
                     1: 'info -i config',
-                    2: 'debug'
+                    2: 'stats',
+                    3: 'debug'
                     }[0],
         proto_factory_kwargs={'reload_pattern': '^ner'},
     ).run()
