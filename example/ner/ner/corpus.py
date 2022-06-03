@@ -11,12 +11,14 @@ import sys
 import random
 import re
 import collections
+import itertools as it
 from io import TextIOBase
 from zensols.util import time
 from zensols.persist import (
     OneShotFactoryStash, PersistedWork, persisted, PersistableContainer
 )
 from zensols.config import Dictable
+from zensols.install import Installer, Resource
 from zensols.nlp import FeatureToken, FeatureSentence
 from zensols.dataset import AbstractSplitKeyContainer, DatasetSplitStash
 
@@ -71,19 +73,21 @@ class SentenceFactoryStash(OneShotFactoryStash, AbstractSplitKeyContainer):
     source_path: Path = field(default=None)
     """The path to the corpus input file."""
 
-    corpus_split_names: Tuple[str] = field(default=None)
-    """The names of the splits (i.e. ``train``, ``test``)."""
+    installer: Installer = field(default=None)
+    """The installer used to download and find the corpus."""
 
-    def _read_split(self, split_name: str) -> List[NERFeatureSentence]:
-        path = self.source_path / f'{split_name}.txt'
+    dataset_limit: int = field(default=sys.maxsize)
+    """The maximum number of corpus records to process."""
+
+    def _read_split(self, path: Path) -> List[NERFeatureSentence]:
         logger.info(f'reading {path}')
         toks = []
         sents = []
+        match = self.DOC_START.match
         with open(path) as f:
-            lines = f.readlines()
-            for line in map(lambda s: s.strip(), lines):
-                if self.DOC_START.match(line) is not None:
-                    continue
+            lines = map(lambda s: s.strip(), f.readlines())
+            lines = filter(lambda x: match(x) is None, lines)
+            for line in lines:
                 if len(line) > 0:
                     toks.append(NERFeatureToken(len(toks), *line.split()))
                 else:
@@ -91,6 +95,8 @@ class SentenceFactoryStash(OneShotFactoryStash, AbstractSplitKeyContainer):
                         sent_tokens=tuple(toks), sent_id=len(sents))
                     sents.append(sent)
                     toks.clear()
+                    if len(sents) >= self.dataset_limit:
+                        break
         if len(toks) > 0:
             sent = NERFeatureSentence(
                 sent_tokens=tuple(toks), sent_id=len(sents))
@@ -101,9 +107,12 @@ class SentenceFactoryStash(OneShotFactoryStash, AbstractSplitKeyContainer):
         corp = []
         split_keys = {}
         start = 0
-        for name in self.corpus_split_names:
-            with time('parsed {slen} sentences ' + f'from {name}'):
-                sents: List[NERFeatureSentence] = self._read_split(name)
+        res: Resource
+        for res in self.installer.by_name.values():
+            path: Path = self.installer[res]
+            name: str = path.stem
+            with time('parsed {slen} sentences ' + f'from {res}'):
+                sents: List[NERFeatureSentence] = self._read_split(path)
                 slen = len(sents)
             random.shuffle(sents)
             end = start + len(sents)
@@ -116,6 +125,7 @@ class SentenceFactoryStash(OneShotFactoryStash, AbstractSplitKeyContainer):
         return corp
 
     def prime(self):
+        self.installer()
         super().prime()
         AbstractSplitKeyContainer.prime(self)
 
@@ -125,7 +135,7 @@ class SentenceFactoryStash(OneShotFactoryStash, AbstractSplitKeyContainer):
 
 
 @dataclass
-class SentenceStats(PersistableContainer, Dictable):
+class SentenceStatsCalculator(PersistableContainer, Dictable):
     """Display sentence stats.
 
     """
@@ -135,9 +145,8 @@ class SentenceStats(PersistableContainer, Dictable):
     def __post_init__(self):
         self._data = PersistedWork(self.path, self, mkdir=True)
 
-    @property
     @persisted('_data')
-    def data(self) -> Dict[str, Any]:
+    def _from_dictable(self, *args, **kwargs) -> Dict[str, Any]:
         with time('parsed stats data'):
             tag = collections.defaultdict(lambda: 0)
             syn = collections.defaultdict(lambda: 0)
@@ -151,10 +160,6 @@ class SentenceStats(PersistableContainer, Dictable):
                                  'syn': dict(syn),
                                  'ent': dict(ent)}}
 
-    def asdict(self, recurse: bool = True, readable: bool = True,
-               class_name_param: str = None) -> Dict[str, Any]:
-        return self.data
-
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
         self._write_line('splits:', depth, writer)
         self.stash.write(depth + 1, writer)
@@ -162,7 +167,7 @@ class SentenceStats(PersistableContainer, Dictable):
 
     def write_config_section(self):
         from configparser import ConfigParser
-        dfeats = self.data['features']
+        dfeats = self.asdict()['features']
         feats = {}
         for k, v in dfeats.items():
             vals = map(lambda s: s.replace('$', '$$'), dfeats[k].keys())

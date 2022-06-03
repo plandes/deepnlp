@@ -1,0 +1,125 @@
+## Install the CoNLL-2003 corpus
+#
+# declare resources to be downloaded
+feature_resource_dev:
+  class_name: zensols.install.Resource
+  url: 'https://raw.githubusercontent.com/kyzhouhzau/BERT-NER/master/data/dev.txt'
+  name: None
+feature_resource_test:
+  class_name: zensols.install.Resource
+  url: 'https://raw.githubusercontent.com/kyzhouhzau/BERT-NER/master/data/test.txt'
+  name: None
+feature_resource_train:
+  class_name: zensols.install.Resource
+  url: 'https://raw.githubusercontent.com/kyzhouhzau/BERT-NER/master/data/train.txt'
+  name: None
+
+# the installer downloads and uncompresses the files
+feature_installer:
+  class_name: zensols.install.Installer
+  downloader: 'object: zensols.install.Downloader'
+  base_directory: 'path: ${deepnlp_default:corpus_dir}'
+  resources: 'instance: list: feature_resource_dev, feature_resource_test, feature_resource_train'
+
+
+## Corpus/feature creation
+#
+feature_dir_stash:
+  class_name: zensols.persist.DirectoryStash
+  path: 'path: ${default:data_dir}/feature/parsed'
+
+# creates files of key IDs for each split
+feature_factory_stash:
+  class_name: ner.SentenceFactoryStash
+  delegate: 'instance: feature_dir_stash'
+  key_path: 'path: ${default:data_dir}/feature/split-keys'
+  pattern: '{name}.dat'
+  installer: 'instance: feature_installer'
+  dataset_limit: 50
+
+# a stash that splits along dataset type (i.e. train, validation, test)
+feature_stash:
+  class_name: zensols.dataset.SortedDatasetSplitStash
+  delegate: 'instance: feature_factory_stash'
+  split_container: 'instance: feature_factory_stash'
+  sort_function: 'eval: int'
+
+# provides corpus statistics
+feature_stats:
+  class_name: ner.SentenceStatsCalculator
+  stash: 'instance: feature_stash'
+  path: 'path: ${default:data_dir}/feature/stats.dat'
+
+## Vectorizers
+#
+conll_label_batch_mappings:
+  label_attribute_name: ents
+  manager_mappings:
+    - vectorizer_manager_name: ner_label_vectorizer_manager
+      fields:
+        - attr: ents
+          feature_id: entlabel
+          is_agg: true
+          is_label: True
+        - attr: mask
+          feature_id: mask
+          is_agg: true
+          attr_access: ents
+conll_lang_batch_mappings:
+  manager_mappings:
+    - vectorizer_manager_name: language_feature_manager
+      fields:
+        - attr: tags
+          feature_id: tag
+          is_agg: true
+          attr_access: doc
+        - attr: syns
+          feature_id: syn
+          is_agg: true
+          attr_access: doc
+vectorizer_manager_set:
+  names:
+    - language_feature_manager
+    - ner_label_vectorizer_manager
+
+
+# batch mappings from attribute to feature IDs and which to use from resource
+# libs
+ner_batch_mappings:
+  batch_feature_mapping_adds:
+    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): conll_label_batch_mappings'
+    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): lang_batch_mappings'
+  field_keep: [ents, syns, glove_50_embedding]
+
+
+## Batch
+#
+# a stash that groups features across directories, with each directory
+# containing batch files of the respective feature group
+batch_dir_stash:
+  groups:
+    # there will be N (batch_stash:batch_size) batch labels in one file in a
+    # directory of just label files
+    - [ents, mask]
+    - [syns, tags]
+    # we might want to switch between embeddings, separate them
+    - [glove_50_embedding]
+    # - [glove_300_embedding]
+    # - [word2vec_300_embedding]
+    # - [tags_expander, syns_expander]
+    # - [ents_trans]
+    # - [transformer_trainable_embedding]
+
+# map feature attributes (sections) to feature IDs to connect features to
+# vectorizers
+batch_stash:
+  batch_feature_mappings: 'dataclass(zensols.deeplearn.batch.ConfigBatchFeatureMapping): ner_batch_mappings'
+  # the class that contains the feature data, one for each data instance
+  data_point_type: "eval({'import': ['ner']}): ner.NERDataPoint"
+  # the class taht contains the batch data, which will have N instances of
+  # `data_point_type` where N is the `batch_size`
+  #batch_type: "eval({'import': ['ner']}): ner.NERBatch"
+  decoded_attributes: 'set: ents, mask, tags, syns, ${ner_default:lang_features} ${ner_default:embedding}'
+  # use only two cores
+  workers: -2
+  batch_size: 32

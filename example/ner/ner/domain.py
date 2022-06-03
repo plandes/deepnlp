@@ -5,17 +5,9 @@ __author__ = 'Paul Landes'
 
 from typing import Tuple, Type, Any
 from dataclasses import dataclass, field
-import copy as cp
 from zensols.config import Settings
 from zensols.persist import persisted
-from zensols.deeplearn.batch import (
-    DataPoint,
-    Batch,
-    BatchStash,
-    ManagerFeatureMapping,
-    FieldFeatureMapping,
-    BatchFeatureMapping,
-)
+from zensols.deeplearn.batch import BatchStash, DataPoint
 from zensols.nlp import (
     FeatureSentence, FeatureDocument, TokenAnnotatedFeatureSentence
 )
@@ -82,7 +74,7 @@ class NERDataPoint(FeatureSentenceDataPoint):
     def _map_tag(self, sent: FeatureSentence):
         stash: BatchStash = self.batch_stash
         mng: FeatureVectorizerManager = \
-            stash.vectorizer_manager_set['language_feature_manager']
+            stash.vectorizer_manager_set['language_vectorizer_manager']
         vec: FeatureVectorizer = mng['tag']
         labs = set(vec.label_encoder.classes_)
         for t in sent:
@@ -107,47 +99,3 @@ class NERDataPoint(FeatureSentenceDataPoint):
         if self.is_pred:
             return None
         return self.doc
-
-
-@dataclass
-class NERBatch(Batch):
-    LANGUAGE_FEATURE_MANAGER_NAME = 'language_feature_manager'
-    GLOVE_50_EMBEDDING = 'glove_50_embedding'
-    GLOVE_300_EMBEDDING = 'glove_300_embedding'
-    WORD2VEC_300_EMBEDDING = 'word2vec_300_embedding'
-    TRANSFORMER_FIXED_EMBEDDING = 'transformer_fixed_embedding'
-    TRANSFORMER_TRAINABLE_EMBEDDING = 'transformer_trainable_embedding'
-    TRANSFORMER_TRAINABLE_MODEL_NAME = 'transformer_trainable'
-    EMBEDDING_ATTRIBUTES = {GLOVE_50_EMBEDDING, GLOVE_300_EMBEDDING,
-                            WORD2VEC_300_EMBEDDING, TRANSFORMER_FIXED_EMBEDDING,
-                            TRANSFORMER_TRAINABLE_EMBEDDING}
-    MAPPINGS = BatchFeatureMapping(
-        'ents',
-        [ManagerFeatureMapping(
-            'label_vectorizer_manager',
-            (FieldFeatureMapping('ents', 'entlabel', True, is_label=True),
-             FieldFeatureMapping('mask', 'mask', True, 'ents'),
-             )),
-         ManagerFeatureMapping(
-             LANGUAGE_FEATURE_MANAGER_NAME,
-             (FieldFeatureMapping('tags', 'tag', True, 'doc'),
-              FieldFeatureMapping('syns', 'syn', True, 'doc'),
-              FieldFeatureMapping(GLOVE_50_EMBEDDING, 'wvglove50', True, 'doc'),
-              FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', True, 'doc'),
-              FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', True, 'doc'),
-              FieldFeatureMapping(TRANSFORMER_TRAINABLE_EMBEDDING, TRANSFORMER_TRAINABLE_MODEL_NAME, True, 'doc'),
-              FieldFeatureMapping('tags_expander', 'transformer_tags_expander', True, 'doc'),
-              FieldFeatureMapping('syns_expander', 'transformer_syns_expander', True, 'doc'),
-              FieldFeatureMapping('ents_trans', 'entlabel_trans', True, 'trans_doc', is_label=True),
-              ),)])
-
-    TRANS_MAPPINGS = cp.deepcopy(MAPPINGS)
-    TRANS_MAPPINGS.label_attribute_name = 'ents_trans'
-
-    def _get_batch_feature_mappings(self) -> BatchFeatureMapping:
-        stash: BatchStash = self.batch_stash
-        if 'ents_trans' in stash.decoded_attributes:
-            maps = self.TRANS_MAPPINGS
-        else:
-            maps = self.MAPPINGS
-        return maps
