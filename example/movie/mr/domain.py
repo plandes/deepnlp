@@ -8,17 +8,17 @@ import logging
 import sys
 from io import TextIOBase
 import pandas as pd
-from zensols.dataframe import SplitKeyDataframeStash
 from zensols.nlp import FeatureDocument
 from zensols.deepnlp.batch import FeatureDocumentDataPoint
 from zensols.deepnlp.feature import DocumentFeatureStash
+from zensols.dataframe import ResourceFeatureDataframeStash
 from . import DatasetFactory
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass
-class MovieReviewRowStash(SplitKeyDataframeStash):
+class MovieReviewRowStash(ResourceFeatureDataframeStash):
     """A dataframe based stash since our data happens to be composed of comma
     separate files.
 
@@ -31,6 +31,7 @@ class MovieReviewRowStash(SplitKeyDataframeStash):
     dataset_factory: DatasetFactory
 
     def _get_dataframe(self) -> pd.DataFrame:
+        self.installer()
         return self.dataset_factory.dataset
 
 

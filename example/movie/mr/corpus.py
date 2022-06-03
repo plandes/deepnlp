@@ -27,14 +27,20 @@ class DatasetFactory(object):
     cornell_resource: Resource
     dataset_path: Path
     tok_len: int
-    throw_out: Set[str] = field(repr=False)
-    repls: dict = field(repr=False)
-    split_col: str
+    split_col: str = field(default='split')
+    # characters and strings to remove from the sentence key
+    throw_out: Set[str] = field(
+        default=frozenset("`` '' \" ` ' ( ) [ ] -lrb- -rrb- \\/ / --".split()))
+    # sentence string replacement
+    repls: dict = field(default=(('cannot', 'can not'), (" n't", "n't")))
 
-    def __post_init__(self):
-        self.installer()
-        self.stanford_path = self.installer[self.standford_resource]
-        self.rt_pol_path = self.installer[self.cornell_resource]
+    @property
+    def stanford_path(self) -> Path:
+        return self.installer[self.standford_resource]
+
+    @property
+    def rt_pol_path(self) -> Path:
+        return self.installer[self.cornell_resource]
 
     @staticmethod
     def split_sents(line: str) -> str:
