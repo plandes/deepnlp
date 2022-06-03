@@ -50,6 +50,7 @@ dataframe_stash:
   dataset_factory: 'instance: dataset_factory'
   resource: None
 
+# custom feature document factory stash
 feature_factory_stash:
   class_name: mr.MovieReviewFeatureStash
 
@@ -66,7 +67,10 @@ classify_label_vectorizer:
 
 # maintains a collection of all vectorizers for the framework
 vectorizer_manager_set:
-  names: 'list: language_feature_manager, transformer_expander_feature_manager, classify_label_vectorizer_manager'
+  names:
+    - language_feature_manager
+    - transformer_expander_feature_manager
+    - classify_label_vectorizer_manager
 
 
 ## Batch
