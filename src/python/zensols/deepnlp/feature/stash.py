@@ -29,12 +29,10 @@ class DocumentFeatureStash(MultiProcessStash, metaclass=ABCMeta):
     :meth:`_parse_document`.
 
     """
-
     vec_manager: FeatureDocumentVectorizerManager = field()
     """Used to parse text in to :class:`.FeatureDocument` instances.
 
     """
-
     document_limit: int = field(default=sys.maxsize)
     """The maximum number of documents to process."""
 
