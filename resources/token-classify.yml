@@ -63,6 +63,10 @@ model_settings:
 recurrent_crf_net_settings:
   mask_attribute: tok_mask
 
+# declare the ModelFacade to use for the application
+facade:
+  class_name: zensols.deepnlp.classify.ClassifyModelFacade
+
 
 ## Prediction
 #

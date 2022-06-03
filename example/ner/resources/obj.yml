@@ -35,7 +35,7 @@ feature_factory_stash:
   key_path: 'path: ${default:data_dir}/feature/split-keys'
   pattern: '{name}.dat'
   installer: 'instance: feature_installer'
-#  dataset_limit: 10
+  dataset_limit: 10
 
 # a stash that splits along dataset type (i.e. train, validation, test)
 feature_stash:
@@ -68,35 +68,37 @@ doc_parser:
   token_feature_ids: 'set: sent_i, tag, tag_, idx'
 
 
-# Vectorization
+## Vectorization
 #
+# provide the nominals for the token label vectorizer
 tok_label_1_vectorizer:
   categories: 'eval: (${category_settings:ent})'
 
 tag_replace_vectorizer:
   class_name: 'zensols.deepnlp.vectorize.OneHotEncodedFeatureDocumentVectorizer'
-  feature_id: 'tag'
-  encode_transformed: 'False'
-  optimize_bools: 'True'
+  feature_id: tag
+  encode_transformed: false
+  optimize_bools: true
   categories: 'eval: (${category_settings:tag})'
-  feature_attribute: 'tag_'
+  feature_attribute: tag_
 
 syn_replace_vectorizer:
   class_name: 'zensols.deepnlp.vectorize.OneHotEncodedFeatureDocumentVectorizer'
   feature_id: 'syn'
-  encode_transformed: 'False'
-  optimize_bools: 'True'
+  encode_transformed: false
+  optimize_bools: true
   categories: 'eval: (${category_settings:syn})'
   feature_attribute: 'syn_'
 
 language_vectorizer_manager:
   configured_vectorizers:
+    - tag_replace_vectorizer
+    - syn_replace_vectorizer
     - glove_50_feature_vectorizer
     - glove_300_feature_vectorizer
     - word2vec_300_feature_vectorizer
     - transformer_trainable_feature_vectorizer
-    - tag_replace_vectorizer
-    - syn_replace_vectorizer
+    - tok_label_transformer_vectorizer
 
 
 ## Batch
@@ -113,11 +115,51 @@ conll_lang_batch_mappings:
           feature_id: syn
           is_agg: true
           attr_access: doc
+        - attr: tok_label_transformer
+          feature_id: tclabel_trans
+          is_agg: true
+          attr_access: trans_doc
+          is_label: true
+
+# condition:
+#   if: "eval: '${ner_default:name}'.startswith('transformer')"
+#   then:
+#     tok_label_batch_mappings:
+#       manager_mappings:
+#         - vectorizer_manager_name: tok_label_vectorizer_manager
+#           fields:
+#             - attr: tok_label_transformer
+#               feature_id: language_vectorizer_manager.tclabel_trans
+#               is_agg: true
+#               attr_access: trans_doc
+#               is_label: true
+#             - attr: tok_mask
+#               feature_id: tmask
+#               is_agg: true
+#               attr_access: tok_labels
+#   else:
+#     tok_label_batch_mappings:
+#       manager_mappings:
+#         - vectorizer_manager_name: tok_label_vectorizer_manager
+#           fields:
+#             - attr: tok_labels
+#               feature_id: tclabel
+#               is_agg: true
+#               is_label: True
+#             - attr: tok_mask
+#               feature_id: tmask
+#               is_agg: true
+#               attr_access: tok_labels
 
 # batch mappings from attribute to feature IDs and which to use from resource
 # libs
 ner_batch_mappings:
-  label_attribute_name: tok_labels
+  condition:
+    if: "eval: '${ner_default:name}'.startswith('transformer')"
+    then:
+      label_attribute_name: tok_label_transformer
+    else:
+      label_attribute_name: tok_labels
   batch_feature_mapping_adds:
     - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): tok_label_batch_mappings'
     - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): conll_lang_batch_mappings'
@@ -130,7 +172,8 @@ ner_batch_mappings:
     - glove_50_embedding
 #    - glove_300_embedding
 #    - word2vec_300_embedding
-#    - transformer_trainable_embedding
+    - transformer_trainable_embedding
+    - tok_label_transformer
 
 # a stash that groups features across directories, with each directory
 # containing batch files of the respective feature group
@@ -145,11 +188,12 @@ batch_dir_stash:
     - [glove_300_embedding]
     - [word2vec_300_embedding]
     - [tags_expander, syns_expander]
-    - [ents_trans, transformer_trainable_embedding]
+    - [tok_label_transformer, transformer_trainable_embedding]
 
 # map feature attributes (sections) to feature IDs to connect features to
 # vectorizers
 batch_stash:
+  # mappings from readable attribute names to vectorizer feature IDs
   batch_feature_mappings: 'dataclass(zensols.deeplearn.batch.ConfigBatchFeatureMapping): ner_batch_mappings'
   # the class that contains the feature data, one for each data instance
   data_point_type: "eval({'import': ['ner']}): ner.NERDataPoint"
@@ -168,10 +212,60 @@ executor:
   # configures the neural network
   net_settings: 'instance: recurrent_crf_net_settings'
 
-# declare the ModelFacade to use for the application
-facade:
-  class_name: zensols.deepnlp.classify.ClassifyModelFacade
-
 model_settings:
   learning_rate: 0.001
   epochs: 35
+
+
+
+## Transformer
+#
+# embedding
+transformer_trainable_embedding:
+  output: last_hidden_state
+
+# vectorizer
+tok_label_transformer_vectorizer:
+  class_name: zensols.deepnlp.transformer.TransformerNominalFeatureVectorizer
+  feature_id: tclabel_trans
+  delegate_feature_id: tok_label_vectorizer_manager.tclabel1
+  fold_method: concat_tokens
+  embed_model: 'instance: transformer_trainable_embedding'
+  encode_transformed: false
+  label_all_tokens: true
+
+
+## Transformer model
+#
+trans_decoder_settings:
+  class_name: zensols.deeplearn.layer.DeepLinearNetworkSettings
+  # number deep linear layers configured after the LSTM
+  middle_features: 'eval: ()'
+  # number of output features
+  out_features: ${deepnlp_default:num_labels}
+  # the number of input features to the deep linear layer; set to null since
+  # calculated in the model
+  in_features: None
+  # whether to treat each middle layer as a scalar multiplier of the previous or
+  # to interpret them as a constant number of parameters
+  proportions: True
+  # number of times to repeat the middle layers
+  repeats: 1
+  # drop out used for the middle layers (set by root level settings)
+  dropout: 0.1
+  # activation
+  activation: None
+  # 1d batch normalize
+  batch_norm_d: None
+  batch_norm_features: None
+
+trans_net_settings:
+  class_name: zensols.deepnlp.transformer.TransformerSequenceNetworkSettings
+  # embedding layer used as the input layer
+  embedding_layer: 'instance: ${ner_default:name}_embedding_layer'
+  # dropout used on the output from the embedding layer
+  dropout: 0.1
+  # single fully connected linear decoder layer
+  decoder_settings: 'instance: trans_decoder_settings'
+  # contains the metadata factory helps configure the network (see that configuration)
+  batch_stash: 'instance: batch_stash'

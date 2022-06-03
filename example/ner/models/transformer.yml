@@ -1,0 +1,20 @@
+ner_default:
+  name: transformer_trainable
+
+batch_stash:
+  decoded_attributes: 'set: tok_label_transformer, ${ner_default:name}_embedding'
+
+executor:
+  net_settings: 'instance: trans_net_settings'
+
+model_settings:
+  epochs: 4
+  learning_rate: 5e-5
+  optimizer_class_name: zensols.deepnlp.transformer.TransformerAdamFactory
+  optimizer_params: "dict: {'eps': 1e-8}"
+  # optimizer_params:
+  #   eps: 1e-8
+  scheduler_class_name: zensols.deepnlp.transformer.TransformerSchedulerFactory
+  scheduler_params:
+    name: linear
+    num_warmup_steps: 500

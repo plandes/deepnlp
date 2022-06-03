@@ -1,5 +1,7 @@
+"""Simple application to print corpus stats.
+
 """
-"""
+__author__ = 'Paul Landes'
 
 from dataclasses import dataclass
 from zensols.config import ConfigFactory
@@ -25,10 +27,8 @@ class App(object):
 
     def proto(self):
         "Test"
-        print(type(self._inst('facade')))
-        return
         import itertools as it
-        if 0:
+        if 1:
             self._clean()
         o = self._inst('dataset_stash')
         o.write()

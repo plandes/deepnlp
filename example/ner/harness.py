@@ -16,6 +16,6 @@ if (__name__ == '__main__'):
                     1: 'info -i config',
                     2: 'stats',
                     3: 'debug'
-                    }[0],
+                    }[3],
         proto_factory_kwargs={'reload_pattern': '^ner'},
     ).run()
