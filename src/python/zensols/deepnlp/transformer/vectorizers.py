@@ -54,6 +54,12 @@ class TransformerFeatureContext(FeatureContext, Deallocatable):
             document = vectorizer.tokenize(document)
         return document
 
+    def get_feature_document(self) -> FeatureDocument:
+        if not isinstance(self._document, FeatureDocument):
+            raise VectorizerError(
+                f'Expecting FeatureDocument but got: {type(self._document)}')
+        return self._document
+
     def deallocate(self):
         super().deallocate()
         self._try_deallocate(self._document)
@@ -123,7 +129,8 @@ transformer embedding, is required, got: {self.embed_model.output}""")
             doc = self.tokenize(doc).detach()
         return TransformerFeatureContext(self.feature_id, doc)
 
-    def _context_to_document(self, ctx: TransformerFeatureContext):
+    def _context_to_document(self, ctx: TransformerFeatureContext) -> \
+            TokenizedDocument:
         return ctx.get_document(self)
 
     def tokenize(self, doc: FeatureDocument) -> TokenizedFeatureDocument:
@@ -394,7 +401,7 @@ class TransformerNominalFeatureVectorizer(AggregateEncodableFeatureVectorizer,
     def _create_decoded_pad(self, shape: Tuple[int]) -> Tensor:
         return self.create_padded_tensor(shape, self.delegate.data_type)
 
-    def _encode(self, doc: FeatureDocument) -> FeatureContext:
+    def _encode_nominals(self, doc: FeatureDocument) -> Tensor:
         delegate: NominalEncodedEncodableFeatureVectorizer = self.delegate
         tdoc: TokenizedDocument = self.tokenize(doc)
         by_label: Dict[str, int] = delegate.by_label
@@ -433,9 +440,22 @@ class TransformerNominalFeatureVectorizer(AggregateEncodableFeatureVectorizer,
                 elif lab_all:
                     arr[six][tix] = by_label[sent_labels[word_idx]]
                 previous_word_idx = word_idx
-        return TensorFeatureContext(self.feature_id, arr)
+        return arr
 
-    def _decode(self, context: TransformerFeatureContext) -> Tensor:
+    def _encode(self, doc: FeatureDocument) -> FeatureContext:
+        ctx: FeatureContext
+        if self.encode_tokenized:
+            arr: Tensor = self._encode_nominals(doc)
+            ctx = TensorFeatureContext(self.feature_id, arr)
+        else:
+            ctx = self._create_context(doc)
+        return ctx
+
+    def _decode(self, context: FeatureContext) -> Tensor:
+        if isinstance(context, TransformerFeatureContext):
+            doc: FeatureDocument = context.get_feature_document()
+            arr: Tensor = self._encode_nominals(doc)
+            context = TensorFeatureContext(self.feature_id, arr)
         return LabelTransformerFeatureVectorizer._decode(self, context)
 
 
@@ -465,9 +485,25 @@ class TransformerMaskFeatureVectorizer(LabelTransformerFeatureVectorizer):
     def _create_decoded_pad(self, shape: Tuple[int]) -> Tensor:
         return self.torch_config.zeros(shape, dtype=self.data_type)
 
-    def _encode(self, doc: FeatureDocument) -> FeatureContext:
+    def _encode_mask(self, doc: FeatureDocument) -> Tensor:
         tdoc: TokenizedDocument = self.tokenize(doc)
         arr: Tensor = tdoc.attention_mask.type(dtype=self.data_type)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'mask type: {arr.dtype}')
-        return TensorFeatureContext(self.feature_id, arr)
+        return arr
+
+    def _encode(self, doc: FeatureDocument) -> FeatureContext:
+        ctx: FeatureContext
+        if self.encode_tokenized:
+            arr: Tensor = self._encode_mask(doc)
+            ctx = TensorFeatureContext(self.feature_id, arr)
+        else:
+            ctx = self._create_context(doc)
+        return ctx
+
+    def _decode(self, context: FeatureContext) -> Tensor:
+        if isinstance(context, TransformerFeatureContext):
+            doc: FeatureDocument = context.get_feature_document()
+            arr: Tensor = self._encode_mask(doc)
+            context = TensorFeatureContext(self.feature_id, arr)
+        return super()._decode(context)
