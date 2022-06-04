@@ -1,18 +1,48 @@
+##
+# Transformer model configuration.  We create a transformer by overriding
+# resource library API and application configuration.
+#
+# app defaults, used in obj.yml
 ner_default:
-  name: transformer_trainable
+  #trans_model_id: bert-base-cased
+  name: 'transformer (${trans_model_id})'
+  embedding: transformer_trainable_embedding
 
+# use only transformer features, which are the label and the model/embeddings
 batch_stash:
-  decoded_attributes: 'set: tok_label_transformer, ${ner_default:name}_embedding'
+  decoded_attributes: 'set: tok_label_transformer, ${ner_default:embedding}'
 
-executor:
-  net_settings: 'instance: trans_net_settings'
+# indicate which huggingface model to use, which is defined as an --override,
+# and defaults to `bert-base-cased`
+transformer_trainable_resource:
+  model_id: ${ner_default:trans_model_id}
 
+# give the number of epochs to train before stopping, learning rate, and the
+# optimization function: the hugging face provided AdamW implementation
 model_settings:
-  epochs: 4
-  learning_rate: 5e-5
+  epochs: 7
+  learning_rate: 1e-05
   optimizer_class_name: zensols.deepnlp.transformer.TransformerAdamFactory
   optimizer_params: "dict: {'eps': 1e-8}"
 
+# tell the executor which neural network configuration to use, defined below
+executor:
+  net_settings: 'instance: trans_net_settings'
+
+# configure the neural network used as the model, which is a BERT only sequence
+# model that uses the output bindings directly
+trans_net_settings:
+  class_name: zensols.deepnlp.transformer.TransformerSequenceNetworkSettings
+  # embedding layer used as the input layer
+  embedding_layer: 'instance: ${ner_default:embedding}_layer'
+  # dropout used on the output from the embedding layer
+  dropout: 0.1
+  # single fully connected linear decoder layer
+  decoder_settings: 'instance: trans_decoder_settings'
+  # contains the metadata factory helps configure the network (see that configuration)
+  batch_stash: 'instance: batch_stash'
+
+# configure the dense layer that decodes the transformer output to NER labels
 trans_decoder_settings:
   class_name: zensols.deeplearn.layer.DeepLinearNetworkSettings
   # number deep linear layers configured after the LSTM
@@ -34,14 +64,3 @@ trans_decoder_settings:
   # 1d batch normalize
   batch_norm_d: None
   batch_norm_features: None
-
-trans_net_settings:
-  class_name: zensols.deepnlp.transformer.TransformerSequenceNetworkSettings
-  # embedding layer used as the input layer
-  embedding_layer: 'instance: ${ner_default:name}_embedding_layer'
-  # dropout used on the output from the embedding layer
-  dropout: 0.1
-  # single fully connected linear decoder layer
-  decoder_settings: 'instance: trans_decoder_settings'
-  # contains the metadata factory helps configure the network (see that configuration)
-  batch_stash: 'instance: batch_stash'

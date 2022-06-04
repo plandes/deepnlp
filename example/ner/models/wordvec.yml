@@ -1,3 +1,8 @@
+## 
+# Non-contextual wordvector model configuration, which is already configured by
+# resource libraries and the resources/obj.yml application configuration.
+# 
 # app defaults, used in obj.yml
 ner_default:
+  # servers as both the embedding and model name
   embedding: ${name}_embedding
