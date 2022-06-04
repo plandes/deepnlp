@@ -49,7 +49,6 @@ class ClassifyModelFacade(LanguageModelFacade):
         super()._configure_debug_logging()
         for i in ['zensols.deeplearn.layer',
                   'zensols.deepnlp.layer',
-                  'zensols.deepnlp.transformer',
                   'zensols.deepnlp.classify']:
             logging.getLogger(i).setLevel(logging.DEBUG)
 
