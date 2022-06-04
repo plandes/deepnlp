@@ -88,6 +88,11 @@ class LabeledBatch(Batch):
     :class:`~zensols.deepnlp.embed.GloveWordEmbedModel` class.
 
     """
+    WORD2VEC_300_EMBEDDING = 'word2vec_300_embedding'
+    """The configuration section name of the the Google word2vec embedding
+    :class:`~zensols.deepnlp.embed.Word2VecModel` class.
+
+    """
     FASTTEXT_NEWS_300_EMBEDDING = 'fasttext_news_300_embedding'
     """The configuration section name of the fasttext news embedding
     :class:`~zensols.deepnlp.embed.FastTextEmbedModel` class.
@@ -111,6 +116,7 @@ class LabeledBatch(Batch):
     EMBEDDING_ATTRIBUTES = {GLOVE_50_EMBEDDING,
                             GLOVE_300_EMBEDDING,
                             GLOVE_300_EMBEDDING,
+                            WORD2VEC_300_EMBEDDING,
                             FASTTEXT_NEWS_300_EMBEDDING,
                             FASTTEXT_CRAWL_300_EMBEDDING,
                             TRANSFORMER_TRAINBLE_EMBEDDING,
@@ -144,10 +150,11 @@ class LabeledBatch(Batch):
              LANGUAGE_FEATURE_MANAGER_NAME,
              (FieldFeatureMapping(GLOVE_50_EMBEDDING, 'wvglove50', True, 'doc'),
               FieldFeatureMapping(GLOVE_300_EMBEDDING, 'wvglove300', True, 'doc'),
+              FieldFeatureMapping(WORD2VEC_300_EMBEDDING, 'w2v300', True, 'doc'),
               FieldFeatureMapping(FASTTEXT_NEWS_300_EMBEDDING, 'wvftnews300', True, 'doc'),
-              #FieldFeatureMapping(FASTTEXT_CRAWL_300_EMBEDDING, 'wvftcrawl300', True, 'doc'),
+              FieldFeatureMapping(FASTTEXT_CRAWL_300_EMBEDDING, 'wvftcrawl300', True, 'doc'),
               FieldFeatureMapping(TRANSFORMER_TRAINBLE_EMBEDDING, 'transformer_trainable', True, 'doc'),
-              #FieldFeatureMapping(TRANSFORMER_FIXED_EMBEDDING, 'transformer_fixed', True, 'doc'),
+              FieldFeatureMapping(TRANSFORMER_FIXED_EMBEDDING, 'transformer_fixed', True, 'doc'),
               FieldFeatureMapping(STATS_ATTRIBUTE, 'stats', False, 'doc'),
               FieldFeatureMapping(ENUMS_ATTRIBUTE, 'enum', True, 'doc'),
               FieldFeatureMapping(COUNTS_ATTRIBUTE, 'count', True, 'doc'),
