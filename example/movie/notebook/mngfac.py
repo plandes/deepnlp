@@ -11,12 +11,15 @@ class JupyterManagerFactory(object):
     """Bootstrap and import libraries to automate notebook testing.
 
     """
-    def __init__(self, app_root_dir: Path = Path('..')):
+    def __init__(self, app_root_dir: Path = Path('..'),
+                 deepnlp_path: Path = Path('../../../src/python')):
         """Set up the interpreter environment so we can import local packages.
 
         :param app_root_dir: the application root directory
 
         """
+        from zensols.cli import ConfigurationImporterCliHarness
+        ConfigurationImporterCliHarness.add_sys_path(deepnlp_path)
         from zensols import deepnlp
         deepnlp.init()
         from zensols.cli import ConfigurationImporterCliHarness
@@ -28,7 +31,7 @@ class JupyterManagerFactory(object):
         """Create a new ``JupyterManager`` instance and return it."""
         from zensols.deeplearn.cli import JupyterManager
 
-        def map_args(embedding: str = None, config_name: str = 'wordvec'):
+        def map_args(config_name: str = 'wordvec', embedding: str = None):
             args = []
             if embedding is not None:
                 args.extend(['--override', f'mr_default.name={embedding}'])
@@ -39,3 +42,7 @@ class JupyterManagerFactory(object):
 
         return JupyterManager(self._harness, cli_args_fn=map_args,
                               reduce_logging=True)
+
+
+f = JupyterManagerFactory()
+f()

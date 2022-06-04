@@ -11,16 +11,20 @@ class JupyterManagerFactory(object):
     """Bootstrap and import libraries to automate notebook testing.
 
     """
-    def __init__(self, app_root_dir: Path = Path('..')):
+    def __init__(self, app_root_dir: Path = Path('..'),
+                 deepnlp_path: Path = Path('../../../src/python')):
         """Set up the interpreter environment so we can import local packages.
 
         :param app_root_dir: the application root directory
 
         """
+        from zensols.cli import ConfigurationImporterCliHarness
+        ConfigurationImporterCliHarness.add_sys_path(deepnlp_path)
         from zensols import deepnlp
         deepnlp.init()
-        from zensols.cli import ConfigurationImporterCliHarness
-        self._harness = ConfigurationImporterCliHarness(root_dir=app_root_dir)
+        self._harness = ConfigurationImporterCliHarness(
+            package_resource='cb',
+            root_dir=app_root_dir)
 
     def __call__(self):
         """Create a new ``JupyterManager`` instance and return it."""
