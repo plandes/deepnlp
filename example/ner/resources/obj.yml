@@ -184,7 +184,7 @@ executor:
 
 model_settings:
   learning_rate: 0.001
-  epochs: 35
+  epochs: 40
 
 
 
