@@ -15,7 +15,7 @@ from torch import Tensor
 from zensols.persist import persisted, Deallocatable
 from zensols.deeplearn.vectorize import (
     VectorizerError, TensorFeatureContext, EncodableFeatureVectorizer,
-    FeatureContext, MultiFeatureContext, AggregateEncodableFeatureVectorizer,
+    FeatureContext, AggregateEncodableFeatureVectorizer,
     NominalEncodedEncodableFeatureVectorizer, MaskFeatureVectorizer,
 )
 from zensols.nlp import FeatureDocument, FeatureSentence
@@ -216,7 +216,6 @@ class TransformerExpanderFeatureContext(TransformerFeatureContext):
 
     def deallocate(self):
         super().deallocate()
-        #MultiFeatureContext.deallocate(self)
         if hasattr(self, 'contexts'):
             self._try_deallocate(self.contexts)
             del self.contexts
