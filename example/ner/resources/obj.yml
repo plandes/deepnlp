@@ -187,7 +187,6 @@ model_settings:
   epochs: 40
 
 
-
 ## Transformer
 #
 # embedding

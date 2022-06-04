@@ -106,10 +106,6 @@ mr_batch_mappings:
 linear_settings:
   out_features: "eval: '${classify_label_vectorizer:categories}'.count(',') + 1"
 
-# declare (override) the ModelFacade to use for the application
-facade:
-  class_name: zensols.deepnlp.classify.ClassifyModelFacade
-
 # tell the model to use a feature prediction mapper for our classification
 model_settings:
   prediction_mapper_name: classify_feature_prediction_mapper
