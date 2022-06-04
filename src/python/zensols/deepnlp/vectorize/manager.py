@@ -109,7 +109,7 @@ class FeatureDocumentVectorizer(TransformableFeatureVectorizer,
                 self._assert_doc(doc)
         elif not isinstance(doc, FeatureDocument):
             raise VectorizerError(
-                f'Expecting document, but got type: {type(doc)}')
+                f'Expecting FeatureDocument, but got type: {type(doc)}')
 
     def _assert_decoded_doc_dim(self, arr: Tensor, expect: int):
         """Check the decoded document dimesion and rase an error for those that do not
