@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Contains classes that are used to vectorize documents in to transformer
 embeddings.
 
@@ -29,20 +30,34 @@ from . import (
 logger = logging.getLogger(__name__)
 
 
-@dataclass
 class TransformerFeatureContext(FeatureContext, Deallocatable):
     """A vectorizer feature contex used with
     :class:`.TransformerEmbeddingFeatureVectorizer`.
 
     """
-    document: TokenizedDocument = field()
-    """The document used to create the transformer embeddings.
+    def __init__(self, feature_id: str,
+                 document: Union[TokenizedDocument, FeatureDocument]):
+        """
+        :params feature_id: the feature ID used to identify this context
 
-    """
+        :params document: document used to create the transformer embeddings
+
+        """
+        super().__init__(feature_id)
+        Deallocatable.__init__(self)
+        self._document = document
+
+    def get_document(self, vectorizer: TransformerFeatureVectorizer) -> \
+            TokenizedDocument:
+        document = self._document
+        if isinstance(document, FeatureDocument):
+            document = vectorizer.tokenize(document)
+        return document
+
     def deallocate(self):
         super().deallocate()
-        self._try_deallocate(self.document)
-        del self.document
+        self._try_deallocate(self._document)
+        del self._document
 
 
 @dataclass
@@ -58,6 +73,22 @@ class TransformerFeatureVectorizer(EmbeddingFeatureVectorizer,
     labels.
 
     """
+    encode_tokenized: bool = field(default=False)
+    """Whether to tokenize the document on encoding.  Set this to ``True`` only if
+    the huggingface model ID (i.e. ``bert-base-cased``) will not change after
+    vectorization/batching.
+
+    Setting this to ``True`` tells the vectorizer to tokenize during encoding,
+    and thus will speed experimentation by providing the tokenized tensors to
+    the model directly.
+
+    """
+    def __post_init__(self):
+        if self.encode_transformed and not self.encode_tokenized:
+            raise VectorizerError("""\
+Can not transform while not tokenizing on the encoding side.  Either set
+encode_transformed to False or encode_tokenized to True.""")
+
     def _assert_token_output(self, expected: str = 'last_hidden_state'):
         if self.embed_model.output != expected:
             raise VectorizerError(f"""\
@@ -85,6 +116,15 @@ transformer embedding, is required, got: {self.embed_model.output}""")
 
     def _get_resource(self) -> TransformerResource:
         return self._get_tokenizer().resource
+
+    def _create_context(self, doc: FeatureDocument) -> \
+            TransformerFeatureContext:
+        if self.encode_tokenized:
+            doc = self.tokenize(doc).detach()
+        return TransformerFeatureContext(self.feature_id, doc)
+
+    def _context_to_document(self, ctx: TransformerFeatureContext):
+        return ctx.get_document(self)
 
     def tokenize(self, doc: FeatureDocument) -> TokenizedFeatureDocument:
         """Tokenize the document in to a token document used by the encoding phase.
@@ -122,8 +162,7 @@ class TransformerEmbeddingFeatureVectorizer(TransformerFeatureVectorizer):
                                   'transformed vectorized features')
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
-        tok_doc = self.tokenize(doc).detach()
-        return TransformerFeatureContext(self.feature_id, tok_doc)
+        return self._create_context(doc)
 
     def _decode(self, context: TransformerFeatureContext) -> Tensor:
         emb: TransformerEmbedding = self.embed_model
@@ -133,32 +172,43 @@ class TransformerEmbeddingFeatureVectorizer(TransformerFeatureVectorizer):
         tok_doc: TokenizedDocument
         arr: Tensor
         if emb.trainable:
-            arr = context.document.tensor
+            doc: TokenizedDocument = self._context_to_document(context)
+            arr = doc.tensor
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'passing through tensor: {arr.shape}')
         else:
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'transforming doc: {context.document}')
-            arr = emb.transform(context.document)
+            doc: TokenizedDocument = self._context_to_document(context)
+            arr = emb.transform(doc)
         if logger.isEnabledFor(logging.INFO):
             logger.info(f'decoded trans layer {arr.shape} on {arr.device}')
         return arr
 
 
-@dataclass
-class TransformerExpanderFeatureContext(MultiFeatureContext):
+class TransformerExpanderFeatureContext(TransformerFeatureContext,
+                                        MultiFeatureContext):
     """A vectorizer feature context used with
     :class:`.TransformerExpanderFeatureVectorizer`.
 
     """
-    document: TokenizedDocument = field()
-    """The document used to create the transformer embeddings.
+    def __init__(self, feature_id: str, contexts: Tuple[FeatureContext],
+                 document: Union[TokenizedDocument, FeatureDocument]):
+        """
+        :params feature_id: the feature ID used to identify this context
 
-    """
+        :params contexts: subordinate contexts given to
+                          :class:`.MultiFeatureContext`
+
+        :params document: document used to create the transformer embeddings
+
+        """
+        super().__init__(feature_id, document)
+        MultiFeatureContext.__init__(self, feature_id, contexts)
+
     def deallocate(self):
         super().deallocate()
-        self._try_deallocate(self.document)
-        del self.document
+        MultiFeatureContext.deallocate(self)
 
 
 @dataclass
@@ -213,12 +263,12 @@ class TransformerExpanderFeatureVectorizer(TransformerFeatureVectorizer):
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
         self._validate()
-        tok_doc = self.tokenize(doc).detach()
+        doc = self._create_context(doc)
         cxs = tuple(map(lambda vec: vec.encode(doc), self.delegates))
-        return TransformerExpanderFeatureContext(self.feature_id, cxs, tok_doc)
+        return TransformerExpanderFeatureContext(self.feature_id, cxs, doc)
 
     def _decode(self, context: TransformerExpanderFeatureContext) -> Tensor:
-        doc: TokenizedDocument = context.document
+        doc: TokenizedDocument = self._context_to_document(context)
         arrs: List[Tensor] = []
         # decode subordinate contexts
         vec: FeatureDocumentVectorizer

@@ -16,6 +16,8 @@ batch_stash:
 # and defaults to `bert-base-cased`
 transformer_trainable_resource:
   model_id: ${ner_default:trans_model_id}
+  # args:
+  #   local_files_only: true
 
 # give the number of epochs to train before stopping, learning rate, and the
 # optimization function: the hugging face provided AdamW implementation
