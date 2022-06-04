@@ -157,7 +157,6 @@ batch_dir_stash:
     - [glove_50_embedding]
     - [glove_300_embedding]
     - [word2vec_300_embedding]
-    - [tags_expander, syns_expander]
     - [tok_label_transformer, transformer_trainable_embedding]
 
 # map feature attributes (sections) to feature IDs to connect features to
