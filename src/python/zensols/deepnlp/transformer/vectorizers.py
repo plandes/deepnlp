@@ -193,12 +193,14 @@ class TransformerEmbeddingFeatureVectorizer(TransformerFeatureVectorizer):
         return arr
 
 
-class TransformerExpanderFeatureContext(TransformerFeatureContext,
-                                        MultiFeatureContext):
+class TransformerExpanderFeatureContext(TransformerFeatureContext):
     """A vectorizer feature context used with
     :class:`.TransformerExpanderFeatureVectorizer`.
 
     """
+    contexts: Tuple[FeatureContext] = field()
+    """The subordinate contexts."""
+
     def __init__(self, feature_id: str, contexts: Tuple[FeatureContext],
                  document: Union[TokenizedDocument, FeatureDocument]):
         """
@@ -211,11 +213,14 @@ class TransformerExpanderFeatureContext(TransformerFeatureContext,
 
         """
         super().__init__(feature_id, document)
-        MultiFeatureContext.__init__(self, feature_id, contexts)
+        self.contexts = contexts
 
     def deallocate(self):
         super().deallocate()
-        MultiFeatureContext.deallocate(self)
+        #MultiFeatureContext.deallocate(self)
+        if hasattr(self, 'contexts'):
+            self._try_deallocate(self.contexts)
+            del self.contexts
 
 
 @dataclass
@@ -269,10 +274,12 @@ class TransformerExpanderFeatureVectorizer(TransformerFeatureVectorizer):
         return tuple(map(lambda f: self.manager[f], self.delegate_feature_ids))
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
+        udoc: Union[TokenizedDocument, FeatureDocument] = doc
         self._validate()
-        doc = self._create_context(doc)
+        if self.encode_tokenized:
+            udoc: TokenizedDocument = self.tokenize(doc).detach()
         cxs = tuple(map(lambda vec: vec.encode(doc), self.delegates))
-        return TransformerExpanderFeatureContext(self.feature_id, cxs, doc)
+        return TransformerExpanderFeatureContext(self.feature_id, cxs, udoc)
 
     def _decode(self, context: TransformerExpanderFeatureContext) -> Tensor:
         doc: TokenizedDocument = self._context_to_document(context)
