@@ -135,10 +135,16 @@ class LabeledBatch(Batch):
     DEPENDENCIES_ATTRIBUTE = 'dependencies'
     """The dependency feature attribute name."""
 
-    LANGUAGE_ATTRIBUTES = {STATS_ATTRIBUTE,
-                           ENUMS_ATTRIBUTE,
-                           COUNTS_ATTRIBUTE,
-                           DEPENDENCIES_ATTRIBUTE}
+    ENUM_EXPANDER_ATTRIBUTE = 'transformer_enum_expander'
+    """Expands enumerated spaCy features to transformer wordpiece alignment."""
+
+    DEPENDENCY_EXPANDER_ATTRIBTE = 'transformer_dep_expander'
+    """Expands dependency tree spaCy features to transformer wordpiece alignment.
+
+    """
+    LANGUAGE_ATTRIBUTES = {STATS_ATTRIBUTE, ENUMS_ATTRIBUTE, COUNTS_ATTRIBUTE,
+                           DEPENDENCIES_ATTRIBUTE,
+                           DEPENDENCIES_ATTRIBUTE, ENUM_EXPANDER_ATTRIBUTE}
     """All linguistic feature attribute names."""
 
     MAPPINGS = BatchFeatureMapping(
@@ -158,7 +164,9 @@ class LabeledBatch(Batch):
               FieldFeatureMapping(STATS_ATTRIBUTE, 'stats', False, 'doc'),
               FieldFeatureMapping(ENUMS_ATTRIBUTE, 'enum', True, 'doc'),
               FieldFeatureMapping(COUNTS_ATTRIBUTE, 'count', True, 'doc'),
-              FieldFeatureMapping(DEPENDENCIES_ATTRIBUTE, 'dep', True, 'doc')))])
+              FieldFeatureMapping(DEPENDENCIES_ATTRIBUTE, 'dep', True, 'doc'),
+              FieldFeatureMapping(ENUM_EXPANDER_ATTRIBUTE, 'tran_enum_expander', True, 'doc'),
+              FieldFeatureMapping(DEPENDENCY_EXPANDER_ATTRIBTE, 'tran_dep_expander', True, 'doc')))])
     """The mapping from the labeled data's feature attribute to feature ID and
     accessor information.
 
