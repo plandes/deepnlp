@@ -112,6 +112,10 @@ linear_settings:
 
 # tell the model to use a feature prediction mapper for our classification
 model_settings:
+  learning_rate: 1e-3
+  scheduler_class_name: torch.optim.lr_scheduler.ReduceLROnPlateau
+  scheduler_params:
+    patience: 5
   prediction_mapper_name: classify_feature_prediction_mapper
 
 # set the dropout for the classification network, which propogates down to the
