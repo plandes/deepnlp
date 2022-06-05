@@ -101,6 +101,10 @@ mr_batch_mappings:
 
 ## Model
 #
+# hidden size of the LSTM layer
+recurrent_settings:
+  hidden_size: 36
+
 # let our decoder (last fully connected feed forward network) the output
 # dimension as the number of labels to classify
 linear_settings:
@@ -126,3 +130,7 @@ executor:
 classify_feature_prediction_mapper:
   pred_attribute: polarity
   softmax_logit_attribute: confidence
+
+## Disable model download when huggingface is down
+# transformer_trainable_resource:
+#   args: "dict: {'local_files_only': True}"
