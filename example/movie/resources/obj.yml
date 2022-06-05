@@ -92,6 +92,7 @@ mr_batch_mappings:
     - enums
     - dependencies
     - glove_50_embedding
+    - glove_300_embedding
     - word2vec_300_embedding
     - transformer_trainable_embedding
     - transformer_fixed_embedding
