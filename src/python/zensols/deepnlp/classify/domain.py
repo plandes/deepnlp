@@ -142,9 +142,10 @@ class LabeledBatch(Batch):
     """Expands dependency tree spaCy features to transformer wordpiece alignment.
 
     """
-    LANGUAGE_ATTRIBUTES = {STATS_ATTRIBUTE, ENUMS_ATTRIBUTE, COUNTS_ATTRIBUTE,
-                           DEPENDENCIES_ATTRIBUTE,
-                           DEPENDENCIES_ATTRIBUTE, ENUM_EXPANDER_ATTRIBUTE}
+    LANGUAGE_ATTRIBUTES = {
+        STATS_ATTRIBUTE, ENUMS_ATTRIBUTE, COUNTS_ATTRIBUTE,
+        DEPENDENCIES_ATTRIBUTE,
+        ENUM_EXPANDER_ATTRIBUTE, DEPENDENCY_EXPANDER_ATTRIBTE}
     """All linguistic feature attribute names."""
 
     MAPPINGS = BatchFeatureMapping(
