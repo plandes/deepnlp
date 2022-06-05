@@ -1,4 +1,4 @@
-# Sentiment Example
+# Movie Review Example
 
 This document describes the [movie review task example] to demonstrate the
 DeepZenols NLP framework on the sentiment analysis task using the Stanford
@@ -19,23 +19,25 @@ Note that there is quite a bit of inline documentation in the [configuration
 file] so it is recommended the reader follow it while reading this tutorial.
 
 
-## Corpus Installation
+## Corpus
 
 The corpus used for this example is fairly small so the models train fast.  It
 is the Stanford movie review dataset with Cornell labels:
 * [Stanford movie review]
 * [Cornell sentiment polarity]
 
-The example's [makefile](../../example/movie/makefile) contains a target that
-should download and install the corpus with `make corpus`.  If that doesn't
-work, follow the links in the make file and create the following files in
-`example/movie/corpus`:
-* stanfordSentimentTreebank/datasetSentences.txt
-* rt-polaritydata/rt-polarity.pos
-* rt-polaritydata/rt-polarity.neg
+The corpus is automatically downloaded to a `corpus` directory the first time
+the model is trained or the batch set accessed.
 
 
 ## Embedding
+
+The model specific configuration is located in the `models` directory.  Each
+has a file that's given with the `--config` flag to the [harness.py] entry point
+Python file and contains configuration that overrides on a per model basis.
+The models configured by these files include non-contextual word embeddings
+(i.e. GloVE), a frozen transformer (i.e. [BERT]) transformer model and a
+fine-tune trainable transformer model.
 
 The Zensols [deep NLP] library supports word embeddings for [Glove],
 [Word2Vec], [fastText] and [BERT].  The `embedding` section of the
@@ -466,17 +468,17 @@ and test the model with : `make modeltraintest`.  That said, everything can be
 done with the harness script:
 ```bash
 # get the command line help using a thin wrapper around the framework
-./run.py -h
+./harness.py -h
 # the executor tests and trains the model, use it to get the stats used to train
-./run.py -c models/glove50.conf info -i executor
+./harness.py -c models/glove50.conf info -i executor
 # print a sample batch of what the model will get during training
-./run.py -c models/glove50.conf info -i batch
+./harness.py -c models/glove50.conf info -i batch
 # train and test the model but switch to model profile with optmizied 
-./run.py -c models/glove50.conf traintest -p
+./harness.py -c models/glove50.conf traintest -p
 # all model, its (hyper)parameters, metadata and results are stored in subdirectory of files
-./run.py -c models/glove50.conf result
+./harness.py -c models/glove50.conf result
 # write test predictions to a CSV file
-./run.py -c models/glove50.conf preds
+./harness.py -c models/glove50.conf preds
 ```
 
 
@@ -512,7 +514,7 @@ To run the [Jupyter movie notebook]:
 
 [deep NLP]: https://plandes.github.io/deepnlp/index.html
 [movie review task example]: https://github.com/plandes/deepnlp/blob/master/example/movie
-[configuration file]: https://github.com/plandes/deepnlp/blob/master/example/movie/resources/movie.conf
+[configuration file]: https://github.com/plandes/deepnlp/blob/master/example/movie/resources/obj.yml
 [dataset.py]: https://github.com/plandes/deepnlp/blob/master/example/movie/src/movie/dataset.py
 [domain.py]: https://github.com/plandes/deepnlp/blob/master/example/movie/src/movie/domain.py
 [facade.py]: https://github.com/plandes/deepnlp/blob/master/example/movie/src/movie/facade.py

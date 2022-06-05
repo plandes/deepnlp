@@ -1,82 +1,152 @@
 # Clickbate Example
 
 This example provides a good starting point since it only contains code to
-parse the [clickbate corpus].  There is also a [spaCy] pipe component to remove
-sentence chunking since the corpus are newline delimited headlines that should
-remain as a single sentence.
+parse the [clickbate corpus].  It also shows how to use your own model your own
+data by synthesizing a positive and negative dataset sources in to one, which
+is provided in the [only source code] file for the project (excluding the entry
+point [harness.py] script).
 
 The example shows how to create, train, validate and test a model that
 determines if a headline is clickbate or not (see the corpus for details).  It
-comes with two models: one that uses word vectors (GloVE 50 dimension) with
-additional language features, and a non-contextual BERT word embedding example
-with no extra features.
+comes with two models: one that uses word vectors (GloVE 50 dimension and the
+fasttext news pre-trained embeddings) with additional language features, and a
+BERT word embedding example.
 
 
 ## Command Line Interface
 
 The example is written as an Zensols CLI application.  The entry point program
-is [run.py].  However, the application is configured in [app.conf], which is
-where most of what makes the application is set up.  In this configuration file
-in the `default` section, the application is configured with file system paths
-used in the project all based from a root path supplied by the entry point
-[run.py] application, or a different relative directory for its [Jupyter
-notebook example].
+is [harness.py].  However, the application is configured in the [app.conf] and
+[obj.yml] configuration files, which is where almost all of what makes the
+application is set up.  In these configuration files, the application is
+configured with file system paths used in the project all based from a root
+path supplied by the entry point [harness.py] application, or a different
+relative directory for its [Jupyter notebook example].
 
-Note this project is different from the NER and movie review sentiment analysis
-examples in that it uses [resource libraries], which is why the configuration
-is much smaller and more manageable.  The following imports the
-`zensols.deeplearn` and `zensols.deepnlp` packages' [resource libraries]:
+Because the examples (including this one) use [resource libraries], the
+configuration is much smaller and more manageable.  First we start with adding
+the application defaults allowing `name` to be [overridden] with the `--override`
+option, which takes a string (or file) containing any configuration in a comma
+delimited `<section>.<option>` and given on the command line to specify which
+word embeddings to use:
 ```ini
-# import the `imp_conf` section, but make the `default` section available as
-# configuration during processing of other files' configuration properties
-[import]
-references = default
-sections = imp_conf
+# app defaults, used in obj.yml
+[cb_default]
+lang_features = dependencies, enums,
+embedding = ${name}_embedding
+```
 
-# import overrides, resource libraries, and configuration to create features
-# from parse natural language text
-[imp_conf]
-type = importini
-config_files = list:
-    ${default:resources_dir}/default.conf,
-    resource(zensols.deeplearn): resources/obj.conf,
-    resource(zensols.deepnlp): resources/obj.conf,
-    ${default:resources_dir}/feature.conf
+Now we add defaults for the deep learning package that set the model name,
+appears in results and file system naming.  In this example, we simply set the
+model name as the embeddings we'll use:
+```ini
+# deep learning package defaults
+[deeplearn_default]
+model_name = ${cb_default:embedding}
 ```
 
 The following configuration adds default applications, which is invoked from
-the command line by the `CliHarness` defined in the [run.py] entry point:
+the command line by the `CliHarness` defined in the [harness.py] entry point
+and imported from [resources libraries] as [first pass actions]:
 ```ini
-# application to provide information about the model
-[fac_info_app]
-class_name = zensols.deeplearn.cli.FacadeInfoApplication
+# command line applications and sections to delete after load
+[cli]
+apps = list: ${cli_config_default:apps}, ${cli_deeplearn_default:apps}, ${cli_deepnlp_default:apps},
+  deepnlp_fac_text_classify_app, cleaner_cli
+cleanups = list: ${cli_config_default:cleanups}, ${cli_deeplearn_default:cleanups},
+  ${cli_deepnlp_default:cleanups}, deepnlp_fac_text_classify_app, cleaner_cli
+cleanup_removes = set: log_cli
+```
+The application defined in the sections loaded are simply Python [dataclasses]
+who's class and method docstrings as help for the command line interface.  Each
+method is mapped to an [action with positional and optional parameters].
 
-# application to provide training, testing and other functionality to excercise
-# the model
-[fac_model_nlp_app]
-class_name = zensols.deeplearn.cli.FacadeModelApplication
+Note the `log_cli` is mentioned because it is listed as a clean up in a
+resource library.  However, we must keep this section because it is useful to
+configure child processes when batches are created to keep a consistent logging
+configuration.
 
-# application to provide NLP specific funtionality such as text prediction
-# (classification for our example)
-[fac_model_app]
-class_name = zensols.deepnlp.cli.NLPFacadeModelApplication
+We can also configure a default for the `--override` flag that indicates the
+word embedding with:
+```ini
+# set the default embeddding
+[override_cli_decorator]
+option_overrides = dict: {'override': {'default': 'cb_default.name=glove_50'}}
 ```
 
-These applications are simply Python [dataclasses] who's class and method
-docstrings as help for the command line interface.  Each method is mapped to an
-[action with positional and optional parameters].
+While a user can create a model specific configuration file specified with the
+`--config` option (such as in the other examples), this example is so simple as
+to not need it.  For this reason, we make it optional:
+```ini
+# configuration files are optional
+[config_cli]
+expect = False
+```
+
+The configured actions and their options for the CLI in the `cli` section
+described earlier must be imported from their respective [resource libraries],
+which is done with:
+``ini
+# import command line apps
+[import]
+config_files = list:
+    resource(zensols.util): resources/default.conf,
+...
+    resource(zensols.deepnlp): resources/cleaner.conf
+``
+
+
+Finally we import the model configuration from the [resource libraries] with a
+special section used by the `--config` option's [first pass action].  This
+provides special directives for loading the [overridden] `--override` and the
+configuration file.  We reference the `default` and `cb_default` as they are
+utilized in the loaded in the subordinate configuration files:
+```ini
+# import the imp_conf while leaving default and escape sections available to
+# the remainder of the config loading process
+[config_import]
+references = list: default, cb_default
+sections = list: app_imp_conf
+
+# first load overrides to enable setting defaults, then load the (usually model
+# specific) configuration defining anything used in later configuration
+[app_imp_conf]
+type = import
+config_files = list:
+    ^{override},
+    ^{config_path},
+    resource(zensols.deeplearn): resources/default.conf,
+... 
+    resource(cb): resources/obj.yml,
+    ^{config_path}
+```
+
+This first loads the [override] with `--override`, then the [configuration
+importer] from a user provided configuration file with `--config` (if
+provided).  Then the defaults and model configuration is loaded.  Finally the
+configuration file is loaded again providing the user the option to override
+anything clobbered by the [resource libraries] as everything loaded is either
+added over overwritten in order.  Nested in this list of resource files
+includes the [obj.yml] file, which is this application example's specific
+configuration.
 
 
 ## Configuration
 
-The [feature.conf] has very application specific configuration for reading the
-corpus files and parsing it in to features that will later be vectorized.
-First the configuration defines where to download the corpus and where to
-uncompress the files to make it available to the program.
+As mentioned in the previous section, the [app.conf] specifies [resource
+libraries] to load allowing the [obj.yml] to add and modify existing
+configuration.  This file could have been written as an `ini` file (like
+[app.conf]).  However, it contains the hierarchical vectorizer to batch
+mappings lending itself better to a hierarchical data format such as YAML.
 
-The rest defines a series of [Stash] instances that cache work it goes (see
-*batch encoding* in [the paper]).  For this example application, the process
-follows as such:
+The [obj.yml] contains the application specific configuration for reading the
+corpus files and parsing it in to features that will later be vectorized.
+First the configuration defines where to download the corpus (`Install the
+corpus`) and where to uncompress the files to make it available to the program.
+
+The next series of [Stash] instances that cache work it goes (see *batch
+encoding* in [the paper]) with the following process:
+
 1. Download the corpus and uncompress if it isn't already.
 2. Parse the corpus from the sentence text files (`dataframe_stash`).
 3. Randomly split the dataset in to train, validation and test set, then store
@@ -84,32 +154,38 @@ follows as such:
    (`dataframe_stash`).
 4. Parse the English sentences from the `dataframe_stash` using spaCy across as
    many processes as the CPU has cores (`feature_factory_stash`) and persisting
-   them to the file system in directories by feature (`feature_dir_stash`).
+   them to the file system in directories by feature (`feature_dir_stash` only
+   found in the `deeplearn` resource library).
 5. Read only certain files (based on feature selection for the particular
    model) from the file system to reconstruct batches (see *batch decoding* in
    [the paper]).
 6. Train, validate and test the model using the same ordering and splits
    sampled by the `dataframe_stash` from step 1.
 
-The [default.conf] file contains configuration that overrides the default
-configuration given in the [resource libraries] (with some exception).  For
-example, the `doc_parser` section tells the parser to create instances of a
-different class that what was defined in its resource library
-(`FeatureDocument`).  The class we provide for this example contains an
-attribute to carry a label for our text classification task.
-
-Because this is a text classification model, we declare the classes and
-override the configuration necessary to vectorize them and add them to the
-output decoder network.  We declare the `ClassifyModelFacade` to be used since
-it has the CLI predict action allowing ad-hoc text to be classified from the
-command line.
+The `doc_parser` section tells the parser to create instances of a different
+class that what was defined in its resource library (`FeatureDocument`) using
+the classification resource library set up (loaded by the `classify.conf`
+resource library by [app.conf]).  The class we provide for this example
+contains an attribute to carry a label for our text classification task.
 
 
 ## Model Definition
 
-The model specific configuration is located in the `models` directory.  Each
-has a file that's given with the `--config` flag to the [run.py] entry point
-Python file and contains configuration that overrides on a per model basis.
+The executor in the `Model` section sets `net_settings` to
+`classify_net_settings` to provide the top level text classification for the
+application using a BiLSTM+CRF.  This model is provided in the `classify.conf`
+resource library in the `deepnlp` (this project), with little left to specify.
+These remaining portions of the model that are specified are:
+
+* Dense output layer that connects the LSTM to the CRF and specifies the output
+  label cardinality, which is set to two (either clickbate or not).
+* The embedding layer to use, which is string substituted with the
+  `cb_default:embedding` section/option injected with the [overridden]
+  (`--override`) option.
+* The section containing the LSTM configuration (`recurrent_settings`).
+* Model settings that include the model name, learning rate, default epoch
+  count and the component that decodes model output to labels and softmaxes
+  (confidence like scores).
 
 The [glove.conf] defines an LSTM model that uses a fully connected decoder
 network to provide the output label.  The [transformer.conf] defines a
@@ -135,22 +211,36 @@ of epoch to train and other model specific parameters such as the learning rate
 and scheduler parameters can be given here.
 
 
+## Imported from Resource Libraries
+
+Other important components of the application not specified in the [obj.yml]
+but present from being imported from resource libraries include:
+
+* The facade class (`ClassifyModelFacade`) provided in the `classify.conf`
+  resource library, which is used by a second pass CLI application to predict
+  ad-hoc text.
+* Model events (i.e. when training or validation starts/end) to track model
+  train/test time consumption using an observer pattern in `observer.conf`.
+* A [Stash] that stratifies each dataset by label and other components that
+  enable vectorization and batching from the `feature.conf` resource library.
+
+
 ## Code
 
-The code is in the [cb] directory, and given its name to fit nicely as a Python
-module.  This directory only has the spaCy pipeline component for removing
-sentence boundaries and another file to read the corpus.  These files have
-inline comments that explain the simple tasks they do.
+All the code for this example is in the is in the [cb.py] that merges the
+corpus CSV files and the [harness.py] entry point application that invokes the
+command line interface API.
 
 
 ## Notebook
 
 There is a [Jupyter notebook] that executes the entire download, train,
 validate, test and report process for both models.  In [notebook directory] is
-the notebook, a Python source `harness.py` file that "glues" the CLI to the
-notebook API, and the output of a previous run of the notebook.
+the notebook, a Python source `mngfac.py` (facade manager factory) file that
+"glues" the CLI to the notebook API, and the output of a previous run of the
+notebook.
 
-The `harness.py` file contains a convenience class used by the notebook to add
+The `mngfac.py` file contains a convenience class used by the notebook to add
 directories to the Python path, which is useful for debugging when the package
 isn't installed.  It also has life cycle methods to manage instances of
 [ModelFacade] and configure the Jupyter notebook for things such as logging and
@@ -162,13 +252,12 @@ page width.
 
 [resource libraries]: https://plandes.github.io/util/doc/config.html#resource-libraries
 [resource library]: https://plandes.github.io/util/doc/config.html#resource-libraries
-[cb]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/cb
-[run.py]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/run.py
+[cb.py]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/cb.py
+[harness.py]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/harness.py
 [app.conf]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/resources/app.conf
 [dataclasses]: https://docs.python.org/3/library/dataclasses.html
 [action with positional and optional parameters]: https://plandes.github.io/util/doc/command-line.html#application-class-and-actions
-[default.conf]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/resources/default.conf
-[feature.conf]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/resources/feature.conf
+[obj.yml]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/resources/obj.yml
 [glove.conf]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/models/glove.conf
 [transformer.conf]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/models/transformer.conf
 [Stash]: https://plandes.github.io/util/api/zensols.persist.html#zensols.persist.domain.Stash
@@ -179,3 +268,8 @@ page width.
 [Jupyter notebook]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/notebook/clickbate.ipynb
 [notebook directory]: https://github.com/plandes/deepnlp/tree/master/example/clickbate/notebook
 [ModelFacade]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.model.html#zensols.deeplearn.model.facade.ModelFacade
+[first pass action]: https://plandes.github.io/util/doc/command-line.html#user-configuration
+[override]: https://plandes.github.io/util/api/zensols.cli.lib.html#zensols.cli.lib.config.ConfigurationOverrider
+[configuration importer]: https://plandes.github.io/util/api/zensols.cli.lib.html?#zensols.cli.lib.config.ConfigurationImporter
+[only source code]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/cb.py
+[mngfac.py]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/notebook/mngfac.py

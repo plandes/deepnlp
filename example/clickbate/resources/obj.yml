@@ -13,7 +13,7 @@ feature_installer:
   resources: 'instance: list: cb_data_resource, non_cb_data_resource'
 
 
-## feature creation
+## Feature creation
 #
 # massages the corpora into a usable dataframe (only code in this project)
 dataframe_stash:
