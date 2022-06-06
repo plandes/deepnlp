@@ -140,8 +140,8 @@ ner_batch_mappings:
     - tags
     - syns
     - glove_50_embedding
-#    - glove_300_embedding
-#    - word2vec_300_embedding
+    - glove_300_embedding
+    - word2vec_300_embedding
     - transformer_trainable_embedding
     - tok_label_transformer
 
@@ -168,7 +168,7 @@ batch_stash:
   data_point_type: "eval({'import': ['ner']}): ner.NERDataPoint"
   decoded_attributes: 'set: tok_labels, tok_mask, syns, ${ner_default:embedding}'
   # use only two cores
-  workers: -2
+  workers: 2
   batch_size: 32
 
 
