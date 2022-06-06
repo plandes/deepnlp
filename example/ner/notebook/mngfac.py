@@ -21,21 +21,21 @@ class JupyterManagerFactory(object):
         deepnlp.init()
         from zensols.cli import ConfigurationImporterCliHarness
         self._harness = ConfigurationImporterCliHarness(
-            package_resource='mr',
+            package_resource='ner',
             root_dir=app_root_dir.absolute())
 
     def __call__(self):
         """Create a new ``JupyterManager`` instance and return it."""
         from zensols.deeplearn.cli import JupyterManager
 
-        def map_args(config_name: str = 'wordvec', embedding: str = None):
-            args = []
-            if embedding is not None:
-                args.extend(['--override', f'mr_default.name={embedding}'])
-            if config_name is not None:
-                config_file = self._harness.root_dir / f'models/{config_name}.yml'
-                args.extend(['--config', str(config_file)])
-            return args
+        def map_args(config_name: str = 'wordvec', embedding: str = 'glove_50',
+                     model_id: str = 'bert-base-cased'):
+            cfile: Path = self._harness.root_dir / f'models/{config_name}.yml'
+            overrides = {'name': embedding,
+                         'trans_model_id': model_id}
+            oarg = ','.join(map(lambda x: f'ner_default.{x[0]}={x[1]}',
+                                overrides.items()))
+            return ('--config', str(cfile), '--override', oarg)
 
         return JupyterManager(self._harness, cli_args_fn=map_args,
                               reduce_logging=True)
