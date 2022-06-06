@@ -15,13 +15,13 @@ BERT word embedding example.
 
 ## Command Line Interface
 
-The example is written as an Zensols CLI application.  The entry point program
-is [harness.py].  However, the application is configured in the [app.conf] and
-[obj.yml] configuration files, which is where almost all of what makes the
-application is set up.  In these configuration files, the application is
-configured with file system paths used in the project all based from a root
-path supplied by the entry point [harness.py] application, or a different
-relative directory for its [Jupyter notebook example].
+All of the examples for this package are written as an Zensols CLI
+applications.  The entry point program is [harness.py].  However, the command
+line is configured in [app.conf] and the application in [obj.yml], which is
+where almost all of the example.  These files configure file system paths and
+model, tell where to load other [resource libraries], point to corpus resources
+and used by the [Jupyter notebook example] to allow for more rapid prototyping
+and experimentation.
 
 Because the examples (including this one) use [resource libraries], the
 configuration is much smaller and more manageable.  First we start with adding
@@ -86,14 +86,14 @@ expect = False
 The configured actions and their options for the CLI in the `cli` section
 described earlier must be imported from their respective [resource libraries],
 which is done with:
-``ini
+```ini
 # import command line apps
 [import]
 config_files = list:
     resource(zensols.util): resources/default.conf,
 ...
     resource(zensols.deepnlp): resources/cleaner.conf
-``
+```
 
 
 Finally we import the model configuration from the [resource libraries] with a
@@ -160,10 +160,12 @@ uncompress them on the file system.  This local directory is set in the
 
 ### Feature Creation
 
-The next series of [Stash] instances that cache work it goes (see *batch
-encoding* in [the paper]) with the following process:
+This section contains several sections that describe [Stash] instances that
+cache the vectorized batches to the file system (see *batch encoding* in [the
+paper]).  This process as it relates to this section includes:
 
-1. Download the corpus and uncompress if it isn't already.
+1. Download the corpus (see [install-the-corpus]) and uncompress if it isn't
+   already.
 2. Parse the corpus from the sentence text files (`dataframe_stash`).
 3. Randomly split the dataset in to train, validation and test set, then store
    the data from the dataframe as a picked file on the file system
@@ -223,29 +225,6 @@ These remaining portions of the model that are specified are:
 * Model settings that include the model name, learning rate, default epoch
   count and the component that decodes model output to labels and softmaxes
   (confidence like scores).
-
-The [glove.conf] defines an LSTM model that uses a fully connected decoder
-network to provide the output label.  The [transformer.conf] defines a
-HuggingFace BERT transformer model that is fine tuned during the training.
-
-In each of these files, the `clickbate_default` section is used for settings
-just in this configuration file.  The `batch_stash` section tells what features
-we want to use for this mode, which is how the *batch decoding* process knows
-which vectorized features to read from the file system.  The
-`classify_net_settings` tells it which embedding (layer) to and any additional
-network parameters such as the dropout.
-
-For the [glove.conf] model, we use the RNN settings defined in the [resource
-library] defined for the [zensols.deeplearn] package that has the network code
-and configuration.  For the [transformer.conf] the `recurrent_settings`
-property is left out, which defaults to `None` indicating not to use a
-recurrent network and rely on just the embedding layer has only the
-transformer networks.
-
-Finally the model settings provide configuration to the model, which is where
-to store the output of the model (i.e. weights) in the `path` property.  Number
-of epoch to train and other model specific parameters such as the learning rate
-and scheduler parameters can be given here.
 
 
 ## Imported from Resource Libraries
