@@ -34,6 +34,7 @@ feature_factory_stash:
 batch_stash:
   batch_feature_mappings: 'dataclass(zensols.deeplearn.batch.ConfigBatchFeatureMapping): cb_batch_mappings'
   decoded_attributes: 'set: label, ${cb_default:lang_features} ${cb_default:embedding}'
+  # use all but 2 cores of the processor as number of sub-process to batch
   workers: -2
 
 # batch mappings from attribute to feature IDs and which to use from resource libs

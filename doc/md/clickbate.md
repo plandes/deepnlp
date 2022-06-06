@@ -131,7 +131,7 @@ includes the [obj.yml] file, which is this application example's specific
 configuration.
 
 
-## Configuration
+## Application Configuration
 
 As mentioned in the previous section, the [app.conf] specifies [resource
 libraries] to load allowing the [obj.yml] to add and modify existing
@@ -140,9 +140,25 @@ configuration.  This file could have been written as an `ini` file (like
 mappings lending itself better to a hierarchical data format such as YAML.
 
 The [obj.yml] contains the application specific configuration for reading the
-corpus files and parsing it in to features that will later be vectorized.
-First the configuration defines where to download the corpus (`Install the
-corpus`) and where to uncompress the files to make it available to the program.
+corpus files and parsing it in to features that will later be vectorized.  It
+also contains the model.  All of this is described in each sub section with the
+respective named section (root YAML nodes) in the [obj.yml] application
+configuration file.
+
+
+### Install the Corpus
+
+First the configuration defines where to download the corpus uncompress the
+files to make it available to the program.  The `resource` sections tell where
+the resources are on the Internet, and the file naming, which by default takes
+the naming from the URL.
+
+The installer has a list of resources it uses to download the files and
+uncompress them on the file system.  This local directory is set in the
+`feature.conf` [resource library].
+
+
+### Feature Creation
 
 The next series of [Stash] instances that cache work it goes (see *batch
 encoding* in [the paper]) with the following process:
@@ -162,14 +178,35 @@ encoding* in [the paper]) with the following process:
 6. Train, validate and test the model using the same ordering and splits
    sampled by the `dataframe_stash` from step 1.
 
+
+### Batch
+
+The `Batch` section provides all the configuration necessary to batch the
+vectorized data in to chunks usable by the model.  Specifically, the
+`batch_stash` section describes how to map between the vectorized output to
+entries in the batches and their grouping.  It also gives the default set of
+attributes to test with at experimentation and the number of sub-process
+workers to use during batching.
+
+The `cb_batch_mappings` section indicates to reuse the text classification
+mappings from the `classify.conf` resource library, and the more general
+language features (such as spaCy parsed vectorized data) from the
+`lang-batch.yml` resource library.
+
+
+### Natural Language Processing
+
 The `doc_parser` section tells the parser to create instances of a different
 class that what was defined in its resource library (`FeatureDocument`) using
 the classification resource library set up (loaded by the `classify.conf`
 resource library by [app.conf]).  The class we provide for this example
 contains an attribute to carry a label for our text classification task.
 
+The `classify_label_vectorizer` comes from the `feature.conf` resource library,
+which needs the output nominal label names for encoding/vectorization.
 
-## Model Definition
+
+### Model
 
 The executor in the `Model` section sets `net_settings` to
 `classify_net_settings` to provide the top level text classification for the
@@ -221,8 +258,11 @@ but present from being imported from resource libraries include:
   ad-hoc text.
 * Model events (i.e. when training or validation starts/end) to track model
   train/test time consumption using an observer pattern in `observer.conf`.
+* Vectorizer configuration, vectorizer manager and manager sets, which take
+  data (in our case English text) and vectorize in to binary form usable by the
+  model.  See [the paper] for more information.
 * A [Stash] that stratifies each dataset by label and other components that
-  enable vectorization and batching from the `feature.conf` resource library.
+  enable batching from the `feature.conf` resource library.
 
 
 ## Code
