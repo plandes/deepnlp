@@ -155,7 +155,7 @@ the naming from the URL.
 
 The installer has a list of resources it uses to download the files and
 uncompress them on the file system.  This local directory is set in the
-`feature.conf` [resource library].
+[feature resource library].
 
 
 ### Feature Creation
@@ -191,20 +191,20 @@ attributes to test with at experimentation and the number of sub-process
 workers to use during batching.
 
 The `cb_batch_mappings` section indicates to reuse the text classification
-mappings from the `classify.conf` resource library, and the more general
-language features (such as spaCy parsed vectorized data) from the
-`lang-batch.yml` resource library.
+mappings from the [classify resource library], and the more general language
+features (such as spaCy parsed vectorized data) from the [lang-batch resource
+library].
 
 
 ### Natural Language Processing
 
 The `doc_parser` section tells the parser to create instances of a different
 class that what was defined in its resource library (`FeatureDocument`) using
-the classification resource library set up (loaded by the `classify.conf`
-resource library by [app.conf]).  The class we provide for this example
-contains an attribute to carry a label for our text classification task.
+the classification resource library set up (loaded by the [classify resource
+library] by [app.conf]).  The class we provide for this example contains an
+attribute to carry a label for our text classification task.
 
-The `classify_label_vectorizer` comes from the `feature.conf` resource library,
+The `classify_label_vectorizer` comes from the [feature resource library],
 which needs the output nominal label names for encoding/vectorization.
 
 
@@ -212,8 +212,8 @@ which needs the output nominal label names for encoding/vectorization.
 
 The executor in the `Model` section sets `net_settings` to
 `classify_net_settings` to provide the top level text classification for the
-application using a BiLSTM+CRF.  This model is provided in the `classify.conf`
-resource library in the `deepnlp` (this project), with little left to specify.
+application using a BiLSTM+CRF.  This model is provided in the [classify
+resource library] in `deepnlp` (this project), with little left to specify.
 These remaining portions of the model that are specified are:
 
 * Dense output layer that connects the LSTM to the CRF and specifies the output
@@ -232,16 +232,16 @@ These remaining portions of the model that are specified are:
 Other important components of the application not specified in the [obj.yml]
 but present from being imported from resource libraries include:
 
-* The facade class (`ClassifyModelFacade`) provided in the `classify.conf`
-  resource library, which is used by a second pass CLI application to predict
-  ad-hoc text.
+* The facade class (`ClassifyModelFacade`) provided in the [classify resource
+  library], which is used by a second pass CLI application to predict ad-hoc
+  text.
 * Model events (i.e. when training or validation starts/end) to track model
   train/test time consumption using an observer pattern in `observer.conf`.
 * Vectorizer configuration, vectorizer manager and manager sets, which take
   data (in our case English text) and vectorize in to binary form usable by the
   model.  See [the paper] for more information.
 * A [Stash] that stratifies each dataset by label and other components that
-  enable batching from the `feature.conf` resource library.
+  enable batching from the [feature resource library].
 
 
 ## Code
@@ -292,3 +292,6 @@ page width.
 [configuration importer]: https://plandes.github.io/util/api/zensols.cli.lib.html?#zensols.cli.lib.config.ConfigurationImporter
 [only source code]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/cb.py
 [mngfac.py]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/notebook/mngfac.py
+[feature resource library]: https://github.com/plandes/deepnlp/blob/master/resources/feature.con
+[classify resource library]: https://github.com/plandes/deepnlp/blob/master/resources/classify.conf
+[lang-batch resource library]: https://github.com/plandes/deepnlp/blob/master/resources/lang-batch.yml

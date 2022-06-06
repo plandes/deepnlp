@@ -41,7 +41,7 @@ fine-tune trainable transformer model.
 
 The Zensols [deep NLP] library supports word embeddings for [Glove],
 [Word2Vec], [fastText] and [BERT].  The `embedding` section of the
-[configuration file] specifies which word vector models and layers that use
+[glove resource library] specifies which word vector models and layers that use
 them.  This defines the 6 billion token (400K vocab) 50 dimension [Glove] model
 with a [GloveWordEmbedModel] instance:
 ```ini
@@ -541,3 +541,4 @@ To run the [Jupyter movie notebook]:
 [FeatureDocumentDataPoint]: ../api/zensols.deepnlp.batch.html#zensols.deepnlp.batch.domain.FeatureDocumentDataPoint
 [LanguageModelFacade]: ../api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacade
 [LanguageModelFacadeConfig]: ../api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacadeConfig
+[glove resource library]: https://github.com/plandes/deepnlp/blob/master/resources/glove.conf
