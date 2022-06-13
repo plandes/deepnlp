@@ -51,7 +51,7 @@ model_name = ${cb_default:embedding}
 
 The following configuration adds default applications, which is invoked from
 the command line by the `CliHarness` defined in the [harness.py] entry point
-and imported from [resources libraries] as [first pass actions]:
+and imported from [resource libraries] as [first pass actions]:
 ```ini
 # command line applications and sections to delete after load
 [cli]
@@ -168,20 +168,19 @@ This section contains several sections that describe [Stash] instances that
 cache the vectorized batches to the file system (see *batch encoding* in [the
 paper]).  This process as it relates to this section includes:
 
-1. Download the corpus (see [install-the-corpus]) and uncompress if it isn't
-   already.
-2. Parse the corpus from the sentence text files (`dataframe_stash`).
-3. Randomly split the dataset in to train, validation and test set, then store
+1. Parse the downloaded corpus from the sentence text files
+   (`dataframe_stash`).
+1. Randomly split the dataset in to train, validation and test set, then store
    the data from the dataframe as a picked file on the file system
    (`dataframe_stash`).
-4. Parse the English sentences from the `dataframe_stash` using spaCy across as
+1. Parse the English sentences from the `dataframe_stash` using spaCy across as
    many processes as the CPU has cores (`feature_factory_stash`) and persisting
    them to the file system in directories by feature (`feature_dir_stash` only
    found in the `deeplearn` resource library).
-5. Read only certain files (based on feature selection for the particular
+1. Read only certain files (based on feature selection for the particular
    model) from the file system to reconstruct batches (see *batch decoding* in
    [the paper]).
-6. Train, validate and test the model using the same ordering and splits
+1. Train, validate and test the model using the same ordering and splits
    sampled by the `dataframe_stash` from step 1.
 
 
@@ -275,28 +274,31 @@ page width.
 [clickbate corpus]: https://github.com/bhargaviparanjape/clickbait/tree/master/dataset
 
 [resource libraries]: https://plandes.github.io/util/doc/config.html#resource-libraries
-[resource library]: https://plandes.github.io/util/doc/config.html#resource-libraries
 [cb.py]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/cb.py
 [harness.py]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/harness.py
 [app.conf]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/resources/app.conf
 [dataclasses]: https://docs.python.org/3/library/dataclasses.html
 [action with positional and optional parameters]: https://plandes.github.io/util/doc/command-line.html#application-class-and-actions
 [obj.yml]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/resources/obj.yml
-[glove.conf]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/models/glove.conf
-[transformer.conf]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/models/transformer.conf
+
 [Stash]: https://plandes.github.io/util/api/zensols.persist.html#zensols.persist.domain.Stash
+
 [the paper]: https://arxiv.org/pdf/2109.03383.pdf
+
 [Jupyter notebook example]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/notebook/clickbate.ipynb
 [Jupyter notebook]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/notebook/clickbate.ipynb
 [notebook directory]: https://github.com/plandes/deepnlp/tree/master/example/clickbate/notebook
 [ModelFacade]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.model.html#zensols.deeplearn.model.facade.ModelFacade
 [first pass action]: https://plandes.github.io/util/doc/command-line.html#user-configuration
-[override]: https://plandes.github.io/util/api/zensols.cli.lib.html#zensols.cli.lib.config.ConfigurationOverrider
+[first pass actions]: https://plandes.github.io/util/doc/command-line.html#user-configuration
 [configuration importer]: https://plandes.github.io/util/api/zensols.cli.lib.html?#zensols.cli.lib.config.ConfigurationImporter
 [only source code]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/cb.py
 [mngfac.py]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/notebook/mngfac.py
+[resource libraries]: https://plandes.github.io/util/doc/config.html#resource-libraries
 [feature resource library]: https://github.com/plandes/deepnlp/blob/master/resources/feature.conf
 [classify resource library]: https://github.com/plandes/deepnlp/blob/master/resources/classify.conf
 [lang-batch resource library]: https://github.com/plandes/deepnlp/blob/master/resources/lang-batch.yml
 [observer resource library]: https://github.com/plandes/deeplearn/blob/master/resources/observer.conf
 [mngfac.py]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/notebook/mngfac.py
+[overridden]: https://plandes.github.io/util/api/zensols.cli.lib.html#zensols.cli.lib.config.ConfigurationOverrider
+[override]: https://plandes.github.io/util/api/zensols.cli.lib.html#zensols.cli.lib.config.ConfigurationOverrider

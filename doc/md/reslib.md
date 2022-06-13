@@ -58,7 +58,7 @@ This module uses the glove embedding model to forward using a
 `torch.nn.Embedding` as input at the beginning of the forward [PyTorch] process.
 The reference to `language_feature_manager` is covered later.
 
-The embedding resource libraries have a similar definition for the [Glove] 300
+The embedding resource libraries have a similar definition for the [GloVE] 300
 dimension, the [word2vec resource library] for the Google's pre-trained 300
 dimension, the [fasttext resource library] for Facebook's pre-trained News and
 Crawl pre-trained embeddings, and the [transformer resource library] contains
@@ -192,10 +192,10 @@ in their own groups so that we can experiment using different embeddings for
 each test.  Using [BERT] will take the longest since each sentence will be
 computed during decoding.
 
-However, [Glove] 50D embeddings vectorize much quicker as only the indexes
+However, [GloVE] 50D embeddings vectorize much quicker as only the indexes
 are stored and quickly retrieved in the [PyTorch] API on demand.  Our caching
 strategy also changes as we can (with most graphics cards) fit the entire
-[Glove] 50D embedding in GPU memory.  Our composition stash configuration
+[GloVE] 50D embedding in GPU memory.  Our composition stash configuration
 follows:
 ```ini
 [batch_dir_stash]
@@ -334,13 +334,21 @@ CRF (if there is one configured).
 
 
 <!-- links -->
-[deepnlp resource library]: https://github.com/plandes/deepnlp/tree/master/resources
-[deepnlp resource libraries]: https://github.com/plandes/deepnlp/tree/master/resources
-[base resource library]: https://plandes.github.io/util/doc/config.html#resource-libraries
-[base resource libraries]: https://plandes.github.io/util/doc/config.html#resource-libraries
+[spaCy]: https://spacy.io
+[PyTorch]: https://pytorch.org
+[HuggingFace]: https://github.com/huggingface/transformers
 
 [GloVE]: https://nlp.stanford.edu/projects/glove/
 [BERT]: https://huggingface.co/transformers/model_doc/bert.html
+[word2Vec]: https://code.google.com/archive/p/word2vec/
+[fastText]: https://fasttext.cc
+
+[deeplearn API]: https://plandes.github.io/deeplearn/index.html
+[deeplearn API batch stash]: https://plandes.github.io/deeplearn/doc/preprocess.html#batch-stash
+[deeplearn vectorizers]: https://plandes.github.io/deeplearn/doc/preprocess.html#vectorizers
+
+[deepnlp resource library]: https://github.com/plandes/deepnlp/tree/master/resources
+[resource library]: https://plandes.github.io/util/doc/config.html#resource-libraries
 
 [GloVE resource library]: https://github.com/plandes/deepnlp/blob/master/resources/glove.conf
 [fasttext resource library]: https://github.com/plandes/deepnlp/blob/master/resources/fasttext.conf
@@ -350,3 +358,25 @@ CRF (if there is one configured).
 [classification resource library]: https://github.com/plandes/deepnlp/blob/master/resources/classify.conf
 [classify-batch.yml]: https://github.com/plandes/deepnlp/blob/master/resources/classify-batch.yml
 [movie review sentiment example]: https://plandes.github.io/deepnlp/doc/movie-example.html
+
+[ClassifyModelFacade]: ../api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade
+[ClassifyNetworkSettings]: ../api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.model.ClassifyNetworkSettings
+[CountEnumContainerFeatureVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer
+[EncodableFeatureVectorizer]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.vectorize.html#zensols.deeplearn.vectorize.manager.EncodableFeatureVectorizer
+[EnumContainerFeatureVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer
+[FeatureDocumentParser]: ../api/zensols.deepnlp.html#zensols.deepnlp.parse.FeatureDocumentParser
+[FeatureDocumentVectorizerManager]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager
+[FeatureDocumentVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizer
+[FeatureDocumentVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizer
+[FeatureDocument]: ../api/zensols.deepnlp.html#zensols.deepnlp.domain.FeatureDocument
+[FeatureVectorizerManager]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.vectorize.html?highlight=featurevectorizermanager#zensols.deeplearn.vectorize.manager.FeatureVectorizerManager
+[GloveWordEmbedModel]: ../api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.glove.GloveWordEmbedModel
+[LabeledFeatureDocumentDataPoint]: ../api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.domain.LabeledFeatureDocumentDataPoint
+[LanguageModelFacade]: ../api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacade
+[SpacyFeatureVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer
+[TextFeatureType]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.TextFeatureType
+[WordVectorEmbeddingLayer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.WordVectorEmbeddingLayer
+[WordVectorSentenceFeatureVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.WordVectorSentenceFeatureVectorizer
+
+[BatchDirectoryCompositeStash]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.batch.html?highlight=batchdirectorycompositestash#zensols.deeplearn.batch.stash.BatchDirectoryCompositeStash
+[DataPoint]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.batch.html?highlight=datapoint#zensols.deeplearn.batch.domain.DataPoint

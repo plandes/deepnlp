@@ -7,8 +7,6 @@ sentiment analysis corpus.  It is highly recommended to first read through the
 this example.  For this reason, only new configuration and concepts will be
 provided.
 
-[missing URL example]
-
 
 ## Corpus
 
@@ -174,61 +172,30 @@ To run the [Jupyter movie notebook]:
 
 <!-- links -->
 
-[PyTorch]: https://pytorch.org
 [Pandas]: https://pandas.pydata.org
-[huggingface]: https://github.com/huggingface/transformers
-[spaCy]: https://spacy.io
-[GloVE]: https://nlp.stanford.edu/projects/glove/
-[Word2Vec]: https://code.google.com/archive/p/word2vec/
-[fastText]: https://fasttext.cc
-[BERT]: https://huggingface.co/transformers/model_doc/bert.html
 [Stanford movie review]: https://nlp.stanford.edu/sentiment/
 [Cornell sentiment polarity]: https://www.cs.cornell.edu/people/pabo/movie-review-data/
 
-[nlparse]: https://github.com/plandes/nlparse
 [deeplearn API]: https://plandes.github.io/deeplearn/index.html
 [data frame stashes]: https://plandes.github.io/deeplearn/doc/preprocess.html#data-as-a-pandas-data-frame
-[deeplearn vectorizers]: https://plandes.github.io/deeplearn/doc/preprocess.html#vectorizers
 [deeplearn API batch]: https://plandes.github.io/deeplearn/doc/preprocess.html#batches
-[deeplearn API batch stash]: https://plandes.github.io/deeplearn/doc/preprocess.html#batch-stash
-[resource libraries]: https://plandes.github.io/util/doc/config.html#resource-libraries
-[resource library]: https://plandes.github.io/util/doc/config.html#resource-libraries
+[classify resource library]: https://github.com/plandes/deepnlp/blob/master/resources/classify.conf
 
-[deep NLP]: https://plandes.github.io/deepnlp/index.html
 [movie review task example]: https://github.com/plandes/deepnlp/blob/master/example/movie
 [obj.yml]: https://github.com/plandes/deepnlp/blob/master/example/movie/resources/obj.yml
-[corpus.py]: https://github.com/plandes/deepnlp/blob/master/example/movie/src/movie/corpus.py
-[domain.py]: https://github.com/plandes/deepnlp/blob/master/example/movie/src/movie/domain.py
-[facade.py]: https://github.com/plandes/deepnlp/blob/master/example/movie/src/movie/facade.py
+[corpus.py]: https://github.com/plandes/deepnlp/blob/master/example/movie/mr/corpus.py
+[domain.py]: https://github.com/plandes/deepnlp/blob/master/example/movie/mr/domain.py
 [Jupyter movie notebook]: https://github.com/plandes/deepnlp/blob/master/example/movie/notebook/movie.ipynb
 
-[DataframeStash]: https://plandes.github.io/deeplearn/api/zensols.dataframe.html#zensols.dataframe.stash.DataframeStash
-[Batch]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.batch.html#zensols.deeplearn.batch.domain.Batch
-[EncodableFeatureVectorizer]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.vectorize.html#zensols.deeplearn.vectorize.manager.EncodableFeatureVectorizer
-[FeatureVectorizerManager]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.vectorize.html?highlight=featurevectorizermanager#zensols.deeplearn.vectorize.manager.FeatureVectorizerManager
-[BatchDirectoryCompositeStash]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.batch.html?highlight=batchdirectorycompositestash#zensols.deeplearn.batch.stash.BatchDirectoryCompositeStash
 [DocumentFeatureStash]: https://plandes.github.io/deepnlp/api/zensols.deepnlp.feature.html#zensols.deepnlp.feature.stash.DocumentFeatureStash
 
-[WordVectorSentenceFeatureVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.WordVectorSentenceFeatureVectorizer
-[GloveWordEmbedModel]: ../api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.glove.GloveWordEmbedModel
-[WordVectorEmbeddingLayer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.WordVectorEmbeddingLayer
 [FeatureDocument]: ../api/zensols.deepnlp.html#zensols.deepnlp.domain.FeatureDocument
-[EnumContainerFeatureVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer
-[SpacyFeatureVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer
-[TextFeatureType]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.TextFeatureType
-[FeatureDocumentVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizer
-[CountEnumContainerFeatureVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer
-[FeatureDocumentVectorizerManager]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager
-[FeatureDocumentParser]: ../api/zensols.deepnlp.html#zensols.deepnlp.parse.FeatureDocumentParser
 [ResourceFeatureDataframeStash]: ../api/zensols.dataframe.html#zensols.dataframe.stash.ResourceFeatureDataframeStash
 [FeatureDocumentDataPoint]: ../api/zensols.deepnlp.batch.html#zensols.deepnlp.batch.domain.FeatureDocumentDataPoint
-[LanguageModelFacade]: ../api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacade
-[LanguageModelFacadeConfig]: ../api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacadeConfig
 [LabeledFeatureDocument]: ../api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.domain.LabeledFeatureDocument
 
-[glove resource library]: https://github.com/plandes/deepnlp/blob/master/resources/glove.conf
 [clickbate example]: clickbate.md
 [harness.py]: https://github.com/plandes/deepnlp/blob/master/example/movie/harness.py
 [app.conf]: https://github.com/plandes/deepnlp/blob/master/example/movie/resources/app.conf
 [obj.yml]: https://github.com/plandes/deepnlp/blob/master/example/movie/resources/app.conf
-[feature resource library]: https://github.com/plandes/deepnlp/blob/master/example/movie/resources/feature.conf
+[feature resource library]: https://github.com/plandes/deepnlp/blob/master/resources/feature.conf
