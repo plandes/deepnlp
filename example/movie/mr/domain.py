@@ -76,12 +76,6 @@ class MovieReviewFeatureStash(DocumentFeatureStash):
     of :class:`.MovieReview`.
 
     """
-    def __post_init__(self):
-        super().__post_init__()
-        # tell the document parser to create instances of `MovieReview` rather
-        # than the default `FeatureDocument`.
-        self.vec_manager.doc_parser.doc_class = MovieReview
-
     def _parse_document(self, id: int, row: pd.Series) -> MovieReview:
         # text to parse with SpaCy
         text = row['sentence']

@@ -12,6 +12,10 @@ comes with two models: one that uses word vectors (GloVE 50 dimension and the
 fasttext news pre-trained embeddings) with additional language features, and a
 BERT word embedding example.
 
+Note that there is quite a bit of inline documentation in the [app.conf] and
+[obj.yml] configuration files. so it is recommended the reader follow it while
+reading this tutorial.
+
 
 ## Command Line Interface
 
@@ -236,7 +240,8 @@ but present from being imported from resource libraries include:
   library], which is used by a second pass CLI application to predict ad-hoc
   text.
 * Model events (i.e. when training or validation starts/end) to track model
-  train/test time consumption using an observer pattern in `observer.conf`.
+  train/test time consumption using an observer pattern in [observer resource
+  library].
 * Vectorizer configuration, vectorizer manager and manager sets, which take
   data (in our case English text) and vectorize in to binary form usable by the
   model.  See [the paper] for more information.
@@ -255,11 +260,11 @@ command line interface API.
 
 There is a [Jupyter notebook] that executes the entire download, train,
 validate, test and report process for both models.  In [notebook directory] is
-the notebook, a Python source `mngfac.py` (facade manager factory) file that
+the notebook, a Python source [mngfac.py] (facade manager factory) file that
 "glues" the CLI to the notebook API, and the output of a previous run of the
 notebook.
 
-The `mngfac.py` file contains a convenience class used by the notebook to add
+The [mngfac.py] file contains a convenience class used by the notebook to add
 directories to the Python path, which is useful for debugging when the package
 isn't installed.  It also has life cycle methods to manage instances of
 [ModelFacade] and configure the Jupyter notebook for things such as logging and
@@ -280,9 +285,7 @@ page width.
 [glove.conf]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/models/glove.conf
 [transformer.conf]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/models/transformer.conf
 [Stash]: https://plandes.github.io/util/api/zensols.persist.html#zensols.persist.domain.Stash
-[spaCy]: https://spacy.io
 [the paper]: https://arxiv.org/pdf/2109.03383.pdf
-[zensols.deeplearn]: https://github.com/plandes/deeplearn
 [Jupyter notebook example]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/notebook/clickbate.ipynb
 [Jupyter notebook]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/notebook/clickbate.ipynb
 [notebook directory]: https://github.com/plandes/deepnlp/tree/master/example/clickbate/notebook
@@ -292,6 +295,8 @@ page width.
 [configuration importer]: https://plandes.github.io/util/api/zensols.cli.lib.html?#zensols.cli.lib.config.ConfigurationImporter
 [only source code]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/cb.py
 [mngfac.py]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/notebook/mngfac.py
-[feature resource library]: https://github.com/plandes/deepnlp/blob/master/resources/feature.con
+[feature resource library]: https://github.com/plandes/deepnlp/blob/master/resources/feature.conf
 [classify resource library]: https://github.com/plandes/deepnlp/blob/master/resources/classify.conf
 [lang-batch resource library]: https://github.com/plandes/deepnlp/blob/master/resources/lang-batch.yml
+[observer resource library]: https://github.com/plandes/deeplearn/blob/master/resources/observer.conf
+[mngfac.py]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/notebook/mngfac.py

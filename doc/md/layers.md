@@ -28,9 +28,8 @@ package are listed below:
     [TransformerResource.model_id] attribute gives a list of tested models.
   * [TransformerSequence]: A sequence based model for token classification use
     HuggingFace transformers.  Named entity recognition (NER) is one use case
-  * of this model.
-  * See [ner embedding.conf] and [movie embedding.conf] for examples of how to
-    configure transformer layers.
+    of this model.
+  * See [transformer.conf] for examples of how to configure transformer layers.
 
 <!-- links -->
 [DeepConvolution1dNetworkSettings]: ../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings
@@ -43,5 +42,4 @@ package are listed below:
 [TransformerResource.model_id]: ../api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerResource.model_id
 [TransformerEmbedding.output]: ../api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.embed.TransformerEmbedding.output
 [TransformerSequence]: ../api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.layer.TransformerSequence
-[ner embedding.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/embedding.conf
-[movie embedding.conf]: https://github.com/plandes/deepnlp/blob/master/example/movie/resources/embedding.conf
+[transformer.conf]: https://github.com/plandes/deepnlp/blob/master/resources/transformer.conf

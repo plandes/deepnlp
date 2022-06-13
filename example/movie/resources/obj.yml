@@ -4,7 +4,7 @@ deeplearn_default:
   model_name: '${mr_default:embedding}'
 
 
-## Install the corpus: declare resources to be downloaded
+## Install the Corpus: declare resources to be downloaded
 #
 # stanford corpus resource
 mr_standford_resource:
@@ -24,9 +24,6 @@ mr_cornell_resource:
 feature_installer:
   resources: 'instance: list: mr_standford_resource, mr_cornell_resource'
 
-
-## Project specific corpus
-#
 # configuration needed to create the corpus and a Pandas dataframe used by the
 # framework
 dataset_factory:
@@ -42,7 +39,15 @@ dataset_factory:
   tok_len: 10
 
 
-## Feature stashes
+## Natural language parsing
+#
+# override for creating instances of a class that have an attribute for the
+# label of the text classification
+doc_parser:
+  doc_class: 'class: mr.MovieReview'
+
+
+## Feature Creation
 #
 # a stash of rows from a Pandas dataset for each movie review
 dataframe_stash:

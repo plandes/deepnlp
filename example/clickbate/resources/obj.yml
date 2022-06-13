@@ -13,6 +13,20 @@ feature_installer:
   resources: 'instance: list: cb_data_resource, non_cb_data_resource'
 
 
+## Natural language parsing
+#
+# override for creating instances of a class that have an attribute for the
+# label of the text classification
+doc_parser:
+  doc_class: 'class: zensols.deepnlp.classify.LabeledFeatureDocument'
+  # override to use the component
+  components: 'instance: list: remove_sent_boundaries_component'
+
+# override to provide the labels to vectorize
+classify_label_vectorizer:
+  categories: ${dataframe_stash:labels}
+
+
 ## Feature creation
 #
 # massages the corpora into a usable dataframe (only code in this project)
@@ -43,20 +57,6 @@ cb_batch_mappings:
     - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): classify_label_batch_mappings'
     - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): lang_batch_mappings'
   field_keep: [label, enums, dependencies, glove_50_embedding, fasttext_news_300_embedding]
-
-
-## Natural language parsing
-#
-# override for creating instances of a class that have an attribute for the
-# label of the text classification
-doc_parser:
-  doc_class: 'class: zensols.deepnlp.classify.LabeledFeatureDocument'
-  # override to use the component
-  components: 'instance: list: remove_sent_boundaries_component'
-
-# override to provide the labels to vectorize
-classify_label_vectorizer:
-  categories: ${dataframe_stash:labels}
 
 
 ## Model
