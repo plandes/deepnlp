@@ -7,7 +7,8 @@ from typing import Tuple, List, Iterable
 from dataclasses import dataclass, field
 from itertools import chain as ch
 import numpy as np
-from zensols.nlp import FeatureDocument
+from zensols.config import Settings
+from zensols.nlp import FeatureSentence, FeatureDocument
 from zensols.deeplearn.vectorize import CategoryEncodableFeatureVectorizer
 from zensols.deeplearn.model import PredictionMapper
 from zensols.deeplearn.result import ResultsContainer
@@ -87,3 +88,15 @@ class ClassificationPredictionMapper(PredictionMapper):
             setattr(doc, self.pred_attribute, cl)
             setattr(doc, self.softmax_logit_attribute, sms)
         return tuple(docs)
+
+
+@dataclass
+class SequencePredictionMapper(ClassificationPredictionMapper):
+    def _create_features(self, sent_text: str) -> Tuple[FeatureSentence]:
+        doc: FeatureDocument = self.vec_manager.parse(sent_text)
+        self._docs.append(doc)
+        return doc.sents
+
+    def map_results(self, result: ResultsContainer) -> Settings:
+        classes = self._map_classes(result)
+        return Settings(classes=tuple(classes), docs=tuple(self._docs))

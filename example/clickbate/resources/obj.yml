@@ -81,4 +81,3 @@ model_settings:
   model_name: 'clickbate: ${cb_default:name}'
   learning_rate: 1e-3
   epochs: 35
-  prediction_mapper_name: classify_feature_prediction_mapper

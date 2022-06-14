@@ -181,6 +181,13 @@ executor:
   # configures the neural network
   net_settings: 'instance: recurrent_crf_net_settings'
 
+## Prediction
+#
+# create data points from the client
+feature_prediction_mapper:
+  class_name: ner.NERPredictionMapper
+
+# learning rate and num epochs
 model_settings:
   learning_rate: 0.001
   epochs: 40

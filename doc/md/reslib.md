@@ -12,13 +12,10 @@ The models configured by the [deepnlp resource library] files include
 non-contextual word embeddings (i.e. GloVE), a frozen transformer (i.e. [BERT])
 transformer model and a fine-tune trainable transformer model.
 
-The Zensols Deep NLP library supports word embeddings for [GloVE],
-[word2Vec], [fastText] and [BERT].  The `embedding` section of the
-[GloVE resource library] specifies which word vector models and layers that use
-them.  This defines the 6 billion token (400K vocab) 50 dimension [GloVE] model
-with a [GloveWordEmbedModel] instance:
+The Zensols Deep NLP library supports word embeddings for [GloVE], [word2Vec],
+[fastText] and [BERT].  The `embedding` section of the [GloVE resource library]
+specifies which word vector models and layers that use them:
 ```ini
-# glove embeddding model (not layer)
 [glove_50_embedding]
 class_name = zensols.deepnlp.embed.GloveWordEmbedModel
 path = path: ${default:corpus_dir}/glove
@@ -26,20 +23,18 @@ desc = 6B
 dimension = 50
 lowercase = True
 ```
-with the `lowercase` property telling the framework to down case all queries to
-the model since the word vectors were trained on a down cased corpus.
+which defines the 6 billion token (400K vocab) 50 dimension [GloVE] model with a
+[GloveWordEmbedModel] instance.  The `lowercase` property telling the framework
+to down case all queries to the model since the word vectors were trained on a
+down cased corpus.
 
 The feature vectorizer [WordVectorSentenceFeatureVectorizer] that uses
 the above embedding is defined.  This converts the word vector indexes
 (depending on the configuration) to a tensor of the word embedding representing
 the corresponding sentence:
 ```ini
-# a vectorizer that turns tokens (TokensContainer) in to indexes given to the
-# embedding layer
 [glove_50_feature_vectorizer]
 class_name = zensols.deepnlp.vectorize.WordVectorSentenceFeatureVectorizer
-# the feature id is used to connect instance data with the vectorizer used to
-# generate the feature at run time
 feature_id = wvglove50
 embed_model = instance: glove_50_embedding
 ```
@@ -48,7 +43,6 @@ The last configuration needed is a [WordVectorEmbeddingLayer], which extends
 a `torch.nn.Module`, and used by the [PyTorch] framework to utilize the word
 embedding:
 ```ini
-# a torch.nn.Module implementation that uses the an embedding model
 [glove_50_embedding_layer]
 class_name = zensols.deepnlp.vectorize.WordVectorEmbeddingLayer
 embed_model = instance: glove_50_embedding
@@ -92,7 +86,6 @@ more information.
 [enum_feature_vectorizer]
 class_name = zensols.deepnlp.vectorize.EnumContainerFeatureVectorizer
 feature_id = enum
-# train time tweakable
 decoded_feature_ids = set: ent, tag, dep
 ```
 
@@ -116,8 +109,6 @@ the lengths of sentences or documents in numbers of tokens.
 [language_feature_manager]
 class_name = zensols.deepnlp.vectorize.FeatureDocumentVectorizerManager
 torch_config = instance: torch_config
-# word embedding vectorizers can not be class level since each instance is
-# configured
 configured_vectorizers = eval: [
   'word2vec_300_feature_vectorizer',
   'glove_50_feature_vectorizer',
@@ -127,27 +118,25 @@ configured_vectorizers = eval: [
   'count_feature_vectorizer',
   'language_stats_feature_vectorizer',
   'depth_token_feature_vectorizer']
-# used for parsing `FeatureDocument` instances
 doc_parser = instance: doc_parser
-# the number of tokens in the document to use
 token_length = ${language_defaults:token_length}
-# features to use
 token_feature_ids = ${doc_parser:token_feature_ids}
 ```
 
 
-## Classification
+## Text Classification
 
-The [classification resource library] provides configuration for components and
+The [text classification resource library] provides configuration for components and
 models used to classify tokens and text.
 
+See the [Clickbate example] of how this resource library is used.
 
-### Text and Token Classification
 
-This configuration set defines the vectorizer for the label itself, which is a
-binary either *positive* or *negative* review of the movie:
+### Vectorization (Text)
+
+This configuration set defines the vectorizer for the label itself, which uses
+option `categories` as the labels and provided in the [application context]:
 ```ini
-# vectorize the labels from text to PyTorch tensors
 [classify_label_vectorizer]
 class_name = zensols.deeplearn.vectorize.NominalEncodedEncodableFeatureVectorizer
 #categories = y, n
@@ -164,19 +153,8 @@ class_name = zensols.deeplearn.vectorize.FeatureVectorizerManager
 torch_config = instance: torch_config
 configured_vectorizers = list: classify_label_vectorizer
 
-# maintains a collection of all vectorizers for the framework
 [vectorizer_manager_set]
 names = list: language_vectorizer_manager, classify_label_vectorizer_manager
-```
-
-This next configuration sets up the component that maps the model output to
-human readable labels:
-```ini
-# create data points from the client
-[classify_feature_prediction_mapper]
-class_name = zensols.deepnlp.classify.ClassificationPredictionMapper
-vec_manager = instance: language_vectorizer_manager
-label_feature_id = classify_label_vectorizer_manager.lblabel
 ```
 
 
@@ -199,13 +177,8 @@ strategy also changes as we can (with most graphics cards) fit the entire
 follows:
 ```ini
 [batch_dir_stash]
-# feature grouping: when at least one in a group is needed, all of the features
-# in that group are loaded
 groups = eval: (
-       # there will be N (batch_stash:batch_size) batch labels in one file in a
-       # directory of just label files
        set('label'.split()),
-       # because we might want to switch between embeddings, separate them
        set('glove_50_embedding'.split()),
 ...
        set('transformer_enum_expander transformer_dep_expander'.split()))
@@ -216,15 +189,13 @@ mappings, which map feature attribute names used in the code with the feature
 IDs used in vectorizers:
 ```ini
 [batch_stash]
-# the class that contains the feature data, one for each data instance
 data_point_type = eval({'import': ['zensols.deepnlp.classify']}): zensols.deepnlp.classify.LabeledFeatureDocumentDataPoint
-# map feature attributes (sections) to feature IDs to connect features to vectorizers
 batch_feature_mappings = dataclass(zensols.deeplearn.batch.ConfigBatchFeatureMapping): classify_batch_mappings
 ```
 [LabeledFeatureDocumentDataPoint] is a subclass of [DataPoint] class that
 contains a [FeatureDocument], and the `classify_batch_mappings` is a reference
 to the batch binding in [classify-batch.yml], which is defined as:
-```yml
+```yaml
 classify_batch_mappings:
   batch_feature_mapping_adds:
     - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): classify_label_batch_mappings'
@@ -233,7 +204,7 @@ classify_batch_mappings:
 
 The root defines a section, the second level adds classification and language
 specific mappings.  The classify batch mappings are:
-```yml
+```yaml
 classify_label_batch_mappings:
   label_attribute_name: label
   manager_mappings:
@@ -252,7 +223,6 @@ used by the framework to calculate performance metrics.
 
 The facade is configured as a [ClassifyModelFacade]:
 ```ini
-# declare the ModelFacade to use for the application
 [facade]
 class_name = zensols.deepnlp.classify.ClassifyModelFacade
 ```
@@ -288,7 +258,7 @@ def __post_init__(self, *args, **kwargs):
 		self.dropout = self.executor.net_settings.dropout
 ```
 
-We can also override the `get_predictions` method to include the review text
+We can also override the [get_predictions method] to include the review text
 and it's length when creating the data frame and respective CSV export:
 ```python
 def get_predictions(self, *args, **kwargs) -> pd.DataFrame:
@@ -299,30 +269,19 @@ def get_predictions(self, *args, **kwargs) -> pd.DataFrame:
 ```
 
 
-### Model
+### Model (Text)
 
 The model section configures the [ClassifyNetworkSettings], which is either a
 BiLSTM with an optional CRF output layer or a transformer (see the [movie
 review sentiment example] for how this can be configured in both settings.
 
 ```ini
-# the network configuration, which contains constant information (as opposed to
-# dynamic configuration such as held back `stash:decoded_attributes`)
 [classify_net_settings]
 class_name = zensols.deepnlp.classify.ClassifyNetworkSettings
-# embedding layer used as the input layer (i.e. glove_50_embedding)
 #embedding_layer = instance: ${deepnlp_default:embedding}_layer
-#
-# the recurrent neural network after the embeddings
 recurrent_settings = None
-#
-# the (potentially) deep linear network
 linear_settings = instance: linear_settings
-#
-# the batch stash is used to create the batch metadata
 batch_stash = instance: batch_stash
-#
-# sets the dropout for the network
 dropout = None
 ```
 The `batch_stash` instance is configured on this model so it has access to the
@@ -331,6 +290,80 @@ dynamic batch metadata for the embedding layer.  The commented out
 layer instance use that create the input embeddings from the input text.  The
 `linear_settings` is the network between the recurrent network and the output
 CRF (if there is one configured).
+
+
+### Prediction (Text)
+
+The prediction mapper uses the model to classify text from the command line.
+For text classification, the [ClassificationPredictionMapper] is used and takes
+text given from the command line and predicts a label:
+```ini
+[classify_feature_prediction_mapper]
+class_name = zensols.deepnlp.classify.ClassificationPredictionMapper
+vec_manager = instance: language_vectorizer_manager
+label_feature_id = classify_label_vectorizer_manager.lblabel
+```
+
+This component needs the vectorizer manager that creates the vectorized label
+and the nominal vectorizer to reverse map using a scikit-learn [LabelEncoder]
+back to the human readable label.
+
+
+## Token Classification
+
+Token classification refers to labeling tokens instead of a string of text as
+with [text classification](#text-classification).  However, there is some cross
+over functionality between these two tasks, so the [token classification
+resource library] resource library uses some of the same components (not
+configuration) defined in the [text classification resource library].  For
+example, we reuse the [ClassifyModelFacade] by overriding the class in the
+`facade` section.
+
+*Note*: despite this overlap, either import only the [text classification
+resource library] for text classification projects and only [token classification
+resource library] for token classification projects, but not both.
+
+Only the notable differences compared to the [text
+classification](#text-classification) section are documented.  Also, the inline
+configuration is removed for brevity, so please follow along in the [token
+classification resource library] file itself.
+
+See the [NER example] of how this resource library is used.
+
+
+### Vectorization (Token)
+
+This section has the token label vectorizers and mask vectorizers.  The mask is
+needed for the [CRF] (when configured) to mask out blank tokens for sentences
+shorter than a max length.  Usually, zeroed tensors are used for token slots
+not used, for example in the word embedding layer for deep learning networks.
+This is because the zero vectors are learned for sentences are shorter.
+However, the CRF layer needs to block these as valid state transitions during
+training and testing.
+
+
+### Model (Token)
+
+The [SequenceBatchIterator] configured in the `model_settings` indicates to use
+a different scoring method.  This class is used in the framework to calculate a
+different loss and produce the output, which must be treated differently than
+neural float tensor output.  This is because the Viterbi algorithm is used to
+determine the lowest cost path through the elements.  The sum of this path is
+used as the cost instead of a differential optimization function.
+
+Because we use a [CRF] as the output layer for [EmbeddedRecurrentCRF], our
+output are the NER labels.  Therefore, must also set `reduce_outcomes = none`
+to pass the [CRF] output through unaltered.
+
+In the `recurrent_crf_net_settings` section, we override the `mask_attribute`,
+which tells recurrent [CRF] to use the `tok_mask` attribute when masking the
+label output.
+
+
+### Prediction (Token)
+
+The section is the same, but we instead use the sequence base version
+([SequencePredictionMapper]) where the token stream is used as that sequence.
 
 
 <!-- links -->
@@ -349,15 +382,20 @@ CRF (if there is one configured).
 
 [deepnlp resource library]: https://github.com/plandes/deepnlp/tree/master/resources
 [resource library]: https://plandes.github.io/util/doc/config.html#resource-libraries
+[application context]: https://plandes.github.io/util/doc/config.html#application-context
+[NER example]: ner-example.html
+[Clickbate example]: clickbate.html
 
 [GloVE resource library]: https://github.com/plandes/deepnlp/blob/master/resources/glove.conf
 [fasttext resource library]: https://github.com/plandes/deepnlp/blob/master/resources/fasttext.conf
 [word2vec resource library]: https://github.com/plandes/deepnlp/blob/master/resources/word2vec.conf
 [transformer resource library]: https://github.com/plandes/deepnlp/blob/master/resources/transformer.conf
 [vectorizer resource library]: https://github.com/plandes/deepnlp/blob/master/resources/vectorizer.conf
-[classification resource library]: https://github.com/plandes/deepnlp/blob/master/resources/classify.conf
+[text classification resource library]: https://github.com/plandes/deepnlp/blob/master/resources/classify.conf
 [classify-batch.yml]: https://github.com/plandes/deepnlp/blob/master/resources/classify-batch.yml
+[token classification resource library]: https://github.com/plandes/deepnlp/blob/master/resources/token-classify.conf
 [movie review sentiment example]: https://plandes.github.io/deepnlp/doc/movie-example.html
+[get_predictions method]: ../api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade.get_predictions
 
 [ClassifyModelFacade]: ../api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade
 [ClassifyNetworkSettings]: ../api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.model.ClassifyNetworkSettings
@@ -369,7 +407,7 @@ CRF (if there is one configured).
 [FeatureDocumentVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizer
 [FeatureDocumentVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizer
 [FeatureDocument]: ../api/zensols.deepnlp.html#zensols.deepnlp.domain.FeatureDocument
-[FeatureVectorizerManager]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.vectorize.html?highlight=featurevectorizermanager#zensols.deeplearn.vectorize.manager.FeatureVectorizerManager
+[FeatureVectorizerManager]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.vectorize.html#zensols.deeplearn.vectorize.manager.FeatureVectorizerManager
 [GloveWordEmbedModel]: ../api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.glove.GloveWordEmbedModel
 [LabeledFeatureDocumentDataPoint]: ../api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.domain.LabeledFeatureDocumentDataPoint
 [LanguageModelFacade]: ../api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacade
@@ -378,5 +416,11 @@ CRF (if there is one configured).
 [WordVectorEmbeddingLayer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.WordVectorEmbeddingLayer
 [WordVectorSentenceFeatureVectorizer]: ../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.WordVectorSentenceFeatureVectorizer
 
-[BatchDirectoryCompositeStash]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.batch.html?highlight=batchdirectorycompositestash#zensols.deeplearn.batch.stash.BatchDirectoryCompositeStash
-[DataPoint]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.batch.html?highlight=datapoint#zensols.deeplearn.batch.domain.DataPoint
+[BatchDirectoryCompositeStash]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.batch.html#zensols.deeplearn.batch.stash.BatchDirectoryCompositeStash
+[DataPoint]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.batch.html#zensols.deeplearn.batch.domain.DataPoint
+[CRF]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.layer.html#zensols.deeplearn.layer.crf.CRF
+[SequenceBatchIterator]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.model.html#zensols.deeplearn.model.sequence.SequenceBatchIterator
+[EmbeddedRecurrentCRF]: ../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRF
+[LabelEncoder]: https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.LabelEncoder.html
+[ClassificationPredictionMapper]: ../api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.pred.ClassificationPredictionMapper
+[SequencePredictionMapper]: ../api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.pred.SequencePredictionMapper

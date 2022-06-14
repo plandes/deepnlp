@@ -122,7 +122,6 @@ model_settings:
   scheduler_class_name: torch.optim.lr_scheduler.ReduceLROnPlateau
   scheduler_params:
     patience: 5
-  prediction_mapper_name: classify_feature_prediction_mapper
 
 # set the dropout for the classification network, which propogates down to the
 # sub/owned networks

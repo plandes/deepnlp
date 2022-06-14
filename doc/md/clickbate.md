@@ -1,7 +1,7 @@
 # Clickbate Example
 
 This example provides a good starting point since it only contains code to
-parse the [clickbate corpus].  It also shows how to use your own model your own
+parse a [corpus].  It also shows how to use your own model your own
 data by synthesizing a positive and negative dataset sources in to one, which
 is provided in the [only source code] file for the project (excluding the entry
 point [harness.py] script).
@@ -29,31 +29,32 @@ and experimentation.
 
 Because the examples (including this one) use [resource libraries], the
 configuration is much smaller and more manageable.  First we start with adding
-the application defaults allowing `name` to be [overridden] with the `--override`
-option, which takes a string (or file) containing any configuration in a comma
-delimited `<section>.<option>` and given on the command line to specify which
-word embeddings to use:
+the application defaults allowing `name` to be [overridden] with the
+`--override` command line option:
 ```ini
-# app defaults, used in obj.yml
 [cb_default]
 lang_features = dependencies, enums,
 embedding = ${name}_embedding
 ```
 
+The `--override` command line option takes a string (or file) containing any
+configuration in a comma delimited `<section>.<option>` and given on the
+command line to specify which word embeddings to use.  For example: `--override
+cb_default.name=glove_50`, would specify the 50 dimension [GloVE resource
+library].
+
 Now we add defaults for the deep learning package that set the model name,
 appears in results and file system naming.  In this example, we simply set the
 model name as the embeddings we'll use:
 ```ini
-# deep learning package defaults
 [deeplearn_default]
 model_name = ${cb_default:embedding}
 ```
 
 The following configuration adds default applications, which is invoked from
-the command line by the `CliHarness` defined in the [harness.py] entry point
+the command line by the [CliHarness] defined in the [harness.py] entry point
 and imported from [resource libraries] as [first pass actions]:
 ```ini
-# command line applications and sections to delete after load
 [cli]
 apps = list: ${cli_config_default:apps}, ${cli_deeplearn_default:apps}, ${cli_deepnlp_default:apps},
   deepnlp_fac_text_classify_app, cleaner_cli
@@ -65,7 +66,7 @@ The application defined in the sections loaded are simply Python [dataclasses]
 who's class and method docstrings as help for the command line interface.  Each
 method is mapped to an [action with positional and optional parameters].
 
-Note the `log_cli` is mentioned because it is listed as a clean up in a
+Note the `log_cli` section is mentioned because it is listed as a clean up in a
 resource library.  However, we must keep this section because it is useful to
 configure child processes when batches are created to keep a consistent logging
 configuration.
@@ -73,7 +74,6 @@ configuration.
 We can also configure a default for the `--override` flag that indicates the
 word embedding with:
 ```ini
-# set the default embeddding
 [override_cli_decorator]
 option_overrides = dict: {'override': {'default': 'cb_default.name=glove_50'}}
 ```
@@ -82,7 +82,6 @@ While a user can create a model specific configuration file specified with the
 `--config` option (such as in the other examples), this example is so simple as
 to not need it.  For this reason, we make it optional:
 ```ini
-# configuration files are optional
 [config_cli]
 expect = False
 ```
@@ -91,7 +90,6 @@ The configured actions and their options for the CLI in the `cli` section
 described earlier must be imported from their respective [resource libraries],
 which is done with:
 ```ini
-# import command line apps
 [import]
 config_files = list:
     resource(zensols.util): resources/default.conf,
@@ -106,14 +104,10 @@ provides special directives for loading the [overridden] `--override` and the
 configuration file.  We reference the `default` and `cb_default` as they are
 utilized in the loaded in the subordinate configuration files:
 ```ini
-# import the imp_conf while leaving default and escape sections available to
-# the remainder of the config loading process
 [config_import]
 references = list: default, cb_default
 sections = list: app_imp_conf
 
-# first load overrides to enable setting defaults, then load the (usually model
-# specific) configuration defining anything used in later configuration
 [app_imp_conf]
 type = import
 config_files = list:
@@ -215,7 +209,7 @@ which needs the output nominal label names for encoding/vectorization.
 
 The executor in the `Model` section sets `net_settings` to
 `classify_net_settings` to provide the top level text classification for the
-application using a BiLSTM+CRF.  This model is provided in the [classify
+application using a BiLSTM-CRF.  This model is provided in the [classify
 resource library] in `deepnlp` (this project), with little left to specify.
 These remaining portions of the model that are specified are:
 
@@ -271,7 +265,9 @@ page width.
 
 
 <!-- links -->
-[clickbate corpus]: https://github.com/bhargaviparanjape/clickbait/tree/master/dataset
+[corpus]: https://github.com/bhargaviparanjape/clickbait/tree/master/dataset
+[the paper]: https://arxiv.org/pdf/2109.03383.pdf
+[GloVE resource library]: https://github.com/plandes/deepnlp/blob/master/resources/glove.conf
 
 [resource libraries]: https://plandes.github.io/util/doc/config.html#resource-libraries
 [cb.py]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/cb.py
@@ -282,8 +278,7 @@ page width.
 [obj.yml]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/resources/obj.yml
 
 [Stash]: https://plandes.github.io/util/api/zensols.persist.html#zensols.persist.domain.Stash
-
-[the paper]: https://arxiv.org/pdf/2109.03383.pdf
+[CliHarness]: https://plandes.github.io/util/api/zensols.cli.html#zensols.cli.harness.CliHarness
 
 [Jupyter notebook example]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/notebook/clickbate.ipynb
 [Jupyter notebook]: https://github.com/plandes/deepnlp/blob/master/example/clickbate/notebook/clickbate.ipynb

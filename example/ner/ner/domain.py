@@ -3,36 +3,25 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, Type, Any
+from typing import Tuple, Any, Type
 from dataclasses import dataclass, field
-from zensols.config import Settings
 from zensols.persist import persisted
-from zensols.deeplearn.batch import BatchStash, DataPoint
 from zensols.nlp import (
     FeatureSentence, FeatureDocument, TokenAnnotatedFeatureSentence
 )
-from zensols.deeplearn.result import ResultsContainer
+from zensols.deeplearn.batch import BatchStash, DataPoint
 from zensols.deeplearn.vectorize import (
     FeatureVectorizerManager, FeatureVectorizer
 )
 from zensols.deepnlp.batch import FeatureSentenceDataPoint
-from zensols.deepnlp.classify import ClassificationPredictionMapper
+from zensols.deepnlp.classify import SequencePredictionMapper
 
 
 @dataclass
-class NERPredictionMapper(ClassificationPredictionMapper):
+class NERPredictionMapper(SequencePredictionMapper):
     def _create_data_point(self, cls: Type[DataPoint],
                            feature: Any) -> DataPoint:
         return cls(None, self.batch_stash, feature, True)
-
-    def _create_features(self, sent_text: str) -> Tuple[FeatureSentence]:
-        doc: FeatureDocument = self.vec_manager.parse(sent_text)
-        self._docs.append(doc)
-        return doc.sents
-
-    def map_results(self, result: ResultsContainer) -> Settings:
-        classes = self._map_classes(result)
-        return Settings(classes=tuple(classes), docs=tuple(self._docs))
 
 
 @dataclass

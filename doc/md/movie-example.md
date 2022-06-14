@@ -15,16 +15,16 @@ is the Stanford movie review dataset with Cornell labels:
 * [Stanford movie review]
 * [Cornell sentiment polarity]
 
-The corpus is automatically downloaded to a `corpus` directory the first time
+The corpus is automatically downloaded to the `corpus` directory the first time
 the model is trained or the batch set accessed.
 
 
 ## Model Configuration
 
 The model specific configuration is located in the `models` directory.  Each
-has a file that's given with the `--config` flag to the [harness.py] entry
-point Python file and contains configuration that overrides on a per model
-basis.
+has a file that's given with the `--config` command line option to the
+[harness.py] entry point Python file and contains configuration that overrides
+on a per model basis.
 
 
 ## Data Set and Corpus
@@ -57,9 +57,9 @@ as the `dataset_factory` in the [obj.yml] application configuration file.
 
 ### Natural language parsing
 
-Like in the [clickbate example], we configure the document parser class.
-However, this time, we'll use the one we provide in the [domain.py] project,
-which is `MovieReview` and described more in the next section.
+Like in the [clickbate example], we configure a [FeatureDocumentParser].
+However, this time, we'll use the one we provide in the `MovieReview` project
+described more in the next section.
 
 
 ### Feature Creation
@@ -76,10 +76,10 @@ is used by framework to get a [Pandas] data frame and inherits
 uses the `DatasetFactory` to create a dataframe containing the label and the
 natural language text used to test and train the model.
 
-The [domain.py] file also defines a `MovieReview` domain container class that
-has the polarity positive or negative feed back for each review.  All we need
-to do is to extend [FeatureDocument] and add the label to get the complete
-domain feature document for our application.  This class is used by
+The [domain.py] file also defines a `MovieReview` container class that has the
+polarity positive or negative feed back for each review.  All we need to do is
+to extend [FeatureDocument] and add the label to get the complete domain
+feature document for our application.  This class is used by
 `MovieReviewFeatureStash`, that handles the work of parsing the text in to
 features and extends ([DocumentFeatureStash]) to use parser to create instances
 of `MovieReview` feature documents with the polarity (positive or negative
@@ -160,6 +160,11 @@ Everything can be done with the harness script:
 ./harness.py predtext 'Great movie'
 ```
 
+Note the `run.sh` script in the same directory provides a simpler API and more
+prediction examples as a way of calling the [harness.py] entry point.  It also
+serves as an example of how one might simplify a command line for a specific
+model.
+
 
 ### Jupyter Notebook
 
@@ -187,10 +192,10 @@ To run the [Jupyter movie notebook]:
 [domain.py]: https://github.com/plandes/deepnlp/blob/master/example/movie/mr/domain.py
 [Jupyter movie notebook]: https://github.com/plandes/deepnlp/blob/master/example/movie/notebook/movie.ipynb
 
-[DocumentFeatureStash]: https://plandes.github.io/deepnlp/api/zensols.deepnlp.feature.html#zensols.deepnlp.feature.stash.DocumentFeatureStash
-
+[ResourceFeatureDataframeStash]: https://plandes.github.io/deeplearn/api/zensols.dataframe.html#zensols.dataframe.stash.ResourceFeatureDataframeStash
+[DocumentFeatureStash]: ../api/zensols.deepnlp.feature.html#zensols.deepnlp.feature.stash.DocumentFeatureStash
 [FeatureDocument]: ../api/zensols.deepnlp.html#zensols.deepnlp.domain.FeatureDocument
-[ResourceFeatureDataframeStash]: ../api/zensols.dataframe.html#zensols.dataframe.stash.ResourceFeatureDataframeStash
+[FeatureDocumentParser]: ../api/zensols.deepnlp.html#zensols.deepnlp.parse.FeatureDocumentParser
 [FeatureDocumentDataPoint]: ../api/zensols.deepnlp.batch.html#zensols.deepnlp.batch.domain.FeatureDocumentDataPoint
 [LabeledFeatureDocument]: ../api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.domain.LabeledFeatureDocument
 

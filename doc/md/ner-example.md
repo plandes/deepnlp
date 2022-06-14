@@ -3,82 +3,56 @@
 This document describes the [named entity task example] to demonstrate
 conditional random field and other features in the DeepZenols NLP framework.
 Before working through this example, please first read through the
-[movie review example].
-
-Note that this project has a lot of configuration as it was written before
-[resource libraries], and the vast majority of its configuration is no longer
-necessary to write as demonstrated by the [clickbate example](clickbate.md).
-However, it gives a comprehensive example of how all the components are
-configured.
-
-The first thing you'll notice is that there is not one single configuration
-file like there is for the [movie review example] or any test project in the
-[deeplearn API].  Instead, all the files in this directory are read as one
-contiguous configuration, which is done by giving a directory instead of file
-path as the `config_file` parameter to the [IniConfig initializer] (see the
-[config.py] source file).
+[movie review example].  The difference between this and the movie review
+sentiment example is this project classifies at the token level instead of
+sentence level.  For this reason, only those parts that differ from the movie
+review example are documented.
 
 
-## Configuration Files
+## Configuration
 
-Most of the configuration is similar to the [movie review example] and is
-summarized below:
+The [app.conf] is nearly identical with the [movie review example] except that
+it adds `--override` option defaults for the [HuggingFace] transformer model
+name `bert-base-cased`.  The `app_imp_conf` maps [YAML] file extensions to
+[ConditionalYamlConfig] with the `type_map` property.
 
-* [main.conf]: contains what's usually at the top of a configuration file,
-  which are root paths the rest of the configuration builds on, GPU settings
-  and some model defaults
-* [lang.conf]: has the linguistic vectorizers, managers and embeddings just as
-  before
-* [vectorizer.conf]: contains the one hot encoded vectorizers for the features
-  given in the [CoNLL 2003 data set]; something to note in this configuration
-  file is the `mask_vectorizer` configuration entry (see the [Mask](#mask)
-  section)
-* [batch.conf]: has the batch configuration and settings, such as batch size
-* [corpus.conf]: configuration for the code that parses the CoNNL formatted
-  corpus
-* [model.conf]: contains the network and model configuration.
+This NER example is similar to the [movie review example] [obj.yml] file, but
+slightly differs in the following ways:
 
-
-### BiLSTM-CRF
-
-The [model.conf] is the more interesting file for this project as it defines
-a [CRF] used to for sequencing over the NER tags.  For our example, we
-configure a BiLSTM-CRF, which is a bi-directional LSTM with a decoding layer
-connected to a CRF terminal layer.  This network learns sequences of nominal
-labels, which in our case, are the NER tags.  The `recurrent_crf_settings`
-entry contains the configuration for this BiLSTM-CRF.
-
-The [EmbeddedRecurrentCRFSettings] given in the [model.conf] shows how
-to configure the BiLSTM-CRF with an input embedded layer.  With the reference
-to the `recurrent_crf_settings` entry, which uses an instance
-[EmbeddedRecurrentCRF], we have a complete neural network without having
-to write any code for it.
-
-
-### Mask
-
-As mentioned in the [Configuration Files](#configuration-files) section, as
-mask vectorizer is specified.  This is needed for the [CRF] to mask out blank
-tokens for sentences shorter than a max length.  Usually, zeroed tensors are
-used for token slots not used, for example in the word embedding layer for deep
-learning networks.  This is because the zero vectors are learned for sentences
-are shorter.  However, the CRF layer needs to block these as valid state
-transitions during training and testing.
-
-
-### Scored Batch Iteration
-
-The [ScoredBatchIterator] configured in the `model_settings` in [model.conf]
-indicates to use a different scoring method.  This class is used in the
-framework to calculate a different loss and produce the output, which must be
-treated differently than neural float tensor output.  This is because the
-Viterbi algorithm is used to determine the lowest cost path through the
-elements.  The sum of this path is used as the cost instead of a differential
-optimization function.
-
-Because we use a [CRF] as the output layer for [EmbeddedRecurrentCRF], our
-output are the NER labels.  Therefore, must also set `reduce_outcomes = none`
-to pass the [CRF] output through unaltered.
+* Corpus resources are defined and downloaded the first time it is accessed.
+  However, this downloads three separate files that are not compressed.
+* This example does not import [feature resource library] as it is different
+  enough for it to be easier to redefine the configuration found in the
+  *Corpus/feature creation* section.
+* The *Language parsing* section overrides the [FeatureDocumentParser] to
+  remove all space tokens, empty sentences and not add named entities (that's
+  what this project classifies) and keep only the features parsed from the
+  CoNLL corpus.
+* The *Vectorization* section has vectorizers for the CoNLL corpus features and
+  adds them to the language vectorizer manager.
+* The *Batch* configuration differs on a per section basis in the following
+  ways:
+  * `conll_lang_batch_mappings`: [batch mapping](reslib.html#batch-stash) are
+  added for the CoNLL corpus features.  We must also add a transformer specific
+  label since there is not a one-to-one mapping from tokens to word piece
+  tokens.
+  * `ner_batch_mappings`: this transformer label is then only used when the
+  embeddings name (`ner_default:name`) from the aforementioned `--override`
+  configuration.  See [YAML conditionals] for more information on how this
+  if/then/else logic is utilized.  Note that what mappings we add and keep
+  closely resembles that of the [movie review example].
+  * `batch_dir_stash`: Which features to group together also resembles that of
+    the [movie review example]
+  * `batch_stash`: we refer to the `ner_batch_mappings` we defined earlier, use
+    our own custom [DataPoint] class, set number of sub-processes to 2 (memory
+    constraint on large feature sets) and mini-batch size will have 32
+    sentences per batch.
+* The *Model* shows how the `exectuor` is configured with the `net_settings`,
+  which tells the framework which network model to use.  For our example, we
+  configure a BiLSTM-CRF, which is a bi-directional LSTM with a decoding layer
+  connected to a CRF terminal layer.  This network learns sequences of nominal
+  labels, which in our case, are the NER tags.  The `recurrent_crf_settings`
+  entry contains the configuration for this BiLSTM-CRF.
 
 
 ## Code
@@ -86,29 +60,28 @@ to pass the [CRF] output through unaltered.
 As mentioned, no code is necessary for the model is it is already provided in
 configuration using the framework.  The code that is necessary includes:
 * [corpus.py] to parse the [CoNLL 2003 data set]
-* [batch.py] defines data point and batch classes just as seen in the [movie
-  review example]
-* [facade.py] defines and wires the batch mappings just as seen in the [movie
-  review example]
-
-
-### Corpus Install
-
-To install the corpus:
-1. Install [GNU make](https://www.gnu.org/software/make/)
-1. Change the working directory to the example: `cd examples/ner`
-1. Download and install the corpora: `make corpus`.  This should download all
-   the necessary corpora and [Glove] and [Word2Vec] word embeddings.
-1. Confirm there are no errors and the corpus directories exist:
-   * `corpus/connl-2003`
-   * `corpus/glove/glove.6B.300d.txt`
-   * `corpus/word2vec/GoogleNews-vectors-negative300.bin.gz`
+* [domain.py] defines data point class, and the overridden prediction mapper to
+  set the `is_pred` flag
+* [app.py] a small a small application to demonstrate how to prototype
 
 
 ### Command Line
 
-To train and test the model invoke: `make modeltraintest`.
-
+Everything can be done with the harness script:
+```bash
+# get the command line help using a thin wrapper around the framework
+./harness.py -h
+# the executor tests and trains the model, use it to get the stats used to train
+./harness.py info
+# print a sample Glove 50 (default) batch of what the model will get during training
+./harness.py info -i batch
+# print a sample transformer batch of what the model will get during training
+./harness.py info -i batch -c models/transformer-trainable.conf 
+# train and test the model but switch to model profile with optmizied 
+./harness.py traintest -p
+# all model, its (hyper)parameters, metadata and results are stored in subdirectory of files
+./harness.py result
+```
 
 ### Jupyter Notebook
 
@@ -124,15 +97,22 @@ To run the [Jupyter NER notebook]:
 [Glove]: https://nlp.stanford.edu/projects/glove/
 [Word2Vec]: https://code.google.com/archive/p/word2vec/
 [CoNLL 2003 data set]: https://www.clips.uantwerpen.be/conll2003/ner/
+[HuggingFace]: https://github.com/huggingface/transformers
+[YAML]: https://yaml.org
+[Jupyter NER notebook]: https://github.com/plandes/deepnlp/blob/master/example/ner/notebook/ner.ipynb
 
 [named entity task example]: https://github.com/plandes/deepnlp/blob/master/example/ner
 [movie review example]: movie-example.html
+[YAML conditionals]: https://plandes.github.io/util/doc/config.html#yaml-conditionals
 
 [deeplearn API]: https://plandes.github.io/deeplearn/index.html
+[app.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/app.conf
+[obj.yml]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/obj.yml
 [config.py]: https://github.com/plandes/deepnlp/blob/master/example/ner/src/ner/config.py
 [corpus.py]: https://github.com/plandes/deepnlp/blob/master/example/ner/src/ner/corpus.py
 [batch.py]: https://github.com/plandes/deepnlp/blob/master/example/ner/src/ner/batch.py
 [facade.py]: https://github.com/plandes/deepnlp/blob/master/example/ner/src/ner/facade.py
+[feature resource library]: https://github.com/plandes/deepnlp/blob/master/resources/feature.conf
 
 [batch.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/batch.conf
 [model.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/model.conf
@@ -141,8 +121,9 @@ To run the [Jupyter NER notebook]:
 [lang.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/lang.conf
 [corpus.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/corpus.conf
 
-[Jupyter NER notebook]: https://github.com/plandes/deepnlp/blob/master/example/ner/notebook/ner.ipynb
-
+[FeatureDocumentParser]: ../api/zensols.deepnlp.html#zensols.deepnlp.parse.FeatureDocumentParser
+[DataPoint]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.batch.html?highlight=datapoint#zensols.deeplearn.batch.domain.DataPoint
+[ConditionalYamlConfig]: https://plandes.github.io/util/api/zensols.config.html#zensols.config.condyaml.ConditionalYamlConfig
 [ExtendedInterpolationEnvConfig]: https://plandes.github.io/util/api/zensols.config.html#zensols.config.iniconfig.ExtendedInterpolationEnvConfig
 [IniConfig initializer]: https://plandes.github.io/util/api/zensols.config.html#zensols.config.iniconfig.IniConfig.__init__
 [CRF]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.layer.html#zensols.deeplearn.layer.crf.CRF
