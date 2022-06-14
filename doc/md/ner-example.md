@@ -53,6 +53,8 @@ slightly differs in the following ways:
   connected to a CRF terminal layer.  This network learns sequences of nominal
   labels, which in our case, are the NER tags.  The `recurrent_crf_settings`
   entry contains the configuration for this BiLSTM-CRF.
+* The *Transformer* section has overrides the resource library configuration to
+  use the vectorizers and feature attributes defined for our application.
 
 
 ## Code
@@ -81,6 +83,8 @@ Everything can be done with the harness script:
 ./harness.py traintest -p
 # all model, its (hyper)parameters, metadata and results are stored in subdirectory of files
 ./harness.py result
+# predict labels for an ad-hoc sentence
+./harness.py predtext 'Mozambique and Switzerland will join the UN body responsible for the maintenance of global peace.'
 ```
 
 ### Jupyter Notebook
