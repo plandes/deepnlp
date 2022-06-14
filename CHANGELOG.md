@@ -8,6 +8,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.2.0] - 2022-06-14
+This is primarily a refactoring release to simplify the API.
+
+### Added
+- Resource library configuration taken from examples and made generic for
+  reuse.
+- Resource library and example documentation.
+
+### Changed
+- Simplification of the API and examples.
+- Added option to tokenize only during encoding for transformer components.
+- Fixed transformer expander vectorizer bugs.
+- Fixed deallocation issues in test notebook.
+
+### Removed
+- Replaced example model configuration with `--override` option semantics.
+
+
 ## [1.1.2] - 2022-05-15
 ### Changed
 - Fixed YML resource library configuration files not found.
@@ -166,7 +184,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.1.2...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/plandes/deepnlp/compare/v1.1.2...v1.2.0
 [1.1.2]: https://github.com/plandes/deepnlp/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/plandes/deepnlp/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/plandes/deepnlp/compare/v1.0.1...v1.1.0
