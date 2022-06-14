@@ -69,7 +69,7 @@ configuration using the framework.  The code that is necessary includes:
 
 ### Command Line
 
-Everything can be done with the harness script:
+Everything can be done with the [harness.py] script:
 ```bash
 # get the command line help using a thin wrapper around the framework
 ./harness.py -h
@@ -98,9 +98,7 @@ To run the [Jupyter NER notebook]:
 
 <!-- links -->
 
-[Glove]: https://nlp.stanford.edu/projects/glove/
-[Word2Vec]: https://code.google.com/archive/p/word2vec/
-[CoNLL 2003 data set]: https://www.clips.uantwerpen.be/conll2003/ner/
+[CoNLL 2003 data set]: https://aclanthology.org/W03-0419.pdf
 [HuggingFace]: https://github.com/huggingface/transformers
 [YAML]: https://yaml.org
 [Jupyter NER notebook]: https://github.com/plandes/deepnlp/blob/master/example/ner/notebook/ner.ipynb
@@ -108,29 +106,15 @@ To run the [Jupyter NER notebook]:
 [named entity task example]: https://github.com/plandes/deepnlp/blob/master/example/ner
 [movie review example]: movie-example.html
 [YAML conditionals]: https://plandes.github.io/util/doc/config.html#yaml-conditionals
-
-[deeplearn API]: https://plandes.github.io/deeplearn/index.html
-[app.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/app.conf
-[obj.yml]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/obj.yml
-[config.py]: https://github.com/plandes/deepnlp/blob/master/example/ner/src/ner/config.py
-[corpus.py]: https://github.com/plandes/deepnlp/blob/master/example/ner/src/ner/corpus.py
-[batch.py]: https://github.com/plandes/deepnlp/blob/master/example/ner/src/ner/batch.py
-[facade.py]: https://github.com/plandes/deepnlp/blob/master/example/ner/src/ner/facade.py
 [feature resource library]: https://github.com/plandes/deepnlp/blob/master/resources/feature.conf
 
-[batch.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/batch.conf
-[model.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/model.conf
-[vectorizer.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/vectorizer.conf
-[main.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/main.conf
-[lang.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/lang.conf
-[corpus.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/corpus.conf
+[app.conf]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/app.conf
+[obj.yml]: https://github.com/plandes/deepnlp/blob/master/example/ner/resources/obj.yml
+[domain.py]: https://github.com/plandes/deepnlp/blob/master/example/ner/ner/domain.py
+[app.py]: https://github.com/plandes/deepnlp/blob/master/example/ner/ner/app.py
+[corpus.py]: https://github.com/plandes/deepnlp/blob/master/example/ner/ner/corpus.py
+[harness.py]: https://github.com/plandes/deepnlp/blob/master/example/ner/harness.py
 
 [FeatureDocumentParser]: ../api/zensols.deepnlp.html#zensols.deepnlp.parse.FeatureDocumentParser
 [DataPoint]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.batch.html?highlight=datapoint#zensols.deeplearn.batch.domain.DataPoint
 [ConditionalYamlConfig]: https://plandes.github.io/util/api/zensols.config.html#zensols.config.condyaml.ConditionalYamlConfig
-[ExtendedInterpolationEnvConfig]: https://plandes.github.io/util/api/zensols.config.html#zensols.config.iniconfig.ExtendedInterpolationEnvConfig
-[IniConfig initializer]: https://plandes.github.io/util/api/zensols.config.html#zensols.config.iniconfig.IniConfig.__init__
-[CRF]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.layer.html#zensols.deeplearn.layer.crf.CRF
-[ScoredBatchIterator]: https://plandes.github.io/deeplearn/api/zensols.deeplearn.model.html#zensols.deeplearn.model.batchiter.ScoredBatchIterator
-[EmbeddedRecurrentCRFSettings]: ../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings
-[EmbeddedRecurrentCRF]: ../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRF

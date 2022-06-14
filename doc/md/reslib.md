@@ -324,9 +324,7 @@ resource library] for text classification projects and only [token classificatio
 resource library] for token classification projects, but not both.
 
 Only the notable differences compared to the [text
-classification](#text-classification) section are documented.  Also, the inline
-configuration is removed for brevity, so please follow along in the [token
-classification resource library] file itself.
+classification](#text-classification) section are documented.
 
 See the [NER example] of how this resource library is used.
 
@@ -340,6 +338,49 @@ not used, for example in the word embedding layer for deep learning networks.
 This is because the zero vectors are learned for sentences are shorter.
 However, the CRF layer needs to block these as valid state transitions during
 training and testing.
+```yaml
+tok_label_1_vectorizer:
+  class_name: zensols.deeplearn.vectorize.NominalEncodedEncodableFeatureVectorizer
+  feature_id: tclabel1
+
+tok_label_vectorizer:
+  class_name: zensols.deeplearn.vectorize.AggregateEncodableFeatureVectorizer
+  feature_id: tclabel
+  size: -1
+  delegate_feature_id: tclabel1
+
+tok_mask_vectorizer:
+  class_name: zensols.deeplearn.vectorize.MaskFeatureVectorizer
+  feature_id: tmask
+  size: -1
+
+tok_label_batch_mappings:
+  manager_mappings:
+    - vectorizer_manager_name: tok_label_vectorizer_manager
+      fields:
+        - attr: tok_labels
+          feature_id: tclabel
+          is_agg: true
+          is_label: True
+        - attr: tok_mask
+          feature_id: tmask
+          is_agg: true
+          attr_access: tok_labels
+
+tok_label_vectorizer_manager:
+  class_name: zensols.deeplearn.vectorize.FeatureVectorizerManager
+  torch_config: 'instance: torch_config'
+  configured_vectorizers:
+    - tok_label_1_vectorizer
+    - tok_label_vectorizer
+    - tok_mask_vectorizer
+
+# add new feature vectorizer managers
+vectorizer_manager_set:
+  names:
+    - language_vectorizer_manager
+    - tok_label_vectorizer_manager
+```
 
 
 ### Model (Token)
@@ -350,6 +391,16 @@ different loss and produce the output, which must be treated differently than
 neural float tensor output.  This is because the Viterbi algorithm is used to
 determine the lowest cost path through the elements.  The sum of this path is
 used as the cost instead of a differential optimization function.
+
+```yaml
+model_settings:
+  batch_iteration_class_name: zensols.deeplearn.model.SequenceBatchIterator
+  reduce_outcomes: none
+  prediction_mapper_name: feature_prediction_mapper
+
+recurrent_crf_net_settings:
+  mask_attribute: tok_mask
+```
 
 Because we use a [CRF] as the output layer for [EmbeddedRecurrentCRF], our
 output are the NER labels.  Therefore, must also set `reduce_outcomes = none`
@@ -364,6 +415,13 @@ label output.
 
 The section is the same, but we instead use the sequence base version
 ([SequencePredictionMapper]) where the token stream is used as that sequence.
+
+```yaml
+feature_prediction_mapper:
+  class_name: zensols.deepnlp.classify.SequencePredictionMapper
+  vec_manager: 'instance: language_vectorizer_manager'
+  label_feature_id: tok_label_vectorizer_manager.tclabel1
+```
 
 
 <!-- links -->
@@ -384,7 +442,7 @@ The section is the same, but we instead use the sequence base version
 [resource library]: https://plandes.github.io/util/doc/config.html#resource-libraries
 [application context]: https://plandes.github.io/util/doc/config.html#application-context
 [NER example]: ner-example.html
-[Clickbate example]: clickbate.html
+[Clickbate example]: clickbate-example.html
 
 [GloVE resource library]: https://github.com/plandes/deepnlp/blob/master/resources/glove.conf
 [fasttext resource library]: https://github.com/plandes/deepnlp/blob/master/resources/fasttext.conf
