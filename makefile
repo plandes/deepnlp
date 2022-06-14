@@ -9,7 +9,6 @@ CLEAN_DEPS +=		pycleancache
 
 ## project
 EXAMPLE_DIR = 		example
-EXAMPLE_NAMES = 	vectorize clickbate movie ner 
 
 ## doc
 PY_DOC_MD_SRC =		./doc/md
@@ -24,19 +23,19 @@ include ./zenbuild/main.mk
 .PHONY:		exampleclean
 exampleclean:
 		@for i in $(EXAMPLE_DIR)/* ; do \
-			make -C $$i clean ; \
+			( cd $$i ; ./harness.py clean ) ; \
 		done || true
 
 .PHONY:		testall
 testall:	test
-		@for i in $(EXAMPLE_NAMES) ; do \
+		@for i in $(EXAMPLE_DIR)/* ; do \
 			echo testing $$i ; \
-			make -C $(EXAMPLE_DIR)/$$i testall ; \
+			( cd $$i ; ./harness.py clean ; ./harness.py traintest ) ; \
 		done
 
 .PHONY:		resetnb
 resetnb:
-		@for i in $(EXAMPLE_NAMES) ; do \
+		@for i in $(EXAMPLE_DIR)/* ; do \
 			if [ -d $(EXAMPLE_DIR)/$$i/notebook ] ; then \
 				echo resetting $$i ; \
 				( cd $(EXAMPLE_DIR)/$$i/notebook ; git checkout . ) ; \

@@ -128,6 +128,10 @@ class Application(object):
         self.word2vec()
         self.bert()
 
+    def traintest(self):
+        """Used by the parent testall makefile target."""
+        self.all()
+
     def proto(self):
         """Prototype entry point."""
         self.all()
