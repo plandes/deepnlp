@@ -39,11 +39,21 @@ natural language text and labels.  All features are taken only from the text.
 Like the [clickbate example], the [app.conf] contains command line
 configuration used by the entry point [harness.py] script to invoke the example
 application.  The model and other application configuration is given in the
-[obj.yml] resource library file.  Also like the Clickbate example, we will
-detail each section that was not already covered in the [clickbate example]
-since these two projects are text classification.  Instead, this document will
-focus on those more advanced areas such as extending the feature creation
-aspect of the application.
+[obj.yml] resource library file.  Also like the clickbate example, we will
+detail each section that was not already covered since these two projects are
+text classification.  Instead, this document will focus on those more advanced
+areas such as extending the feature creation aspect of the application.
+
+Generally, the term *section* refers to both a configuration section (like
+those described in the [INI format]).  However, for the remainder of this
+document, *section group* refers to a grouping of sections that are demarcated
+by two hashes (`##`) in the configuration file such as `## Install the corpus`.
+
+The [obj.yml] contains the application specific configuration for reading the
+corpus files and parsing it in to features that will later be vectorized.  It
+also contains the model.  All of this is described in each sub section in this
+document with the respective named group section (root YAML nodes) in the
+[obj.yml] application configuration file.
 
 
 ### Install the Corpus
@@ -150,7 +160,7 @@ Everything can be done with the harness script:
 ./harness.py info -i batch
 # print a sample transformer batch of what the model will get during training
 ./harness.py info -i batch -c models/transformer-trainable.conf 
-# train and test the model but switch to model profile with optmizied 
+# train and test the model but switch to model profile with optimized
 ./harness.py traintest -p
 # all model, its (hyper)parameters, metadata and results are stored in subdirectory of files
 ./harness.py result
@@ -185,6 +195,7 @@ To run the [Jupyter movie notebook]:
 [data frame stashes]: https://plandes.github.io/deeplearn/doc/preprocess.html#data-as-a-pandas-data-frame
 [deeplearn API batch]: https://plandes.github.io/deeplearn/doc/preprocess.html#batches
 [classify resource library]: https://github.com/plandes/deepnlp/blob/master/resources/classify.conf
+[INI format]: https://plandes.github.io/util/doc/config.html#ini-format
 
 [movie review task example]: https://github.com/plandes/deepnlp/blob/master/example/movie
 [obj.yml]: https://github.com/plandes/deepnlp/blob/master/example/movie/resources/obj.yml

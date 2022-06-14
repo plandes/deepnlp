@@ -78,8 +78,8 @@ Everything can be done with the [harness.py] script:
 # print a sample Glove 50 (default) batch of what the model will get during training
 ./harness.py info -i batch
 # print a sample transformer batch of what the model will get during training
-./harness.py info -i batch -c models/transformer-trainable.conf 
-# train and test the model but switch to model profile with optmizied 
+./harness.py info -i batch -c models/transformer.conf 
+# train and test the model but switch to model profile with optimized
 ./harness.py traintest -p
 # all model, its (hyper)parameters, metadata and results are stored in subdirectory of files
 ./harness.py result
