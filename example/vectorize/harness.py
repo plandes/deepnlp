@@ -7,7 +7,7 @@ from zensols.cli import CliHarness
 CONFIG = """
 [cli]
 class_name = zensols.cli.ActionCliManager
-apps = list: app
+apps = list: cleaner_cli, app
 
 [import]
 sections = list: imp_conf, imp_obj, imp_conf
@@ -25,6 +25,10 @@ config_files = list:
   resource(zensols.deepnlp): resources/default.conf,
   resource(zensols.deepnlp): resources/obj.conf,
   resource(zensols.deepnlp): resources/bigbird.conf
+
+[cleaner_cli]
+class_name = zensols.cli.Cleaner
+paths = eval: (('*.log', '**/__pycache__'),)
 
 [app]
 class_name = app.Application
