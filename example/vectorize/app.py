@@ -103,13 +103,12 @@ class Application(object):
         pprint(tdoc.map_to_word_pieces(ex, tdoc_org.id2tok))
         tdoc_org.write()
         out = vec.transform(doc)
-        print(type(out))
-        print(out.shape, out.device)
+        print(out.shape, out.device, out.dtype)
         n_labels = 9
         from torch import nn
         linear = nn.Linear(10, n_labels)
         linear = linear.to(out.device)
-        logits = linear.forward(out)
+        logits = linear.forward(out.float())
         print(logits.shape)
 
     def expand(self):
