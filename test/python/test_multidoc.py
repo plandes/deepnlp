@@ -41,6 +41,10 @@ class TestMultiDoc(TestFeatureVectorization):
         tensor = tvec.transform(docs)
         self.assertTrue(isinstance(tensor, torch.Tensor))
         self.assertEqual(tb, tuple(tensor.shape))
+        if 0:
+            print('\ncount:')
+            print(json.dumps(tvec.to_symbols(tensor), indent=4))
+            print()
         self.assertEqual(self.should['count'], tvec.to_symbols(tensor))
 
     def _test_enums(self, t1, t2, tb, should):
@@ -62,7 +66,7 @@ class TestMultiDoc(TestFeatureVectorization):
         self.assertTrue(isinstance(tensor, torch.Tensor))
         self.assertEqual(tb, tuple(tensor.shape))
         if 0:
-            print()
+            print(f'\nenums (should={should}):')
             print(json.dumps(tvec.to_symbols(tensor), indent=4))
             print()
         self.assertEqual(self.should[should], tvec.to_symbols(tensor))
