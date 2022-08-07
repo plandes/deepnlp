@@ -88,8 +88,12 @@ class TrainableEmbeddingLayer(EmbeddingLayer):
     def _get_emb_key(self, prefix: str):
         return f'{prefix}emb.weight'
 
-    def state_dict(self, destination=None, prefix='', *args, **kwargs):
-        state = super().state_dict(destination, prefix, *args, **kwargs)
+    def state_dict(self, *args, destination=None, prefix='', keep_vars=False):
+        state = super().state_dict(
+            *args,
+            destination=destination,
+            prefix=prefix,
+            keep_vars=keep_vars)
         if logger.isEnabledFor(logging.DEBUG):
             self._debug(f'state_dict: trainable: {self.trainable}')
         if not self.trainable:
