@@ -27,22 +27,22 @@ class TestLabelVectorizer(TestFeatureVectorization):
         # documents (single document case)
         self.should_single = \
             [[-100, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, -100, -100, -100, -100, -100],
-             [-100, 0, 0, 3, 0, 0, 0, 2, 0, 4, 4, 4, 0, 0, 0, -100]]
+             [-100, 0, 0, 2, 0, 0, 0, 2, 0, 4, 4, 4, 0, 0, 0, -100]]
         # concatenate tokens of each document in to singleton sentence
         # documents
         self.should_concat = \
-            [[-100, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 2, 0, 4, 4, 4, 0, 0,  0, -100],
+            [[-100, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 , 0, 2, 0, 0, 0, 2, 0, 4, 4, 4, 0, 0, 0, -100],
              [-100, 3, 0, 0, 0, 0, 0, 0, 0, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]]
         # all sentences of all documents become singleton sentence documents
         self.should_sentence = \
             [[-100, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, -100, -100, -100, -100, -100],
-             [-100, 0, 0, 3, 0, 0, 0, 2, 0, 4, 4, 4, 0, 0, 0, -100],
+             [-100, 0, 0, 2, 0, 0, 0, 2, 0, 4, 4, 4, 0, 0, 0, -100],
              [-100, 3, 0, 0, 0, 0, 0, 0, 0, -100, -100, -100, -100, -100, -100, -100]]
         # every sentence of each document is encoded separately, then the each
         # sentence output is concatenated as the respsective document during
         # decoding
         self.should_separate = \
-            [[-100, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, -100, -100, 0, 0, 3, 0, 0, 0, 2, 0, 4, 4, 4, 0, 0, 0, -100],
+            [[-100, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, -100, -100, 0, 0, 2, 0, 0, 0, 2, 0, 4, 4, 4, 0, 0, 0, -100],
              [-100, 3, 0, 0, 0, 0, 0, 0, 0, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]]
 
     def _set_attributes(self, docs: List[FeatureDocument]):

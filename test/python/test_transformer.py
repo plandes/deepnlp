@@ -107,8 +107,7 @@ class TestWordPieceTokenization(unittest.TestCase):
                    ('the', ('the',)),
                    ('gunships', ('guns', 'hips')),
                    ('.', ('.',))),
-                  (('The', ('The',)),
-                   ('United States', ('United', 'States')),
+                  (('The United States', ('The', 'United', 'States')),
                    ('schooner', ('sch', 'oon', 'er',)) if vec_name == 'transformer_roberta'
                    else ('schooner', ('schooner',)),
                    ('created', ('created',)),
