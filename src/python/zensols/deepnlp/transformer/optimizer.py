@@ -4,11 +4,10 @@
 __author__ = 'Paul Landes'
 
 from typing import Optional, Iterable
-from transformers import AdamW
 from torch import nn
 from torch.nn.parameter import Parameter
 import logging
-from torch.optim import Optimizer
+from torch.optim import AdamW, Optimizer
 from transformers import get_scheduler
 from zensols.deeplearn.model import ModelResourceFactory, ModelExecutor
 
