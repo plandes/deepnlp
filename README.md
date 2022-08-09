@@ -1,9 +1,8 @@
 # DeepZensols Natural Language Processing
 
 [![PyPI][pypi-badge]][pypi-link]
-[![Python 3.7][python37-badge]][python37-link]
-[![Python 3.8][python38-badge]][python38-link]
 [![Python 3.9][python39-badge]][python39-link]
+[![Python 3.10][python310-badge]][python310-link]
 
 Deep learning utility library for natural language processing that aids in
 feature engineering and embedding layers.
@@ -135,12 +134,12 @@ Copyright (c) 2020 - 2021 Paul Landes
 [pypi]: https://pypi.org/project/zensols.deepnlp/
 [pypi-link]: https://pypi.python.org/pypi/zensols.deepnlp
 [pypi-badge]: https://img.shields.io/pypi/v/zensols.deepnlp.svg
-[python37-badge]: https://img.shields.io/badge/python-3.7-blue.svg
-[python37-link]: https://www.python.org/downloads/release/python-370
 [python38-badge]: https://img.shields.io/badge/python-3.8-blue.svg
 [python38-link]: https://www.python.org/downloads/release/python-380
 [python39-badge]: https://img.shields.io/badge/python-3.9-blue.svg
 [python39-link]: https://www.python.org/downloads/release/python-390
+[python310-badge]: https://img.shields.io/badge/python-3.10-blue.svg
+[python310-link]: https://www.python.org/downloads/release/python-310
 
 [PyTorch]: https://pytorch.org
 [Gensim]: https://radimrehurek.com/gensim/
