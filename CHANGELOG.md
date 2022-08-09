@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.3.0] - 2022-08-08
+Update dependent libraries release.
+
+### Changed
+- Upgrade torch 1.12.
+- Upgraded to spaCy 3.2
+- Upgrade resource library with `zensols.util` changes.
+
+
 ## [1.2.0] - 2022-06-14
 This is primarily a refactoring release to simplify the API.
 
@@ -184,7 +193,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/plandes/deepnlp/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/plandes/deepnlp/compare/v1.1.2...v1.2.0
 [1.1.2]: https://github.com/plandes/deepnlp/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/plandes/deepnlp/compare/v1.1.0...v1.1.1
