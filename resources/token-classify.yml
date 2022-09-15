@@ -24,7 +24,7 @@ tok_label_batch_mappings:
         - attr: tok_labels
           feature_id: tclabel
           is_agg: true
-          is_label: True
+          is_label: true
         - attr: tok_mask
           feature_id: tmask
           is_agg: true
