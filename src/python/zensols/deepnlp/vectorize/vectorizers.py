@@ -3,12 +3,13 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import List, Tuple, Set, Union, Dict
+from typing import List, Tuple, Set, Union, Dict, Iterable
 from dataclasses import dataclass, field
 import logging
 import sys
 from functools import reduce
 import torch
+import numpy as np
 from torch import Tensor
 from zensols.deeplearn.vectorize import (
     VectorizerError,
@@ -16,11 +17,13 @@ from zensols.deeplearn.vectorize import (
     TensorFeatureContext,
     SparseTensorFeatureContext,
     MultiFeatureContext,
+    EncodableFeatureVectorizer,
     OneHotEncodedEncodableFeatureVectorizer,
 )
 from zensols.nlp import (
     FeatureToken, FeatureSentence, FeatureDocument, TokenContainer,
 )
+from ..embed import WordEmbedModel
 from . import (
     SpacyFeatureVectorizer, FeatureDocumentVectorizer,
     TextFeatureType, MultiDocumentVectorizer,
@@ -677,3 +680,27 @@ class MutualFeaturesContainerFeatureVectorizer(MultiDocumentVectorizer):
             # use the mask to zero out counts that aren't mutual across all
             # documents, then sum the counts across docuemnts
             return (cnts * mask).sum(axis=0).unsqueeze(0)
+
+
+@dataclass
+class WordEmbeddingFeatureVectorizer(EncodableFeatureVectorizer):
+    """Vectorizes string tokens in to word embedded vectors.  This class works
+    directly with the string tokens rather than
+    :class:`~zensols.nlp.FeatureDocument` instances.  It can be useful when
+    there's a need to vectorize tokens outside of a feature document
+    (i.e. ``cui2vec``).
+
+    """
+    DESCRIPTION = 'word embedding encoder'
+
+    embed_model: WordEmbedModel = field()
+    """The word embedding model that has the string tokens to vector mapping."""
+
+    def _get_shape(self):
+        return (-1, self.embed_model.vector_dimension)
+
+    def _encode(self, keys: Iterable[str]) -> FeatureContext:
+        em: WordEmbedModel = self.embed_model
+        vecs: np.ndarray = tuple(map(lambda k: em.get(k), keys))
+        arr: np.ndarray = np.stack(vecs)
+        return TensorFeatureContext(self.feature_id, torch.from_numpy(arr))
