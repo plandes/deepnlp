@@ -19,7 +19,7 @@ class TestEnumVectorizer(TestFeatureVectorization):
         self.assertTrue(isinstance(vec, FeatureDocumentVectorizer))
         self.assertEqual('enum', vec.feature_id)
         self.assertEqual((2, 30, 92), arr.shape)
-        self.assertEqual((None, 30, 92), vec.shape)
+        self.assertEqual((-1, 30, 92), vec.shape)
 
     def test_ent(self):
         vec = self.fac.instance('ent_vectorizer_manager')
@@ -34,7 +34,7 @@ class TestEnumVectorizer(TestFeatureVectorization):
         self.assertTrue(isinstance(vec, FeatureDocumentVectorizer))
         self.assertEqual('enum', vec.feature_id)
         self.assertEqual((2, 30, 21), arr.shape)
-        self.assertEqual((None, 30, 21), vec.shape)
+        self.assertEqual((-1, 30, 21), vec.shape)
 
     def test_ent_nolen(self):
         vec = self.fac.instance('ent_vectorizer_manager_nolen')
@@ -49,4 +49,4 @@ class TestEnumVectorizer(TestFeatureVectorization):
         self.assertTrue(isinstance(vec, FeatureDocumentVectorizer))
         self.assertEqual('enum', vec.feature_id)
         self.assertEqual((2, 7, 21), arr.shape)
-        self.assertEqual((None, -1, 21), vec.shape)
+        self.assertEqual((-1, -1, 21), vec.shape)
