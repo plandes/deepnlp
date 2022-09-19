@@ -438,7 +438,8 @@ class TransformerNominalFeatureVectorizer(AggregateEncodableFeatureVectorizer,
                     pass
                 # we set the label for the first token of each word.
                 elif word_idx != previous_word_idx:
-                    arr[six][tix] = by_label[sent_labels[word_idx]]
+                    lab: str = sent_labels[word_idx]
+                    arr[six][tix] = by_label[lab]
                 # for the other tokens in a word, we set the label to either
                 # the current label or -100, depending on the label_all_tokens
                 # flag
