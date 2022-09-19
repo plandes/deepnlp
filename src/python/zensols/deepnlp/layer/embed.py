@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Dict
+from typing import Dict, List
 from dataclasses import dataclass, field
 from typing import Callable
 import logging
@@ -216,7 +216,7 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         meta: BatchMetadata = self.net_settings.batch_metadata
         self.token_attribs = []
         self.doc_attribs = []
-        embedding_attribs = []
+        embedding_attribs: List[str] = []
         field: BatchFieldMetadata
         fba: Dict[str, BatchFieldMetadata] = meta.fields_by_attribute
         if logger.isEnabledFor(logging.DEBUG):
@@ -232,28 +232,37 @@ class EmbeddingNetworkModule(BaseNetworkModule):
             if logger.isEnabledFor(logging.DEBUG):
                 self._debug(f'{name} -> {field_meta}')
             if isinstance(vec, FeatureDocumentVectorizer):
-                attr = field_meta.field.attr
-                if vec.feature_type == TextFeatureType.TOKEN:
-                    if logger.isEnabledFor(logging.DEBUG):
-                        self._debug(f'adding tok type {attr}: {vec.shape[2]}')
-                    self.embedding_output_size += vec.shape[2]
-                    self.token_attribs.append(attr)
-                elif vec.feature_type == TextFeatureType.DOCUMENT:
-                    if logger.isEnabledFor(logging.DEBUG):
-                        self._debug(f'adding doc type {attr} ' +
-                                    f'({field_meta.shape}/{vec.shape})')
-                    self.join_size += field_meta.shape[1]
-                    self.doc_attribs.append(attr)
-                elif vec.feature_type == TextFeatureType.EMBEDDING:
-                    if logger.isEnabledFor(logging.DEBUG):
-                        self._debug(f'adding embedding: {attr}')
-                    embedding_attribs.append(attr)
-                    self.embedding_vectorizer = vec
+                try:
+                    self._add_field(vec, field_meta, embedding_attribs)
+                except Exception as e:
+                    raise ModelError(
+                        f'Could not create field {field_meta}: {e}') from e
         if len(embedding_attribs) != 1:
             raise LayerError(
                 'Expecting exactly one embedding vectorizer ' +
                 f'feature type, but got {len(embedding_attribs)}')
         self.embedding_attribute_name = embedding_attribs[0]
+
+    def _add_field(self, vec: FeatureDocumentVectorizer,
+                   field_meta: BatchFieldMetadata,
+                   embedding_attribs: List[str]):
+        attr = field_meta.field.attr
+        if vec.feature_type == TextFeatureType.TOKEN:
+            if logger.isEnabledFor(logging.DEBUG):
+                self._debug(f'adding tok type {attr}: {vec.shape[2]}')
+            self.embedding_output_size += vec.shape[2]
+            self.token_attribs.append(attr)
+        elif vec.feature_type == TextFeatureType.DOCUMENT:
+            if logger.isEnabledFor(logging.DEBUG):
+                self._debug(f'adding doc type {attr} ' +
+                            f'({field_meta.shape}/{vec.shape})')
+            self.join_size += field_meta.shape[1]
+            self.doc_attribs.append(attr)
+        elif vec.feature_type == TextFeatureType.EMBEDDING:
+            if logger.isEnabledFor(logging.DEBUG):
+                self._debug(f'adding embedding: {attr}')
+            embedding_attribs.append(attr)
+            self.embedding_vectorizer = vec
 
     @property
     def embedding_dimension(self) -> int:
