@@ -51,10 +51,10 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
     (in a sparse matrix) takes comparatively less time and space over having to
     re-encode all batches.
 
-    Rows are tokens, columns intervals are features.  The encoded matrix is
+    Rows are tokens, columns intervals of features.  The encoded matrix is
     sparse, and decoded as a dense matrix.
 
-    :shape: (|sentences|, |token length|, |decoded features|)
+    :shape: (|sentences|, |sentinel tokens|, |decoded features|)
 
     :see: :class:`.SpacyFeatureVectorizer`
 
@@ -339,7 +339,7 @@ class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
     Otherwise, the dependency relations are broken and results in a zeored
     tensor.
 
-    :shape: (|sentences|, token length, 1)
+    :shape: (|sentences|, |sentinel tokens|, 1)
 
     """
     DESCRIPTION = 'head depth'
@@ -471,7 +471,7 @@ class OneHotEncodedFeatureDocumentVectorizer(
     feature_attribute: Tuple[str] = field(default=None)
     """The feature attributes to vectorize."""
 
-    level: bool = field(default='token')
+    level: str = field(default='token')
     """The level at which to take the attribute value, which is ``document``,
     ``sentence`` or ``token``.
 
@@ -523,7 +523,7 @@ class StatisticsFeatureDocumentVectorizer(FeatureDocumentVectorizer):
         * min sentence length
         * max sentence length
 
-    :shape: (9,)
+    :shape: (-1, 9,)
 
     """
     DESCRIPTION = 'statistics'
