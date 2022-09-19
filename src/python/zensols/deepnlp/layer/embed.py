@@ -272,9 +272,6 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         """
         return self.embedding.embedding_dim
 
-    def _get_embedding_attribute_name(self):
-        return None
-
     def vectorizer_by_name(self, name: str) -> FeatureVectorizer:
         """Utility method to get a vectorizer by name.
 
@@ -331,7 +328,7 @@ class EmbeddingNetworkModule(BaseNetworkModule):
             arrs.append(x)
         for attrib in self.token_attribs:
             feats = batch.attributes[attrib]
-            self._shape_debug(f'token attrib {attrib}', feats)
+            self._shape_debug(f"token attrib '{attrib}'", feats)
             arrs.append(feats)
         if len(arrs) == 1:
             x = arrs[0]
