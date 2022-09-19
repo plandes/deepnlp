@@ -19,6 +19,8 @@ from zensols.deeplearn.vectorize import (
     MultiFeatureContext,
     EncodableFeatureVectorizer,
     OneHotEncodedEncodableFeatureVectorizer,
+    AggregateEncodableFeatureVectorizer,
+    TransformableFeatureVectorizer,
 )
 from zensols.nlp import (
     FeatureToken, FeatureSentence, FeatureDocument, TokenContainer,
@@ -510,6 +512,53 @@ class OneHotEncodedFeatureDocumentVectorizer(
 
 
 @dataclass
+class TokenEmbeddingFeatureVectorizer(
+        AggregateEncodableFeatureVectorizer, FeatureDocumentVectorizer):
+    """A :class:`~zensols.deepnlp.vectorize.AggregateEncodableFeatureVectorizer`
+    that is useful for token level classification (i.e. NER).  It uses a
+    delegate to first vectorizer the features, then concatenates in to one
+    aggregate.
+
+    In shape terms, this takes the single sentence position.  The additional
+    unsqueezed dimensions set with :obj:`n_unsqueeze` is useful when the
+    delegate vectorizer encodes booleans or any other value that does not take
+    an additional dimension.
+
+    :shape: (1, |tokens|, <delegate vectorizer shape>[, <unsqueeze dimensions])
+
+    """
+    DESCRIPTION = 'token aggregate vectorizer'
+
+    level: TextFeatureType = field(default=TextFeatureType.TOKEN)
+    """The level at which to take the attribute value, which is ``document``,
+    ``sentence`` or ``token``.
+
+    """
+    add_dims: int = field(default=0)
+    """The number of dimensions to add (see class docs)."""
+
+    def _get_shape(self):
+        dim = [1]
+        dim.extend(super()._get_shape())
+        dim.extend([1] * self.add_dims)
+        return tuple(dim)
+
+    @property
+    def feature_type(self) -> TextFeatureType:
+        return self.level
+
+    def encode(self, doc: Union[Tuple[FeatureDocument], FeatureDocument]) -> \
+            FeatureContext:
+        return TransformableFeatureVectorizer.encode(self, doc)
+
+    def _decode(self, context: MultiFeatureContext) -> Tensor:
+        tensor: Tensor = super()._decode(context)
+        for _ in range(self.add_dims):
+            return tensor.unsqueeze(-1)
+        return tensor
+
+
+@dataclass
 class StatisticsFeatureDocumentVectorizer(FeatureDocumentVectorizer):
     """Vectorizes basic surface language statics which include:
 
@@ -523,7 +572,7 @@ class StatisticsFeatureDocumentVectorizer(FeatureDocumentVectorizer):
         * min sentence length
         * max sentence length
 
-    :shape: (-1, 9,)
+    :shape: (1, 9,)
 
     """
     DESCRIPTION = 'statistics'
@@ -625,7 +674,6 @@ class MutualFeaturesContainerFeatureVectorizer(MultiDocumentVectorizer):
     :class:`CountEnumContainerFeatureVectorizer` to use for the count features.
 
     """
-
     @property
     def count_vectorizer(self) -> CountEnumContainerFeatureVectorizer:
         """Return the count vectorizer used for the count features.
