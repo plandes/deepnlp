@@ -82,6 +82,17 @@ class FeatureDocumentVectorizer(TransformableFeatureVectorizer,
         """Return ``True`` or not the input is a tuple (multiple) documents."""
         return isinstance(doc, (Tuple, List))
 
+    def _is_doc(self, doc: Union[Tuple[FeatureDocument], FeatureDocument]):
+        """Return whether ``doc`` is a :class:`.FeatureDocument`."""
+        if self._is_mult(doc):
+            docs = doc
+            for doc in docs:
+                if not self._is_doc(doc):
+                    return False
+        elif not isinstance(doc, FeatureDocument):
+            return False
+        return True
+
     def _combine_documents(self, docs: Tuple[FeatureDocument]) -> \
             FeatureDocument:
         return FeatureDocument.combine_documents(docs)
@@ -98,16 +109,7 @@ class FeatureDocumentVectorizer(TransformableFeatureVectorizer,
         return super().encode(doc)
 
     def _assert_doc(self, doc: Union[Tuple[FeatureDocument], FeatureDocument]):
-        """Raise an error if any input is not a :class:`.FeatureDocument`.
-
-        :raises: :class:`.VectorizerError` if any input isn't a document
-
-        """
-        if self._is_mult(doc):
-            docs = doc
-            for doc in docs:
-                self._assert_doc(doc)
-        elif not isinstance(doc, FeatureDocument):
+        if not self._is_doc(doc):
             raise VectorizerError(
                 f'Expecting FeatureDocument, but got type: {type(doc)}')
 
