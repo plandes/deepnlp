@@ -14,7 +14,7 @@ from torch import Tensor
 from zensols.config import Dictable
 from zensols.persist import persisted, Primeable
 from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
-from zensols.nlp import FeatureDocument, FeatureSentence
+from zensols.nlp import FeatureToken, FeatureDocument, FeatureSentence
 from zensols.deepnlp.embed import WordEmbedModel
 from zensols.deepnlp.vectorize import TextFeatureType
 from . import FoldingDocumentVectorizer
@@ -81,22 +81,30 @@ class WordVectorEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
     DESCRIPTION = 'word vector document embedding'
     FEATURE_TYPE = TextFeatureType.EMBEDDING
 
+    token_feature_id: str = field(default='norm')
+    """The attribute on :class:`~zensols.nlp.FeatureToken` used for indexing in
+    to the embeddings.
+
+    """
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
         emodel = self.embed_model
-        tw = self.manager.get_token_length(doc)
+        tw: int = self.manager.get_token_length(doc)
         sents: Tuple[FeatureSentence] = doc.sents
-        shape = (len(sents), tw)
+        shape: Tuple[int, int] = (len(sents), tw)
+        tfid: str = self.token_feature_id
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'using token length: {tw} with shape: {shape}, ' +
                          f'sents: {len(sents)}')
         arr = self.torch_config.empty(shape, dtype=torch.long)
+        row: int
+        sent: FeatureSentence
         for row, sent in enumerate(sents):
-            tokens = sent.tokens[0:tw]
-            slen = len(tokens)
+            tokens: List[FeatureToken] = sent.tokens[0:tw]
+            slen: int = len(tokens)
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'row: {row}, ' + 'toks: ' +
                              ' '.join(map(lambda x: x.norm, tokens)))
-            tokens = [t.norm for t in tokens]
+            tokens = list(map(lambda t: getattr(t, tfid), tokens))
             if slen < tw:
                 tokens += [WordEmbedModel.ZERO] * (tw - slen)
             for i, tok in enumerate(tokens):
