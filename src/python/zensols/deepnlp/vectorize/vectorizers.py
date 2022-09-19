@@ -80,7 +80,7 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
         for fvec in self.manager.spacy_vectorizers.values():
             if feature_ids is None or fvec.feature_id in feature_ids:
                 flen += fvec.shape[1]
-        return None, self.token_length, flen
+        return -1, self.token_length, flen
 
     def _get_shape_decode(self) -> Tuple[int, int]:
         """Return the shape needed for the tensor when encoding."""
@@ -462,7 +462,7 @@ class OneHotEncodedFeatureDocumentVectorizer(
     ``sentence``, the feature is taken from the document or sentence
     (respectively) and repeated for the length of the sentence.
 
-    :shape: (-1, <token length>, |categories|)
+    :shape: (|sentences|, |sentinel tokens|, |categories|)
 
     """
     DESCRIPTION = 'encoded feature document vectorizer'
@@ -691,6 +691,7 @@ class WordEmbeddingFeatureVectorizer(EncodableFeatureVectorizer):
     (i.e. ``cui2vec``).
 
     """
+    FEATURE_TYPE = TextFeatureType.EMBEDDING
     DESCRIPTION = 'word embedding encoder'
 
     embed_model: WordEmbedModel = field()

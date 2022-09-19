@@ -219,7 +219,7 @@ class TestFeatureVectorizationCombinedSpacy(TestFeatureVectorization):
         # transpose added after transposed vectorizer
         should = should.to_dense().T.unsqueeze(0)
         self.assertTensorEquals(should, tensor)
-        self.assertEqual(tuple([None] + list(should.shape[1:])),
+        self.assertEqual(tuple([-1] + list(should.shape[1:])),
                          tuple(tvec.shape))
 
 
