@@ -82,8 +82,8 @@ class WordVectorEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
     FEATURE_TYPE = TextFeatureType.EMBEDDING
 
     token_feature_id: str = field(default='norm')
-    """The attribute on :class:`~zensols.nlp.FeatureToken` used for indexing in
-    to the embeddings.
+    """The :class:`~zensols.nlp.FeatureToken` attribute used to index the
+    embedding vectors.
 
     """
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
