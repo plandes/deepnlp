@@ -146,9 +146,6 @@ class _EmbeddingContainer(object):
     """Contains the mathcing of vectorizer, embedding_layer and field mapping.
 
     """
-    logger: logging.Logger = field()
-    """Used for forward logging"""
-
     field_meta: BatchFieldMetadata = field()
     """The mapping that has the batch attribute name for the embedding."""
 
@@ -169,21 +166,6 @@ class _EmbeddingContainer(object):
     def get_embedding_tensor(self, batch: Batch) -> Tensor:
         """Get the embedding (or indexes depending on how it was vectorize)."""
         return batch[self.attr]
-
-    def forward(self, batch: Batch) -> Tensor:
-        is_tok_vec: bool = isinstance(
-            self.vectorizer, EmbeddingFeatureVectorizer)
-        decoded: bool = False
-        x: Tensor = self.get_embedding_tensor(batch)
-        if self.logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'vectorizer type: {type(self.vectorizer)}')
-        if is_tok_vec:
-            decoded = self.vectorizer.decode_embedding
-            if self.logger.isEnabledFor(logging.DEBUG):
-                logger.debug(f'is embedding already decoded: {decoded}')
-        if not decoded:
-            x = self.embedding_layer(x)
-        return x
 
     def __str__(self) -> str:
         return self.attr
@@ -318,8 +300,7 @@ class EmbeddingNetworkModule(BaseNetworkModule):
             if self.logger.isEnabledFor(logging.INFO):
                 we_model: WordEmbedModel = embedding_layer.embed_model
                 self.logger.info(f'embeddings: {we_model.name}')
-            ec = _EmbeddingContainer(
-                self.logger, field_meta, vec, embedding_layer)
+            ec = _EmbeddingContainer(field_meta, vec, embedding_layer)
             self._embedding_containers.append(ec)
             self.embedding_output_size += ec.dim
 
@@ -362,6 +343,22 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         x = self.forward_document_features(batch, x)
         return x
 
+    def _forward_embedding_layer(self, ec: _EmbeddingContainer,
+                                 batch: Batch) -> Tensor:
+        decoded: bool = False
+        is_tok_vec: bool = isinstance(ec.vectorizer, EmbeddingFeatureVectorizer)
+        x: Tensor = ec.get_embedding_tensor(batch)
+        self._shape_debug('input', x)
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self._debug(f'vectorizer type: {type(ec.vectorizer)}')
+        if is_tok_vec:
+            decoded = ec.vectorizer.decode_embedding
+            if self.logger.isEnabledFor(logging.DEBUG):
+                self._debug(f'is embedding already decoded: {decoded}')
+        if not decoded:
+            x = ec.embedding_layer(x)
+        return x
+
     def forward_embedding_features(self, batch: Batch) -> Tensor:
         """Use the embedding layer return the word embedding tensors.
 
@@ -370,7 +367,7 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         arrs: List[Tensor] = []
         ec: _EmbeddingContainer
         for ec in self._embedding_containers:
-            x: Tensor = ec.forward(batch)
+            x: Tensor = self._forward_embedding_layer(ec, batch)
             self._shape_debug(f'decoded sub embedding ({ec}):', x)
             arrs.append(x)
         if len(arrs) == 1:
