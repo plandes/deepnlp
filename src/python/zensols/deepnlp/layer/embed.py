@@ -8,6 +8,7 @@ from dataclasses import dataclass, field
 from typing import Callable
 import logging
 import torch
+from torch import nn
 from torch import Tensor
 from zensols.persist import Deallocatable
 from zensols.deeplearn import ModelError
@@ -252,6 +253,8 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         self.doc_attribs: List[str] = []
         self._embedding_containers: List[_EmbeddingContainer] = []
         self._embedding_layers = self._map_embedding_layers()
+        self._embedding_sequence = nn.Sequential(
+            *tuple(self._embedding_layers.values()))
         field: BatchFieldMetadata
         meta: BatchMetadata = self.net_settings.batch_metadata
         fba: Dict[str, BatchFieldMetadata] = meta.fields_by_attribute
