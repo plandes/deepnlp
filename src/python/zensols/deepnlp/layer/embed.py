@@ -158,10 +158,12 @@ class _EmbeddingContainer(object):
 
     @property
     def dim(self) -> int:
+        """The embedding's dimension."""
         return self.embedding_layer.embedding_dim
 
     @property
     def attr(self) -> str:
+        """The attribute name of the layer's mapping."""
         return self.field_meta.field.attr
 
     def get_embedding_tensor(self, batch: Batch) -> Tensor:
@@ -222,13 +224,6 @@ class EmbeddingNetworkModule(BaseNetworkModule):
     """
     MODULE_NAME = 'embed'
 
-    def _map_embedding_layers(self):
-        els: Tuple[EmbeddingLayer]
-        els = self.net_settings.embedding_layer
-        if not isinstance(els, (tuple, list)):
-            els = [els]
-        return {id(el.embed_model): el for el in els}
-
     def __init__(self, net_settings: EmbeddingNetworkSettings,
                  module_logger: logging.Logger = None,
                  filter_attrib_fn: Callable[[BatchFieldMetadata], bool] = None):
@@ -279,8 +274,23 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         if len(self._embedding_containers) == 0:
             raise LayerError('No embedding vectorizer feature type found')
 
+    def _map_embedding_layers(self) -> Dict[int, EmbeddingLayer]:
+        """Return a mapping of embedding layers configured using their in memory
+        location as keys.
+
+        """
+        els: Tuple[EmbeddingLayer]
+        els = self.net_settings.embedding_layer
+        if not isinstance(els, (tuple, list)):
+            els = [els]
+        return {id(el.embed_model): el for el in els}
+
     def _add_field(self, vec: FeatureDocumentVectorizer,
                    field_meta: BatchFieldMetadata):
+        """Add a batch metadata field and it's respective vectorizer to class
+        member datastructures.
+
+        """
         attr = field_meta.field.attr
         if vec.feature_type == TextFeatureType.TOKEN:
             if logger.isEnabledFor(logging.DEBUG):
