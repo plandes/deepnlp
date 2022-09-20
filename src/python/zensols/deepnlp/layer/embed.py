@@ -143,6 +143,9 @@ class EmbeddingNetworkSettings(MetadataNetworkSettings):
 
 @dataclass
 class _EmbeddingContainer(object):
+    """Contains the mathcing of vectorizer, embedding_layer and field mapping.
+
+    """
     logger: logging.Logger = field()
     """Used for forward logging"""
 
@@ -230,10 +233,6 @@ class EmbeddingNetworkModule(BaseNetworkModule):
       * :obj:`~.TextFeatureType.DOCUMENT`: ``join_size`` is increased
         by the vectorizer's shape
 
-      * :obj:`~.TextFeatureType.EMBEDDING`:
-        ``embedding_attribute_name`` is set to the name field's attribute and
-        ``embedding_vectorizers`` set to the field's vectorizer
-
     Fields can be filtered by passing a filter function to the initializer.
     See :meth:`__init__` for more information.
 
@@ -265,17 +264,6 @@ class EmbeddingNetworkModule(BaseNetworkModule):
 
         """
         super().__init__(net_settings, module_logger)
-
-        # self.embedding = net_settings.embedding_layer
-        # self.embedding_output_size = self.embedding.embedding_dim
-        # if self.logger.isEnabledFor(logging.DEBUG):
-        #     self._debug(f'embedding dim: {self.embedding.embedding_dim} ' +
-        #                 f'output size: {self.embedding_output_size}')
-        #     self._debug(f'embedding model: {self.embedding.embed_model}')
-        # if self.logger.isEnabledFor(logging.INFO):
-        #     we_model: WordEmbedModel = self.embedding.embed_model
-        #     self.logger.info(f'embeddings: {we_model.name}')
-
         self.embedding_output_size: int = 0
         self.join_size: int = 0
         self.token_attribs: List[str] = []
@@ -334,7 +322,6 @@ class EmbeddingNetworkModule(BaseNetworkModule):
                 self.logger, field_meta, vec, embedding_layer)
             self._embedding_containers.append(ec)
             self.embedding_output_size += ec.dim
-            #self.embedding_vectorizer = vec
 
     def get_embedding_tensors(self, batch: Batch) -> Tuple[Tensor]:
         """Get the embedding tensors (or indexes depending on how it was
@@ -345,7 +332,6 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         :return: the vectorized embedding as tensors, one for each embedding
 
         """
-        #return tuple(map(lambda n: batch[n], self.embedding_attribute_names))
         return tuple(map(lambda ec: batch[ec.attr], self._embedding_containers))
 
     @property
@@ -380,22 +366,6 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         """Use the embedding layer return the word embedding tensors.
 
         """
-        # self._debug('forward embedding')
-        # decoded = False
-        # xs: Tuple[Tensor] = self.get_embedding_tensors(batch)
-        # self._shape_debug('input', x)
-        # is_tok_vec = isinstance(self.embedding_vectorizer,
-        #                         EmbeddingFeatureVectorizer)
-        # if self.logger.isEnabledFor(logging.DEBUG):
-        #     self._debug(f'vectorizer type: {type(self.embedding_vectorizer)}')
-        # if is_tok_vec:
-        #     decoded = self.embedding_vectorizer.decode_embedding
-        #     if self.logger.isEnabledFor(logging.DEBUG):
-        #         self._debug(f'is embedding already decoded: {decoded}')
-        # if not decoded:
-        #     x = self.embedding(x)
-        #     self._shape_debug('decoded embedding', x)
-        # return x
         arr: Tensor
         arrs: List[Tensor] = []
         ec: _EmbeddingContainer
