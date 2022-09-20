@@ -188,7 +188,7 @@ class TransformerSequence(EmbeddingNetworkModule, SequenceNetworkModule):
             batch.get_label_feature_vectorizer()
         pad_label: int = vec.pad_label
         labels: Tensor = batch.get_labels()
-        tdoc: Tensor = batch[self.embedding_attribute_name]
+        tdoc: Tensor = self.get_embedding_tensors(batch)[0]
         tdoc = TokenizedDocument.from_tensor(tdoc)
         attention_mask: Tensor = tdoc.attention_mask
 

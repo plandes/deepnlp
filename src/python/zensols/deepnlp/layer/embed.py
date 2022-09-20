@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Dict, List
+from typing import Dict, List, Tuple
 from dataclasses import dataclass, field
 from typing import Callable
 import logging
@@ -58,10 +58,17 @@ class EmbeddingLayer(DebugModule, Deallocatable):
 
         """
         super().__init__(sub_logger)
+        self.feature_vectorizer_manager = feature_vectorizer_manager
         self.embedding_dim = embedding_dim
-        self.token_length = feature_vectorizer_manager.token_length
-        self.torch_config = feature_vectorizer_manager.torch_config
         self.trainable = trainable
+
+    @property
+    def token_length(self):
+        return self.feature_vectorizer_manager.token_length
+
+    @property
+    def torch_config(self):
+        return self.feature_vectorizer_manager.torch_config
 
     def deallocate(self):
         super().deallocate()
@@ -134,6 +141,54 @@ class EmbeddingNetworkSettings(MetadataNetworkSettings):
         return __name__ + '.EmbeddingNetworkModule'
 
 
+@dataclass
+class _EmbeddingContainer(object):
+    logger: logging.Logger = field()
+    """Used for forward logging"""
+
+    field_meta: BatchFieldMetadata = field()
+    """The mapping that has the batch attribute name for the embedding."""
+
+    vectorizer: FeatureDocumentVectorizer = field()
+    """The vectorizer used to encode the batch data."""
+
+    embedding_layer: EmbeddingLayer = field()
+    """The word embedding layer used to vectorize."""
+
+    @property
+    def dim(self) -> int:
+        return self.embedding_layer.embedding_dim
+
+    @property
+    def attr(self) -> str:
+        return self.field_meta.field.attr
+
+    def get_embedding_tensor(self, batch: Batch) -> Tensor:
+        """Get the embedding (or indexes depending on how it was vectorize)."""
+        return batch[self.attr]
+
+    def forward(self, batch: Batch) -> Tensor:
+        is_tok_vec: bool = isinstance(
+            self.vectorizer, EmbeddingFeatureVectorizer)
+        decoded: bool = False
+        x: Tensor = self.get_embedding_tensor(batch)
+        if self.logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'vectorizer type: {type(self.vectorizer)}')
+        if is_tok_vec:
+            decoded = self.vectorizer.decode_embedding
+            if self.logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'is embedding already decoded: {decoded}')
+        if not decoded:
+            x = self.embedding_layer(x)
+        return x
+
+    def __str__(self) -> str:
+        return self.attr
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
 class EmbeddingNetworkModule(BaseNetworkModule):
     """An module that uses an embedding as the input layer.  This class uses an
     instance of :class:`.EmbeddingLayer` provided by the network settings
@@ -144,8 +199,8 @@ class EmbeddingNetworkModule(BaseNetworkModule):
       * ``embedding`` the :class:`.EmbeddingLayer` instance used get the input
         embedding tensors
 
-      * ``embedding_attribute_name`` the name of the word embedding
-        vectorized feature attribute name
+      * ``embedding_attribute_names`` the name of the word embedding vectorized
+        feature attribute names (usually one, but possible to have more)
 
       * ``embedding_output_size`` the outpu size of the embedding layer, note
         this includes any features layered/concated given in all token level
@@ -177,13 +232,20 @@ class EmbeddingNetworkModule(BaseNetworkModule):
 
       * :obj:`~.TextFeatureType.EMBEDDING`:
         ``embedding_attribute_name`` is set to the name field's attribute and
-        ``embedding_vectorizer`` set to the field's vectorizer
+        ``embedding_vectorizers`` set to the field's vectorizer
 
     Fields can be filtered by passing a filter function to the initializer.
     See :meth:`__init__` for more information.
 
     """
     MODULE_NAME = 'embed'
+
+    def _map_embedding_layers(self):
+        els: Tuple[EmbeddingLayer]
+        els = self.net_settings.embedding_layer
+        if not isinstance(els, (tuple, list)):
+            els = [els]
+        return {id(el.embed_model): el for el in els}
 
     def __init__(self, net_settings: EmbeddingNetworkSettings,
                  module_logger: logging.Logger = None,
@@ -203,21 +265,25 @@ class EmbeddingNetworkModule(BaseNetworkModule):
 
         """
         super().__init__(net_settings, module_logger)
-        self.embedding = net_settings.embedding_layer
-        self.embedding_output_size = self.embedding.embedding_dim
-        if self.logger.isEnabledFor(logging.DEBUG):
-            self._debug(f'embedding dim: {self.embedding.embedding_dim} ' +
-                        f'output size: {self.embedding_output_size}')
-            self._debug(f'embedding model: {self.embedding.embed_model}')
-        if self.logger.isEnabledFor(logging.INFO):
-            we_model: WordEmbedModel = self.embedding.embed_model
-            self.logger.info(f'embeddings: {we_model.name}')
-        self.join_size = 0
-        meta: BatchMetadata = self.net_settings.batch_metadata
-        self.token_attribs = []
-        self.doc_attribs = []
-        embedding_attribs: List[str] = []
+
+        # self.embedding = net_settings.embedding_layer
+        # self.embedding_output_size = self.embedding.embedding_dim
+        # if self.logger.isEnabledFor(logging.DEBUG):
+        #     self._debug(f'embedding dim: {self.embedding.embedding_dim} ' +
+        #                 f'output size: {self.embedding_output_size}')
+        #     self._debug(f'embedding model: {self.embedding.embed_model}')
+        # if self.logger.isEnabledFor(logging.INFO):
+        #     we_model: WordEmbedModel = self.embedding.embed_model
+        #     self.logger.info(f'embeddings: {we_model.name}')
+
+        self.embedding_output_size: int = 0
+        self.join_size: int = 0
+        self.token_attribs: List[str] = []
+        self.doc_attribs: List[str] = []
+        self._embedding_containers: List[_EmbeddingContainer] = []
+        self._embedding_layers = self._map_embedding_layers()
         field: BatchFieldMetadata
+        meta: BatchMetadata = self.net_settings.batch_metadata
         fba: Dict[str, BatchFieldMetadata] = meta.fields_by_attribute
         if logger.isEnabledFor(logging.DEBUG):
             self._debug(f'batch field metadata: {fba}')
@@ -233,19 +299,15 @@ class EmbeddingNetworkModule(BaseNetworkModule):
                 self._debug(f'{name} -> {field_meta}')
             if isinstance(vec, FeatureDocumentVectorizer):
                 try:
-                    self._add_field(vec, field_meta, embedding_attribs)
+                    self._add_field(vec, field_meta)
                 except Exception as e:
                     raise ModelError(
                         f'Could not create field {field_meta}: {e}') from e
-        if len(embedding_attribs) != 1:
-            raise LayerError(
-                'Expecting exactly one embedding vectorizer ' +
-                f'feature type, but got {len(embedding_attribs)}')
-        self.embedding_attribute_name = embedding_attribs[0]
+        if len(self._embedding_containers) == 0:
+            raise LayerError('No embedding vectorizer feature type found')
 
     def _add_field(self, vec: FeatureDocumentVectorizer,
-                   field_meta: BatchFieldMetadata,
-                   embedding_attribs: List[str]):
+                   field_meta: BatchFieldMetadata):
         attr = field_meta.field.attr
         if vec.feature_type == TextFeatureType.TOKEN:
             if logger.isEnabledFor(logging.DEBUG):
@@ -261,8 +323,30 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         elif vec.feature_type == TextFeatureType.EMBEDDING:
             if logger.isEnabledFor(logging.DEBUG):
                 self._debug(f'adding embedding: {attr}')
-            embedding_attribs.append(attr)
-            self.embedding_vectorizer = vec
+            embedding_layer: EmbeddingLayer = \
+                self._embedding_layers.get(id(vec.embed_model))
+            if embedding_layer is None:
+                raise ModelError(f'No embedding layer found for {attr}')
+            if self.logger.isEnabledFor(logging.INFO):
+                we_model: WordEmbedModel = embedding_layer.embed_model
+                self.logger.info(f'embeddings: {we_model.name}')
+            ec = _EmbeddingContainer(
+                self.logger, field_meta, vec, embedding_layer)
+            self._embedding_containers.append(ec)
+            self.embedding_output_size += ec.dim
+            #self.embedding_vectorizer = vec
+
+    def get_embedding_tensors(self, batch: Batch) -> Tuple[Tensor]:
+        """Get the embedding tensors (or indexes depending on how it was
+        vectorize) from a batch.
+
+        :param batch: contains the vectorized embeddings
+
+        :return: the vectorized embedding as tensors, one for each embedding
+
+        """
+        #return tuple(map(lambda n: batch[n], self.embedding_attribute_names))
+        return tuple(map(lambda ec: batch[ec.attr], self._embedding_containers))
 
     @property
     def embedding_dimension(self) -> int:
@@ -270,7 +354,7 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         token or document features potentially added.
 
         """
-        return self.embedding.embedding_dim
+        return sum(map(lambda ec: ec.dim, self._embedding_containers))
 
     def vectorizer_by_name(self, name: str) -> FeatureVectorizer:
         """Utility method to get a vectorizer by name.
@@ -296,22 +380,35 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         """Use the embedding layer return the word embedding tensors.
 
         """
-        self._debug('forward embedding')
-        decoded = False
-        x = batch.attributes[self.embedding_attribute_name]
-        self._shape_debug('input', x)
-        is_tok_vec = isinstance(self.embedding_vectorizer,
-                                EmbeddingFeatureVectorizer)
-        if self.logger.isEnabledFor(logging.DEBUG):
-            self._debug(f'vectorizer type: {type(self.embedding_vectorizer)}')
-        if is_tok_vec:
-            decoded = self.embedding_vectorizer.decode_embedding
-            if self.logger.isEnabledFor(logging.DEBUG):
-                self._debug(f'is embedding already decoded: {decoded}')
-        if not decoded:
-            x = self.embedding(x)
-            self._shape_debug('decoded embedding', x)
-        return x
+        # self._debug('forward embedding')
+        # decoded = False
+        # xs: Tuple[Tensor] = self.get_embedding_tensors(batch)
+        # self._shape_debug('input', x)
+        # is_tok_vec = isinstance(self.embedding_vectorizer,
+        #                         EmbeddingFeatureVectorizer)
+        # if self.logger.isEnabledFor(logging.DEBUG):
+        #     self._debug(f'vectorizer type: {type(self.embedding_vectorizer)}')
+        # if is_tok_vec:
+        #     decoded = self.embedding_vectorizer.decode_embedding
+        #     if self.logger.isEnabledFor(logging.DEBUG):
+        #         self._debug(f'is embedding already decoded: {decoded}')
+        # if not decoded:
+        #     x = self.embedding(x)
+        #     self._shape_debug('decoded embedding', x)
+        # return x
+        arr: Tensor
+        arrs: List[Tensor] = []
+        ec: _EmbeddingContainer
+        for ec in self._embedding_containers:
+            x: Tensor = ec.forward(batch)
+            self._shape_debug(f'decoded sub embedding ({ec}):', x)
+            arrs.append(x)
+        if len(arrs) == 1:
+            arr = arrs[0]
+        else:
+            arr = torch.concat(arrs, dim=-1)
+            self._shape_debug(f'decoded concat embedding ({ec}):', arr)
+        return arr
 
     def forward_token_features(self, batch: Batch, x: Tensor = None) -> Tensor:
         """Concatenate any token features given by the vectorizer configuration.
