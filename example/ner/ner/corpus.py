@@ -91,14 +91,13 @@ class SentenceFactoryStash(OneShotFactoryStash, AbstractSplitKeyContainer):
                     toks.append(NERFeatureToken(len(toks), *line.split()))
                 else:
                     sent = NERFeatureSentence(
-                        sent_tokens=tuple(toks), sent_id=len(sents))
+                        tokens=tuple(toks), sent_id=len(sents))
                     sents.append(sent)
                     toks.clear()
                     if len(sents) >= self.dataset_limit:
                         break
         if len(toks) > 0:
-            sent = NERFeatureSentence(
-                sent_tokens=tuple(toks), sent_id=len(sents))
+            sent = NERFeatureSentence(tokens=tuple(toks), sent_id=len(sents))
             sents.append(sent)
         return sents
 
