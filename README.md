@@ -139,6 +139,7 @@ Copyright (c) 2020 - 2021 Paul Landes
 [python39-link]: https://www.python.org/downloads/release/python-390
 [python310-badge]: https://img.shields.io/badge/python-3.10-blue.svg
 [python310-link]: https://www.python.org/downloads/release/python-310
+[build-badge]: https://github.com/plandes/util/workflows/CI/badge.svg
 [build-link]: https://github.com/plandes/deepnlp/actions
 
 [PyTorch]: https://pytorch.org
