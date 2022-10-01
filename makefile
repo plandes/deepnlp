@@ -4,6 +4,7 @@
 PROJ_TYPE =		python
 PROJ_MODULES =		git python-resources python-doc python-doc-deploy
 PROJ_ARGS =		-c resources/deepnlp.conf
+PY_DEP_POST_DEPS +=	modeldeps
 CLEAN_ALL_DEPS +=	exampleclean
 CLEAN_DEPS +=		pycleancache
 
@@ -19,6 +20,18 @@ PY_DOC_MD_SRC =		./doc/md
 ## targets
 
 include ./zenbuild/main.mk
+
+# https://spacy.io/models/en
+.PHONY:		allmodels
+allmodels:
+		@for i in $(SPACY_MODELS) ; do \
+			echo "installing $$i" ; \
+			$(PYTHON_BIN) -m spacy download en_core_web_$${i} ; \
+		done
+
+.PHONY:		modeldeps
+modeldeps:
+		$(PIP_BIN) install $(PIP_ARGS) -r $(PY_SRC)/requirements-model.txt
 
 .PHONY:		exampleclean
 exampleclean:
