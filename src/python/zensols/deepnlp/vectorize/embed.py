@@ -5,7 +5,7 @@ efficient retrival.
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, Any, Iterable, List
+from typing import Tuple, Iterable, List, Union
 from dataclasses import dataclass, field
 import logging
 from itertools import chain
@@ -31,8 +31,8 @@ class EmbeddingFeatureVectorizer(FoldingDocumentVectorizer,
     word embedding during execution of the model.
 
     """
-    embed_model: Any = field()
-    """Contains the word vector model.
+    embed_model: Union[WordEmbedModel, 'TransformerEmbedding'] = field()
+    """The word vector model.
 
     Types for this value include:
 
