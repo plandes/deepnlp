@@ -61,8 +61,8 @@ class TransformerResource(PersistableContainer, Dictable):
 
     """
     cased: bool = field(default=None)
-    """``True`` for the case sensitive, ``False`` (default) otherwise.  The negated
-    value of it is also used as the ``do_lower_case`` parameter in the
+    """``True`` for case sensitive models, ``False`` (default) otherwise.  The
+    negated value of it is also used as the ``do_lower_case`` parameter in the
     ``*.from_pretrained`` calls to huggingface transformers.
 
     """
