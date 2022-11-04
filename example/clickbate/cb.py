@@ -33,7 +33,10 @@ class ClickbateDataframeStash(ResourceFeatureDataframeStash):
 
     """
     labels: Tuple[str] = field()
+    """The labels of the classification, which are ``y`` for yes, and ``n`` for
+    no.
 
+    """
     def _parse_corpus(self, path: Path, label: bool) -> pd.DataFrame:
         """Parse the corpus file identified and give it a label.
 
