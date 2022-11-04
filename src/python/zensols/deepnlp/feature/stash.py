@@ -71,7 +71,7 @@ class DataframeDocumentFeatureStash(DocumentFeatureStash):
     def _parse_document(self, id: int, row: pd.Series) -> FeatureDocument:
         # text to parse with SpaCy
         text = row[self.text_column]
-        vals = ()
+        vals = {}
         if self.additional_columns is not None:
-            vals = tuple(map(lambda c: row[c], self.additional_columns))
-        return self.vec_manager.parse(text, *vals)
+            vals = dict(map(lambda c: (c, row[c]), self.additional_columns))
+        return self.vec_manager.parse(text, **vals)
