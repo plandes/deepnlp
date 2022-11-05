@@ -456,19 +456,20 @@ class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
 @dataclass
 class OneHotEncodedFeatureDocumentVectorizer(
         FeatureDocumentVectorizer, OneHotEncodedEncodableFeatureVectorizer):
-    """Vectorize nominal enumerated features in to a one-hot encoded vectors.  The
-    feature is taken from a :class:`~zensols.nlp.FeatureToken`.  After the
-    batch dimension, rows are sentnces, columns are featues.  If :obj:`level`
-    is ``token`` then the features are token attributes identified by
-    :obj:`feature_attribute`.  If the :obj:`level` is ``document`` or
-    ``sentence``, the feature is taken from the document or sentence
-    (respectively) and repeated for the length of the sentence.
+    """Vectorize nominal enumerated features in to a one-hot encoded vectors.
+    The feature is taken from a :class:`~zensols.nlp.FeatureToken`.  If
+    :obj:`level` is ``token`` then the features are token attributes identified
+    by :obj:`feature_attribute`.  If the :obj:`level` is ``document`` feature is
+    taken from the document.
 
-    :shape: (|sentences|, |sentinel tokens|, |categories|)
+    :shape:
+
+        * level = document: (1, |categories|)
+
+        * level = token: (|<sentences>|, |<sentinel tokens>|, |categories|)
 
     """
     DESCRIPTION = 'encoded feature document vectorizer'
-    FEATURE_TYPE = TextFeatureType.TOKEN
 
     feature_attribute: Tuple[str] = field(default=None)
     """The feature attributes to vectorize."""
@@ -482,29 +483,33 @@ class OneHotEncodedFeatureDocumentVectorizer(
         super().__post_init__()
         self.optimize_bools = False
 
+    @property
+    def feature_type(self) -> TextFeatureType:
+        return {'document': TextFeatureType.DOCUMENT,
+                'token': TextFeatureType.TOKEN,
+                }[self.level]
+
     def _get_shape(self) -> Tuple[int, int]:
-        return -1, self.token_length, super()._get_shape()[1]
+        if self.level == 'document':
+            return -1, super()._get_shape()[1]
+        else:
+            return -1, self.token_length, super()._get_shape()[1]
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
-        slen = len(doc)
-        tlen = self.manager.get_token_length(doc)
         attr = self.feature_attribute
-        arr = self.torch_config.zeros((slen, tlen, self.shape[2]))
-        doc_val = getattr(doc, attr) if self.level == 'document' else None
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'vectorizing: {attr} for token length: {tlen} ' +
-                         f'in to {arr.shape}')
-        for six, sent in enumerate(doc.sents):
-            if self.level == 'document':
-                feats = [doc_val] * len(sent)
-            elif self.level == 'sentenece':
-                sent_val = getattr(sent, attr)
-                feats = [sent_val] * len(sent)
-            elif self.level == 'token':
+        if self.level == 'document':
+            arr = self.torch_config.zeros((1, self.shape[1]))
+            feats = [getattr(doc, attr)]
+            self._encode_cats(feats, arr)
+        elif self.level == 'token':
+            # not tested
+            tlen = self.manager.get_token_length(doc)
+            arr = self.torch_config.zeros((len(doc), tlen, self.shape[2]))
+            for six, sent in enumerate(doc.sents):
                 feats = tuple(map(lambda s: getattr(s, attr), sent))
-            else:
-                raise VectorizerError(f'Unknown doc level: {self.level}')
-            self._encode_cats(feats, arr[six])
+                self._encode_cats(feats, arr[six])
+        else:
+            raise VectorizerError(f'Unknown doc level: {self.level}')
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'vectorized: {len(doc)} sents in to {arr.shape}')
         return SparseTensorFeatureContext.instance(
