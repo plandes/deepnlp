@@ -10,8 +10,9 @@ import torch
 from transformers import PreTrainedTokenizer
 from transformers.tokenization_utils_base import BatchEncoding
 from zensols.nlp import FeatureDocument
-from zensols.deepnlp.transformer import TransformerResource
 from zensols.persist import persisted, PersistableContainer
+from zensols.deeplearn import TorchConfig
+from zensols.deepnlp.transformer import TransformerResource
 from . import TransformerError, TokenizedFeatureDocument
 
 logger = logging.getLogger(__name__)
@@ -66,8 +67,8 @@ class TransformerDocumentTokenizer(PersistableContainer):
     def _from_tokens(self, sents: List[List[str]], doc: FeatureDocument,
                      tokenizer_kwargs: Dict[str, Any] = None) -> \
             TokenizedFeatureDocument:
-        torch_config = self.resource.torch_config
-        tlen = self.word_piece_token_length
+        torch_config: TorchConfig = self.resource.torch_config
+        tlen: int = self.word_piece_token_length
         tokenizer: PreTrainedTokenizer = self.resource.tokenizer
         params = {'return_offsets_mapping': True,
                   'is_split_into_words': True,
