@@ -174,7 +174,8 @@ class TransformerEmbedding(PersistableContainer, Dictable):
 
         # predict hidden states features for each layer
         if self.resource.trainable:
-            logger.debug('model is trainable')
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug('model is trainable')
             output_res = model(**params)
         else:
             if logger.isEnabledFor(logging.DEBUG):
