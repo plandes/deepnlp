@@ -81,7 +81,6 @@ class TransformerResource(PersistableContainer, Dictable):
     tokenizer.
 
     """
-
     model_args: Dict[str, Any] = field(default_factory=dict)
     """Additional arguments to pass to the `from_pretrained` method for the
     model.
