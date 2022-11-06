@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.5.0] - 2022-11-06
+### Added
+- Sentence BERT (sbert) resource library and tested.
+- Add HuggingFace local download model files resource library defaults.
+
+### Changed
+- Switched additional columns from tuple to as dictionary to solve ordering in
+  `DataframeDocumentFeatureStash`.
+- Fix `OneHotEncodedFeatureDocumentVectorizer` for document use case.
+- Fix model `ClassifyNetwork` linear input size calculation so transformers (or
+  models that do not use a terminal CRF layer) can add document level features.
+
+
 ## [1.4.1] - 2022-10-02
 ### Changed
 - Transformer model fetch configuration.
@@ -206,7 +219,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.4.1...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.5.0...HEAD
+[1.5.0]: https://github.com/plandes/deepnlp/compare/v1.4.1...v1.5.0
 [1.4.1]: https://github.com/plandes/deepnlp/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/plandes/deepnlp/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/plandes/deepnlp/compare/v1.2.0...v1.3.0
