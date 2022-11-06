@@ -66,7 +66,7 @@ class ClassifyNetwork(EmbeddingNetworkModule):
             self._debug(f'embedding output size: {self.embedding_output_size}')
 
         if rs is None:
-            ln_in_features = self.embedding_output_size
+            ln_in_features = self.embedding_output_size + self.join_size
             self.recur = None
         else:
             rs.input_size = self.embedding_output_size
@@ -79,8 +79,12 @@ class ClassifyNetwork(EmbeddingNetworkModule):
 
             ln_in_features = self.join_size
 
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self._debug(f'linear in size: {ln_in_features}')
+
         ls.in_features = ln_in_features
-        self._debug(f'linear input settings: {ls}')
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self._debug(f'linear input settings: {ls}')
         self.fc_deep = DeepLinear(ls, self.logger)
 
     def _forward(self, batch: Batch) -> torch.Tensor:
