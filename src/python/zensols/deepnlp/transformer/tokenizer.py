@@ -164,7 +164,7 @@ class TransformerDocumentTokenizer(PersistableContainer):
                     x[0], tuple(map(lambda wt: WordPiece(*wt), x[1]))),
                     wp['map']))
             sents.append(WordPieceSentence(
-                sent=wp['sent'],
+                feature=wp['sent'],
                 tokens=tokens,
                 sentence_index=six))
         return WordPieceDocument(fdoc, sents)
