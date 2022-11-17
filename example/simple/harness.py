@@ -16,7 +16,9 @@ from zensols.nlp import FeatureToken, FeatureSentence, FeatureDocument
 from zensols.deepnlp.vectorize import (
     FeatureVectorizer, FeatureVectorizerManager
 )
-from zensols.deepnlp.transformer import TokenizedFeatureDocument
+from zensols.deepnlp.transformer import (
+    WordPieceDocument, TransformerDocumentTokenizer, TokenizedFeatureDocument
+)
 
 logger = logging.getLogger(__name__)
 CONFIG = """
@@ -46,8 +48,13 @@ config_files = list:
 [map_filter_token_normalizer]
 embed_entities = False
 
-[transformer_sent_fixed_resource]
-model_id = sentence-transformers/all-MiniLM-L6-v2
+[transformer_fixed_resource]
+#model_id = sentence-transformers/all-MiniLM-L6-v2
+model_id = distilbert-base-cased
+args = dict: {'local_files_only': True}
+
+[transformer_fixed_embedding]
+output = last_hidden_state
 
 [app]
 class_name = ${package:name}.Application
@@ -59,16 +66,18 @@ class Application(object):
     """The demo application entry point.
 
     """
-    CLI_META = {'option_includes': {}}
+    CLI_META = {'option_excludes': {'config_factory'}}
 
     config_factory: ConfigFactory = field()
     """Set by the framework and used to get vectorizers from the application
     configuration.
 
     """
-    def traintest(self):
+    def traintest(self, write: str = 'tokenize'):
         """Parse and vectorize a sentence in to BERT embeddings (the action
         naming misnomer is unfortunately needed for the build automation).
+
+        :param write: what to output
 
         """
         sents: str = """\
@@ -81,32 +90,43 @@ effects by codifying its nuclear law in August.
         # create the vectorizers from the application config
         vec_mng: FeatureVectorizerManager = self.config_factory(
             'language_vectorizer_manager')
-        vec: FeatureVectorizer = vec_mng['transformer_sent_fixed']
+        vec: FeatureVectorizer = vec_mng['transformer_fixed']
+        tokenizer: TransformerDocumentTokenizer = vec.embed_model.tokenizer
         # parse a feature document
-        doc: FeatureDocument = vec_mng.doc_parser.parse(sents.strip())
+        fdoc: FeatureDocument = vec_mng.doc_parser.parse(sents.strip())
         # show the tokenized document.
-        tdoc: TokenizedFeatureDocument = vec.tokenize(doc)
-        if 0:
+        tdoc: TokenizedFeatureDocument = tokenizer.tokenize(fdoc)
+        tdoc_det: TokenizedFeatureDocument = tdoc.detach()
+        if write == 'tokenize':
             tdoc.write()
-        for m in tdoc.map_to_word_pieces(doc, vec.embed_model.tokenizer.id2tok):
-            sent: FeatureSentence = m['sent']
-            print(sent)
-            n_wp: int = 0
-            tok: FeatureToken
-            wps: Tuple[str]
-            for tok, wps in m['map']:
-                print(' ', wps)
-                n_wp += len(wps)
-            print(f'  word pieces: {n_wp}')
-        arr: Tensor = vec.transform(doc)
+            tdoc_det.write()
+        elif write == 'wordpiece':
+            wpdoc: WordPieceDocument = tokenizer.to_word_piece_document(
+                tdoc, fdoc)
+            wpdoc.write()
+        elif write == 'map':
+            for m in tdoc.map_to_word_pieces(
+                    fdoc, vec.embed_model.tokenizer.id2tok):
+                sent: FeatureSentence = m['sent']
+                print(sent)
+                n_wp: int = 0
+                tok: FeatureToken
+                wps: Tuple[str]
+                for tok, wps in m['map']:
+                    print(' ', wps)
+                    n_wp += len(wps)
+                print(f'  word pieces: {n_wp}')
+        arr: Tensor = vec.transform(fdoc)
         # the tensor should match up with the max sentence word piece count but
         # add the [CLS] and [SEP] tokens
         print(f'tensor: {arr.shape}')
 
 
 if (__name__ == '__main__'):
+    import zensols.deepnlp.transformer as t
+    t.suppress_warnings()
     CliHarness(
         app_config_resource=StringIO(CONFIG),
-        proto_args='traintest',
+        proto_args='traintest -w wordpiece',
         proto_factory_kwargs={'reload_pattern': '^harness'},
     ).run()

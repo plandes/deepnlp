@@ -15,7 +15,7 @@ import torch
 from torch import Tensor
 from zensols.nlp import FeatureDocument
 from zensols.persist import PersistableContainer
-from zensols.config import Writable
+from zensols.config import Writable, Dictable
 from zensols.nlp import FeatureToken, FeatureSentence
 
 logger = logging.getLogger(__name__)
@@ -134,9 +134,22 @@ class TokenizedDocument(PersistableContainer, Writable):
         return ftoks
 
     def map_to_word_pieces(self, sentences: Iterable[List[Any]] = None,
-                           map_wp: Union[Callable, Dict[int, str]] = None) -> \
+                           map_wp: Union[Callable, Dict[int, str]] = None,
+                           add_indices: bool = False) -> \
             List[Dict[str, Union[List[Any], Tuple[FeatureToken, Tuple[str]]]]]:
         """Map word piece tokens to linguistic tokens.
+
+        :param sentences: an iteration of sentences, which is returned in the
+                          output (i.e. :class:`~zensols.nlp.FeatureSentence`)
+
+        :param map_wp: either a function that takes the token index, sentence ID
+                       and input IDs, or the mapping from word piece ID to
+                       string token; return output is the string token (or
+                       numerical output if no mapping is provided)
+
+        :param add_indices: whether to add the token ID and index after the
+                            token string when ``id2tok`` is provided for
+                            ``map_wp``
 
         :return: a list sentence maps, each with:
 
@@ -148,7 +161,7 @@ class TokenizedDocument(PersistableContainer, Writable):
         def map_wp_by_id(x: int, six: int, input_ids: List[int]):
             tix = input_ids[x]
             tok = id2tok[tix]
-            return tok
+            return (tok, tix, x) if add_indices else tok
 
         id2tok = None
         input_ids = self.input_ids.cpu().numpy()
@@ -286,3 +299,88 @@ class TokenizedFeatureDocument(TokenizedDocument):
                     stext = tok.text.replace('\n', '\\n')
                     stext = f'<{stext}>'
                     self._write_line(f'{stext} -> {ttoks}', depth + 1, writer)
+
+
+@dataclass(repr=False)
+class WordPieceBase(Dictable):
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
+@dataclass(repr=False)
+class WordPiece(PersistableContainer, Dictable):
+    """The word piece data.
+
+    """
+    name: str = field()
+    """The string representation of the word piece."""
+
+    vocab_index: int = field()
+    """The vocabulary index."""
+
+    token_index: int = field()
+    """The index of the token in the respective sentence."""
+
+    def __str__(self):
+        s: str = self.name
+        if s.startswith('##'):
+            s = s[2:]
+        return s
+
+
+@dataclass(repr=False)
+class WordPieceToken(WordPieceBase):
+    """The token and the word pieces that repesent it.
+
+    """
+    token: FeatureToken = field()
+    """The token from the initial :class:`~zensols.nlp.FeatureSentence`."""
+
+    words: Tuple[WordPiece] = field()
+    """The word pieces that make up this token."""
+
+    def __str__(self) -> str:
+        return ''.join(map(str, self.words))
+
+
+@dataclass(repr=False)
+class WordPieceSentence(WordPieceBase):
+    """A sentence made up of word pieces.
+
+    """
+    sent: FeatureSentence = field()
+    """The initial sentence that was used to create the word piences."""
+
+    tokens: Tuple[WordPieceToken] = field()
+    """The word piece tokens that make up the sentence."""
+
+    sentence_index: int = field()
+    """The index of the sentence in the document."""
+
+    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
+        self._write_line(self.sent, depth, writer)
+        self._write_line(self, depth + 1, writer)
+
+    def __str__(self) -> str:
+        return ' '.join(map(str, self.tokens))
+
+
+@dataclass(repr=False)
+class WordPieceDocument(WordPieceBase):
+    """A document made up of word piece sentences.
+
+    """
+    doc: FeatureDocument = field()
+    """The initial document that was used to create the word piences."""
+
+    sents: Tuple[WordPieceSentence] = field()
+    """The word piece sentences that make up the document."""
+
+    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
+        self._write_line(self.doc, depth, writer)
+        sent: WordPieceSentence
+        for sent in self.sents:
+            self._write_object(sent, depth + 1, writer)
+
+    def __str__(self) -> str:
+        return '. '.join(map(str, self.sents))
