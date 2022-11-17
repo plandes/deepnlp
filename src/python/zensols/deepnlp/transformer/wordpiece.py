@@ -78,7 +78,7 @@ class WordPieceToken(WordPieceBase):
             self._write_line(f'{w}: i={w.index}, v={w.vocab_index}',
                              depth + 1, writer)
         if self.embedding is not None:
-            self._write_line(f'embedding: {self.embedding.shape}',
+            self._write_line(f'embedding: {tuple(self.embedding.size())}',
                              self, depth + 1, writer)
 
     def __str__(self) -> str:
@@ -111,8 +111,8 @@ class WordPieceSentence(WordPieceBase):
         self._write_line(self.feature, depth, writer)
         self._write_line(self, depth + 1, writer)
         if self.embedding is not None:
-            self._write_line(f'embedding: {self.embedding.shape}',
-                             self, depth + 1, writer)
+            self._write_line(f'embedding: {tuple(self.embedding.size())}',
+                             depth + 1, writer)
 
     def __str__(self) -> str:
         return ' '.join(map(str, self.tokens))
@@ -159,11 +159,10 @@ class WordPieceDocumentFactory(object):
                 tok.embedding = arr[six, tok.indexes]
 
     def add_sent_embeddings(self, doc: WordPieceDocument, arr: Tensor):
-        print('A', arr.shape)
         six: int
         sent: WordPieceSentence
         for six, sent in enumerate(doc.sents):
-            pass
+            sent.embedding = arr[six]
 
     def __call__(self, fdoc: FeatureDocument,
                  tdoc: TokenizedFeatureDocument = None,
@@ -207,6 +206,6 @@ class WordPieceDocumentFactory(object):
             self.add_token_embeddings(doc, arr)
         if add_sent_embeddings:
             arr: Tensor = self.embed_model.transform(
-                tdoc, output='pooler')
+                tdoc, output='pooler_output')
             self.add_sent_embeddings(doc, arr)
         return doc
