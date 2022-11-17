@@ -333,11 +333,17 @@ class WordPieceToken(WordPieceBase):
     """The token and the word pieces that repesent it.
 
     """
-    token: FeatureToken = field()
+    feature: FeatureToken = field()
     """The token from the initial :class:`~zensols.nlp.FeatureSentence`."""
 
     words: Tuple[WordPiece] = field()
     """The word pieces that make up this token."""
+
+    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
+        self._write_line(f'{self.feature.norm}:', depth, writer)
+        for w in self.words:
+            self._write_line(f'{w} ({w.token_index}): index={w.vocab_index}',
+                             depth + 1, writer)
 
     def __str__(self) -> str:
         return ''.join(map(str, self.words))
@@ -348,7 +354,7 @@ class WordPieceSentence(WordPieceBase):
     """A sentence made up of word pieces.
 
     """
-    sent: FeatureSentence = field()
+    feature: FeatureSentence = field()
     """The initial sentence that was used to create the word piences."""
 
     tokens: Tuple[WordPieceToken] = field()
@@ -358,7 +364,7 @@ class WordPieceSentence(WordPieceBase):
     """The index of the sentence in the document."""
 
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
-        self._write_line(self.sent, depth, writer)
+        self._write_line(self.feature, depth, writer)
         self._write_line(self, depth + 1, writer)
 
     def __str__(self) -> str:
