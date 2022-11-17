@@ -29,7 +29,7 @@ class WordPiece(PersistableContainer, Dictable):
     """The word piece data.
 
     """
-    name: str = field()
+    word: str = field()
     """The string representation of the word piece."""
 
     vocab_index: int = field()
@@ -42,20 +42,17 @@ class WordPiece(PersistableContainer, Dictable):
 
     """
     def __str__(self):
-        s: str = self.name
+        s: str = self.word
         if s.startswith('##'):
             s = s[2:]
         return s
 
 
 @dataclass(repr=False)
-class WordPieceToken(WordPieceBase):
+class WordPieceFeatureToken(FeatureToken):
     """The token and the word pieces that repesent it.
 
     """
-    feature: FeatureToken = field()
-    """The token from the initial :class:`~zensols.nlp.FeatureSentence`."""
-
     words: Tuple[WordPiece] = field()
     """The word pieces that make up this token."""
 
@@ -73,7 +70,7 @@ class WordPieceToken(WordPieceBase):
         return tuple(map(lambda wp: wp.index, self.words))
 
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
-        self._write_line(f'{self.feature.norm}:', depth, writer)
+        self._write_line(f'{self.norm}:', depth, writer)
         for w in self.words:
             self._write_line(f'{w}: i={w.index}, v={w.vocab_index}',
                              depth + 1, writer)
@@ -86,19 +83,10 @@ class WordPieceToken(WordPieceBase):
 
 
 @dataclass(repr=False)
-class WordPieceSentence(WordPieceBase):
+class WordPieceFeatureSentence(FeatureSentence):
     """A sentence made up of word pieces.
 
     """
-    feature: FeatureSentence = field()
-    """The initial sentence that was used to create the word piences."""
-
-    tokens: Tuple[WordPieceToken] = field()
-    """The word piece tokens that make up the sentence."""
-
-    sentence_index: int = field()
-    """The index of the sentence in the document."""
-
     embedding: Tensor = field(default=None)
     """The sentence embedding level (i.e. ``[CLS]``) embedding from the
     transformer.
@@ -106,9 +94,9 @@ class WordPieceSentence(WordPieceBase):
     :shape: (|words|, <embedding dimension>)
 
     """
-
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
-        self._write_line(self.feature, depth, writer)
+        self._write_line(super().__str__(), depth, writer)
+        self._write_line('word pieces:', depth, writer)
         self._write_line(self, depth + 1, writer)
         if self.embedding is not None:
             self._write_line(f'embedding: {tuple(self.embedding.size())}',
@@ -119,22 +107,16 @@ class WordPieceSentence(WordPieceBase):
 
 
 @dataclass(repr=False)
-class WordPieceDocument(WordPieceBase):
+class WordPieceFeatureDocument(FeatureDocument):
     """A document made up of word piece sentences.
 
     """
-    feature: FeatureDocument = field()
-    """The initial document that was used to create the word piences."""
-
-    tokenized: TokenizedFeatureDocument = field()
+    tokenized: TokenizedFeatureDocument = field(default=None)
     """The tokenized feature document."""
 
-    sents: Tuple[WordPieceSentence] = field()
-    """The word piece sentences that make up the document."""
-
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
-        self._write_line(self.feature, depth, writer)
-        sent: WordPieceSentence
+        self._write_line(self, depth, writer)
+        sent: WordPieceFeatureSentence
         for sent in self.sents:
             self._write_object(sent, depth + 1, writer)
 
@@ -143,31 +125,31 @@ class WordPieceDocument(WordPieceBase):
 
 
 @dataclass
-class WordPieceDocumentFactory(object):
+class WordPieceFeatureDocumentFactory(object):
     """Create word piece resources.
 
     """
     tokenizer: TransformerDocumentTokenizer = field()
     embed_model: TransformerEmbedding = field()
 
-    def add_token_embeddings(self, doc: WordPieceDocument, arr: Tensor):
+    def add_token_embeddings(self, doc: WordPieceFeatureDocument, arr: Tensor):
         six: int
-        sent: WordPieceSentence
+        sent: WordPieceFeatureSentence
         for six, sent in enumerate(doc.sents):
-            tok: WordPieceToken
+            tok: WordPieceFeatureToken
             for tok in sent.tokens:
                 tok.embedding = arr[six, tok.indexes]
 
-    def add_sent_embeddings(self, doc: WordPieceDocument, arr: Tensor):
+    def add_sent_embeddings(self, doc: WordPieceFeatureDocument, arr: Tensor):
         six: int
-        sent: WordPieceSentence
+        sent: WordPieceFeatureSentence
         for six, sent in enumerate(doc.sents):
             sent.embedding = arr[six]
 
     def __call__(self, fdoc: FeatureDocument,
                  tdoc: TokenizedFeatureDocument = None,
                  add_token_embeddings: bool = False,
-                 add_sent_embeddings: bool = False) -> WordPieceDocument:
+                 add_sent_embeddings: bool = False) -> WordPieceFeatureDocument:
         """Return an object graph that relates word pieces to feature tokens.
 
         :param fdoc: the feature document used to create `tdoc`
@@ -175,31 +157,37 @@ class WordPieceDocumentFactory(object):
         :param tdoc: a tokenized feature document generated by :meth:`tokenize`
 
         :param add_token_embeddings: whether to add
-                                     :class:`.WordPieceToken.embeddings`
+                                     :class:`.WordPieceFeatureToken.embeddings`
 
         :param add_sent_embeddings: whether to add
-                                    class:`.WordPieceSentence.embeddings`
+                                    class:`.WordPieceFeatureSentence.embeddings`
 
         :return: a data structure with the word piece information
 
         """
+        def map_tok(ftok: FeatureToken, wps: Tuple[str, int, int]) -> \
+                WordPieceFeatureToken:
+            words = tuple(map(lambda t: WordPiece(*t), wps))
+            return ftok.clone(cls=WordPieceFeatureToken, words=words)
+
         tdoc = self.tokenizer.tokenize(fdoc) if tdoc is None else tdoc
-        sents: List[WordPieceSentence] = []
+        sents: List[WordPieceFeatureSentence] = []
         wps: List[Dict[str, Any]] = tdoc.map_to_word_pieces(
             sentences=fdoc,
             map_wp=self.tokenizer.id2tok,
             add_indices=True)
         wp: Dict[str, Any]
         for six, wp in enumerate(wps):
-            tokens: Tuple[WordPieceToken] = tuple(
-                map(lambda x: WordPieceToken(
-                    x[0], tuple(map(lambda wt: WordPiece(*wt), x[1]))),
-                    wp['map']))
-            sents.append(WordPieceSentence(
-                feature=wp['sent'],
-                tokens=tokens,
-                sentence_index=six))
-        doc = WordPieceDocument(fdoc, tdoc, sents)
+            fsent: FeatureSentence = wp['sent']
+            tokens: Tuple[WordPieceFeatureToken] = tuple(
+                map(lambda t: map_tok(*t), wp['map']))
+            sents.append(fsent.clone(
+                cls=WordPieceFeatureSentence,
+                tokens=tokens))
+        doc = fdoc.clone(
+            cls=WordPieceFeatureDocument,
+            sents=tuple(sents),
+            tokenized=tdoc)
         if add_token_embeddings:
             arr: Tensor = self.embed_model.transform(
                 tdoc, output='last_hidden_state')

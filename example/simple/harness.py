@@ -17,10 +17,10 @@ from zensols.deepnlp.vectorize import (
     FeatureVectorizer, FeatureVectorizerManager
 )
 from zensols.deepnlp.transformer import (
-    TokenizedFeatureDocument, WordPieceDocument,
+    TokenizedFeatureDocument, WordPieceFeatureDocument,
+    WordPieceFeatureDocumentFactory,
     TransformerDocumentTokenizer, TransformerEmbedding
 )
-from zensols.deepnlp.transformer import WordPieceDocumentFactory
 
 logger = logging.getLogger(__name__)
 CONFIG = """
@@ -52,8 +52,8 @@ config_files = list:
 embed_entities = False
 
 [transformer_fixed_resource]
-#model_id = sentence-transformers/all-MiniLM-L6-v2
-model_id = distilbert-base-cased
+model_id = sentence-transformers/all-MiniLM-L6-v2
+#model_id = distilbert-base-cased
 args = dict: {'local_files_only': True}
 
 [transformer_fixed_embedding]
@@ -105,10 +105,11 @@ effects by codifying its nuclear law in August.
             tdoc.write()
             tdoc_det.write()
         elif write == 'wordpiece':
-            doc_fac: WordPieceDocumentFactory = self.config_factory(
+            doc_fac: WordPieceFeatureDocumentFactory = self.config_factory(
                 'word_piece_document_factory')
-            wpdoc: WordPieceDocument = doc_fac(fdoc, tdoc, True, True)
+            wpdoc: WordPieceFeatureDocument = doc_fac(fdoc, tdoc, True, True)
             wpdoc.write()
+            return
         elif write == 'map':
             for m in tdoc.map_to_word_pieces(
                     fdoc, vec.embed_model.tokenizer.id2tok):
