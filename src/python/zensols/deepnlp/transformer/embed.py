@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Dict, Iterable, Tuple
+from typing import Dict, Iterable, Tuple, ClassVar
 from dataclasses import dataclass, field
 import logging
 from itertools import chain
@@ -32,7 +32,7 @@ class TransformerEmbedding(PersistableContainer, Dictable):
     HuggingFace transformms API.
 
     """
-    _DICTABLE_WRITABLE_DESCENDANTS = True
+    _DICTABLE_WRITABLE_DESCENDANTS: ClassVar[bool] = True
 
     name: str = field()
     """The name of the embedding as given in the configuration."""
@@ -135,9 +135,9 @@ class TransformerEmbedding(PersistableContainer, Dictable):
         return model
 
     def _infer_pooler(self, output: BaseModelOutput) -> Tensor:
-        """Create a pooler output if one is not available, such as with Distilbert (and
-        sounds like RoBERTa in the future).  This assumes the output has a
-        hidden state at index 0.
+        """Create a pooler output if one is not available, such as with
+        Distilbert (and sounds like RoBERTa in the future).  This assumes the
+        output has a hidden state at index 0.
 
         :param output: the output from the model
 
@@ -158,9 +158,9 @@ class TransformerEmbedding(PersistableContainer, Dictable):
                        (see class docs)
 
         :return: a container object instance with the output, which contains
-                (among other data) ``last_hidden_state`` with the output
-                embeddings of the last layer with shape:
-                ``(batch, N sentences, hidden layer dimension)``
+                 (among other data) ``last_hidden_state`` with the output
+                 embeddings of the last layer with shape: ``(batch, N sentences,
+                 hidden layer dimension)``
 
         """
         output = self.output if output is None else output

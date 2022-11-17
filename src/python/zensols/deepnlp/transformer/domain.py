@@ -15,7 +15,7 @@ import torch
 from torch import Tensor
 from zensols.nlp import FeatureDocument
 from zensols.persist import PersistableContainer
-from zensols.config import Writable, Dictable
+from zensols.config import Writable
 from zensols.nlp import FeatureToken, FeatureSentence
 
 logger = logging.getLogger(__name__)
@@ -299,94 +299,3 @@ class TokenizedFeatureDocument(TokenizedDocument):
                     stext = tok.text.replace('\n', '\\n')
                     stext = f'<{stext}>'
                     self._write_line(f'{stext} -> {ttoks}', depth + 1, writer)
-
-
-@dataclass(repr=False)
-class WordPieceBase(Dictable):
-    def __repr__(self) -> str:
-        return self.__str__()
-
-
-@dataclass(repr=False)
-class WordPiece(PersistableContainer, Dictable):
-    """The word piece data.
-
-    """
-    name: str = field()
-    """The string representation of the word piece."""
-
-    vocab_index: int = field()
-    """The vocabulary index."""
-
-    token_index: int = field()
-    """The index of the token in the respective sentence."""
-
-    def __str__(self):
-        s: str = self.name
-        if s.startswith('##'):
-            s = s[2:]
-        return s
-
-
-@dataclass(repr=False)
-class WordPieceToken(WordPieceBase):
-    """The token and the word pieces that repesent it.
-
-    """
-    feature: FeatureToken = field()
-    """The token from the initial :class:`~zensols.nlp.FeatureSentence`."""
-
-    words: Tuple[WordPiece] = field()
-    """The word pieces that make up this token."""
-
-    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
-        self._write_line(f'{self.feature.norm}:', depth, writer)
-        for w in self.words:
-            self._write_line(f'{w} ({w.token_index}): index={w.vocab_index}',
-                             depth + 1, writer)
-
-    def __str__(self) -> str:
-        return ''.join(map(str, self.words))
-
-
-@dataclass(repr=False)
-class WordPieceSentence(WordPieceBase):
-    """A sentence made up of word pieces.
-
-    """
-    feature: FeatureSentence = field()
-    """The initial sentence that was used to create the word piences."""
-
-    tokens: Tuple[WordPieceToken] = field()
-    """The word piece tokens that make up the sentence."""
-
-    sentence_index: int = field()
-    """The index of the sentence in the document."""
-
-    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
-        self._write_line(self.feature, depth, writer)
-        self._write_line(self, depth + 1, writer)
-
-    def __str__(self) -> str:
-        return ' '.join(map(str, self.tokens))
-
-
-@dataclass(repr=False)
-class WordPieceDocument(WordPieceBase):
-    """A document made up of word piece sentences.
-
-    """
-    doc: FeatureDocument = field()
-    """The initial document that was used to create the word piences."""
-
-    sents: Tuple[WordPieceSentence] = field()
-    """The word piece sentences that make up the document."""
-
-    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
-        self._write_line(self.doc, depth, writer)
-        sent: WordPieceSentence
-        for sent in self.sents:
-            self._write_object(sent, depth + 1, writer)
-
-    def __str__(self) -> str:
-        return '. '.join(map(str, self.sents))

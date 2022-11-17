@@ -17,8 +17,10 @@ from zensols.deepnlp.vectorize import (
     FeatureVectorizer, FeatureVectorizerManager
 )
 from zensols.deepnlp.transformer import (
-    WordPieceDocument, TransformerDocumentTokenizer, TokenizedFeatureDocument
+    TokenizedFeatureDocument, WordPieceDocument,
+    TransformerDocumentTokenizer, TransformerEmbedding
 )
+from zensols.deepnlp.transformer import WordPieceDocumentFactory
 
 logger = logging.getLogger(__name__)
 CONFIG = """
@@ -43,7 +45,8 @@ config_files = list:
     resource(zensols.deepnlp): resources/default.conf,
     resource(zensols.deeplearn): resources/obj.conf,
     resource(zensols.nlp): resources/obj.conf,
-    resource(zensols.deepnlp): resources/obj.conf
+    resource(zensols.deepnlp): resources/obj.conf,
+    resource(zensols.deepnlp): resources/wordpiece.conf
 
 [map_filter_token_normalizer]
 embed_entities = False
@@ -91,6 +94,7 @@ effects by codifying its nuclear law in August.
         vec_mng: FeatureVectorizerManager = self.config_factory(
             'language_vectorizer_manager')
         vec: FeatureVectorizer = vec_mng['transformer_fixed']
+        embed: TransformerEmbedding = vec.embed_model
         tokenizer: TransformerDocumentTokenizer = vec.embed_model.tokenizer
         # parse a feature document
         fdoc: FeatureDocument = vec_mng.doc_parser.parse(sents.strip())
@@ -101,8 +105,9 @@ effects by codifying its nuclear law in August.
             tdoc.write()
             tdoc_det.write()
         elif write == 'wordpiece':
-            wpdoc: WordPieceDocument = tokenizer.to_word_piece_document(
-                tdoc, fdoc)
+            doc_fac: WordPieceDocumentFactory = self.config_factory(
+                'word_piece_document_factory')
+            wpdoc: WordPieceDocument = doc_fac(fdoc, tdoc, True, True)
             wpdoc.write()
         elif write == 'map':
             for m in tdoc.map_to_word_pieces(
@@ -116,7 +121,12 @@ effects by codifying its nuclear law in August.
                     print(' ', wps)
                     n_wp += len(wps)
                 print(f'  word pieces: {n_wp}')
-        arr: Tensor = vec.transform(fdoc)
+        # functionally both are the same, but slightly faster to transform with
+        # tokenized document to duplicate tokenization work
+        if 1:
+            arr: Tensor = embed.transform(tdoc)
+        else:
+            arr: Tensor = vec.transform(fdoc)
         # the tensor should match up with the max sentence word piece count but
         # add the [CLS] and [SEP] tokens
         print(f'tensor: {arr.shape}')

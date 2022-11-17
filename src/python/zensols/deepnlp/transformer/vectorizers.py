@@ -345,7 +345,7 @@ class LabelTransformerFeatureVectorizer(TransformerFeatureVectorizer,
     """A base class for vectorizing by mapping tokens to transformer consumable
     word piece tokens.  This includes creating labels and masks.
 
-    :shape: (|sentences|, |max word peice length|)
+    :shape: (|sentences|, |max word piece length|)
 
     """
     is_labeler: bool = field(default=True)
@@ -373,7 +373,7 @@ class TransformerNominalFeatureVectorizer(AggregateEncodableFeatureVectorizer,
     single instance and centralized location where the label mapping happens in
     case other (non-transformer) components need to vectorize labels.
 
-    :shape: (|sentences|, |max word peice length|)
+    :shape: (|sentences|, |max word piece length|)
 
     """
     DESCRIPTION = 'transformer seq labeler'
@@ -471,7 +471,7 @@ class TransformerMaskFeatureVectorizer(LabelTransformerFeatureVectorizer):
     padding to ``False``.  This maps tokens to word piece tokens like
     :class:`.TransformerNominalFeatureVectorizer`.
 
-    :shape: (|sentences|, |max word peice length|)
+    :shape: (|sentences|, |max word piece length|)
 
     """
     DESCRIPTION = 'transformer mask'
