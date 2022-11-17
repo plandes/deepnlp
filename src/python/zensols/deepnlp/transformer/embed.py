@@ -154,6 +154,9 @@ class TransformerEmbedding(PersistableContainer, Dictable):
 
         :param docs: the batch of documents to return
 
+        :param output: the output from the huggingface transformer API to return
+                       (see class docs)
+
         :return: a container object instance with the output, which contains
                 (among other data) ``last_hidden_state`` with the output
                 embeddings of the last layer with shape:
