@@ -163,7 +163,7 @@ class TransformerEmbedding(PersistableContainer, Dictable):
                  hidden layer dimension)``
 
         """
-        output = self.output if output is None else output
+        output: str = self.output if output is None else output
         output_res: BaseModelOutputWithPoolingAndCrossAttentions
         params: Dict[str, Tensor] = doc.params()
         model: nn.Module = self._get_model(params)
@@ -191,15 +191,15 @@ class TransformerEmbedding(PersistableContainer, Dictable):
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'transform output: {output_res}')
         else:
-            if self.output == 'pooler_output' and \
-               not hasattr(output_res, self.output):
+            if output == 'pooler_output' and \
+               not hasattr(output_res, output):
                 output_res = self._infer_pooler(output_res)
             else:
-                if not hasattr(output_res, self.output):
+                if not hasattr(output_res, output):
                     raise TransformerError(
-                        f'No such output attribte {self.output} for ' +
+                        f'No such output attribte {output} for ' +
                         f'output {type(output_res)}')
-                output_res: Tensor = getattr(output_res, self.output)
+                output_res: Tensor = getattr(output_res, output)
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'embedding dim: {output_res.size()}')
 
