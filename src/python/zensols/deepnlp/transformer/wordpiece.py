@@ -19,12 +19,6 @@ from . import (
 
 
 @dataclass(repr=False)
-class WordPieceBase(Dictable):
-    def __repr__(self) -> str:
-        return self.__str__()
-
-
-@dataclass(repr=False)
 class WordPiece(PersistableContainer, Dictable):
     """The word piece data.
 
@@ -76,7 +70,7 @@ class WordPieceFeatureToken(FeatureToken):
                              depth + 1, writer)
         if self.embedding is not None:
             self._write_line(f'embedding: {tuple(self.embedding.size())}',
-                             self, depth + 1, writer)
+                             depth + 1, writer)
 
     def __str__(self) -> str:
         return ''.join(map(str, self.words))
@@ -130,19 +124,38 @@ class WordPieceFeatureDocumentFactory(object):
 
     """
     tokenizer: TransformerDocumentTokenizer = field()
-    embed_model: TransformerEmbedding = field()
+    """Used to tokenize documents that aren't already in :meth:`__call__`."""
 
-    def add_token_embeddings(self, doc: WordPieceFeatureDocument, arr: Tensor):
+    embed_model: TransformerEmbedding = field()
+    """Used to populate the embeddings in ``WordPiece*`` classes."""
+
+    def add_token_embeddings(self, doc: FeatureDocument, arr: Tensor):
+        """Add token embeddings to the sentences of ``doc``.  This assumes
+        tokens are of type :class:`.WordPieceFeatureToken` since the token
+        indices are needed.
+
+        :param doc: sentences of this doc have ``embeddings`` set to the
+                    correpsonding sentence tensor with shape (1, <embedding
+                    dimension>).
+
+        """
         six: int
-        sent: WordPieceFeatureSentence
+        sent: FeatureSentence
         for six, sent in enumerate(doc.sents):
             tok: WordPieceFeatureToken
             for tok in sent.tokens:
                 tok.embedding = arr[six, tok.indexes]
 
-    def add_sent_embeddings(self, doc: WordPieceFeatureDocument, arr: Tensor):
+    def add_sent_embeddings(self, doc: FeatureDocument, arr: Tensor):
+        """Add sentence embeddings to the sentences of ``doc``.
+
+        :param doc: sentences of this doc have ``embeddings`` set to the
+                    correpsonding sentence tensor with shape (1, <embedding
+                    dimension>).
+
+        """
         six: int
-        sent: WordPieceFeatureSentence
+        sent: FeatureSentence
         for six, sent in enumerate(doc.sents):
             sent.embedding = arr[six]
 

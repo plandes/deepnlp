@@ -109,7 +109,6 @@ effects by codifying its nuclear law in August.
                 'word_piece_document_factory')
             wpdoc: WordPieceFeatureDocument = doc_fac(fdoc, tdoc, True, True)
             wpdoc.write()
-            return
         elif write == 'map':
             for m in tdoc.map_to_word_pieces(
                     fdoc, vec.embed_model.tokenizer.id2tok):
