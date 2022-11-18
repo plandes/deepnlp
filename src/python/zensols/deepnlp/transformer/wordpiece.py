@@ -4,8 +4,7 @@ from __future__ import annotations
 """
 __author__ = 'Paul Landes'
 
-
-from typing import Tuple, List, Dict, Any
+from typing import Tuple, List, Dict, Any, Union
 from dataclasses import dataclass, field
 import sys
 from io import TextIOBase
@@ -120,7 +119,16 @@ class WordPieceFeatureDocument(FeatureDocument):
 
 @dataclass
 class WordPieceFeatureDocumentFactory(object):
-    """Create word piece resources.
+    """Create instances of :class:`.WordPieceFeatureDocument` from
+    :class:`~zensols.nlp.container.FeatureDocument` instances.  It does this by
+    iterating through a feature document data structure and adding
+    ``WordPiece*`` object data and optionally adding the corresponding sentence
+    and/or token level embeddings.
+
+    The embeddings can also be added with :meth:`add_token_embeddings` and
+    :meth:`add_sent_embeddings` individually.  If all you want are the sentence
+    level embeddings, you can use :meth:`add_sent_embeddings` on a
+    :class:`~zensols.nlp.container.FeatureSentence` instance.
 
     """
     tokenizer: TransformerDocumentTokenizer = field()
@@ -154,7 +162,9 @@ class WordPieceFeatureDocumentFactory(object):
             for tok in sent.tokens:
                 tok.embedding = arr[six, tok.indexes]
 
-    def add_sent_embeddings(self, doc: FeatureDocument, arr: Tensor):
+    def add_sent_embeddings(
+            self, doc: Union[WordPieceFeatureDocument, FeatureDocument],
+            arr: Tensor):
         """Add sentence embeddings to the sentences of ``doc``.
 
         :param doc: sentences of this doc have ``embeddings`` set to the
