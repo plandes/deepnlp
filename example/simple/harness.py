@@ -45,19 +45,10 @@ config_files = list:
     resource(zensols.deepnlp): resources/default.conf,
     resource(zensols.deeplearn): resources/obj.conf,
     resource(zensols.nlp): resources/obj.conf,
-    resource(zensols.deepnlp): resources/obj.conf,
-    resource(zensols.deepnlp): resources/wordpiece.conf
+    resource(zensols.deepnlp): resources/obj.conf
 
 [map_filter_token_normalizer]
 embed_entities = False
-
-[transformer_fixed_resource]
-model_id = sentence-transformers/all-MiniLM-L6-v2
-#model_id = distilbert-base-cased
-args = dict: {'local_files_only': True}
-
-[transformer_fixed_embedding]
-output = last_hidden_state
 
 [app]
 class_name = ${package:name}.Application
