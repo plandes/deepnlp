@@ -5,8 +5,8 @@ There are often edges cases and tricky situations with certain model's usage of
 special tokens (i.e. ``[CLS]``) and where they are used.  With this in mind,
 this module attempts to:
 
-  * Assist in debugging in cases where token level embeddings are directly
-    accessed, and
+  * Assist in debugging (works with detached :class:`.TokenizedDocument`) in
+    cases where token level embeddings are directly accessed, and
 
   * Map corresponding both token and sentence level embeddings to respective
     origin natural langauge feature set data structures.
