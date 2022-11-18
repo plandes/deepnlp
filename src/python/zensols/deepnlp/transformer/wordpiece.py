@@ -1,6 +1,16 @@
 from __future__ import annotations
 """Word piece mappings to feature tokens, sentences and documents.
 
+There are often edges cases and tricky situations with certain model's usage of
+special tokens (i.e. ``[CLS]``) and where they are used.  With this in mind,
+this module attempts to:
+
+  * Assist in debugging in cases where token level embeddings are directly
+    accessed, and
+
+  * Map corresponding both token and sentence level embeddings to respective
+    origin natural langauge feature set data structures.
+
 """
 __author__ = 'Paul Landes'
 
@@ -62,6 +72,10 @@ class WordPieceFeatureToken(FeatureToken):
         """
         return tuple(map(lambda wp: wp.index, self.words))
 
+    def copy_embedding(self, target: FeatureToken):
+        """Copy embedding (and children) from this instance to ``target``."""
+        target.embedding = self.embedding
+
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
         self._write_line(f'{self.norm}:', depth, writer)
         for w in self.words:
@@ -87,6 +101,14 @@ class WordPieceFeatureSentence(FeatureSentence):
     :shape: (|words|, <embedding dimension>)
 
     """
+    def copy_embedding(self, target: FeatureSentence):
+        """Copy embeddings (and children) from this instance to ``target``."""
+        target.embedding = self.embedding
+        targ_tok: FeatureToken
+        org_tok: FeatureToken
+        for org_tok, targ_tok in zip(self.token_iter(), target.token_iter()):
+            org_tok.copy_embedding(targ_tok)
+
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
         self._write_line(super().__str__(), depth, writer)
         self._write_line('word pieces:', depth, writer)
@@ -106,6 +128,13 @@ class WordPieceFeatureDocument(FeatureDocument):
     """
     tokenized: TokenizedFeatureDocument = field(default=None)
     """The tokenized feature document."""
+
+    def copy_embedding(self, target: FeatureDocument):
+        """Copy embeddings (and children) from this instance to ``target``."""
+        targ_sent: FeatureSentence
+        org_sent: WordPieceFeatureSentence
+        for org_sent, targ_sent in zip(self.sents, target.sents):
+            org_sent.copy_embedding(targ_sent)
 
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
         self._write_line(self, depth, writer)
