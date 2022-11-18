@@ -76,7 +76,7 @@ class Application(object):
     configuration.
 
     """
-    def traintest(self, write: str = 'tokenize'):
+    def traintest(self, write: str = 'wordpiece'):
         """Parse and vectorize a sentence in to BERT embeddings (the action
         naming misnomer is unfortunately needed for the build automation).
 
@@ -107,7 +107,7 @@ effects by codifying its nuclear law in August.
         elif write == 'wordpiece':
             doc_fac: WordPieceFeatureDocumentFactory = self.config_factory(
                 'word_piece_document_factory')
-            wpdoc: WordPieceFeatureDocument = doc_fac(fdoc, tdoc, True, True)
+            wpdoc: WordPieceFeatureDocument = doc_fac(fdoc, tdoc)
             wpdoc.write()
         elif write == 'map':
             for m in tdoc.map_to_word_pieces(
@@ -137,6 +137,6 @@ if (__name__ == '__main__'):
     t.suppress_warnings()
     CliHarness(
         app_config_resource=StringIO(CONFIG),
-        proto_args='traintest -w wordpiece',
+        proto_args='traintest',
         proto_factory_kwargs={'reload_pattern': '^harness'},
     ).run()
