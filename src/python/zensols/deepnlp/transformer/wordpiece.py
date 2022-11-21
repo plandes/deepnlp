@@ -14,9 +14,10 @@ this module attempts to:
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, List, Dict, Any, Union
+from typing import Tuple, List, Dict, Any, Union, Iterable
 from dataclasses import dataclass, field
 import sys
+from itertools import chain
 from io import TextIOBase
 from torch import Tensor
 from zensols.persist import PersistableContainer
@@ -72,6 +73,18 @@ class WordPieceFeatureToken(FeatureToken):
         """
         return tuple(map(lambda wp: wp.index, self.words))
 
+    @property
+    def token_embedding(self) -> Tensor:
+        """The embedding of this token, which is the sum of the word piece
+        embeddings.
+
+        """
+        return self.embedding.sum(dim=0)
+
+    def word_iter(self) -> Iterable[WordPiece]:
+        """Return an iterable over the word pieces."""
+        return iter(self.words)
+
     def copy_embedding(self, target: FeatureToken):
         """Copy embedding (and children) from this instance to ``target``."""
         target.embedding = self.embedding
@@ -101,6 +114,11 @@ class WordPieceFeatureSentence(FeatureSentence):
     :shape: (|words|, <embedding dimension>)
 
     """
+    def word_iter(self) -> Iterable[WordPiece]:
+        """Return an iterable over the word pieces."""
+        return chain.from_iterable(
+            map(lambda wp: wp.word_iter(), self.token_iter()))
+
     def copy_embedding(self, target: FeatureSentence):
         """Copy embeddings (and children) from this instance to ``target``."""
         target.embedding = self.embedding
@@ -128,6 +146,11 @@ class WordPieceFeatureDocument(FeatureDocument):
     """
     tokenized: TokenizedFeatureDocument = field(default=None)
     """The tokenized feature document."""
+
+    def word_iter(self) -> Iterable[WordPiece]:
+        """Return an iterable over the word pieces."""
+        return chain.from_iterable(
+            map(lambda wp: wp.word_iter(), self.token_iter()))
 
     def copy_embedding(self, target: FeatureDocument):
         """Copy embeddings (and children) from this instance to ``target``."""
