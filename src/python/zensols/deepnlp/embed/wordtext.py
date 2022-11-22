@@ -52,7 +52,8 @@ class TextWordModelMetadata(Dictable):
     """
     def __post_init__(self, sub_directory: Path):
         if sub_directory is None:
-            sub_directory = Path('bin', f'{self.name}.{self.desc}.{self.dimension}')
+            fname: str = f'{self.name}.{self.desc}.{self.dimension}'
+            sub_directory = Path('bin', fname)
         self.bin_dir = self.source_path.parent / sub_directory
         self.bin_file = self.bin_dir / 'vec.dat'
         self.words_file = self.bin_dir / 'words.dat'
@@ -61,8 +62,8 @@ class TextWordModelMetadata(Dictable):
 
 @dataclass
 class TextWordEmbedModel(WordEmbedModel, Primeable, metaclass=ABCMeta):
-    """Extensions of this class read a text vectors file and compile, then write a
-    binary representation for fast loading.
+    """Extensions of this class read a text vectors file and compile, then write
+    a binary representation for fast loading.
 
     """
     DATASET_NAME = 'vec'
@@ -79,8 +80,8 @@ class TextWordEmbedModel(WordEmbedModel, Primeable, metaclass=ABCMeta):
 
     @abstractmethod
     def _get_metadata(self) -> TextWordModelMetadata:
-        """Create the metadata used to construct paths both text source vector file and
-        all generated binary files.
+        """Create the metadata used to construct paths both text source vector
+        file and all generated binary files.
 
         """
         pass
@@ -94,8 +95,8 @@ class TextWordEmbedModel(WordEmbedModel, Primeable, metaclass=ABCMeta):
 
     @property
     def metadata(self):
-        """Return the metadata used to construct paths both text source vector file and
-        all generated binary files.
+        """Return the metadata used to construct paths both text source vector
+        file and all generated binary files.
 
         """
         if not hasattr(self, '_metadata'):
@@ -145,8 +146,8 @@ class TextWordEmbedModel(WordEmbedModel, Primeable, metaclass=ABCMeta):
                         f'{e}; line: {ln}') from e
 
     def _write_vecs(self) -> np.ndarray:
-        """Write the h5py binary files.  Only when they do not exist on the files
-        system already are they calculated and written.
+        """Write the h5py binary files.  Only when they do not exist on the
+        files system already are they calculated and written.
 
         """
         meta = self.metadata
