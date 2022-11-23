@@ -14,15 +14,18 @@ this module attempts to:
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, List, Dict, Any, Union, Iterable
+from typing import Tuple, List, Dict, Any, Union, Iterable, ClassVar
 from dataclasses import dataclass, field
+from abc import ABCMeta
 import sys
 from itertools import chain
 from io import TextIOBase
 from torch import Tensor
 from zensols.persist import PersistableContainer
 from zensols.config import Dictable
-from zensols.nlp import FeatureToken, FeatureSentence, FeatureDocument
+from zensols.nlp import (
+    TokenContainer, FeatureToken, FeatureSentence, FeatureDocument
+)
 from . import (
     TokenizedFeatureDocument, TransformerDocumentTokenizer, TransformerEmbedding
 )
@@ -33,6 +36,9 @@ class WordPiece(PersistableContainer, Dictable):
     """The word piece data.
 
     """
+    UNKNOWN_TOKEN: ClassVar[str] = '[UNK]'
+    """The string used for out of vocabulary word piece tokens."""
+
     word: str = field()
     """The string representation of the word piece."""
 
@@ -45,11 +51,32 @@ class WordPiece(PersistableContainer, Dictable):
     :obj:`.TransformerEmbedding.output` = ``last_hidden_state``.
 
     """
+    @property
+    def is_unknown(self) -> bool:
+        """Whether this token is out of vocabulary."""
+        return self.word == self.UNKNOWN_TOKEN
+
     def __str__(self):
         s: str = self.word
         if s.startswith('##'):
             s = s[2:]
         return s
+
+
+class WordPieceTokenContainer(TokenContainer, metaclass=ABCMeta):
+    """Like :class:`~zensols.nlp.container.TokenContainer` but contains word
+    pieces.
+
+    """
+    def word_iter(self) -> Iterable[WordPiece]:
+        """Return an iterable over the word pieces."""
+        return chain.from_iterable(
+            map(lambda wp: wp.word_iter(), self.token_iter()))
+
+    @property
+    def unknown_count(self) -> int:
+        """Return the number of out of vocabulary tokens in the container."""
+        return sum(map(lambda t: t.is_unknown, self.token_iter()))
 
 
 @dataclass(repr=False)
@@ -85,6 +112,11 @@ class WordPieceFeatureToken(FeatureToken):
         """Return an iterable over the word pieces."""
         return iter(self.words)
 
+    @property
+    def is_unknown(self) -> bool:
+        """Whether this token is out of vocabulary."""
+        return all(map(lambda wp: wp.is_unknown, self.word_iter()))
+
     def copy_embedding(self, target: FeatureToken):
         """Copy embedding (and children) from this instance to ``target``."""
         target.embedding = self.embedding
@@ -103,7 +135,7 @@ class WordPieceFeatureToken(FeatureToken):
 
 
 @dataclass(repr=False)
-class WordPieceFeatureSentence(FeatureSentence):
+class WordPieceFeatureSpan(FeatureSentence, WordPieceTokenContainer):
     """A sentence made up of word pieces.
 
     """
@@ -114,11 +146,6 @@ class WordPieceFeatureSentence(FeatureSentence):
     :shape: (|words|, <embedding dimension>)
 
     """
-    def word_iter(self) -> Iterable[WordPiece]:
-        """Return an iterable over the word pieces."""
-        return chain.from_iterable(
-            map(lambda wp: wp.word_iter(), self.token_iter()))
-
     def copy_embedding(self, target: FeatureSentence):
         """Copy embeddings (and children) from this instance to ``target``."""
         target.embedding = self.embedding
@@ -140,17 +167,17 @@ class WordPieceFeatureSentence(FeatureSentence):
 
 
 @dataclass(repr=False)
-class WordPieceFeatureDocument(FeatureDocument):
+class WordPieceFeatureSentence(WordPieceFeatureSpan, FeatureSentence):
+    pass
+
+
+@dataclass(repr=False)
+class WordPieceFeatureDocument(FeatureDocument, WordPieceTokenContainer):
     """A document made up of word piece sentences.
 
     """
     tokenized: TokenizedFeatureDocument = field(default=None)
     """The tokenized feature document."""
-
-    def word_iter(self) -> Iterable[WordPiece]:
-        """Return an iterable over the word pieces."""
-        return chain.from_iterable(
-            map(lambda wp: wp.word_iter(), self.token_iter()))
 
     def copy_embedding(self, target: FeatureDocument):
         """Copy embeddings (and children) from this instance to ``target``."""
@@ -229,10 +256,11 @@ class WordPieceFeatureDocumentFactory(object):
         for six, sent in enumerate(doc.sents):
             sent.embedding = arr[six]
 
-    def __call__(self, fdoc: FeatureDocument,
-                 tdoc: TokenizedFeatureDocument = None) -> \
+    def create(self, fdoc: FeatureDocument,
+               tdoc: TokenizedFeatureDocument = None) -> \
             WordPieceFeatureDocument:
-        """Return an object graph that relates word pieces to feature tokens.
+        """Create a document in to an object graph that relates word pieces
+        to feature tokens.
 
         :param fdoc: the feature document used to create `tdoc`
 
@@ -273,3 +301,8 @@ class WordPieceFeatureDocumentFactory(object):
                 tdoc, output='pooler_output')
             self.add_sent_embeddings(doc, arr)
         return doc
+
+    def __call__(self, fdoc: FeatureDocument,
+                 tdoc: TokenizedFeatureDocument = None) -> \
+            WordPieceFeatureDocument:
+        return self.transform(fdoc, tdoc)
