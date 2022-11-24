@@ -20,6 +20,7 @@ from abc import ABCMeta
 import sys
 from itertools import chain
 from io import TextIOBase
+import torch
 from torch import Tensor
 from zensols.persist import PersistableContainer
 from zensols.config import Dictable
@@ -143,7 +144,7 @@ class WordPieceFeatureSpan(FeatureSentence, WordPieceTokenContainer):
     """The sentence embedding level (i.e. ``[CLS]``) embedding from the
     transformer.
 
-    :shape: (|words|, <embedding dimension>)
+    :shape: (<embedding dimension>,)
 
     """
     def copy_embedding(self, target: FeatureSentence):
@@ -178,6 +179,15 @@ class WordPieceFeatureDocument(FeatureDocument, WordPieceTokenContainer):
     """
     tokenized: TokenizedFeatureDocument = field(default=None)
     """The tokenized feature document."""
+
+    @property
+    def embedding(self) -> Tensor:
+        """The document embedding (see :obj:`.WordPieceFeatureSpan.embedding`).
+
+        :shape: (|sentences|, <embedding dimension>)
+
+        """
+        return torch.stack(tuple(map(lambda s: s.embedding, self.sents)), dim=0)
 
     def copy_embedding(self, target: FeatureDocument):
         """Copy embeddings (and children) from this instance to ``target``."""
