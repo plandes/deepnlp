@@ -305,4 +305,4 @@ class WordPieceFeatureDocumentFactory(object):
     def __call__(self, fdoc: FeatureDocument,
                  tdoc: TokenizedFeatureDocument = None) -> \
             WordPieceFeatureDocument:
-        return self.transform(fdoc, tdoc)
+        return self.create(fdoc, tdoc)
