@@ -212,3 +212,49 @@ class TextWordEmbedModel(WordEmbedModel, Primeable, metaclass=ABCMeta):
             words.append(self.UNKNOWN)
             word2vec = {w: vectors[word2idx[w]] for w in words}
         return WordVectorModel(vectors, word2vec, words, word2idx)
+
+
+@dataclass
+class DefaultTextWordEmbedModel(TextWordEmbedModel):
+    """This class uses the Stanford pretrained GloVE embeddings as a ``dict`` like
+    Python object.  It loads the glove vectors from a text file and then
+    creates a binary file that's quick to load on subsequent uses.
+
+    An example configuration would be::
+
+        [glove_embedding]
+        class_name = zensols.deepnlp.embed.GloveWordEmbedModel
+        path = path: ${default:corpus_dir}/glove
+        desc = 6B
+        dimension = 50
+
+    """
+    name: str = field(default='unknown_name')
+    """The name of the word vector set (i.e. glove)."""
+
+    desc: str = field(default='unknown_desc')
+    """The size description (i.e. 6B for the six billion word trained vectors).
+
+    """
+    dimension: int = field(default=50)
+    """The word vector dimension."""
+
+    vocab_size: int = field(default=0)
+    """Vocabulary size."""
+
+    file_name_pattern: str = field(default='{name}.{desc}.{dimension}d.txt')
+    """The format of the file to create."""
+
+    @property
+    def file_name(self) -> str:
+        return self.file_name_pattern.format(
+            name=self.name,
+            desc=self.desc,
+            dimension=self.dimension)
+
+    def _get_metadata(self) -> TextWordModelMetadata:
+        name: str = self.name
+        dim: int = self.dimension
+        desc: str = self.desc
+        path: Path = self.path / self.file_name
+        return TextWordModelMetadata(name, desc, dim, self.vocab_size, path)
