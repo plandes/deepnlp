@@ -32,7 +32,7 @@ class GloveWordEmbedModel(TextWordEmbedModel):
     """The size description (i.e. 6B for the six billion word trained vectors).
 
     """
-    dimension: str = field(default=50)
+    dimension: int = field(default=50)
     """The word vector dimension."""
 
     vocab_size: int = field(default=400000)
