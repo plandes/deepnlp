@@ -133,7 +133,7 @@ class TextWordEmbedModel(WordEmbedModel, Primeable, metaclass=ABCMeta):
         with open(meta.source_path, 'rb') as f:
             for rix, ln in enumerate(f):
                 lc += 1
-                line = ln.decode().split(' ')
+                line = ln.decode().strip().split(' ')
                 word = line[0]
                 words.append(word)
                 word2idx[word] = idx
