@@ -25,7 +25,8 @@ from torch import Tensor
 from zensols.persist import PersistableContainer
 from zensols.config import Dictable
 from zensols.nlp import (
-    TokenContainer, FeatureToken, FeatureSentence, FeatureDocument
+    TokenContainer, FeatureToken, FeatureSentence, FeatureDocument,
+    FeatureDocumentParser,
 )
 from . import (
     TokenizedFeatureDocument, TransformerDocumentTokenizer, TransformerEmbedding
@@ -316,3 +317,29 @@ class WordPieceFeatureDocumentFactory(object):
                  tdoc: TokenizedFeatureDocument = None) -> \
             WordPieceFeatureDocument:
         return self.create(fdoc, tdoc)
+
+
+@dataclass
+class WordPieceFeatureDocumentParser(FeatureDocumentParser):
+    """A document parser that adds word piece embeddings using
+    :class:`.WordPieceFeatureDocumentFactory`.  It does this by first using
+    :obj:`delegate` to parse the document, then uses
+    :obj:`word_piece_document_factory` to create the embeddings.  Finally, the
+    embeddings are copied to the original parsed document.
+
+    This is useful when there is some feature document structure that already
+    inherits from :class:`~zensols.nlp.container.FeatureDocument` and you want
+    to keep it intact.
+
+    """
+    delegate: FeatureDocumentParser = field()
+    """The delegate that parses text in to feature documents."""
+
+    word_piece_doc_factory: WordPieceFeatureDocumentFactory = field()
+    """The feature document"""
+
+    def parse(self, text: str, *args, **kwargs) -> FeatureDocument:
+        doc: FeatureDocument = self.delegate.parse(text, *args, **kwargs)
+        wpdoc: WordPieceFeatureDocument = self.word_piece_doc_factory(doc)
+        wpdoc.copy_embedding(doc)
+        return doc
