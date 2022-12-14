@@ -336,7 +336,7 @@ class WordPieceFeatureDocumentParser(FeatureDocumentParser):
     """The delegate that parses text in to feature documents."""
 
     word_piece_doc_factory: WordPieceFeatureDocumentFactory = field()
-    """The feature document"""
+    """The feature document factory that populates embeddings."""
 
     def parse(self, text: str, *args, **kwargs) -> FeatureDocument:
         doc: FeatureDocument = self.delegate.parse(text, *args, **kwargs)
