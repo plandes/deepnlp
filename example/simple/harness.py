@@ -97,7 +97,7 @@ effects by codifying its nuclear law in August.
             tdoc_det.write()
         elif write == 'wordpiece':
             doc_fac: WordPieceFeatureDocumentFactory = self.config_factory(
-                'word_piece_document_factory')
+                'word_piece_doc_factory')
             wpdoc: WordPieceFeatureDocument = doc_fac(fdoc, tdoc)
             wpdoc.write()
         elif write == 'map':
