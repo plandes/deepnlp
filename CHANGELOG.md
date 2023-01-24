@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.6.0] - 2023-01-23
+### Added
+- Word piece API to map to non-word-piece tokens.
+- Add word piece embeddings.
+
+
 ## [1.5.0] - 2022-11-06
 ### Added
 - Sentence BERT (sbert) resource library and tested.
@@ -219,7 +225,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.5.0...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.6.0...HEAD
+[1.6.0]: https://github.com/plandes/deepnlp/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/plandes/deepnlp/compare/v1.4.1...v1.5.0
 [1.4.1]: https://github.com/plandes/deepnlp/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/plandes/deepnlp/compare/v1.3.0...v1.4.0
