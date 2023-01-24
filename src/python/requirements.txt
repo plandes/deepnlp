@@ -5,5 +5,5 @@ huggingface-hub
 sentence-transformers~=2.2.2
 sentencepiece~=0.1.97
 protobuf~=3.20.1
-zensols.nlp~=1.4.0
-zensols.deeplearn~=1.5.0
+zensols.nlp~=1.5.0
+zensols.deeplearn~=1.6.0
