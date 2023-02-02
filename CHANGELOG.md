@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.7.0] - 2023-02-02
 ### Changed
-- Updated [zensols.util] to 1.12.0.
+- Updated [zensols.util] to 1.12.1.
 
 
 ## [1.6.0] - 2023-01-23
