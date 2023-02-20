@@ -303,14 +303,16 @@ class WordPieceFeatureDocumentFactory(object):
             cls=WordPieceFeatureDocument,
             sents=tuple(sents),
             tokenized=tdoc)
-        if self.add_token_embeddings:
-            arr: Tensor = self.embed_model.transform(
-                tdoc, output='last_hidden_state')
-            self.add_token_embeddings(doc, arr)
-        if self.add_sent_embeddings:
-            arr: Tensor = self.embed_model.transform(
-                tdoc, output='pooler_output')
-            self.add_sent_embeddings(doc, arr)
+        if self.add_token_embeddings or self.add_sent_embeddings:
+            arrs: Dict[str, Tensor] = self.embed_model.transform(
+                tdoc, TransformerEmbedding.ALL_OUTPUT)
+            if self.add_token_embeddings:
+                arr: Tensor = arrs[
+                    TransformerEmbedding.LAST_HIDDEN_STATE_OUTPUT]
+                self.add_token_embeddings(doc, arr)
+            if self.add_sent_embeddings:
+                arr: Tensor = arrs[TransformerEmbedding.POOLER_OUTPUT]
+                self.add_sent_embeddings(doc, arr)
         return doc
 
     def __call__(self, fdoc: FeatureDocument,

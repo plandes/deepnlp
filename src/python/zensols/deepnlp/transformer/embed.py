@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Dict, Iterable, Tuple, ClassVar
+from typing import Dict, Iterable, Tuple, ClassVar, Union
 from dataclasses import dataclass, field
 import logging
 from itertools import chain
@@ -33,6 +33,9 @@ class TransformerEmbedding(PersistableContainer, Dictable):
 
     """
     _DICTABLE_WRITABLE_DESCENDANTS: ClassVar[bool] = True
+    LAST_HIDDEN_STATE_OUTPUT: ClassVar[str] = 'last_hidden_state'
+    POOLER_OUTPUT: ClassVar[str] = 'pooler_output'
+    ALL_OUTPUT: ClassVar[str] = 'all_output'
 
     name: str = field()
     """The name of the embedding as given in the configuration."""
@@ -40,18 +43,21 @@ class TransformerEmbedding(PersistableContainer, Dictable):
     tokenizer: TransformerDocumentTokenizer = field()
     """The tokenizer used for creating the input for the model."""
 
-    output: str = field(default='pooler_output')
+    output: str = field(default=POOLER_OUTPUT)
     """The output from the huggingface transformer API to return.
 
     This is set to one of:
 
-       * ``last_hidden_state``: with the output embeddings of the last layer
-         with shape: ``(batch, N sentences, hidden layer dimension)``
+       * :obj:`LAST_HIDDEN_STATE_OUTPUT`: with the output embeddings of the last
+         layer with shape: ``(batch, N sentences, hidden layer dimension)``
 
-       * ``pooler_output``: the last layer hidden-state of the first token of
+       * :obj:`POOLER_OUTPUT`: the last layer hidden-state of the first token of
          the sequence (classification token) further processed by a Linear
          layer and a Tanh activation function with shape: ``(batch, hidden
          layer dimension)``
+
+       * :obj:`BOTH_OUTPUT`: includes both as a dictionary with correpsonding
+                             keys
 
     """
     output_attentions: bool = field(default=False)
@@ -86,7 +92,7 @@ class TransformerEmbedding(PersistableContainer, Dictable):
         """
         toker: TransformerDocumentTokenizer = self.tokenizer
         doc: TokenizedFeatureDocument = toker._from_tokens([['the']], None)
-        emb = self.transform(doc, 'pooler_output')
+        emb = self.transform(doc, self.POOLER_OUTPUT)
         size = emb.size(-1)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'embedding dimension {size} for ' +
@@ -149,7 +155,7 @@ class TransformerEmbedding(PersistableContainer, Dictable):
         return pooled_output
 
     def transform(self, doc: TokenizedDocument, output: str = None) -> \
-            BaseModelOutputWithPoolingAndCrossAttentions:
+            Union[Tensor, Dict[str, Tensor]]:
         """Transform the documents in to the transformer output.
 
         :param docs: the batch of documents to return
@@ -165,6 +171,7 @@ class TransformerEmbedding(PersistableContainer, Dictable):
         """
         output: str = self.output if output is None else output
         output_res: BaseModelOutputWithPoolingAndCrossAttentions
+        outupt_arr: Union[Tensor, Dict[str, Tensor]]
         params: Dict[str, Tensor] = doc.params()
         model: nn.Module = self._get_model(params)
 
@@ -187,23 +194,29 @@ class TransformerEmbedding(PersistableContainer, Dictable):
             with torch.no_grad():
                 output_res = model(**params)
 
-        if output is None:
-            if logger.isEnabledFor(logging.DEBUG):
-                logger.debug(f'transform output: {output_res}')
+        if output is self.ALL_OUTPUT:
+            output_arr = {
+                self.POOLER_OUTPUT: self._infer_pooler(output_res),
+                self.LAST_HIDDEN_STATE_OUTPUT: getattr(
+                    output_res, self.LAST_HIDDEN_STATE_OUTPUT),
+            }
+        elif output == self.POOLER_OUTPUT:
+            if not hasattr(output_res, output):
+                raise TransformerError(
+                    'Requsted pooler output but not found')
+            output_arr = self._infer_pooler(output_res)
+        elif output == self.LAST_HIDDEN_STATE_OUTPUT:
+            if not hasattr(output_res, output):
+                raise TransformerError(
+                    f'No such output attribte {output} for ' +
+                    f'output {type(output_res)}')
+            output_arr: Tensor = getattr(output_res, output)
         else:
-            if output == 'pooler_output' and \
-               not hasattr(output_res, output):
-                output_res = self._infer_pooler(output_res)
-            else:
-                if not hasattr(output_res, output):
-                    raise TransformerError(
-                        f'No such output attribte {output} for ' +
-                        f'output {type(output_res)}')
-                output_res: Tensor = getattr(output_res, output)
-            if logger.isEnabledFor(logging.DEBUG):
-                logger.debug(f'embedding dim: {output_res.size()}')
+            raise TransformerError(f'Unknown output type: {output}')
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'embedding dim: {output_arr.size()}')
 
-        return output_res
+        return output_arr
 
     def _get_dictable_attributes(self) -> Iterable[Tuple[str, str]]:
         return chain.from_iterable(
