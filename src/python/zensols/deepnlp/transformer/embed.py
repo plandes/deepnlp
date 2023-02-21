@@ -56,8 +56,8 @@ class TransformerEmbedding(PersistableContainer, Dictable):
          layer and a Tanh activation function with shape: ``(batch, hidden
          layer dimension)``
 
-       * :obj:`BOTH_OUTPUT`: includes both as a dictionary with correpsonding
-                             keys
+       * :obj:`ALL_OUTPUT`: includes both as a dictionary with correpsonding
+                            keys
 
     """
     output_attentions: bool = field(default=False)
@@ -154,6 +154,21 @@ class TransformerEmbedding(PersistableContainer, Dictable):
         pooled_output = hidden_state[:, 0]  # (bs, dim)
         return pooled_output
 
+    def _narrow_tensor(self, output_res: BaseModelOutput,
+                       output: str) -> Tensor:
+        """Resolve an embedding from the HuggingFace output instance."""
+        arr: Tensor
+        if output == 'pooler_output' and \
+           not hasattr(output_res, output):
+            arr = self._infer_pooler(output_res)
+        else:
+            if not hasattr(output_res, output):
+                raise TransformerError(
+                    f'No such output attribte {output} for ' +
+                    f'output {type(output_res)}')
+            arr = getattr(output_res, output)
+        return arr
+
     def transform(self, doc: TokenizedDocument, output: str = None) -> \
             Union[Tensor, Dict[str, Tensor]]:
         """Transform the documents in to the transformer output.
@@ -171,17 +186,15 @@ class TransformerEmbedding(PersistableContainer, Dictable):
         """
         output: str = self.output if output is None else output
         output_res: BaseModelOutputWithPoolingAndCrossAttentions
-        outupt_arr: Union[Tensor, Dict[str, Tensor]]
+        output_data: Union[Tensor, Dict[str, Tensor]]
         params: Dict[str, Tensor] = doc.params()
         model: nn.Module = self._get_model(params)
-
         if logger.isEnabledFor(logging.DEBUG):
             for k, v in params.items():
                 if isinstance(v, Tensor):
                     logger.debug(f"{k}: dtype={v.dtype}, shape={v.shape}")
                 else:
                     logger.debug(f'{k}: {v}')
-
         # predict hidden states features for each layer
         if self.resource.trainable:
             if logger.isEnabledFor(logging.DEBUG):
@@ -193,30 +206,19 @@ class TransformerEmbedding(PersistableContainer, Dictable):
             model.eval()
             with torch.no_grad():
                 output_res = model(**params)
-
-        if output is self.ALL_OUTPUT:
-            output_arr = {
-                self.POOLER_OUTPUT: self._infer_pooler(output_res),
-                self.LAST_HIDDEN_STATE_OUTPUT: getattr(
-                    output_res, self.LAST_HIDDEN_STATE_OUTPUT),
-            }
-        elif output == self.POOLER_OUTPUT:
-            if not hasattr(output_res, output):
-                raise TransformerError(
-                    'Requsted pooler output but not found')
-            output_arr = self._infer_pooler(output_res)
-        elif output == self.LAST_HIDDEN_STATE_OUTPUT:
-            if not hasattr(output_res, output):
-                raise TransformerError(
-                    f'No such output attribte {output} for ' +
-                    f'output {type(output_res)}')
-            output_arr: Tensor = getattr(output_res, output)
+        if output == self.ALL_OUTPUT:
+            output_data = {
+                self.POOLER_OUTPUT: self._narrow_tensor(
+                    output_res, self.POOLER_OUTPUT),
+                self.LAST_HIDDEN_STATE_OUTPUT: self._narrow_tensor(
+                    output_res, self.LAST_HIDDEN_STATE_OUTPUT)}
+        elif output in {self.POOLER_OUTPUT, self.LAST_HIDDEN_STATE_OUTPUT}:
+            output_data = self._narrow_tensor(output_res, output)
         else:
             raise TransformerError(f'Unknown output type: {output}')
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'embedding dim: {output_arr.size()}')
-
-        return output_arr
+        if isinstance(output, Tensor) and logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'embedding dim: {output_data.size()}')
+        return output_data
 
     def _get_dictable_attributes(self) -> Iterable[Tuple[str, str]]:
         return chain.from_iterable(
