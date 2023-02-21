@@ -262,7 +262,6 @@ class WordPieceFeatureDocumentFactory(object):
 
     def __post_init__(self):
         if self.cache_size > 0:
-            #self.create = lru_cache(maxsize=self.cache_size)(self.create)
             self.create = cached(
                 LRUCache(maxsize=self.cache_size),
                 key=lambda doc, tdoc: _WordPieceDocKey(doc, tdoc),
