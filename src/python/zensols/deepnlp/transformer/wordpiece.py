@@ -18,6 +18,7 @@ from typing import Tuple, List, Dict, Any, Union, Iterable, ClassVar
 from dataclasses import dataclass, field
 from abc import ABCMeta
 import sys
+from functools import lru_cache
 from itertools import chain
 from io import TextIOBase
 import torch
@@ -235,6 +236,12 @@ class WordPieceFeatureDocumentFactory(object):
     """Whether to add class:`.WordPieceFeatureSentence.embeddings`.
 
     """
+    cache_size: int = field(default=0)
+
+    def __post_init__(self):
+        if self.cache_size > 0:
+            self.create = lru_cache(maxsize=self.cache_size)(self.create)
+
     def add_token_embeddings(self, doc: WordPieceFeatureDocument, arr: Tensor):
         """Add token embeddings to the sentences of ``doc``.  This assumes
         tokens are of type :class:`.WordPieceFeatureToken` since the token
@@ -270,8 +277,9 @@ class WordPieceFeatureDocumentFactory(object):
     def create(self, fdoc: FeatureDocument,
                tdoc: TokenizedFeatureDocument = None) -> \
             WordPieceFeatureDocument:
-        """Create a document in to an object graph that relates word pieces
-        to feature tokens.
+        """Create a document in to an object graph that relates word pieces to
+        feature tokens.  Note that if ``tdoc`` is provided, it must have been
+        tokenized from ``fdoc``.
 
         :param fdoc: the feature document used to create `tdoc`
 
