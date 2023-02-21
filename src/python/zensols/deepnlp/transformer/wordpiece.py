@@ -136,6 +136,11 @@ class WordPieceFeatureToken(FeatureToken):
     def __str__(self) -> str:
         return ''.join(map(str, self.words))
 
+    def __eq__(self, other: WordPieceFeatureToken) -> bool:
+        return self.i == other.i and \
+            self.idx == other.idx and \
+            self.norm == other.norm
+
 
 @dataclass(repr=False)
 class WordPieceFeatureSpan(FeatureSentence, WordPieceTokenContainer):
