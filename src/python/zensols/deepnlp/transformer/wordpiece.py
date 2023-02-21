@@ -1,4 +1,3 @@
-from __future__ import annotations
 """Word piece mappings to feature tokens, sentences and documents.
 
 There are often edges cases and tricky situations with certain model's usage of
@@ -12,13 +11,13 @@ this module attempts to:
     origin natural langauge feature set data structures.
 
 """
+from __future__ import annotations
 __author__ = 'Paul Landes'
-
 from typing import Tuple, List, Dict, Any, Union, Iterable, ClassVar
 from dataclasses import dataclass, field
 from abc import ABCMeta
 import sys
-from functools import lru_cache
+from cachetools import LRUCache, cached
 from itertools import chain
 from io import TextIOBase
 import torch
@@ -213,6 +212,23 @@ class WordPieceFeatureDocument(FeatureDocument, WordPieceTokenContainer):
         return '. '.join(map(str, self.sents))
 
 
+class _WordPieceDocKey(object):
+    """A key class for caching in :class:`.WordPieceFeatureDocumentFactory`
+    needed to avoid token level equal compares with embeddings.  These token
+    level compares raise a Pytorch error.
+
+    """
+    def __init__(self, doc: FeatureDocument, tdoc: TokenizedFeatureDocument):
+        self._hash = hash(doc)
+        self._doc = doc
+
+    def __eq__(self, other: FeatureDocument) -> bool:
+        return self._doc.norm == other._doc.norm
+
+    def __hash__(self) -> int:
+        return self._hash
+
+
 @dataclass
 class WordPieceFeatureDocumentFactory(object):
     """Create instances of :class:`.WordPieceFeatureDocument` from
@@ -246,7 +262,11 @@ class WordPieceFeatureDocumentFactory(object):
 
     def __post_init__(self):
         if self.cache_size > 0:
-            self.create = lru_cache(maxsize=self.cache_size)(self.create)
+            #self.create = lru_cache(maxsize=self.cache_size)(self.create)
+            self.create = cached(
+                LRUCache(maxsize=self.cache_size),
+                key=lambda doc, tdoc: _WordPieceDocKey(doc, tdoc),
+            )(self.create)
 
     def add_token_embeddings(self, doc: WordPieceFeatureDocument, arr: Tensor):
         """Add token embeddings to the sentences of ``doc``.  This assumes
