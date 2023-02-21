@@ -237,6 +237,7 @@ class WordPieceFeatureDocumentFactory(object):
 
     """
     cache_size: int = field(default=0)
+    """If higher than zero, the number word piece documents LRU cached."""
 
     def __post_init__(self):
         if self.cache_size > 0:
