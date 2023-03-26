@@ -339,11 +339,11 @@ class WordPieceFeatureDocumentFactory(object):
         if self.add_token_embeddings or self.add_sent_embeddings:
             arrs: Dict[str, Tensor] = self.embed_model.transform(
                 tdoc, TransformerEmbedding.ALL_OUTPUT)
-            if self.add_token_embeddings:
+            if self.token_embeddings:
                 arr: Tensor = arrs[
                     TransformerEmbedding.LAST_HIDDEN_STATE_OUTPUT]
                 self.add_token_embeddings(doc, arr)
-            if self.add_sent_embeddings:
+            if self.sent_embeddings:
                 arr: Tensor = arrs[TransformerEmbedding.POOLER_OUTPUT]
                 self.add_sent_embeddings(doc, arr)
         return doc
