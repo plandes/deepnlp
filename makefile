@@ -42,7 +42,7 @@ exampleclean:
 .PHONY:		testall
 testall:	test
 		@for i in $(EXAMPLE_DIR)/* ; do \
-			echo testing $$i ; \
+			echo --- testing $$i ; \
 			( cd $$i ; ./harness.py clean ; ./harness.py traintest ) ; \
 		done
 
