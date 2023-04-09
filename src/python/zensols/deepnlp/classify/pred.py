@@ -18,8 +18,8 @@ from . import LabeledFeatureDocument
 
 @dataclass
 class ClassificationPredictionMapper(PredictionMapper):
-    """A prediction mapper for text classification.  This mapper works at any level
-    (document, sentence, token).
+    """A prediction mapper for text classification.  This mapper works at any
+    level (document, sentence, token).
 
     """
     vec_manager: FeatureDocumentVectorizerManager = field()
@@ -92,6 +92,11 @@ class ClassificationPredictionMapper(PredictionMapper):
 
 @dataclass
 class SequencePredictionMapper(ClassificationPredictionMapper):
+    """Predicts sequences as a :class:`~zensols.config.serial.Settings` with
+    keys `classes` as the token level predictions and `docs` containing the
+    parsed documents from the sentence text.
+
+    """
     def _create_features(self, sent_text: str) -> Tuple[FeatureSentence]:
         doc: FeatureDocument = self.vec_manager.parse(sent_text)
         self._docs.append(doc)
