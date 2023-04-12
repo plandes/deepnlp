@@ -71,7 +71,7 @@ class DocumentIndexVectorizer(FeatureDocumentVectorizer,
     def __post_init__(self):
         PersistableContainer.__init__(self)
         self.index_path.parent.mkdir(parents=True, exist_ok=True)
-        self._model_pw = PersistedWork(self.index_path, self)
+        self._model = PersistedWork(self.index_path, self)
 
     @staticmethod
     def feat_to_tokens(docs: Tuple[FeatureDocument]) -> Tuple[str]:
@@ -99,7 +99,7 @@ class DocumentIndexVectorizer(FeatureDocumentVectorizer,
         pass
 
     @property
-    @persisted('_model_pw')
+    @persisted('_model')
     def model(self):
         """Return the trained model for this vectorizer.  See the class docs on how it
         is cached and cleared.
