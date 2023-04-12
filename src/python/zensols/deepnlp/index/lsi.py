@@ -1,4 +1,9 @@
-from typing import Tuple, Iterable, Any
+"""A Deerwester latent semantic index vectorizer implementation.
+
+"""
+__author__ = 'Paul Landes'
+
+from typing import Tuple, Iterable, Any, Dict
 from dataclasses import dataclass, field
 import logging
 import numpy as np
@@ -6,6 +11,7 @@ from sklearn.decomposition import TruncatedSVD
 from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.preprocessing import Normalizer
 from sklearn.feature_extraction.text import TfidfVectorizer
+from scipy.sparse import csr_matrix
 from zensols.util import time
 from zensols.nlp import FeatureDocument, TokenContainer
 from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
@@ -42,7 +48,7 @@ class LatentSemanticDocumentIndexerVectorizer(DocumentIndexVectorizer):
     def _get_shape(self) -> Tuple[int, int]:
         return 1,
 
-    def _create_model(self, docs: Iterable[FeatureDocument]) -> Any:
+    def _create_model(self, docs: Iterable[FeatureDocument]) -> Dict[str, Any]:
         """Train using a singular value decomposition, then truncate to get the most
         salient terms in a document/term matrics.
 
@@ -67,19 +73,28 @@ class LatentSemanticDocumentIndexerVectorizer(DocumentIndexVectorizer):
         return {'vectorizer': vectorizer,
                 'lsa': lsa}
 
+    @property
+    def vectorizer(self) -> TfidfVectorizer:
+        """The vectorizer trained on the document set."""
+        return self.model['vectorizer']
+
+    @property
+    def lsa(self) -> Pipeline:
+        """The LSA pipeline trained on the document set."""
+        return self.model['lsa']
+
     def _transform_doc(self, doc: FeatureDocument, vectorizer: TfidfVectorizer,
                        lsa: Pipeline) -> np.ndarray:
-        X_test_tfidf = vectorizer.transform([doc])
-        X_test_lsa = lsa.transform(X_test_tfidf)
+        X_test_tfidf: csr_matrix = vectorizer.transform([doc])
+        X_test_lsa: csr_matrix = lsa.transform(X_test_tfidf)
         return X_test_lsa
 
     def similarity(self, a: FeatureDocument, b: FeatureDocument) -> float:
         """Return the semantic similarity between two documents.
 
         """
-        model = self.model
-        vectorizer = model['vectorizer']
-        lsa = model['lsa']
+        vectorizer: TfidfVectorizer = self.vectorizer
+        lsa: Pipeline = self.lsa
         emb_a = self._transform_doc(a, vectorizer, lsa)
         emb_b = self._transform_doc(b, vectorizer, lsa)
         return np.dot(emb_a, emb_b.T)[0][0]

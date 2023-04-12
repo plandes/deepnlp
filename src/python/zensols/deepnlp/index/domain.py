@@ -16,7 +16,7 @@ from zensols.persist import (
     PersistableContainer,
     Primeable
 )
-from zensols.nlp import FeatureDocument
+from zensols.nlp import FeatureToken, FeatureDocument
 from zensols.deepnlp.vectorize import FeatureDocumentVectorizer
 
 logger = logging.getLogger(__name__)
@@ -82,10 +82,12 @@ class DocumentIndexVectorizer(FeatureDocumentVectorizer,
         this class uses it as a factory function in the a vectorizer.
 
         """
-        toks = map(lambda d: d.lemma.lower(),
-                   filter(lambda d: not d.is_stop and not d.is_punctuation,
-                          chain.from_iterable(
-                              map(lambda d: d.tokens, docs))))
+        def filter_tok(t: FeatureToken) -> bool:
+            return not t.is_space and not t.is_stop and not t.is_punctuation
+
+        toks = map(lambda d: d.lemma_.lower(),
+                   filter(filter_tok, chain.from_iterable(
+                       map(lambda d: d.tokens, docs))))
         return tuple(toks)
 
     @abstractmethod
