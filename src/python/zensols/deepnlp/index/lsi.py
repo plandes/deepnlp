@@ -39,9 +39,6 @@ class LatentSemanticDocumentIndexerVectorizer(DocumentIndexVectorizer):
     DESCRIPTION = 'latent semantic indexing'
     FEATURE_TYPE = TextFeatureType.DOCUMENT
 
-    components: int = field(default=100)
-    """The number of components for the output."""
-
     iterations: int = field(default=10)
     """Number of iterations for randomized SVD solver."""
 
