@@ -119,7 +119,8 @@ class TransformerResource(PersistableContainer, Dictable):
         self._tokenizer = PersistedWork('_tokenzier', self, cache)
         self._model = PersistedWork('_model', self, cache)
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'id: {self.model_id}, cased: {self.cased}')
+            logger.debug(f'id: {self.model_id}, cased: {self.cased}, ' +
+                         f'cached: {self.cache}')
 
     @property
     def cached(self) -> bool:

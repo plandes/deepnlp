@@ -16,6 +16,7 @@ __author__ = 'Paul Landes'
 from typing import Tuple, List, Dict, Any, Union, Iterable, ClassVar
 from dataclasses import dataclass, field
 from abc import ABCMeta
+import logging
 import sys
 from cachetools import LRUCache, cached
 from itertools import chain
@@ -31,6 +32,8 @@ from zensols.nlp import (
 from . import (
     TokenizedFeatureDocument, TransformerDocumentTokenizer, TransformerEmbedding
 )
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(repr=False)
@@ -318,6 +321,8 @@ class WordPieceFeatureDocumentFactory(object):
             words = tuple(map(lambda t: WordPiece(*t), wps))
             return ftok.clone(cls=WordPieceFeatureToken, words=words)
 
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'creating embeddings for: {fdoc}')
         tdoc = self.tokenizer.tokenize(fdoc) if tdoc is None else tdoc
         sents: List[WordPieceFeatureSentence] = []
         wps: List[Dict[str, Any]] = tdoc.map_to_word_pieces(
@@ -374,6 +379,8 @@ class WordPieceFeatureDocumentParser(FeatureDocumentParser):
     """The feature document factory that populates embeddings."""
 
     def parse(self, text: str, *args, **kwargs) -> FeatureDocument:
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'wp parse: {text}')
         doc: FeatureDocument = self.delegate.parse(text, *args, **kwargs)
         wpdoc: WordPieceFeatureDocument = self.word_piece_doc_factory(doc)
         wpdoc.copy_embedding(doc)
