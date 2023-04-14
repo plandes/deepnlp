@@ -118,10 +118,6 @@ class TransformerResource(PersistableContainer, Dictable):
                 self.cased = True
         self._tokenizer = PersistedWork('_tokenzier', self, cache)
         self._model = PersistedWork('_model', self, cache)
-        if self.cache_dir is not None and not self.cache_dir.exists():
-            if logger.isEnabledFor(logging.DEBUG):
-                logger.info(f'creating cache directory: {self.cache_dir}')
-            self.cache_dir.mkdir(parents=True, exist_ok=True)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'id: {self.model_id}, cased: {self.cased}')
 
