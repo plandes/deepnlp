@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import List, Dict, Tuple, Iterable
+from typing import List, Dict, Tuple, Iterable, ClassVar
 from dataclasses import dataclass, field
 from abc import ABCMeta, abstractmethod
 import logging
@@ -19,7 +19,10 @@ logger = logging.getLogger(__name__)
 
 
 class WordEmbedError(DeepLearnError):
-    """Raised for any errors pertaining to word vectors."""
+    """Raised for any errors pertaining to word vectors.
+
+    """
+    pass
 
 
 @dataclass
@@ -58,11 +61,11 @@ class WordVectorModel(object):
 
 @dataclass
 class _WordEmbedVocabAdapter(object):
-    """Adapts a :class:`.WordEmbedModel` to a gensim :class:`.KeyedVectors`, which
-    is used in :meth:`.WordEmbedModel._create_keyed_vectors`.
+    """Adapts a :class:`.WordEmbedModel` to a gensim :class:`.KeyedVectors`,
+    which is used in :meth:`.WordEmbedModel._create_keyed_vectors`.
 
     """
-    model: WordVectorModel
+    model: WordVectorModel = field()
 
     def __post_init__(self):
         self._index = -1
@@ -89,13 +92,13 @@ class WordEmbedModel(PersistableContainer, metaclass=ABCMeta):
     (i.e. GloVe).
 
     """
-    UNKNOWN = '<unk>'
+    UNKNOWN: ClassVar[str] = '<unk>'
     """The unknown symbol used for out of vocabulary words."""
 
-    ZERO = UNKNOWN
+    ZERO: ClassVar[str] = UNKNOWN
     """The zero vector symbol used for padding vectors."""
 
-    _CACHE = {}
+    _CACHE: ClassVar[Dict[str, WordVectorModel]] = {}
     """Contains cached embedding model that point to the same source."""
 
     name: str = field()
@@ -165,10 +168,11 @@ class WordEmbedModel(PersistableContainer, metaclass=ABCMeta):
     @persisted('_data_inst', transient=True)
     def _data(self) -> WordVectorModel:
         model_id = self.model_id
-        wv_model = self._CACHE.get(model_id)
+        wv_model: WordVectorModel = self._CACHE.get(model_id)
         if wv_model is None:
             wv_model = self._create_data()
-            self._CACHE[model_id] = wv_model
+            if self.cache:
+                self._CACHE[model_id] = wv_model
         return wv_model
 
     @property
