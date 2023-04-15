@@ -31,7 +31,7 @@ class IndexedDocumentFactory(ABC):
 
     """
     @abstractmethod
-    def create_training_docs(self) -> Tuple[FeatureDocument]:
+    def create_training_docs(self) -> Iterable[FeatureDocument]:
         """Create the documents used to index in the model during training.
 
         """
@@ -74,7 +74,7 @@ class DocumentIndexVectorizer(FeatureDocumentVectorizer,
         self._model = PersistedWork(self.index_path, self)
 
     @staticmethod
-    def feat_to_tokens(docs: Tuple[FeatureDocument]) -> Tuple[str]:
+    def feat_to_tokens(docs: Tuple[FeatureDocument, ...]) -> Tuple[str, ...]:
         """Create a tuple of string tokens from a set of documents suitable for
         document indexing.  The strings are the lemmas of the tokens.
 
@@ -105,8 +105,8 @@ class DocumentIndexVectorizer(FeatureDocumentVectorizer,
         is cached and cleared.
 
         """
-        with time('created training documents'):
-            docs = self.doc_factory.create_training_docs()
+        docs: Iterable[FeatureDocument] = \
+            self.doc_factory.create_training_docs()
         with time('trained model'):
             if logger.isEnabledFor(logging.INFO):
                 logger.info(f'creating model at {self.index_path}')
