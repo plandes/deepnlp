@@ -49,17 +49,24 @@ class LatentSemanticDocumentIndexerVectorizer(DocumentIndexVectorizer):
     class docs).
 
     """
+    vectorizer_params: Dict[str, Any] = field(default_factory=dict)
+    """Additional parameters passed to
+    :class:`~sklearn.feature_extraction.text.TfidfVectorizer` when vectorizing
+    TF/IDF features.
+
+    """
     def _get_shape(self) -> Tuple[int, int]:
         return 1,
 
     def _create_model(self, docs: Iterable[FeatureDocument]) -> Dict[str, Any]:
-        """Train using a singular value decomposition, then truncate to get the most
-        salient terms in a document/term matrics.
+        """Train using a singular value decomposition, then truncate to get the
+        most salient terms in a document/term matrics.
 
         """
         vectorizer = TfidfVectorizer(
             lowercase=False,
-            tokenizer=self.feat_to_tokens
+            tokenizer=self.feat_to_tokens,
+            **self.vectorizer_params,
         )
         model: Dict[str, Any] = {'vectorizer': vectorizer}
         with time('TF/IDF vectorized {X_train_tfidf.shape[0]} documents'):
