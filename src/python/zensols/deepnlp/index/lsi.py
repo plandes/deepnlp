@@ -14,6 +14,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from scipy.sparse import csr_matrix
 from zensols.util import time
 from zensols.nlp import FeatureDocument, TokenContainer
+from zensols.deeplearn import DeepLearnError
 from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
 from zensols.deepnlp.vectorize import TextFeatureType
 from . import DocumentIndexVectorizer
@@ -23,13 +24,14 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class LatentSemanticDocumentIndexerVectorizer(DocumentIndexVectorizer):
-    """Train a latent semantic indexing (LSI, aka LSA) model.
+    """Train a latent semantic indexing (LSI, aka LSA) model from::
 
-    Citation:
+      Deerwester, S., Dumais, S.T., Furnas, G.W., Landauer, T.K., and Harshman,
+      R. 1990.  Indexing by Latent Semantic Analysis. Journal of the American
+      Society for Information Science; New York, N.Y. 41, 6, 391–407.
 
-    Deerwester, S., Dumais, S.T., Furnas, G.W., Landauer, T.K., and Harshman,
-    R. 1990.  Indexing by Latent Semantic Analysis. Journal of the American
-    Society for Information Science; New York, N.Y. 41, 6, 391–407.
+    This class can be used only to index TF/IDF.  To skip the LSI training, set
+    :obj:`iterations` to zero.
 
     :shape: ``(1,)``
 
@@ -43,8 +45,10 @@ class LatentSemanticDocumentIndexerVectorizer(DocumentIndexVectorizer):
     """The number of components for the output."""
 
     iterations: int = field(default=10)
-    """Number of iterations for randomized SVD solver."""
+    """Number of iterations for randomized SVD solver if greater than 0 (see
+    class docs).
 
+    """
     def _get_shape(self) -> Tuple[int, int]:
         return 1,
 
@@ -57,21 +61,23 @@ class LatentSemanticDocumentIndexerVectorizer(DocumentIndexVectorizer):
             lowercase=False,
             tokenizer=self.feat_to_tokens
         )
+        model: Dict[str, Any] = {'vectorizer': vectorizer}
         with time('TF/IDF vectorized {X_train_tfidf.shape[0]} documents'):
             X_train_tfidf = vectorizer.fit_transform(docs)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'tfidf shape: {X_train_tfidf.shape}')
         svd = TruncatedSVD(self.components, n_iter=self.iterations)
-        lsa: Pipeline = make_pipeline(svd, Normalizer(copy=False))
-        with time('SVD complete'):
-            X_train_lsa = lsa.fit_transform(X_train_tfidf)
-        if logger.isEnabledFor(logging.INFO):
-            logger.info(f'created model with {self.components} components, ' +
-                        f'over {self.iterations} iterations with ' +
-                        f'TF/IDF matrix shape: {X_train_tfidf.shape}, ' +
-                        f'SVD matrix shape: {X_train_lsa.shape}')
-        return {'vectorizer': vectorizer,
-                'lsa': lsa}
+        if self.iterations > 0:
+            lsa: Pipeline = make_pipeline(svd, Normalizer(copy=False))
+            with time('SVD complete'):
+                X_train_lsa = lsa.fit_transform(X_train_tfidf)
+            if logger.isEnabledFor(logging.INFO):
+                logger.info(f'created model w/{self.components} components, ' +
+                            f'over {self.iterations} iterations with ' +
+                            f'TF/IDF matrix shape: {X_train_tfidf.shape}, ' +
+                            f'SVD matrix shape: {X_train_lsa.shape}')
+            model['lsa'] = lsa
+        return model
 
     @property
     def vectorizer(self) -> TfidfVectorizer:
@@ -81,6 +87,8 @@ class LatentSemanticDocumentIndexerVectorizer(DocumentIndexVectorizer):
     @property
     def lsa(self) -> Pipeline:
         """The LSA pipeline trained on the document set."""
+        if 'lsa' not in self.model:
+            raise DeepLearnError('SVD model was not trained')
         return self.model['lsa']
 
     def _transform_doc(self, doc: FeatureDocument, vectorizer: TfidfVectorizer,
