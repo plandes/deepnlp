@@ -355,6 +355,11 @@ class WordPieceFeatureDocumentFactory(object):
 
 @dataclass
 class CachingWordPieceFeatureDocumentFactory(WordPieceFeatureDocumentFactory):
+    """Caches the documents and their embeddings in a
+    :class:`~zensols.persist.stash.Stash`.  For those that are cached, the
+    embeddings are copied over to the passed document in :meth:`create`.
+
+    """
     stash: Stash = field(default=None)
     """The stash that persists the feature document instances.  If this is not
     provided, no caching will happen.
@@ -390,7 +395,9 @@ class CachingWordPieceFeatureDocumentFactory(WordPieceFeatureDocumentFactory):
 
 @dataclass
 class WordPieceDocumentDecorator(FeatureDocumentDecorator):
-    """Updates document indexes and spans (see fields).
+    """Populates sentence and token embeddings in the documents.
+
+    :see: :class:`.WordPieceFeatureDocumentFactory`
 
     """
     word_piece_doc_factory: WordPieceFeatureDocumentFactory = field()
