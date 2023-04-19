@@ -22,8 +22,8 @@ logger = logging.getLogger(__name__)
 
 
 class TransformerError(DeepLearnError):
-    """Raised for any transformer specific errors in this and child modules of the
-    parent.
+    """Raised for any transformer specific errors in this and child modules of
+    the parent.
 
     """
     pass

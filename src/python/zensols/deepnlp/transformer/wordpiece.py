@@ -18,19 +18,20 @@ from dataclasses import dataclass, field
 from abc import ABCMeta
 import logging
 import sys
-from cachetools import LRUCache, cached
 from itertools import chain
 from io import TextIOBase
 import torch
 from torch import Tensor
-from zensols.persist import PersistableContainer
+from zensols.util import Hasher
+from zensols.persist import PersistableContainer, Stash
 from zensols.config import Dictable
 from zensols.nlp import (
     TokenContainer, FeatureToken, FeatureSentence, FeatureDocument,
-    FeatureDocumentParser,
+    FeatureDocumentDecorator,
 )
 from . import (
-    TokenizedFeatureDocument, TransformerDocumentTokenizer, TransformerEmbedding
+    TransformerError, TokenizedFeatureDocument, TransformerDocumentTokenizer,
+    TransformerEmbedding,
 )
 
 logger = logging.getLogger(__name__)
@@ -260,15 +261,8 @@ class WordPieceFeatureDocumentFactory(object):
     """Whether to add class:`.WordPieceFeatureSentence.embeddings`.
 
     """
-    cache_size: int = field(default=0)
-    """If higher than zero, the number word piece documents LRU cached."""
-
     def __post_init__(self):
-        if self.cache_size > 0:
-            self.create = cached(
-                LRUCache(maxsize=self.cache_size),
-                key=lambda doc, tdoc: _WordPieceDocKey(doc, tdoc),
-            )(self.create)
+        FeatureToken.SKIP_COMPARE_FEATURE_IDS.add('embedding')
 
     def add_token_embeddings(self, doc: WordPieceFeatureDocument, arr: Tensor):
         """Add token embeddings to the sentences of ``doc``.  This assumes
@@ -360,28 +354,48 @@ class WordPieceFeatureDocumentFactory(object):
 
 
 @dataclass
-class WordPieceFeatureDocumentParser(FeatureDocumentParser):
-    """A document parser that adds word piece embeddings using
-    :class:`.WordPieceFeatureDocumentFactory`.  It does this by first using
-    :obj:`delegate` to parse the document, then uses
-    :obj:`word_piece_document_factory` to create the embeddings.  Finally, the
-    embeddings are copied to the original parsed document.
-
-    This is useful when there is some feature document structure that already
-    inherits from :class:`~zensols.nlp.container.FeatureDocument` and you want
-    to keep it intact.
+class CachingWordPieceFeatureDocumentFactory(WordPieceFeatureDocumentFactory):
+    stash: Stash = field(default=None)
+    """The stash that persists the feature document instances.  If this is not
+    provided, no caching will happen.
 
     """
-    delegate: FeatureDocumentParser = field()
-    """The delegate that parses text in to feature documents."""
+    hasher: Hasher = field(default_factory=Hasher)
+    """Used to hash the natural langauge text in to string keys."""
 
+    def _hash_text(self, text: str) -> str:
+        self.hasher.reset()
+        self.hasher.update(text)
+        return self.hasher()
+
+    def create(self, fdoc: FeatureDocument,
+               tdoc: TokenizedFeatureDocument = None) -> \
+            WordPieceFeatureDocument:
+        key: str = self._hash_text(fdoc.text)
+        wdoc: WordPieceFeatureDocument = self.stash.load(key)
+        if wdoc is None:
+            wdoc = super().create(fdoc, tdoc)
+            if self.stash is not None:
+                self.stash.dump(key, wdoc)
+        else:
+            if wdoc.text != fdoc.text:
+                raise TransformerError('Document text does not match: ' +
+                                       f'<{wdoc.text}> != >{fdoc.text}>')
+        return wdoc
+
+    def clear(self):
+        """Clear the caching stash."""
+        self.stash.clear()
+
+
+@dataclass
+class WordPieceDocumentDecorator(FeatureDocumentDecorator):
+    """Updates document indexes and spans (see fields).
+
+    """
     word_piece_doc_factory: WordPieceFeatureDocumentFactory = field()
     """The feature document factory that populates embeddings."""
 
-    def parse(self, text: str, *args, **kwargs) -> FeatureDocument:
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'wp parse: {text}')
-        doc: FeatureDocument = self.delegate.parse(text, *args, **kwargs)
+    def decorate(self, doc: FeatureDocument):
         wpdoc: WordPieceFeatureDocument = self.word_piece_doc_factory(doc)
         wpdoc.copy_embedding(doc)
-        return doc
