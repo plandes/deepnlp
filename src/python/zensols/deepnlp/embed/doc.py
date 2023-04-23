@@ -43,7 +43,7 @@ class WordEmbedDocumentDecorator(FeatureDocumentDecorator):
     """Whether to add class:`.WordPieceFeatureSentence.embeddings`.
 
     """
-    skip_oov: bool = field(default=True)
+    skip_oov: bool = field(default=False)
     """Whether to skip out-of-vocabulary tokens that have no embeddings."""
 
     def _add_sent_embedding(self, sent: FeatureSentence):
