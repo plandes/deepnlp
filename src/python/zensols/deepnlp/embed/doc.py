@@ -43,6 +43,9 @@ class WordEmbedDocumentDecorator(FeatureDocumentDecorator):
     """Whether to add class:`.WordPieceFeatureSentence.embeddings`.
 
     """
+    skip_oov: bool = field(default=True)
+    """Whether to skip out-of-vocabulary tokens that have no embeddings."""
+
     def _add_sent_embedding(self, sent: FeatureSentence):
         use_np: bool = self.torch_config is None
         add_tok_emb: bool = self.token_embeddings
@@ -58,17 +61,21 @@ class WordEmbedDocumentDecorator(FeatureDocumentDecorator):
             emb = model.to_matrix(self.torch_config)
         tok: FeatureToken
         for tok in sent.token_iter():
-            idx: int = model.word2idx_or_unk(tok.norm)
-            vec: Union[np.ndarray, Tensor] = emb[idx]
-            sembs.append(vec)
-            if add_tok_emb:
-                if use_np:
-                    vec = np.expand_dims(vec, axis=0)
-                else:
-                    vec = vec.unsqueeze(axis=0)
-                tok.embedding = vec
+            norm: str = tok.norm
+            idx: int = model.word2idx(norm)
+            if not self.skip_oov or idx is not None:
+                if idx is None:
+                    idx = model.unk_idx
+                vec: Union[np.ndarray, Tensor] = emb[idx]
+                sembs.append(vec)
+                if add_tok_emb:
+                    if use_np:
+                        vec = np.expand_dims(vec, axis=0)
+                    else:
+                        vec = vec.unsqueeze(axis=0)
+                    tok.embedding = vec
         # sentinel embeddings are the centroid for non-contextual embeddings
-        if self.sent_embeddings:
+        if len(sembs) > 0 and self.sent_embeddings:
             if use_np:
                 sent.embedding = np.stack(sembs).mean(axis=0)
             else:
