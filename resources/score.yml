@@ -1,0 +1,11 @@
+## Score methods
+#
+deepnlp_bert_score_method:
+  class_name: zensols.deepnlp.score.BERTScoreScoreMethod
+
+
+## Method groupings
+#
+deepnlp_scorer_methods:
+  bertscore: >-
+    'bertscore': 'deepnlp_bert_score_method'
