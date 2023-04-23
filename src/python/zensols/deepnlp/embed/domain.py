@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import List, Dict, Tuple, Iterable, ClassVar
+from typing import List, Dict, Tuple, Iterable, ClassVar, Optional
 from dataclasses import dataclass, field
 from abc import ABCMeta, abstractmethod
 import logging
@@ -36,10 +36,10 @@ class WordVectorModel(object):
     word2vec: Dict[str, np.ndarray] = field()
     """The word to word vector mapping."""
 
-    words: Dict[str, int] = field()
-    """The string vocabulary."""
+    words: List[str] = field()
+    """The vocabulary."""
 
-    word2idx: Dict[str, np.ndarray] = field()
+    word2idx: Dict[str, int] = field()
     """The word to word vector index mapping."""
 
     def __post_init__(self):
@@ -213,17 +213,32 @@ class WordEmbedModel(PersistableContainer, metaclass=ABCMeta):
         """
         return self.vectors.keys()
 
-    def word2idx_or_unk(self, word: str) -> int:
-        """Return the index of ``word`` or :obj:UNKONWN if not indexed.
+    @property
+    @persisted('_unk_idx')
+    def unk_idx(self) -> int:
+        """The ID to the out-of-vocabulary index"""
+        model: WordVectorModel = self._data()
+        word2idx: Dict[str, int] = model.word2idx
+        return word2idx.get(self.UNKNOWN)
+
+    def word2idx(self, word: str, default: int = None) -> Optional[int]:
+        """Return the index of ``word`` or :obj:`UNKONWN` if not indexed.
 
         """
         if self.lowercase:
             word = word.lower()
-        word2idx = self._data().word2idx
-        idx = word2idx.get(word)
+        model: WordVectorModel = self._data()
+        word2idx: Dict[str, int] = model.word2idx
+        idx: int = word2idx.get(word)
         if idx is None:
-            idx = word2idx.get(self.UNKNOWN)
+            idx = default
         return idx
+
+    def word2idx_or_unk(self, word: str) -> int:
+        """Return the index of ``word`` or :obj:`UNKONWN` if not indexed.
+
+        """
+        return self.word2idx(word, self.unk_idx)
 
     def prime(self):
         pass
@@ -239,13 +254,12 @@ class WordEmbedModel(PersistableContainer, metaclass=ABCMeta):
         """
         if self.lowercase:
             key = key.lower()
-        if key not in self.vectors:
-            key = self.UNKNOWN
         return self.vectors.get(key, default)
 
     @property
     @persisted('_keyed_vectors', transient=True)
     def keyed_vectors(self) -> KeyedVectors:
+        """Adapt instances of this class to a gensim keyed vector instance."""
         return self._create_keyed_vectors()
 
     def _create_keyed_vectors(self) -> KeyedVectors:
