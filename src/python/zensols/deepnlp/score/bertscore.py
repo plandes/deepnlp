@@ -8,6 +8,7 @@ __author__ = 'Paul Landes'
 from typing import Iterable, Tuple, Type, Dict, Any
 from dataclasses import dataclass, field
 from torch import Tensor
+from zensols.persist import persisted
 from zensols.nlp import TokenContainer
 from zensols.nlp.score import ScoreContext, ScoreMethod, FloatScore
 from bert_score import BERTScorer
@@ -16,7 +17,8 @@ from zensols.deepnlp import transformer
 
 @dataclass
 class BERTScoreScoreMethod(ScoreMethod):
-    """A scoring method that uses BERTScore.
+    """A scoring method that uses BERTScore.  Sentence pairs are ordered as
+    ``(<references>, <candidates>)``.
 
     Citation:
 
@@ -44,14 +46,19 @@ class BERTScoreScoreMethod(ScoreMethod):
         transformer.suppress_warnings()
         return ('bert_score',)
 
+    @property
+    @persisted('_bert_scorer')
+    def bert_scorer(self) -> BERTScorer:
+        return BERTScorer(**self.bert_score_params)
+
     def _score(self, meth: str, context: ScoreContext) -> Iterable[FloatScore]:
         def container_to_str(container: TokenContainer) -> str:
             return container.norm if self.use_norm else container.text
 
-        cands: Tuple[str] = tuple(map(
-            lambda p: container_to_str(p[0]), context.pairs))
         refs: Tuple[str] = tuple(map(
+            lambda p: container_to_str(p[0]), context.pairs))
+        cands: Tuple[str] = tuple(map(
             lambda p: container_to_str(p[1]), context.pairs))
-        scorer = BERTScorer(**self.bert_score_params)
+        scorer: BERTScorer = self.bert_scorer
         scores: Tuple[Tensor] = scorer.score(cands=cands, refs=refs)
         return map(FloatScore, scores[0].tolist())
