@@ -20,17 +20,10 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class TransformerDocumentTokenizer(PersistableContainer):
-    MAX_TOKEN_LENGTH: ClassVar[int] = 512
-    """The maximum token length to truncate before converting to IDs.  If this
-    isn't done, the following error is raised:
-
-      ``error: CUDA error: device-side assert triggered``
-
-    """
     resource: TransformerResource = field()
     """Contains the model used to create the tokenizer."""
 
-    word_piece_token_length: int = field(default=MAX_TOKEN_LENGTH)
+    word_piece_token_length: int = field(default=None)
     """The max number of word piece tokens.  The word piece length is always the
     same or greater in count than linguistic tokens because the word piece
     algorithm tokenizes on characters.
@@ -40,6 +33,9 @@ class TransformerDocumentTokenizer(PersistableContainer):
     """
     def __post_init__(self):
         super().__init__()
+        if self.word_piece_token_length is None:
+            self.word_piece_token_length = \
+                self.resource.tokenizer.model_max_length
 
     @property
     @persisted('_id2tok')
