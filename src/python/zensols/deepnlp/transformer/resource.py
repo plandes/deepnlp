@@ -184,8 +184,6 @@ class TransformerResource(PersistableContainer, Dictable):
         with time(f'loaded model from pretrained {self.model_id}'):
             cls = self._create_model_class()
             model = cls.from_pretrained(self.model_id, **params)
-            #print('position types', model.embeddings.position_ids.dtype)
-            #print('token types', model.embedding.token_type_ids.dtype)
         # put the model in `evaluation` mode, meaning feed-forward operation.
         if self.trainable:
             logger.debug('model is trainable')
