@@ -30,7 +30,7 @@ jobs:
         run: python -c "import sys; print(sys.version)"
 
       - name: Binary Python deps (fix gensim numpy)
-        run: python -m pip3 install --only-binary=:all: -r src/python/requirements.txt
+        run: 'python -m pip3 install --only-binary=:all: -r src/python/requirements.txt'
 
       - name: Prepare tests
         run: 'make info deps'
