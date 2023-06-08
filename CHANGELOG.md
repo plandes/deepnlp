@@ -8,15 +8,28 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+### Added
+- Added BERTScore scoring method to [zensols.nlparse] scoring API.
+- Upgraded [zensols.nlparse] to 1.7.0.
+
+### Changed
+- Transformer padding uses longest sentence by default.
+- Vectorizer model accessible in Latent Semantic Indexing component.
+- Bug fixes for `WordEmbedModel` caching, persisted naming and word piece
+  document parser resource library.
+- Upgraded [zensols.nlparse] to 1.6.0.
+- Resource library file naming.
+
+
 ## [1.8.0] - 2023-04-05
 ### Changed
-- Updated [zensols.nlparse] to 1.6.0.
+- Upgraded [zensols.nlparse] to 1.6.0.
 - Bug fixes in word piece document API.
 
 
 ## [1.7.0] - 2023-02-02
 ### Changed
-- Updated [zensols.util] to 1.12.1.
+- Upgraded [zensols.util] to 1.12.1.
 
 
 ## [1.6.0] - 2023-01-23
@@ -52,7 +65,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ## [1.3.0] - 2022-08-08
-Update dependent libraries release.
+- Update dependent libraries release.
 
 ### Changed
 - Upgrade torch 1.12.
@@ -181,7 +194,7 @@ Major stable release.
 
 ## [0.0.5] - 2021-08-07
 ### Changed
-- Update dependencies.
+- Upgrade dependencies.
 
 
 ## [0.0.4] - 2021-08-07
@@ -227,7 +240,7 @@ Major stable release.
 ## [0.0.2] - 2020-12-29
 Maintenance release.
 ### Changed
-- Updated dependencies and tested across Python 3.7, 3.8, 3.9.
+- Upgraded dependencies and tested across Python 3.7, 3.8, 3.9.
 
 
 ## [0.0.1] - 2020-05-04
