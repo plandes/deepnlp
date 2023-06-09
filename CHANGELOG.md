@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.9.0] - 2023-06-09
 ### Added
 - Added BERTScore scoring method to [zensols.nlparse] scoring API.
 - Upgraded [zensols.nlparse] to 1.7.0.
@@ -19,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   document parser resource library.
 - Upgraded [zensols.nlparse] to 1.6.0.
 - Resource library file naming.
+- Upgraded [zensols.deeplearn] to 1.7.0.
 
 
 ## [1.8.0] - 2023-04-05
@@ -99,7 +101,7 @@ This is primarily a refactoring release to simplify the API.
 ## [1.1.1] - 2022-05-15
 ### Changed
 - Retrofit resource library and examples with batch metadata changes from
-  `zensols.deeplearn`.
+  [zensols.deeplearn].
 
 
 ## [1.1.0] - 2022-05-04
@@ -126,7 +128,7 @@ This is primarily a refactoring release to simplify the API.
 ## [1.0.1] - 2022-02-12
 ### Added
 - Runtime bench marking.
-- Missing batch configuration in resource library from `zensols.deeplearn`.
+- Missing batch configuration in resource library from [zensols.deeplearn].
 - Add observer pattern for logging and Pandas data frame / CSV output.
 
 ### Changed
@@ -172,7 +174,7 @@ Major stable release.
 
 ## [0.0.7] - 2021-09-22
 ### Changed
-- Refactored downstream renaming of files from `zensols.deeplearn`.
+- Refactored downstream renaming of files from [zensols.deeplearn].
 - Moved `ClassificationPredictionMapper` class to new `classify` module.
 
 ### Added
@@ -249,7 +251,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.8.0...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.9.0...HEAD
+[1.9.0]: https://github.com/plandes/deepnlp/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/plandes/deepnlp/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/plandes/deepnlp/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/plandes/deepnlp/compare/v1.5.0...v1.6.0
