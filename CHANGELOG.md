@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.9.1] - 2023-06-29
+### Changed
+- Cleanup downloaded model resources after install.
+
+
 ## [1.9.0] - 2023-06-09
 ### Added
 - Added BERTScore scoring method to [zensols.nlparse] scoring API.
@@ -251,7 +256,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.9.0...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.9.1...HEAD
+[1.9.1]: https://github.com/plandes/deepnlp/compare/v1.9.0...v1.9.1
 [1.9.0]: https://github.com/plandes/deepnlp/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/plandes/deepnlp/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/plandes/deepnlp/compare/v1.6.0...v1.7.0
