@@ -54,7 +54,22 @@ pip3 install --use-deprecated=legacy-resolver zensols.deepnlp
 Binaries are also available on [pypi].
 
 
-## Usage and Reference Models
+## Usage
+
+The API can be used as is and manually configuring each component.  However,
+this (like any Zensols API) was designed to instantiated with inverse of
+control using [resource libraries].
+
+### Component
+
+Components and out of the box models are available with little to no coding.
+However, this [simple example](example/simple/harness.py) that uses the
+library's components is recommended for starters.  The example is a command
+line application that in-lines a simple configuration needed to create deep
+learning NLP components.
+
+
+### Reference Models
 
 If you're in a rush, you can dive right in to the [Clickbate Text
 Classification] reference model, which is a working project that uses this
