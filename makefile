@@ -2,7 +2,7 @@
 
 ## build
 PROJ_TYPE =		python
-PROJ_MODULES =		git python-resources python-doc python-doc-deploy
+PROJ_MODULES =		git python-resources python-doc python-doc-deploy markdown
 PROJ_ARGS =		-c resources/deepnlp.conf
 PY_DEP_POST_DEPS +=	modeldeps
 CLEAN_ALL_DEPS +=	exampleclean
