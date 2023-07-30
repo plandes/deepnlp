@@ -27,6 +27,9 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class NLPFacadeBatchApplication(FacadeApplication):
+    """A facade application for creating mini-batches for training.
+
+    """
     CLI_META = ActionCliManager.combine_meta(
         FacadeApplication,
         {'mnemonic_overrides': {'dump_batches': 'dumpbatch'}})
@@ -74,6 +77,9 @@ class NLPFacadeBatchApplication(FacadeApplication):
 
 @dataclass
 class NLPFacadeModelApplication(FacadeApplication):
+    """A base class facade application for predicting tokens or text.
+
+    """
     CLI_META = ActionCliManager.combine_meta(
         FacadeApplication,
         {'mnemonic_overrides': {'predict_text': 'predtext'},
@@ -99,6 +105,10 @@ class NLPFacadeModelApplication(FacadeApplication):
 
 
 class NLPClassifyFacadeModelApplication(NLPFacadeModelApplication):
+    """A facade application for predicting text (for example sentiment
+    classification tasks).
+
+    """
     def predict_text(self, text_input: str, verbose: bool = False):
         """Classify ad-hoc text and output the results.
 
@@ -119,6 +129,9 @@ class NLPClassifyFacadeModelApplication(NLPFacadeModelApplication):
 
 @dataclass
 class NLPSequenceClassifyFacadeModelApplication(NLPFacadeModelApplication):
+    """A facade application for predicting tokens (for example NER tasks).
+
+    """
     model_path: Path = field(default=None)
     """The path to the model or use the last trained model if not provided.
 
