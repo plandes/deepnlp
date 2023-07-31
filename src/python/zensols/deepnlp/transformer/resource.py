@@ -31,7 +31,7 @@ class TransformerError(DeepLearnError):
 
 @dataclass
 class TransformerResource(PersistableContainer, Dictable):
-    """A utility base class that allows configuration and creates various
+    """A container base class that allows configuration and creates various
     huggingface models.
 
     """
