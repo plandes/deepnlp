@@ -3,14 +3,18 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, List
+from typing import Tuple, List, Iterable, Dict, Any
 from dataclasses import dataclass, field
 import logging
+import sys
+from collections import OrderedDict
+from io import TextIOBase
 import pandas as pd
 import torch
 from torch import Tensor
 from torch.return_types import topk
 from transformers import PreTrainedTokenizer, PreTrainedModel
+from zensols.config import Dictable
 from zensols.nlp import FeatureToken, TokenContainer
 from zensols.deepnlp.transformer import TransformerResource
 from . import TransformerError
@@ -19,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class Prediction(object):
+class Prediction(Dictable):
     """A container class for masked token predictions produced by
     :class:`.MaskFiller`.
 
@@ -56,7 +60,7 @@ class Prediction(object):
         cont: TokenContainer = self.cont
         if len(self.df) == 0:
             raise TransformerError(f'No predictions found for <{cont.text}>')
-        n_top_k: int = len(self.df['k'].drop_duplicates()) - 1
+        n_top_k: int = len(self) - 1
         if k > n_top_k:
             raise IndexError(f'Only {n_top_k} predictions but asked for {k}')
         df: pd.DataFrame = self.df
@@ -73,6 +77,46 @@ class Prediction(object):
         # clear to force a container level norm to be generated
         cont.clear()
         return cont
+
+    @property
+    def masked_token_dicts(self) -> Tuple[Dict[str, Any]]:
+        feats: List[str] = 'i idx i_sent norm text'.split()
+        return tuple(map(lambda t: t.get_features(feats), self.masked_tokens))
+
+    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout,
+              include_masked_tokens: bool = True,
+              include_predicted_tokens: bool = True,
+              include_predicted_sentences: bool = True):
+        self._write_line(f'source: {self.cont.text}', depth, writer)
+        if include_masked_tokens:
+            self._write_line('masked:', depth, writer)
+            for mt in self.masked_token_dicts:
+                self._write_dict(mt, depth + 1, writer, one_line=True)
+        if include_predicted_tokens:
+            self._write_line('predicted:', depth, writer)
+            for k, df in self.df.groupby('k')['mask_id token score'.split()]:
+                scs: List[str] = []
+                for mid, r in df.groupby('mask_id'):
+                    s = f"{r['token'].item()} ({r['score'].item():.4f})"
+                    scs.append(s)
+                self._write_line(f'k={k}: ' + ', '.join(scs), depth + 1, writer)
+        if include_predicted_sentences:
+            self._write_line('sentences:', depth, writer)
+            self._write_iterable(tuple(map(lambda t: t.norm, self)),
+                                 depth + 1, writer)
+
+    def _from_dictable(self, *args, **kwargs):
+        return OrderedDict(
+            [['source', self.cont.text],
+             ['masked_tokens', self.masked_token_dicts],
+             ['pred_tokens', self.df.to_dict('records')],
+             ['pred_sentences', tuple(map(lambda t: t.norm, self))]])
+
+    def __iter__(self) -> Iterable[TokenContainer]:
+        return map(self.get_kth, range(len(self)))
+
+    def __len__(self) -> int:
+        return len(self.df['k'].drop_duplicates())
 
     def __str__(self) -> str:
         return self.get_kth().norm
