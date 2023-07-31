@@ -82,12 +82,12 @@ class Prediction(object):
 class MaskFiller(object):
     """The class fills masked tokens with the prediction of the underlying maked
     model.  Masked tokens with attribute :obj:`feature_id` having value
-    :obj:`feature_value` (``norm`` and ``MASK`` by default respectively) are
-    substituted with model values.
+    :obj:`feature_value` (:obj:`~zensols.nlp.tok.FeatureToken.norm` and ``MASK``
+    by default respectively) are substituted with model values.
 
     To use this class, parse a sentence with a
-    :class:`~zensols.nlp.FeatureDocumentParser` with masked tokens using the
-    string :obj:`feature_value`.
+    :class:`~zensols.nlp.parser.FeatureDocumentParser` with masked tokens
+    using the string :obj:`feature_value`.
 
     For example (with class defaults), the sentence::
 
