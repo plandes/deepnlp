@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import List, Dict, Any, ClassVar
+from typing import List, Dict, Any
 from dataclasses import dataclass, field
 import logging
 import torch
