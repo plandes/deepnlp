@@ -1,0 +1,29 @@
+## description: huggingface transformer
+
+
+## Fill in the blank mask model
+#
+# resource contains the transformer model details
+deepnlp_transformer_mask_model:
+  class_name: zensols.deepnlp.transformer.TransformerResource
+  torch_config: 'instance: gpu_torch_config'
+  model_class: transformers.AutoModelForMaskedLM
+  tokenizer_class: transformers.AutoTokenizer
+  model_id: 'distilroberta-base'
+  #model_id: 'xlm-roberta-large'
+  cased: true
+  # cache the model at the global level since there is only one huggingface
+  # transformer model we're using; also without it, subprocess CPU to CPU copy
+  # freezes: https://github.com/huggingface/transformers/issues/8649
+  cache: false
+  # whether or not the embeddings are trainable (not frozen)
+  trainable: false
+  # from_pretrain extra arguments; speeds things up
+  args: "dict: {'local_files_only': ${deepnlp_default:transformer_local_files_only}}"
+
+# utility class that uses the model to predict masked tokens
+deepnlp_transformer_mask_filler:
+  class_name: zensols.deepnlp.transformer.MaskFiller
+  resource: 'instance: deepnlp_transformer_mask_model'
+  # number of (top-K) predictions to make
+  k: 1

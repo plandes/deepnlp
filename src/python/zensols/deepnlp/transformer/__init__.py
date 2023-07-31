@@ -40,3 +40,4 @@ from .embed import *
 from .vectorizers import *
 from .layer import *
 from .wordpiece import *
+from .mask import *
