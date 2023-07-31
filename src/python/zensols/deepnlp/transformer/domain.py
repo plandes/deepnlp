@@ -1,9 +1,8 @@
-from __future__ import annotations
 """Container classes for Bert models
 
 """
+from __future__ import annotations
 __author__ = 'Paul Landes'
-
 from typing import List, Tuple, Dict, Any, Union, Iterable, Callable
 from dataclasses import dataclass, field
 import sys
