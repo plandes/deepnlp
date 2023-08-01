@@ -23,6 +23,20 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
+class TokenPrediction(Dictable):
+    """Couples a masked model prediction token to which it belongs and its
+    score.
+
+    """
+    token: FeatureToken = field()
+    prediction: str = field()
+    score: float = field()
+
+    def __str__(self) -> str:
+        return f"{self.token} -> {self.prediction} ({self.score:.4f})"
+
+
+@dataclass
 class Prediction(Dictable):
     """A container class for masked token predictions produced by
     :class:`.MaskFiller`.
@@ -43,7 +57,7 @@ class Prediction(Dictable):
       * ``score``: the score of the prediction (``[0, 1]``, higher the better)
 
     """
-    def get_kth(self, k: int = 0) -> TokenContainer:
+    def get_container(self, k: int = 0) -> TokenContainer:
         """Get the *k*-th top scored sentence.  This method should be called
         only once for each instance since it modifies the tokens of the
         container for each invocation.
@@ -78,9 +92,24 @@ class Prediction(Dictable):
         cont.clear()
         return cont
 
+    def get_tokens(self) -> Iterable[TokenPrediction]:
+        """Return an iterable of the prediction coupled with the token it
+        belongs to and its score.
+
+        """
+        preds: Iterable[Tuple[str, float]] = self.df.\
+            sort_values('mask_id')['token score'.split()].\
+            itertuples(name=None, index=False)
+        return map(lambda t: TokenPrediction(t[0], t[1][0], t[1][1]),
+                   zip(self.masked_tokens, preds))
+
     @property
     def masked_token_dicts(self) -> Tuple[Dict[str, Any]]:
-        feats: List[str] = 'i idx i_sent norm text'.split()
+        """A tuple of :class:`.builtins.dict` each having token index, norm and
+        text data.
+
+        """
+        feats: Tuple[str] = ('i', 'idx', 'i_sent', 'norm', 'text')
         return tuple(map(lambda t: t.get_features(feats), self.masked_tokens))
 
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout,
@@ -113,13 +142,16 @@ class Prediction(Dictable):
              ['pred_sentences', tuple(map(lambda t: t.norm, self))]])
 
     def __iter__(self) -> Iterable[TokenContainer]:
-        return map(self.get_kth, range(len(self)))
+        return map(self.get_container, range(len(self)))
+
+    def __getitem__(self, i: int) -> TokenContainer:
+        return self.get_container(i)
 
     def __len__(self) -> int:
         return len(self.df['k'].drop_duplicates())
 
     def __str__(self) -> str:
-        return self.get_kth().norm
+        return self.get_container().norm
 
 
 @dataclass
