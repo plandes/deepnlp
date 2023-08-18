@@ -16,6 +16,7 @@ from torch.return_types import topk
 from transformers import PreTrainedTokenizer, PreTrainedModel
 from zensols.config import Dictable
 from zensols.nlp import FeatureToken, TokenContainer
+from zensols.deeplearn import TorchConfig
 from zensols.deepnlp.transformer import TransformerResource
 from . import TransformerError
 
@@ -187,7 +188,8 @@ class MaskFiller(object):
 
     """
     feature_id: str = field(default='norm')
-    """The :class:`~zensols.nlp.FeatureToken` feature ID to match on masked tokens.
+    """The :class:`~zensols.nlp.FeatureToken` feature ID to match on masked
+    tokens.
 
     :see: :obj:`feature_value`
 
@@ -196,6 +198,8 @@ class MaskFiller(object):
     """The value of feature ID :obj:`feature_id` to match on masked tokens."""
 
     def _predict(self, text: str) -> pd.DataFrame:
+        tc: TorchConfig = self.resource.torch_config
+
         # models are created in the resource
         tokenizer: PreTrainedTokenizer = self.resource.tokenizer
         model: PreTrainedModel = self.resource.model
@@ -203,7 +207,7 @@ class MaskFiller(object):
         rows: List[Tuple[int, int, str, float]] = []
 
         # tokenization produces the vocabulary wordpiece ids
-        input_ids: Tensor = tokenizer.encode(text, return_tensors='pt')
+        input_ids: Tensor = tc.to(tokenizer.encode(text, return_tensors='pt'))
         # get the wordpiece IDs of the masks
         mask_token_index: Tensor = torch.where(
             input_ids == tokenizer.mask_token_id)[1]
