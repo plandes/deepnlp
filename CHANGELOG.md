@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.10.1] - 2023-08-25
+### Changed
+- Masked model bug fix.
+
+
 ## [1.10.0] - 2023-08-16
 Downstream moderate risk update release.
 
@@ -266,7 +271,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.10.0...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.10.1...HEAD
+[1.10.1]: https://github.com/plandes/deepnlp/compare/v1.10.0...v1.10.1
 [1.10.0]: https://github.com/plandes/deepnlp/compare/v1.9.1...v1.10.0
 [1.9.1]: https://github.com/plandes/deepnlp/compare/v1.9.0...v1.9.1
 [1.9.0]: https://github.com/plandes/deepnlp/compare/v1.8.0...v1.9.0
