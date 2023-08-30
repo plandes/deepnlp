@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+### Changed
+- Upgraded to [HuggingFace Transformers] version 4.32.1.
+
+
 ## [1.10.1] - 2023-08-25
 ### Changed
 - Masked model bug fix.
@@ -304,3 +308,4 @@ Maintenance release.
 [PyTorch]: https://pytorch.org
 [bcolz]: https://github.com/Blosc/bcolz
 [H5PY]: https://www.h5py.org
+[HuggingFace Transformers]: https://pypi.org/project/transformers/
