@@ -1,11 +1,15 @@
 from typing import Tuple
 import logging
 import unittest
+from io import BytesIO
+import pickle
 from zensols.config import ExtendedInterpolationConfig as AppConfig
 from zensols.config import ImportConfigFactory
 from zensols.nlp import FeatureToken, FeatureDocument, FeatureSentence
 from zensols.deepnlp.transformer import (
-    TokenizedFeatureDocument, suppress_warnings
+    TokenizedFeatureDocument, suppress_warnings,
+    WordPieceFeatureDocumentFactory, WordPieceFeatureDocument,
+    WordPieceFeatureToken
 )
 
 if 0:
@@ -141,3 +145,35 @@ class TestWordPieceTokenization(unittest.TestCase):
         self._test_sent_2(vec_name)
         self._test_sent_3(vec_name)
         self._test_sent_4(vec_name)
+
+    def test_wordpiece(self):
+        fac: WordPieceFeatureDocumentFactory = self.fac('word_piece_doc_factory')
+        parser: FeatureDocument = self.fac('doc_parser')
+        doc: FeatureDocument = parser('The gunships are near.')
+        self.assertEqual(FeatureDocument, type(doc))
+
+        wdoc: WordPieceFeatureDocument = fac(doc)
+        self.assertEqual(WordPieceFeatureDocument, type(wdoc))
+        self.assertTrue(hasattr(wdoc, 'embedding'))
+
+        tok: WordPieceFeatureToken = wdoc.tokens[0]
+        self.assertEqual(WordPieceFeatureToken, type(tok))
+        self.assertTrue(hasattr(tok, 'embedding'))
+        self.assertEqual((1, 768), tuple(tok.embedding.shape))
+
+        tok2: WordPieceFeatureToken = wdoc.tokens[1]
+        self.assertEqual((2, 768), tuple(tok2.embedding.shape))
+        self.assertNotEqual(tok, tok2)
+
+        tok3: WordPieceFeatureToken = tok2.clone()
+        self.assertEqual((2, 768), tuple(tok3.embedding.shape))
+        self.assertNotEqual(id(tok2), id(tok3))
+        self.assertEqual(tok2, tok3)
+
+        bio = BytesIO()
+        pickle.dump(tok2, bio)
+        bio.seek(0)
+        tok4: WordPieceFeatureToken = pickle.load(bio)
+        self.assertEqual(None, tok4.embedding)
+        self.assertNotEqual(id(tok2), id(tok4))
+        self.assertEqual(tok2, tok4)

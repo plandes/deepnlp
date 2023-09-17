@@ -13,7 +13,7 @@ this module attempts to:
 """
 from __future__ import annotations
 __author__ = 'Paul Landes'
-from typing import Tuple, List, Dict, Any, Union, Iterable, ClassVar
+from typing import Tuple, List, Dict, Any, Union, Iterable, ClassVar, Type, Set
 from dataclasses import dataclass, field
 from abc import ABCMeta
 import logging
@@ -90,6 +90,8 @@ class WordPieceFeatureToken(FeatureToken):
     """The token and the word pieces that repesent it.
 
     """
+    _PERSITABLE_REMOVE_ATTRIBUTES: ClassVar[Set[str]] = {'embedding'}
+
     words: Tuple[WordPiece] = field()
     """The word pieces that make up this token."""
 
@@ -136,6 +138,15 @@ class WordPieceFeatureToken(FeatureToken):
             self._write_line(f'embedding: {tuple(self.embedding.size())}',
                              depth + 1, writer)
 
+    def clone(self, cls: Type = None, **kwargs) -> FeatureToken:
+        kwargs.update(dict(words=self.words, embedding=self.embedding))
+        return super().clone(cls, **kwargs)
+
+    def detach(self, *args, **kwargs) -> FeatureToken:
+        clone: FeatureToken = super().detach(*args, **kwargs)
+        clone.__dict__.pop('embedding', None)
+        return clone
+
     def __str__(self) -> str:
         return ''.join(map(str, self.words))
 
@@ -157,6 +168,8 @@ class WordPieceFeatureSpan(FeatureSentence, WordPieceTokenContainer):
     """A sentence made up of word pieces.
 
     """
+    _PERSITABLE_REMOVE_ATTRIBUTES: ClassVar[Set[str]] = {'embedding'}
+
     embedding: Tensor = field(default=None)
     """The sentence embedding level (i.e. ``[CLS]``) embedding from the
     transformer.
@@ -270,9 +283,6 @@ class WordPieceFeatureDocumentFactory(object):
     """Whether to add class:`.WordPieceFeatureSentence.embeddings`.
 
     """
-    def __post_init__(self):
-        FeatureToken.SKIP_COMPARE_FEATURE_IDS.add('embedding')
-
     def add_token_embeddings(self, doc: WordPieceFeatureDocument, arr: Tensor):
         """Add token embeddings to the sentences of ``doc``.  This assumes
         tokens are of type :class:`.WordPieceFeatureToken` since the token
@@ -415,3 +425,6 @@ class WordPieceDocumentDecorator(FeatureDocumentDecorator):
     def decorate(self, doc: FeatureDocument):
         wpdoc: WordPieceFeatureDocument = self.word_piece_doc_factory(doc)
         wpdoc.copy_embedding(doc)
+
+
+FeatureToken.SKIP_COMPARE_FEATURE_IDS.add('embedding')
