@@ -85,7 +85,7 @@ class WordPieceTokenContainer(TokenContainer, metaclass=ABCMeta):
         return sum(map(lambda t: t.is_unknown, self.token_iter()))
 
 
-@dataclass(repr=False)
+@dataclass(eq=False, repr=False)
 class WordPieceFeatureToken(FeatureToken):
     """The token and the word pieces that repesent it.
 
@@ -139,13 +139,20 @@ class WordPieceFeatureToken(FeatureToken):
     def __str__(self) -> str:
         return ''.join(map(str, self.words))
 
+    def __hash__(self) -> int:
+        # even with eq=False, the `dataclasses` library seems to not delegate to
+        # the parent's method
+        return super().__hash__()
+
     def __eq__(self, other: WordPieceFeatureToken) -> bool:
+        if self is other:
+            return True
         return self.i == other.i and \
             self.idx == other.idx and \
             self.norm == other.norm
 
 
-@dataclass(repr=False)
+@dataclass(eq=False, repr=False)
 class WordPieceFeatureSpan(FeatureSentence, WordPieceTokenContainer):
     """A sentence made up of word pieces.
 
@@ -177,12 +184,12 @@ class WordPieceFeatureSpan(FeatureSentence, WordPieceTokenContainer):
         return ' '.join(map(str, self.tokens))
 
 
-@dataclass(repr=False)
+@dataclass(eq=False, repr=False)
 class WordPieceFeatureSentence(WordPieceFeatureSpan, FeatureSentence):
     pass
 
 
-@dataclass(repr=False)
+@dataclass(eq=False, repr=False)
 class WordPieceFeatureDocument(FeatureDocument, WordPieceTokenContainer):
     """A document made up of word piece sentences.
 
@@ -227,6 +234,8 @@ class _WordPieceDocKey(object):
         self._doc = doc
 
     def __eq__(self, other: FeatureDocument) -> bool:
+        if self is other:
+            return True
         return self._doc.norm == other._doc.norm
 
     def __hash__(self) -> int:
