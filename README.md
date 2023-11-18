@@ -68,6 +68,9 @@ library's components is recommended for starters.  The example is a command
 line application that in-lines a simple configuration needed to create deep
 learning NLP components.
 
+Similarly, [this example](example/fill-mask/harness.py) is also a command line
+example, but uses a masked langauge model to fill in words.
+
 
 ### Reference Models
 
