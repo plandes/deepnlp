@@ -14,17 +14,6 @@ from zensols.nlp import FeatureDocument, FeatureDocumentParser
 from zensols.deepnlp.transformer import MaskFiller, Prediction
 
 
-class _Format(Enum):
-    """Format output type for AMR corpous documents.
-
-    """
-    short = auto()
-    text = auto()
-    json = auto()
-    yaml = auto()
-    csv = auto()
-
-
 CONFIG = """
 [cli]
 apps = list: cleaner_cli, app
@@ -66,6 +55,17 @@ class_name = ${package:name}.Application
 doc_parser = instance: doc_parser
 mask_filler = instance: deepnlp_transformer_mask_filler
 """
+
+
+class _Format(Enum):
+    """Format output type for AMR corpous documents.
+
+    """
+    short = auto()
+    text = auto()
+    json = auto()
+    yaml = auto()
+    csv = auto()
 
 
 @dataclass
