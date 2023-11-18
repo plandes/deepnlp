@@ -40,7 +40,12 @@ class TokenPrediction(Dictable):
 @dataclass
 class Prediction(Dictable):
     """A container class for masked token predictions produced by
-    :class:`.MaskFiller`.
+    :class:`.MaskFiller`.  This class offers many ways to get the predictions,
+    including getting the sentences as instances of
+    :class:`~zensols.nlp.container.TokenContainer` by using it as an iterable.
+
+    The sentences are also available as the ``pred_sentences`` key when using
+    :meth:`~zensols.config.dictable.Dictable.asdict`.
 
     """
     cont: TokenContainer = field()
