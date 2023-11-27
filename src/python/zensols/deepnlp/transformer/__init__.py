@@ -2,6 +2,7 @@
 deeplearning framework.
 
 """
+__author__ = 'Paul Landes'
 
 
 def suppress_warnings():

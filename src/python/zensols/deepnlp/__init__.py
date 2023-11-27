@@ -5,8 +5,8 @@ __author__ = 'Paul Landes'
 
 
 def init(*args, **kwargs):
-    """Initalize the deep NLP system and PyTorch.  This calls the initialization of
-    the PyTorch system by passing ``kwargs`` to
+    """Initalize the deep NLP system and PyTorch.  This calls the initialization
+    of the PyTorch system by passing ``kwargs`` to
     :meth:`~zensols.deeplearn.TorchConfig.init`.
 
     """
