@@ -1,6 +1,8 @@
 ## makefile automates the build and deployment for python projects
 
-## build
+
+## Build system
+#
 PROJ_TYPE =		python
 PROJ_MODULES =		git python-resources python-doc python-doc-deploy markdown
 PROJ_ARGS =		-c resources/deepnlp.conf
@@ -8,37 +10,36 @@ PY_DEP_POST_DEPS +=	modeldeps
 CLEAN_ALL_DEPS +=	exampleclean
 CLEAN_DEPS +=		pycleancache
 
-## project
+## Project
+#
 EXAMPLE_DIR = 		example
 
-## doc
+
+## API docs
+#
 PY_DOC_MD_SRC =		./doc/md
 
-#PY_SRC_TEST_PAT ?=	'test_lab*.py'
 
-
-## targets
-
+## Targets
+#
 include ./zenbuild/main.mk
 
-# https://spacy.io/models/en
-.PHONY:		allmodels
-allmodels:
-		@for i in $(SPACY_MODELS) ; do \
-			echo "installing $$i" ; \
-			$(PYTHON_BIN) -m spacy download en_core_web_$${i} ; \
-		done
 
+## Targets
+#
+# download [spacy models](https://spacy.io/models/en)
 .PHONY:		modeldeps
 modeldeps:
 		$(PIP_BIN) install $(PIP_ARGS) -r $(PY_SRC)/requirements-model.txt
 
+# clean example output
 .PHONY:		exampleclean
 exampleclean:
 		@for i in $(EXAMPLE_DIR)/* ; do \
 			( cd $$i ; ./harness.py clean ) ; \
 		done || true
 
+# unit and integration tests
 .PHONY:		testall
 testall:	test
 		@for i in $(EXAMPLE_DIR)/* ; do \
@@ -46,6 +47,7 @@ testall:	test
 			( cd $$i ; ./harness.py clean ; ./harness.py traintest ) ; \
 		done
 
+# cleanup noteobook
 .PHONY:		resetnb
 resetnb:
 		@for i in $(EXAMPLE_DIR)/* ; do \
