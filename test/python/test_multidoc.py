@@ -1,19 +1,27 @@
+from typing import Tuple
 import logging
 import json
 import sys
 import torch
 from zensols.nlp import FeatureDocument
+from zensols.deepnlp.vectorize import (
+    FeatureDocumentVectorizerManager, CountEnumContainerFeatureVectorizer
+)
 from util import TestFeatureVectorization
 
 logger = logging.getLogger(__name__)
 
 
 class TestMultiDoc(TestFeatureVectorization):
+    DEBUG = False
+
     def setUp(self):
         super().setUp()
         with open('test-resources/multi.json') as f:
             self.should = json.load(f)
         self.maxDiff = sys.maxsize
+        if self.DEBUG:
+            print()
 
     def _parse_docs(self, vmng):
         sent = 'California is part of the United States. I live in CA.'
@@ -23,9 +31,9 @@ class TestMultiDoc(TestFeatureVectorization):
         return doc, doc2
 
     def _test_counts(self, t1, t2, tb):
-        vec = self.vmng
-        docs = self._parse_docs(vec)
-        tvec = vec['count']
+        vec: FeatureDocumentVectorizerManager = self.vmng
+        docs: Tuple[FeatureDocument] = self._parse_docs(vec)
+        tvec: CountEnumContainerFeatureVectorizer = vec['count']
 
         # first sentence text has two sentences
         tensor = tvec.transform(docs[0])
@@ -41,8 +49,12 @@ class TestMultiDoc(TestFeatureVectorization):
         tensor = tvec.transform(docs)
         self.assertTrue(isinstance(tensor, torch.Tensor))
         self.assertEqual(tb, tuple(tensor.shape))
-        if 0:
-            print('\ncount:')
+        if self.DEBUG:
+            print('doc:')
+            for d in docs:
+                for t in d.token_iter():
+                    print(t, t.ent_)
+            print('count:')
             print(json.dumps(tvec.to_symbols(tensor), indent=4))
             print()
         self.assertEqual(self.should['count'], tvec.to_symbols(tensor))
@@ -65,8 +77,12 @@ class TestMultiDoc(TestFeatureVectorization):
         tensor = tvec.transform(docs)
         self.assertTrue(isinstance(tensor, torch.Tensor))
         self.assertEqual(tb, tuple(tensor.shape))
-        if 0:
-            print(f'\nenums (should={should}):')
+        if self.DEBUG:
+            print('doc:')
+            for d in docs:
+                for t in d.token_iter():
+                    print(t, t.ent_)
+            print(f'enums (should={should}):')
             print(json.dumps(tvec.to_symbols(tensor), indent=4))
             print()
         self.assertEqual(self.should[should], tvec.to_symbols(tensor))
@@ -97,4 +113,4 @@ class TestMultiDocVarBatch(TestMultiDoc):
         # one), second has 9 (with punct); both have the max of the first
         # sentence combined (11 tokens) since the first sentence is combined in
         # the second
-        self._test_enums((2, 6, 174), (1, 9, 174), (2, 11, 174),  'enum_nolen')
+        self._test_enums((2, 6, 174), (1, 9, 174), (2, 11, 174), 'enum_nolen')
