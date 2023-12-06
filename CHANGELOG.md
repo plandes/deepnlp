@@ -8,8 +8,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.11.0] - 2023-12-05
 ### Changed
-- Upgraded to [HuggingFace Transformers] version 4.32.1.
+- Upgraded to [HuggingFace Transformers], 4.35, [zensols.deeplearn] 1.9,
+  [spaCy] 3.6.
+
+### Added
+- Support for Python 3.11.
+
+### Removed
+- Support for Python 3.9.
 
 
 ## [1.10.1] - 2023-08-25
@@ -275,7 +283,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.10.1...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.11.0...HEAD
+[1.11.0]: https://github.com/plandes/deepnlp/compare/v1.10.1...v1.11.0
 [1.10.1]: https://github.com/plandes/deepnlp/compare/v1.10.0...v1.10.1
 [1.10.0]: https://github.com/plandes/deepnlp/compare/v1.9.1...v1.10.0
 [1.9.1]: https://github.com/plandes/deepnlp/compare/v1.9.0...v1.9.1
@@ -309,3 +318,4 @@ Maintenance release.
 [bcolz]: https://github.com/Blosc/bcolz
 [H5PY]: https://www.h5py.org
 [HuggingFace Transformers]: https://pypi.org/project/transformers/
+[spaCy]: https://spacy.io

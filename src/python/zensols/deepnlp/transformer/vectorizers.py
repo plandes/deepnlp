@@ -1,15 +1,16 @@
-from __future__ import annotations
 """Contains classes that are used to vectorize documents in to transformer
 embeddings.
 
 """
+from __future__ import annotations
 __author__ = 'Paul Landes'
-
 from typing import Tuple, List, Dict, Union, Sequence, Any
 from dataclasses import dataclass, field
 from abc import ABCMeta
+import sys
 import logging
 from itertools import chain
+from io import TextIOBase
 import torch
 from torch import Tensor
 from zensols.persist import persisted, Deallocatable
@@ -463,6 +464,11 @@ class TransformerNominalFeatureVectorizer(AggregateEncodableFeatureVectorizer,
             arr: Tensor = self._encode_nominals(doc)
             context = TensorFeatureContext(self.feature_id, arr)
         return LabelTransformerFeatureVectorizer._decode(self, context)
+
+    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
+        super().write(depth, writer)
+        self._write_line('delegate:', depth, writer)
+        self._write_object(self.delegate, depth + 1, writer)
 
 
 @dataclass

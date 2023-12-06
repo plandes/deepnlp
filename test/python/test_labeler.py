@@ -3,7 +3,9 @@ import torch
 from torch import Tensor
 from zensols.util import loglevel
 from zensols.config import ImportIniConfig, ImportConfigFactory
-from zensols.nlp import FeatureDocument, FeatureDocumentParser
+from zensols.nlp import (
+    FeatureDocument, FeatureDocumentParser, TokenAnnotatedFeatureDocuemnt
+)
 from zensols.deepnlp.vectorize import TextFeatureType
 from zensols.deepnlp.transformer import (
     TransformerNominalFeatureVectorizer
@@ -16,6 +18,8 @@ class TestLabelVectorizer(TestFeatureVectorization):
     TokenContainerVectorizer.
 
     """
+    DEBUG = False
+
     def setUp(self):
         config = ImportIniConfig('test-resources/transformer.conf')
         self.fac = ImportConfigFactory(config, shared=True)
@@ -27,22 +31,22 @@ class TestLabelVectorizer(TestFeatureVectorization):
         # documents (single document case)
         self.should_single = \
             [[-100, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, -100, -100, -100, -100, -100],
-             [-100, 0, 0, 2, 0, 0, 0, 2, 0, 4, 4, 4, 0, 0, 0, -100]]
+             [-100, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, -100]]
         # concatenate tokens of each document in to singleton sentence
         # documents
         self.should_concat = \
-            [[-100, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 , 0, 2, 0, 0, 0, 2, 0, 4, 4, 4, 0, 0, 0, -100],
+            [[-100, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 , 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, -100],
              [-100, 3, 0, 0, 0, 0, 0, 0, 0, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]]
         # all sentences of all documents become singleton sentence documents
         self.should_sentence = \
             [[-100, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, -100, -100, -100, -100, -100],
-             [-100, 0, 0, 2, 0, 0, 0, 2, 0, 4, 4, 4, 0, 0, 0, -100],
+             [-100, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, -100],
              [-100, 3, 0, 0, 0, 0, 0, 0, 0, -100, -100, -100, -100, -100, -100, -100]]
         # every sentence of each document is encoded separately, then the each
         # sentence output is concatenated as the respsective document during
         # decoding
         self.should_separate = \
-            [[-100, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, -100, -100, 0, 0, 2, 0, 0, 0, 2, 0, 4, 4, 4, 0, 0, 0, -100],
+            [[-100, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, -100, -100, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, -100],
              [-100, 3, 0, 0, 0, 0, 0, 0, 0, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]]
 
     def _set_attributes(self, docs: List[FeatureDocument]):
@@ -56,7 +60,15 @@ class TestLabelVectorizer(TestFeatureVectorization):
         vec.encode_transformed = self.encode_transformed
         return vec
 
-    def _test_single(self, doc, vec):
+    def _test_single(self, doc: TokenAnnotatedFeatureDocuemnt,
+                     vec: TransformerNominalFeatureVectorizer):
+        if self.DEBUG:
+            print('vectorizer:')
+            vec.write(1)
+            print('doc:')
+            doc.write(1)
+            tdoc = vec.tokenize(doc)
+            tdoc.write(1)
         tensor: Tensor = vec.transform(doc)
         self.assertEqual((2, 16), tensor.shape)
         should = self.should_single
