@@ -9,7 +9,7 @@ Deep learning utility library for natural language processing that aids in
 feature engineering and embedding layers.
 
 * See the [full documentation].
-* Paper on [arXiv](http://arxiv.org/abs/2109.03383).
+* See the [paper](https://aclanthology.org/2023.nlposs-1.16)
 
 Features:
 * Configurable layers with little to no need to write code.
