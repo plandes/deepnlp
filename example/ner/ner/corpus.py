@@ -39,15 +39,11 @@ class NERFeatureToken(FeatureToken):
 
     def __init__(self, i: int, text: str, tag_: str, syn_: str, ent_: str):
         super().__init__(i, i, i, text)
-        #self.i = i
-
         # not one to one with token in sentence index, but works for this
         # example
-        # self.i_sent = i
         self.tag_ = tag_
         self.syn_ = syn_
         self.ent_ = ent_
-        # self.idx = i
 
 
 @dataclass
@@ -63,8 +59,8 @@ class NERFeatureSentence(FeatureSentence):
 
 @dataclass
 class SentenceFactoryStash(OneShotFactoryStash, AbstractSplitKeyContainer):
-    """A factory stash that creates instances of :class:`.NERFeatureSentence` from
-    CoNLL 2003 format.
+    """A factory stash that creates instances of :class:`.NERFeatureSentence`
+    from CoNLL 2003 format.
 
     """
     DOC_START = re.compile(r'^\s*-DOCSTART- -X- -X- O\n*', re.MULTILINE)
@@ -111,11 +107,10 @@ class SentenceFactoryStash(OneShotFactoryStash, AbstractSplitKeyContainer):
             name: str = path.stem
             with time('parsed {slen} sentences ' + f'from {res}'):
                 sents: List[NERFeatureSentence] = self._read_split(path)
-                slen = len(sents)
             random.shuffle(sents)
             end = start + len(sents)
             keys = tuple(map(str, range(start, end)))
-            assert(len(keys) == len(sents))
+            assert (len(keys) == len(sents))
             split_keys[name] = keys
             corp.extend(zip(keys, sents))
             start = end
