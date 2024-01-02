@@ -31,6 +31,11 @@ class TransformerDocumentTokenizer(PersistableContainer):
     If this value is less than 0, than do not fix sentence lengths.
 
     """
+    params: Dict[str, Any] = field(default=None)
+    """Additional parameters given to the
+    :class:`transformers.PreTrainedTokenizer`.
+
+    """
     def __post_init__(self):
         super().__init__()
         if self.word_piece_token_length is None:
@@ -71,6 +76,8 @@ class TransformerDocumentTokenizer(PersistableContainer):
             'is_split_into_words': True,
             'return_special_tokens_mask': True,
             'padding': 'longest'}
+        if self.params is not None:
+            params.update(self.params)
 
         for i, sent in enumerate(sents):
             if len(sent) == 0:
