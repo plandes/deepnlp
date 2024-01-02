@@ -74,8 +74,8 @@ class TransformerEmbedding(PersistableContainer, Dictable):
 
     @property
     def cache(self):
-        """When set to ``True`` cache a global space model using the parameters from
-        the first instance creation.
+        """When set to ``True`` cache a global space model using the parameters
+        from the first instance creation.
 
         """
         return self.resource.cache

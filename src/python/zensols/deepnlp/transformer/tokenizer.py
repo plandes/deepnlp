@@ -46,8 +46,8 @@ class TransformerDocumentTokenizer(PersistableContainer):
     def tokenize(self, doc: FeatureDocument,
                  tokenizer_kwargs: Dict[str, Any] = None) -> \
             TokenizedFeatureDocument:
-        """Tokenize a feature document in a form that's easy to inspect and provide to
-        :class:`.TransformerEmbedding` to transform.
+        """Tokenize a feature document in a form that's easy to inspect and
+        provide to :class:`.TransformerEmbedding` to transform.
 
         :param doc: the document to tokenize
 

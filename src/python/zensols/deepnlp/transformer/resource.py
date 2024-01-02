@@ -67,8 +67,8 @@ class TransformerResource(PersistableContainer, Dictable):
 
     """
     trainable: bool = field(default=False)
-    """If ``False`` the weights on the transformer model are frozen and the use of
-    the model (including in subclasses) turn off autograd when executing..
+    """If ``False`` the weights on the transformer model are frozen and the use
+    of the model (including in subclasses) turn off autograd when executing..
 
     """
     args: Dict[str, Any] = field(default_factory=dict)

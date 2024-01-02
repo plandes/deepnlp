@@ -70,19 +70,19 @@ class TransformerFeatureContext(FeatureContext, Deallocatable):
 @dataclass
 class TransformerFeatureVectorizer(EmbeddingFeatureVectorizer,
                                    FeatureDocumentVectorizer):
-    """Base class for classes that vectorize transformer models.  This class also
-    tokenizes documents.
+    """Base class for classes that vectorize transformer models.  This class
+    also tokenizes documents.
 
     """
     is_labeler: bool = field(default=False)
-    """If ``True``, make this a labeling specific vectorizer.  Otherwise, certain
-    layers will use the output of the vectorizer as features rather than the
-    labels.
+    """If ``True``, make this a labeling specific vectorizer.  Otherwise,
+    certain layers will use the output of the vectorizer as features rather than
+    the labels.
 
     """
     encode_tokenized: bool = field(default=False)
-    """Whether to tokenize the document on encoding.  Set this to ``True`` only if
-    the huggingface model ID (i.e. ``bert-base-cased``) will not change after
+    """Whether to tokenize the document on encoding.  Set this to ``True`` only
+    if the huggingface model ID (i.e. ``bert-base-cased``) will not change after
     vectorization/batching.
 
     Setting this to ``True`` tells the vectorizer to tokenize during encoding,
@@ -136,7 +136,8 @@ for attribute `output`""")
         return ctx.get_document(self)
 
     def tokenize(self, doc: FeatureDocument) -> TokenizedFeatureDocument:
-        """Tokenize the document in to a token document used by the encoding phase.
+        """Tokenize the document in to a token document used by the encoding
+        phase.
 
         :param doc: the document to be tokenized
 
@@ -149,8 +150,8 @@ for attribute `output`""")
 
 @dataclass
 class TransformerEmbeddingFeatureVectorizer(TransformerFeatureVectorizer):
-    """A feature vectorizer used to create transformer (i.e. BERT) embeddings.  The
-    class uses the :obj:`.embed_model`, which is of type
+    """A feature vectorizer used to create transformer (i.e. BERT) embeddings.
+    The class uses the :obj:`.embed_model`, which is of type
     :class:`.TransformerEmbedding`.
 
     Note the encoding input ideally are sentences shorter than 512 tokens.
@@ -177,7 +178,6 @@ class TransformerEmbeddingFeatureVectorizer(TransformerFeatureVectorizer):
         emb: TransformerEmbedding = self.embed_model
         if logger.isEnabledFor(logging.INFO):
             logger.info(f'decoding {context} with trainable: {emb.trainable}')
-        tok_doc: TokenizedDocument
         arr: Tensor
         if emb.trainable:
             doc: TokenizedDocument = self._context_to_document(context)
@@ -351,9 +351,9 @@ class LabelTransformerFeatureVectorizer(TransformerFeatureVectorizer,
 
     """
     is_labeler: bool = field(default=True)
-    """If ``True``, make this a labeling specific vectorizer.  Otherwise, certain
-    layers will use the output of the vectorizer as features rather than the
-    labels.
+    """If ``True``, make this a labeling specific vectorizer.  Otherwise,
+    certain layers will use the output of the vectorizer as features rather than
+    the labels.
 
     """
     FEATURE_TYPE = TextFeatureType.TOKEN
@@ -384,9 +384,9 @@ class TransformerNominalFeatureVectorizer(AggregateEncodableFeatureVectorizer,
     """The feature ID for the aggregate encodeable feature vectorizer."""
 
     label_all_tokens: bool = field(default=False)
-    """If ``True``, label all word piece tokens with the corresponding linguistic
-    token label.  Otherwise, the default padded value is used, and thus,
-    ignored by the loss function when calculating loss.
+    """If ``True``, label all word piece tokens with the corresponding
+    linguistic token label.  Otherwise, the default padded value is used, and
+    thus, ignored by the loss function when calculating loss.
 
     """
     annotations_attribute: str = field(default='annotations')

@@ -64,8 +64,8 @@ class TokenizedDocument(PersistableContainer, Writable):
 
     @property
     def offsets(self) -> Tensor:
-        """The offsets from word piece (transformer's tokenizer) to feature document
-        index mapping.
+        """The offsets from word piece (transformer's tokenizer) to feature
+        document index mapping.
 
         """
         return self.tensor[2]
@@ -231,16 +231,16 @@ class TokenizedDocument(PersistableContainer, Writable):
 
 @dataclass
 class TokenizedFeatureDocument(TokenizedDocument):
-    """Instance of this class are created, then a picklable version returned with
-    :meth:`detach` as an instance of the super class.
+    """Instance of this class are created, then a picklable version returned
+    with :meth:`detach` as an instance of the super class.
 
     """
     feature: FeatureDocument = field()
     """The document to tokenize."""
 
     id2tok: Dict[int, str] = field()
-    """If provided, a mapping of indexes to transformer tokens.  This attribute is
-    always nulled out after being persisted.
+    """If provided, a mapping of indexes to transformer tokens.  This attribute
+    is always nulled out after being persisted.
 
     """
     char_offsets: Tuple[Tuple[int, int]] = field()

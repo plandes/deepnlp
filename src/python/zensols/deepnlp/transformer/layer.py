@@ -28,16 +28,17 @@ logger = logging.getLogger(__name__)
 
 
 class TransformerEmbeddingLayer(EmbeddingLayer):
-    """A transformer (i.e. BERT) embedding layer.  This class generates embeddings
-    on a per sentence basis.  See the initializer documentation for
+    """A transformer (i.e. BERT) embedding layer.  This class generates
+    embeddings on a per sentence basis.  See the initializer documentation for
     configuration requirements.
 
     """
     MODULE_NAME = 'transformer embedding'
 
     def __init__(self, *args, embed_model: TransformerEmbedding, **kwargs):
-        """Initialize with an embedding model.  This embedding model must configured
-        with :obj:`.TransformerEmbedding.output` to ``last_hidden_state``.
+        """Initialize with an embedding model.  This embedding model must
+        configured with :obj:`.TransformerEmbedding.output` to
+        ``last_hidden_state``.
 
         :param embed_model: used to generate the transformer (i.e. BERT)
                             embeddings
@@ -130,8 +131,8 @@ class TransformerSequence(EmbeddingNetworkModule, SequenceNetworkModule):
 
     def _to_lists(self, tdoc: TokenizedDocument, sents: Tensor) -> \
             Tuple[List[List[int]]]:
-        """Convert a document of sentences from a tensor to list of lists of nominial
-        labels.
+        """Convert a document of sentences from a tensor to list of lists of
+        nominial labels.
 
         :param tdoc: the tokenzied document representing this batch
 
@@ -163,7 +164,8 @@ class TransformerSequence(EmbeddingNetworkModule, SequenceNetworkModule):
 
     def _debug_preds(self, labels: Tensor, preds: List[List[str]],
                      tdoc: TokenizedDocument, batch: Batch, limit: int = 5):
-        vocab: Dict[str, int] = self.embedding.embed_model.resource.tokenizer.vocab
+        vocab: Dict[str, int] = \
+            self.embedding.embed_model.resource.tokenizer.vocab
         vocab = {vocab[k]: k for k in vocab.keys()}
         input_ids = tdoc.input_ids
         fsents = tuple(map(lambda d: d.doc.sents[0], batch.data_points))
