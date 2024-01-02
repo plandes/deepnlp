@@ -39,6 +39,10 @@ config_files = list:
     resource(zensols.nlp): resources/obj.conf,
     resource(zensols.deepnlp): resources/obj.conf
 
+# spaCy 3.6+ NER tags surrounding tokens as GPE, so keep feature tokens separate
+[map_filter_token_normalizer]
+embed_entities = False
+
 # uncomment to use XLM-RoBERta
 #[deepnlp_transformer_mask_model]
 #model_id = xlm-roberta-large
