@@ -99,9 +99,10 @@ encode_transformed to False or encode_tokenized to True.""")
     def _assert_token_output(self, expected: str = 'last_hidden_state'):
         if self.embed_model.output != expected:
             raise VectorizerError(f"""\
-Expanders only work at the token level, so output such as \
+Some vectorizers only work at the token level, so output such as \
 `{expected}`, which provides an output for each token in the \
-transformer embedding, is required, got: {self.embed_model.output}""")
+transformer embedding, is required, got: `{self.embed_model.output}` \
+for attribute `output`""")
 
     @property
     def feature_type(self) -> TextFeatureType:
