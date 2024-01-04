@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.11.1] - 2024-01-04
+### Changed
+- Fix fill-mask example after spaCy 3.6 upgrade.
+
+### Added
+- Add configurable HuggingFace tokenization parameters.
+
+
 ## [1.11.0] - 2023-12-05
 ### Changed
 - Upgraded to [HuggingFace Transformers], 4.35, [zensols.deeplearn] 1.9,
@@ -283,7 +291,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.11.0...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.11.1...HEAD
+[1.11.1]: https://github.com/plandes/deepnlp/compare/v1.11.0...v1.11.1
 [1.11.0]: https://github.com/plandes/deepnlp/compare/v1.10.1...v1.11.0
 [1.10.1]: https://github.com/plandes/deepnlp/compare/v1.10.0...v1.10.1
 [1.10.0]: https://github.com/plandes/deepnlp/compare/v1.9.1...v1.10.0
