@@ -179,6 +179,7 @@ executor:
   # configures the neural network
   net_settings: 'instance: recurrent_crf_net_settings'
 
+
 ## Prediction
 #
 # create data points from the client
