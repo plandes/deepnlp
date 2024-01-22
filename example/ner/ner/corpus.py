@@ -107,6 +107,7 @@ class SentenceFactoryStash(OneShotFactoryStash, AbstractSplitKeyContainer):
             name: str = path.stem
             with time('parsed {slen} sentences ' + f'from {res}'):
                 sents: List[NERFeatureSentence] = self._read_split(path)
+                slen: int = len(sents)
             random.shuffle(sents)
             end = start + len(sents)
             keys = tuple(map(str, range(start, end)))

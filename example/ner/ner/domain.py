@@ -13,8 +13,9 @@ from zensols.deeplearn.batch import BatchStash, DataPoint
 from zensols.deeplearn.vectorize import (
     FeatureVectorizerManager, FeatureVectorizer
 )
-from zensols.deepnlp.batch import TokenContainerDataPoint
-from zensols.deepnlp.classify import SequencePredictionMapper
+from zensols.deepnlp.classify import (
+    TokenContainerDataPoint, SequencePredictionMapper
+)
 
 
 @dataclass

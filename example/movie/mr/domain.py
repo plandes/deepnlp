@@ -9,8 +9,8 @@ import sys
 from io import TextIOBase
 import pandas as pd
 from zensols.nlp import FeatureDocument
-from zensols.deepnlp.batch import TokenContainerDataPoint
 from zensols.deepnlp.feature import DocumentFeatureStash
+from zensols.deepnlp.classify import TokenContainerDataPoint
 from zensols.dataframe import ResourceFeatureDataframeStash
 from . import DatasetFactory
 
