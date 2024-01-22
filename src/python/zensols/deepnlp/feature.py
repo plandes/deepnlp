@@ -58,8 +58,8 @@ class DocumentFeatureStash(MultiProcessStash, metaclass=ABCMeta):
 
 @dataclass
 class DataframeDocumentFeatureStash(DocumentFeatureStash):
-    """Creates :class:`.FeatureDocument` instances from :class:`pandas.Series` rows
-    from the :class:`pandas.DataFrame` stash values.
+    """Creates :class:`.FeatureDocument` instances from :class:`pandas.Series`
+    rows from the :class:`pandas.DataFrame` stash values.
 
     """
     text_column: str = field(default='text')
