@@ -4,7 +4,7 @@ from torch import Tensor
 from zensols.util import loglevel
 from zensols.config import ImportIniConfig, ImportConfigFactory
 from zensols.nlp import (
-    FeatureDocument, FeatureDocumentParser, TokenAnnotatedFeatureDocuemnt
+    FeatureDocument, FeatureDocumentParser, TokenAnnotatedFeatureDocument
 )
 from zensols.deepnlp.vectorize import TextFeatureType
 from zensols.deepnlp.transformer import (
@@ -60,7 +60,7 @@ class TestLabelVectorizer(TestFeatureVectorization):
         vec.encode_transformed = self.encode_transformed
         return vec
 
-    def _test_single(self, doc: TokenAnnotatedFeatureDocuemnt,
+    def _test_single(self, doc: TokenAnnotatedFeatureDocument,
                      vec: TransformerNominalFeatureVectorizer):
         if self.DEBUG:
             print('vectorizer:')
