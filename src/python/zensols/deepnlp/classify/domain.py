@@ -33,7 +33,7 @@ class LabeledFeatureDocument(FeatureDocument):
     softmax_logit: float = field(default=None)
     """The document level softmax of the logits.
 
-    :see: :obj:`.ClassificationSoftmax_LogitictionMapper.softmax_logit_attribute`
+    :see: :obj:`.ClassificationPredictionMapper.softmax_logit_attribute`
 
     """
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
@@ -67,10 +67,10 @@ class LabeledFeatureDocumentDataPoint(FeatureDocumentDataPoint):
 
 @dataclass
 class LabeledBatch(Batch):
-    """A batch used for labeled text, usually used for text classification.  This
-    batch class serves as a way for very basic funcationly, but also provides
-    an example and template from which to desigh your own batch implementation
-    for your custom application.
+    """A batch used for labeled text, usually used for text classification.
+    This batch class serves as a way for very basic funcationly, but also
+    provides an example and template from which to desigh your own batch
+    implementation for your custom application.
 
     """
     LANGUAGE_FEATURE_MANAGER_NAME = 'language_vectorizer_manager'
@@ -104,8 +104,8 @@ class LabeledBatch(Batch):
 
     """
     TRANSFORMER_TRAINBLE_EMBEDDING = 'transformer_trainable_embedding'
-    """The configuration section name of the BERT transformer contextual embedding
-    :class:`~zensols.deepnlp.transformer.TransformerEmbedding` class.
+    """The configuration section name of the BERT transformer contextual
+    embedding :class:`~zensols.deepnlp.transformer.TransformerEmbedding` class.
 
     """
     TRANSFORMER_FIXED_EMBEDDING = 'transformer_fixed_embedding'
@@ -139,7 +139,8 @@ class LabeledBatch(Batch):
     """Expands enumerated spaCy features to transformer wordpiece alignment."""
 
     DEPENDENCY_EXPANDER_ATTRIBTE = 'transformer_dep_expander'
-    """Expands dependency tree spaCy features to transformer wordpiece alignment.
+    """Expands dependency tree spaCy features to transformer wordpiece
+    alignment.
 
     """
     LANGUAGE_ATTRIBUTES = {

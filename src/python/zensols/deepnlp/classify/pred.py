@@ -34,8 +34,8 @@ class ClassificationPredictionMapper(PredictionMapper):
 
     """
     softmax_logit_attribute: str = field(default='softmax_logit')
-    """The softmax of the logits attribute to set on the :class:`.FeatureDocument`
-    returned from :meth:`map_results`.
+    """The softmax of the logits attribute to set on the
+    :class:`.FeatureDocument` returned from :meth:`map_results`.
 
     :see: `On Calibration of Modern Neural Networks <https://arxiv.org/abs/1706.04599>`_
 
@@ -70,8 +70,8 @@ class ClassificationPredictionMapper(PredictionMapper):
 
     def map_results(self, result: ResultsContainer) -> \
             Tuple[LabeledFeatureDocument]:
-        """Map class predictions, logits, and documents generated during use of this
-        instance.  Each data point is aggregated across batches.
+        """Map class predictions, logits, and documents generated during use of
+        this instance.  Each data point is aggregated across batches.
 
         :return: a :class:`.Settings` instance with ``classess``, ``logits``
                  and ``docs`` attributes

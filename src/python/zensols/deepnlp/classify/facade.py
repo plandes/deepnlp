@@ -62,9 +62,9 @@ class ClassifyModelFacade(LanguageModelFacade):
         return super().feature_stash.delegate
 
     def get_predictions(self, *args, **kwargs) -> pd.DataFrame:
-        """Return a Pandas dataframe of the predictions with columns that include the
-        correct label, the prediction, the text and the length of the text of
-        the text.
+        """Return a Pandas dataframe of the predictions with columns that
+        include the correct label, the prediction, the text and the length of
+        the text of the text.
 
         """
         return super().get_predictions(
