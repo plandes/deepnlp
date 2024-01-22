@@ -13,7 +13,7 @@ from zensols.deeplearn.batch import BatchStash, DataPoint
 from zensols.deeplearn.vectorize import (
     FeatureVectorizerManager, FeatureVectorizer
 )
-from zensols.deepnlp.batch import FeatureSentenceDataPoint
+from zensols.deepnlp.batch import TokenContainerDataPoint
 from zensols.deepnlp.classify import SequencePredictionMapper
 
 
@@ -25,17 +25,17 @@ class NERPredictionMapper(SequencePredictionMapper):
 
 
 @dataclass
-class NERDataPoint(FeatureSentenceDataPoint):
+class NERDataPoint(TokenContainerDataPoint):
     is_pred: bool = field(default=False)
 
     def __post_init__(self):
-        self.sent = TokenAnnotatedFeatureSentence(
-            tokens=self.sent.tokens,
-            text=self.sent.text,
+        self.container = TokenAnnotatedFeatureSentence(
+            tokens=self.container.tokens,
+            text=self.container.text,
             annotations=self.tok_labels)
         if self.is_pred:
-            self._map_syn(self.sent)
-            self._map_tag(self.sent)
+            self._map_syn(self.container)
+            self._map_tag(self.container)
 
     def _map_syn(self, sent: FeatureSentence):
         """Map from spaCy POS tags to the corpus *syntactic chunk*."""
@@ -72,12 +72,12 @@ class NERDataPoint(FeatureSentenceDataPoint):
 
     @property
     @persisted('_tok_labels', transient=True)
-    def tok_labels(self) -> Tuple[str]:
+    def tok_labels(self) -> Tuple[str, ...]:
         """The label: the fourth the named entity tag."""
         if self.is_pred:
-            return tuple([None] * len(self.sent))
+            return tuple([None] * len(self.container))
         else:
-            return tuple(map(lambda t: t.ent_, self.sent.token_iter()))
+            return tuple(map(lambda t: t.ent_, self.container.token_iter()))
 
     @property
     def trans_doc(self) -> FeatureDocument:

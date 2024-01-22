@@ -16,7 +16,7 @@ from zensols.util import time
 from zensols.persist import (
     OneShotFactoryStash, PersistedWork, persisted, PersistableContainer
 )
-from zensols.config import Dictable
+from zensols.config import Dictable, ConfigFactory
 from zensols.install import Installer, Resource
 from zensols.nlp import FeatureToken, FeatureSentence
 from zensols.dataset import AbstractSplitKeyContainer, DatasetSplitStash
@@ -132,8 +132,9 @@ class SentenceStatsCalculator(PersistableContainer, Dictable):
     """Display sentence stats.
 
     """
-    stash: DatasetSplitStash
-    path: Path
+    config_factory: ConfigFactory = field()
+    stash: DatasetSplitStash = field()
+    path: Path = field()
 
     def __post_init__(self):
         self._data = PersistedWork(self.path, self, mkdir=True)
@@ -154,8 +155,10 @@ class SentenceStatsCalculator(PersistableContainer, Dictable):
                                  'ent': dict(ent)}}
 
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
-        self._write_line('splits:', depth, writer)
+        self._write_line('feature splits:', depth, writer)
         self.stash.write(depth + 1, writer)
+        self._write_line('batch splits:', depth, writer)
+        self.config_factory('batch_stash').write(depth + 1, writer)
         super().write(depth, writer)
 
     def write_config_section(self):

@@ -9,7 +9,7 @@ import sys
 from io import TextIOBase
 import pandas as pd
 from zensols.nlp import FeatureDocument
-from zensols.deepnlp.batch import FeatureDocumentDataPoint
+from zensols.deepnlp.batch import TokenContainerDataPoint
 from zensols.deepnlp.feature import DocumentFeatureStash
 from zensols.dataframe import ResourceFeatureDataframeStash
 from . import DatasetFactory
@@ -37,8 +37,8 @@ class MovieReviewRowStash(ResourceFeatureDataframeStash):
 
 @dataclass
 class MovieReview(FeatureDocument):
-    """Represents a movie review containing the text of that review, and the label
-    (good/bad => positive/negative).
+    """Represents a movie review containing the text of that review, and the
+    label (good/bad => positive/negative).
 
     """
     polarity: str = field(default=None)
@@ -72,8 +72,8 @@ class MovieReview(FeatureDocument):
 
 @dataclass
 class MovieReviewFeatureStash(DocumentFeatureStash):
-    """A stash that spawns processes to parse the utterances and creates instances
-    of :class:`.MovieReview`.
+    """A stash that spawns processes to parse the utterances and creates
+    instances of :class:`.MovieReview`.
 
     """
     def _parse_document(self, id: int, row: pd.Series) -> MovieReview:
@@ -85,7 +85,7 @@ class MovieReviewFeatureStash(DocumentFeatureStash):
 
 
 @dataclass
-class MovieReviewDataPoint(FeatureDocumentDataPoint):
+class MovieReviewDataPoint(TokenContainerDataPoint):
     """A representation of a data for a reivew document containing the sentiment
     polarity as the label.
 

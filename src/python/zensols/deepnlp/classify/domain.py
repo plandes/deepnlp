@@ -13,7 +13,7 @@ from zensols.deeplearn.batch import (
     ManagerFeatureMapping,
     FieldFeatureMapping,
 )
-from zensols.deepnlp.batch import FeatureDocumentDataPoint
+from zensols.deepnlp.batch import TokenContainerDataPoint
 
 
 @dataclass
@@ -54,7 +54,7 @@ class LabeledFeatureDocument(FeatureDocument):
 
 
 @dataclass
-class LabeledFeatureDocumentDataPoint(FeatureDocumentDataPoint):
+class LabeledFeatureDocumentDataPoint(TokenContainerDataPoint):
     """A representation of a data for a reivew document containing the sentiment
     polarity as the label.
 

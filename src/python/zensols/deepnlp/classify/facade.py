@@ -68,8 +68,8 @@ class ClassifyModelFacade(LanguageModelFacade):
 
         """
         return super().get_predictions(
-            ('text', 'len'),
-            lambda dp: (dp.doc.text, len(dp.doc.text)),
+            column_names=('text', 'len'),
+            transform=lambda dp: (dp.doc.text, len(dp.doc.text)),
             *args, **kwargs)
 
     def predict(self, datas: Iterable[Any]) -> Any:
@@ -90,7 +90,7 @@ class TokenClassifyModelFacade(ClassifyModelFacade):
     """A token level classification model facade.
 
     """
-    predictions_datafrmae_factory_class: Type[PredictionsDataFrameFactory] = \
+    predictions_dataframe_factory_class: Type[PredictionsDataFrameFactory] = \
         field(default=SequencePredictionsDataFrameFactory)
 
     def get_predictions(self, *args, **kwargs) -> pd.DataFrame:
@@ -107,6 +107,8 @@ class TokenClassifyModelFacade(ClassifyModelFacade):
         """
         return LanguageModelFacade.get_predictions(
             self,
-            ('text',),
-            lambda dp: tuple(map(lambda t: (t.norm,), dp.doc.token_iter())),
+            column_names=('text',),
+            transform=lambda dp: tuple(map(
+                lambda s: (s,),
+                dp.container.norm_token_iter())),
             *args, **kwargs)

@@ -3,70 +3,63 @@
 """
 __author__ = 'Paul Landes'
 
+from typing import Tuple, Any
 from dataclasses import dataclass, field
 import sys
 from io import TextIOBase
+from zensols.deeplearn import DeepLearnError
 from zensols.persist import persisted
-from zensols.nlp import FeatureDocument, FeatureSentence
+from zensols.nlp import (
+    TokenContainer, FeatureDocument,
+    TokenAnnotatedFeatureSentence, TokenAnnotatedFeatureDocument,
+)
 from zensols.deeplearn.batch import DataPoint
 
 
 @dataclass
-class FeatureSentenceDataPoint(DataPoint):
-    """A convenience class that stores a :class:`.FeatureSentence` as a data
-    point.
+class TokenContainerDataPoint(DataPoint):
+    """A convenience class that uses data, such as tokens, a sentence or a
+    document (:class:`~zensols.nlp.container.TokenContainer`) as a data point.
 
     """
-    sent: FeatureSentence = field()
-    """The sentence used for this data point."""
+    container: TokenContainer = field()
+    """The token cotainer used for this data point."""
 
     @property
     @persisted('_doc')
     def doc(self) -> FeatureDocument:
-        """Return the sentence as a single sentence document.
-
-        :param: :meth:`.FeatureSentence.to_document`
+        """The container as a document.  If it is a sentence, it will create a
+        document with the single sentence.
 
         """
-        return self.sent.to_document()
+        return self.container.to_document()
+
+    def _get_token_labels(self) -> Tuple[Any, ...]:
+        if isinstance(
+                self.container,
+                (TokenAnnotatedFeatureDocument, TokenAnnotatedFeatureSentence)):
+            return self.container.annotations
+        else:
+            raise DeepLearnError(
+                'Need instance of TokenAnnotatedFeature{Sentence,Document} ' +
+                f'(got {type(self.sent)}) or override _get_token_labels')
+
+    @property
+    def token_labels(self) -> Tuple[Any, ...]:
+        """The label that corresponds to each normalized token."""
+        return self._get_token_labels()
+
+    def __len__(self) -> int:
+        """The number or normalized tokens in the container."""
+        return self.container.token_len
 
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
         super().write(depth, writer)
-        self._write_line('sentence:', depth, writer)
+        self._write_line('container:', depth, writer)
         self.sent.write(depth + 1, writer)
 
     def __str__(self):
-        return self.sent.__str__()
+        return self.container.__str__()
 
     def __repr__(self):
-        return self.__str__()
-
-
-@dataclass
-class FeatureDocumentDataPoint(DataPoint):
-    """A convenience class that stores a :class:`.FeatureDocument` as a data
-    point.
-
-    """
-    doc: FeatureDocument = field()
-    """The document used for this data point."""
-
-    @property
-    def combined_doc(self) -> FeatureDocument:
-        """Return a document with sentences combined.
-
-        :see: :meth:`.FeatureDocument.combine_sentences`
-
-        """
-        return self.doc.combine_sentences()
-
-    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
-        super().write(depth, writer)
-        self._write_line('document:', depth, writer)
-        self.doc.write(depth + 1, writer)
-
-    def __str__(self):
-        return self.doc.__str__()
-
-    def __repr__(self):
-        return self.__str__()
+        return self.conatiner.__repr__()
