@@ -13,7 +13,8 @@ from zensols.deeplearn.batch import DataPoint
 
 @dataclass
 class FeatureSentenceDataPoint(DataPoint):
-    """A convenience class that stores a :class:`.FeatureSentence` as a data point.
+    """A convenience class that stores a :class:`.FeatureSentence` as a data
+    point.
 
     """
     sent: FeatureSentence = field()
@@ -43,7 +44,8 @@ class FeatureSentenceDataPoint(DataPoint):
 
 @dataclass
 class FeatureDocumentDataPoint(DataPoint):
-    """A convenience class that stores a :class:`.FeatureDocument` as a data point.
+    """A convenience class that stores a :class:`.FeatureDocument` as a data
+    point.
 
     """
     doc: FeatureDocument = field()
