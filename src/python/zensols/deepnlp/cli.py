@@ -82,7 +82,7 @@ class NLPFacadeModelApplication(FacadeApplication):
     """
     CLI_META = ActionCliManager.combine_meta(
         FacadeApplication,
-        {'mnemonic_overrides': {'predict_text': 'predtext'},
+        {'mnemonic_overrides': {'predict_text': 'predict'},
          'option_overrides': {'verbose': {'long_name': 'verbose',
                                           'short_name': None}}})
 
@@ -109,15 +109,15 @@ class NLPClassifyFacadeModelApplication(NLPFacadeModelApplication):
     classification tasks).
 
     """
-    def predict_text(self, text_input: str, verbose: bool = False):
-        """Classify ad-hoc text and output the results.
+    def predict_text(self, text: str, verbose: bool = False):
+        """Classify ``text`` and output the results.
 
-        :param text_input: the sentence to classify or standard in a dash (-)
+        :param text: the sentence to classify or standard in a dash (-)
 
         :param verbose: if given, print the long format version of the document
 
         """
-        sents = self._get_sentences(text_input)
+        sents = self._get_sentences(text)
         with dealloc(self.create_facade()) as facade:
             docs: Tuple[FeatureDocument] = self._predict(facade, sents)
             for doc in docs:
@@ -136,15 +136,15 @@ class NLPSequenceClassifyFacadeModelApplication(NLPFacadeModelApplication):
     """The path to the model or use the last trained model if not provided.
 
     """
-    def predict_text(self, text_input: str, verbose: bool = False):
-        """Classify ad-hoc text and output the results.
+    def predict_text(self, text: str, verbose: bool = False):
+        """Classify ``text`` and output the results.
 
-        :param text_input: the sentence to classify or standard in a dash (-)
+        :param text: the sentence to classify or standard in a dash (-)
 
         :param verbose: if given, print the long format version of the document
 
         """
-        sents = self._get_sentences(text_input)
+        sents = self._get_sentences(text)
         with dealloc(self.create_facade()) as facade:
             pred: Settings = self._predict(facade, sents)
             docs: Tuple[FeatureDocument] = pred.docs
