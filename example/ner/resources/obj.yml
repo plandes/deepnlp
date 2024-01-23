@@ -127,13 +127,13 @@ ner_batch_mappings:
     then:
       label_attribute_name: tok_label_transformer
     else:
-      label_attribute_name: tok_labels
+      label_attribute_name: token_labels
   batch_feature_mapping_adds:
     - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): tok_label_batch_mappings'
     - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): conll_lang_batch_mappings'
     - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): lang_batch_mappings'
   field_keep:
-    - tok_labels
+    - token_labels
     - tok_mask
     - tags
     - syns
@@ -149,7 +149,7 @@ batch_dir_stash:
   groups:
     # there will be N (batch_stash:batch_size) batch labels in one file in a
     # directory of just label files
-    - [tok_labels, tok_mask]
+    - [token_labels, tok_mask]
     - [syns, tags]
     # we might want to switch between embeddings, separate them
     - [glove_50_embedding]
@@ -164,7 +164,7 @@ batch_stash:
   batch_feature_mappings: 'dataclass(zensols.deeplearn.batch.ConfigBatchFeatureMapping): ner_batch_mappings'
   # the class that contains the feature data, one for each data instance
   data_point_type: "eval({'import': ['ner']}): ner.NERDataPoint"
-  decoded_attributes: 'set: tok_labels, tok_mask, syns, ${ner_default:embedding}'
+  decoded_attributes: 'set: token_labels, tok_mask, syns, ${ner_default:embedding}'
   # use only two cores
   workers: 2
   batch_size: 32

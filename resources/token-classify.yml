@@ -22,14 +22,14 @@ tok_label_batch_mappings:
   manager_mappings:
     - vectorizer_manager_name: tok_label_vectorizer_manager
       fields:
-        - attr: tok_labels
+        - attr: token_labels
           feature_id: tclabel
           is_agg: true
           is_label: true
         - attr: tok_mask
           feature_id: tmask
           is_agg: true
-          attr_access: tok_labels
+          attr_access: token_labels
 
 
 # the vectorizer for labels is not language specific and lives in the
