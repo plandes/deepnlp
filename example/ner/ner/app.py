@@ -3,15 +3,18 @@
 """
 __author__ = 'Paul Landes'
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from zensols.config import ConfigFactory
 from . import SentenceStatsCalculator
 
 
 @dataclass
 class App(object):
-    config_factory: ConfigFactory
-    stats_calc: SentenceStatsCalculator
+    """Provides additional functionality to the NER example.
+
+    """
+    config_factory: ConfigFactory = field()
+    stats_calc: SentenceStatsCalculator = field()
 
     def _inst(self, name: str):
         return self.config_factory(name)

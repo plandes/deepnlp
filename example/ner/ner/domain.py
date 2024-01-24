@@ -71,9 +71,6 @@ class NERDataPoint(TokenContainerDataPoint):
             if t.tag_ not in labs:
                 t.tag_ = ','
 
-    # @property
-    # @persisted('_tok_labels', transient=True)
-    # def tok_labels(self) -> Tuple[str, ...]:
     @persisted('_token_labels', transient=True)
     def _get_token_labels(self) -> Tuple[Any, ...]:
         """The label: the fourth the named entity tag."""
@@ -84,8 +81,8 @@ class NERDataPoint(TokenContainerDataPoint):
 
     @property
     def trans_doc(self) -> FeatureDocument:
-        """The document used by the transformer vectorizers.  Return ``None`` for
-        prediction data points to avoid vectorization.
+        """The document used by the transformer vectorizers.  Return ``None``
+        for prediction data points to avoid vectorization.
 
         """
         if self.is_pred:
