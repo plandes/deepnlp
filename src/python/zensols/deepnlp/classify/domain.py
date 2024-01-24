@@ -32,7 +32,8 @@ class TokenContainerDataPoint(DataPoint):
     @persisted('_doc')
     def doc(self) -> FeatureDocument:
         """The container as a document.  If it is a sentence, it will create a
-        document with the single sentence.
+        document with the single sentence.  This is usually used by the
+        embeddings vectorizer.
 
         """
         return self.container.to_document()

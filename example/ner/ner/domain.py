@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, Any, Type
+from typing import Tuple, Any, Optional, Type
 from dataclasses import dataclass, field
 from zensols.persist import persisted
 from zensols.nlp import (
@@ -80,11 +80,13 @@ class NERDataPoint(TokenContainerDataPoint):
             return tuple(map(lambda t: t.ent_, self.container.token_iter()))
 
     @property
-    def trans_doc(self) -> FeatureDocument:
-        """The document used by the transformer vectorizers.  Return ``None``
-        for prediction data points to avoid vectorization.
+    def trans_doc(self) -> Optional[FeatureDocument]:
+        """The data point's document with ``annotations`` attribute if a
+        training example.  This is used to vectorize classes by
+        :class:`~zensols.deepnlp.transformer.vectorizersTransformerNominalFeatureVectorizer`.
+
+        :return: ``None`` if this is used to predict
 
         """
-        if self.is_pred:
-            return None
-        return self.doc
+        if not self.is_pred:
+            return self.doc
