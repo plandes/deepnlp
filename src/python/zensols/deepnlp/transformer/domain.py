@@ -82,10 +82,6 @@ class TokenizedDocument(PersistableContainer, Writable):
         """Return the shape of the vectorized document."""
         return self.tensor.shape
 
-    def __len__(self) -> int:
-        """Return the size of the document in number of word pieces."""
-        return self.tensor.size(-1)
-
     def detach(self) -> TokenizedDocument:
         """Return a version of the document that is pickleable."""
         return self
@@ -133,6 +129,56 @@ class TokenizedDocument(PersistableContainer, Writable):
                 wptoks.append(wix)
         return ftoks
 
+    def _map_sent(self, index_tokens: bool, tok_offsets: List[int],
+                  map_wp: Callable, sent: Union[FeatureSentence, Tensor],
+                  six: int, input_sent: np.ndarray, includes: Set[str],
+                  mask_sent: np.ndarray, special_tokens: Set[str]):
+        sent_map: Dict[str, Dict[str, Any]] = []
+        if index_tokens:
+            wps: List[Tuple[Tensor, List[int]]] = \
+                self.map_word_pieces(tok_offsets)
+            tix: int
+            for tix, ixs in wps:
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug(f'idx: {ixs} -> {tix}')
+                tok: str = sent[tix]
+                toks = tuple(map(lambda i: map_wp(i, six, input_sent), ixs))
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug(f'tok: {tok} -> {toks}')
+                sent_map.append((tok, toks))
+        else:
+            stoks: List[FeatureToken] = [] if 'sent' in includes else None
+            toks: List[List[str]] = []
+            tix: int = 0
+            wps: List[str]
+            i: int
+            for i, (mask, off) in enumerate(zip(mask_sent, tok_offsets)):
+                if mask == 0:
+                    continue
+                wtok: str = map_wp(i, six, input_sent)
+                if wtok in special_tokens:
+                    continue
+                if off == -1:
+                    toks.append([wtok])
+                    tix += 1
+                elif off >= 0:
+                    lix = off + tix
+                    if lix > len(toks) - 1:
+                        wps = []
+                        toks.append(wps)
+                    wps = toks[lix]
+                    wps.append(wtok)
+                else:
+                    raise DeepLearnError(f'Unknown offset index: {off}')
+            for i, wps in enumerate(toks):
+                tok: str = ''.join(wps)
+                sent_map.append((tok, tuple(wps)))
+                if stoks is not None:
+                    stoks.append(FeatureToken(i, i, six, tok))
+            if stoks is not None:
+                sent = FeatureSentence(tuple(stoks))
+        return sent_map, sent
+
     def map_to_word_pieces(self, sentences: Iterable[List[Any]] = None,
                            map_wp: Union[Callable, Dict[int, str]] = None,
                            add_indices: bool = False,
@@ -173,10 +219,10 @@ class TokenizedDocument(PersistableContainer, Writable):
                   or a tensor of vocab indexes if ``map_wp`` is ``None``
 
         """
-        def map_str(x: int, six: int, input_ids: List[int]):
-            return str(x)
+        def map_identity(x: int, six: int, input_ids: List[int]):
+            return (x, input_ids[x], x) if add_indices else x
 
-        def map_wp_by_id(x: int, six: int, input_ids: List[int]):
+        def map_wp_by_id(x: int, six: int, input_ids: List[int]) -> str:
             tix = input_ids[x]
             tok = id2tok[tix]
             if tok.startswith('##'):
@@ -199,7 +245,7 @@ class TokenizedDocument(PersistableContainer, Writable):
             else:
                 special_tokens = {}
         if map_wp is None:
-            map_wp = map_str
+            map_wp = map_identity
         elif hasattr(map_wp, 'id2tok'):
             # .tokenizer.Tokenizer
             id2tok = map_wp.id2tok
@@ -213,60 +259,19 @@ class TokenizedDocument(PersistableContainer, Writable):
         sents = enumerate(zip(sentences, sent_offsets))
         six: int
         sent: Union[FeatureSentence, Tensor]
+        tok_offsets: List[int]
         for six, (sent, tok_offsets) in sents:
             input_sent: np.ndarray = input_ids[six]
-            mask_sent: np.ndrary = self.attention_mask[six].numpy()
+            mask_sent: np.ndarray = self.attention_mask[six].numpy()
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'sent idx: {six}, sent: {sent}')
                 logger.debug(f'offsets: {tok_offsets}')
                 logger.debug(f'ids: {input_sent}')
             smap: Dict[str, Any] = {'sent_ix': six}
             if 'map' in includes:
-                sent_map: Dict[str, Dict[str, Any]] = []
-                if index_tokens:
-                    wps: List[Tuple[Tensor, List[int]]] = \
-                        self.map_word_pieces(tok_offsets)
-                    tix: int
-                    for tix, ixs in wps:
-                        if logger.isEnabledFor(logging.DEBUG):
-                            logger.debug(f'idx: {ixs} -> {tix}')
-                        tok: str = sent[tix]
-                        toks = tuple(map(
-                            lambda i: map_wp(i, six, input_sent), ixs))
-                        if logger.isEnabledFor(logging.DEBUG):
-                            logger.debug(f'tok: {tok} -> {toks}')
-                        sent_map.append((tok, toks))
-                else:
-                    stoks: List[FeatureToken] = [] if 'sent' in includes else None
-                    toks: List[List[str]] = []
-                    tix: int = 0
-                    wps: List[str]
-                    i: int
-                    for i, (mask, off) in enumerate(zip(mask_sent, tok_offsets)):
-                        if mask == 0:
-                            continue
-                        wtok: str = map_wp(i, six, input_sent)
-                        if wtok in special_tokens:
-                            continue
-                        if off == -1:
-                            toks.append([wtok])
-                            tix += 1
-                        elif off >= 0:
-                            lix = off + tix
-                            if lix > len(toks) - 1:
-                                wps = []
-                                toks.append(wps)
-                            wps = toks[lix]
-                            wps.append(wtok)
-                        else:
-                            raise DeepLearnError(f'Unknown offset index: {off}')
-                    for i, wps in enumerate(toks):
-                        tok: str = ''.join(wps)
-                        sent_map.append((tok, tuple(wps)))
-                        if stoks is not None:
-                            stoks.append(FeatureToken(i, i, six, tok))
-                    if stoks is not None:
-                        sent = FeatureSentence(tuple(stoks))
+                sent_map, sent = self._map_sent(
+                    index_tokens, tok_offsets, map_wp, sent, six, input_sent,
+                    includes, mask_sent, special_tokens)
                 smap['map'] = sent_map
             if 'sent' in includes:
                 smap['sent'] = sent
@@ -294,6 +299,13 @@ class TokenizedDocument(PersistableContainer, Writable):
                 wps: Tuple[str]
                 for tok, wps in sent_map['map']:
                     self._write_line(f'{tok} -> {wps}', depth + 1, writer)
+
+    def __len__(self) -> int:
+        """Return the size of the document in number of word pieces."""
+        sents: List[Dict[str, Any]] = self.map_to_word_pieces(
+            index_tokens=False,
+            includes=set('word_pieces'.split()))
+        return sum(map(lambda s: len(s['word_pieces']), sents))
 
     def __str__(self) -> str:
         return f'doc: {self.tensor.shape}'
