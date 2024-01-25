@@ -109,6 +109,10 @@ class Application(object):
             _Format.short: lambda: print('\n'.join(map(lambda s: s.norm, pred)))
         }[format]()
 
+    def traintest(self):
+        """Used by the parent testall makefile target."""
+        self.fill()
+
 
 if (__name__ == '__main__'):
     import zensols.deepnlp.transformer as trans
