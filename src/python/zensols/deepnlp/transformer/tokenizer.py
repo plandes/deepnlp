@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import List, Dict, ClassVar, Any
+from typing import List, Dict, Set, ClassVar, Any
 from dataclasses import dataclass, field
 import logging
 from frozendict import frozendict
@@ -61,10 +61,19 @@ class TransformerDocumentTokenizer(PersistableContainer):
                 self.resource.tokenizer.model_max_length
 
     @property
+    def pretrained_tokenizer(self) -> PreTrainedTokenizer:
+        return self.resource.tokenizer
+
+    @property
     @persisted('_id2tok')
     def id2tok(self) -> Dict[int, str]:
-        vocab = self.resource.tokenizer.vocab
+        vocab = self.pretrained_tokenizer.vocab
         return {vocab[k]: k for k in vocab.keys()}
+
+    @property
+    @persisted('_all_special_tokens')
+    def all_special_tokens(self) -> Set[str]:
+        return frozenset(self.pretrained_tokenizer.all_special_tokens)
 
     def tokenize(self, doc: FeatureDocument,
                  tokenizer_kwargs: Dict[str, Any] = None) -> \
@@ -88,7 +97,7 @@ class TransformerDocumentTokenizer(PersistableContainer):
             TokenizedFeatureDocument:
         torch_config: TorchConfig = self.resource.torch_config
         tlen: int = self.word_piece_token_length
-        tokenizer: PreTrainedTokenizer = self.resource.tokenizer
+        tokenizer: PreTrainedTokenizer = self.pretrained_tokenizer
         params: Dict[str, bool] = {
             'return_offsets_mapping': True,
             'is_split_into_words': True,
