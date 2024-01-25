@@ -34,7 +34,7 @@ class TestWordPieceTokenization(unittest.TestCase):
         vec = self.vmng[vec_name]
         tdoc: TokenizedFeatureDocument = vec.tokenize(doc)
         self.assertEqual(TokenizedFeatureDocument, type(tdoc))
-        smaps = tdoc.map_word_pieces_to_tokens()
+        smaps = tdoc.map_to_word_pieces(includes={'map', 'sent'})
         self.assertEqual(len(should), len(smaps))
         for sent_map, should_sent in zip(smaps, should):
             sent: FeatureSentence = sent_map['sent']

@@ -341,7 +341,8 @@ class WordPieceFeatureDocumentFactory(object):
         wps: List[Dict[str, Any]] = tdoc.map_to_word_pieces(
             sentences=fdoc,
             map_wp=self.tokenizer.id2tok,
-            add_indices=True)
+            add_indices=True,
+            includes={'map', 'sent'})
         wp: Dict[str, Any]
         for six, wp in enumerate(wps):
             fsent: FeatureSentence = wp['sent']

@@ -300,12 +300,20 @@ class TokenizedDocument(PersistableContainer, Writable):
                 for tok, wps in sent_map['map']:
                     self._write_line(f'{tok} -> {wps}', depth + 1, writer)
 
-    def __len__(self) -> int:
-        """Return the size of the document in number of word pieces."""
+    @property
+    def wordpiece_count(self) -> int:
+        """The size of the document (sum over sentences) in number of word
+        pieces.
+
+        """
         sents: List[Dict[str, Any]] = self.map_to_word_pieces(
             index_tokens=False,
             includes=set('word_pieces'.split()))
         return sum(map(lambda s: len(s['word_pieces']), sents))
+
+    def __len__(self) -> int:
+        """Longest sentence in word pieces with special tokens and padding."""
+        return self.tensor.size(-1)
 
     def __str__(self) -> str:
         return f'doc: {self.tensor.shape}'
