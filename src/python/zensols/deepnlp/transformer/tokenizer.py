@@ -3,9 +3,10 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import List, Dict, Any
+from typing import List, Dict, ClassVar, Any
 from dataclasses import dataclass, field
 import logging
+from frozendict import frozendict
 import torch
 from transformers import PreTrainedTokenizer
 from transformers.tokenization_utils_base import BatchEncoding
@@ -20,6 +21,16 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class TransformerDocumentTokenizer(PersistableContainer):
+    DEFAULT_PARAMS: ClassVar[Dict[str, Any]] = frozendict({
+        'return_offsets_mapping': True,
+        'is_split_into_words': True,
+        'return_special_tokens_mask': True,
+        'padding': 'longest'})
+    """Default parameters for the HuggingFace tokenizer.  These get overriden by
+    the ``tokenizer_kwargs`` in :meth:`tokenize` and the processing of value
+    :obj:`word_piece_token_length`.
+
+    """
     resource: TransformerResource = field()
     """Contains the model used to create the tokenizer."""
 
@@ -28,7 +39,14 @@ class TransformerDocumentTokenizer(PersistableContainer):
     same or greater in count than linguistic tokens because the word piece
     algorithm tokenizes on characters.
 
-    If this value is less than 0, than do not fix sentence lengths.
+    If this value is less than 0, than do not fix sentence lengths.  If the
+    value is 0 (default), then truncate to the model's longest max lenght.
+    Otherwise, if this value is ``None``, set the length to the model's longest
+    max length using the model's ``model_max_length`` value.
+
+    Tokenization padding is on by default.
+
+    :see: `HF Docs <https://huggingface.co/docs/transformers/pad_truncation>`_
 
     """
     params: Dict[str, Any] = field(default=None)
@@ -87,17 +105,19 @@ class TransformerDocumentTokenizer(PersistableContainer):
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'parsing {sents} with token length: {tlen}')
 
-        if tlen > 0:
+        if tlen == 0:
+            params['truncation'] = True
+        elif tlen > 0:
             params.update({'truncation': True,
                            'max_length': tlen})
         else:
             params.update({'truncation': False})
 
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'using tokenizer parameters: {params}')
-
         if tokenizer_kwargs is not None:
             params.update(tokenizer_kwargs)
+
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'using tokenizer parameters: {params}')
         tok_dat: BatchEncoding = tokenizer(sents, **params)
 
         if logger.isEnabledFor(logging.DEBUG):
