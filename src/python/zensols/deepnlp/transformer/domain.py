@@ -171,7 +171,7 @@ class TokenizedDocument(PersistableContainer, Writable):
                 else:
                     raise DeepLearnError(f'Unknown offset index: {off}')
             for i, wps in enumerate(toks):
-                tok: str = ''.join(wps)
+                tok: str = ''.join(map(str, wps))
                 sent_map.append((tok, tuple(wps)))
                 if stoks is not None:
                     stoks.append(FeatureToken(i, i, six, tok))
@@ -195,28 +195,40 @@ class TokenizedDocument(PersistableContainer, Writable):
         :param map_wp: either a function that takes the token index, sentence ID
                        and input IDs, or the mapping from word piece ID to
                        string token; return output is the string token (or
-                       numerical output if no mapping is provided)
+                       numerical output if no mapping is provided); if an
+                       instance of :class:`.TransformerDocumentTokenizer`, its
+                       vocabulary and special tokens are utilized for mapping
+                       and special token consideration
 
         :param add_indices: whether to add the token ID and index after the
                             token string when ``id2tok`` is provided for
                             ``map_wp``
 
-        :param special_tokens: a list of tokens to to skip when ``index_tokens``
-                               is ``True``
+        :param special_tokens: a list of tokens (such BERT's as ``[CLS]`` and
+                               ``[SEP]`` tokens) to remove; to keep special
+                               tokens when passing in a tokenizer in ``kwargs``,
+                               add ``special_tokens={}``.
 
         :param index_tokens: whether to index tokens positionally, which is used
-                             for mapping with feature or tokenized sentences
+                             for mapping with feature or tokenized sentences;
+                             set this to ``False`` when ``sentences`` are
+                             anything but a feature document / sentences
+
+        :param includes: what data to return, which is a set of the keys listed
+                         in the ``return`` documentation below
 
         :return:
 
             a list sentence maps, each with:
 
-                * ``map`` -> list of ``(sentence 'token', word pieces)``
+                * ``sent_ix`` -> the ``i``th sentence (always provided)
 
-                * ``sent_ix`` -> the ``i``th list in ``sentences``
+                * ``map`` -> list of ``(sentence 'token', word pieces)``
 
                 * ``sent`` -> a :class:`~zensols.nlp.container.FeatureSentence`
                   or a tensor of vocab indexes if ``map_wp`` is ``None``
+
+                * ``word_pieces`` -> the word pieces of the sentences
 
         """
         def map_identity(x: int, six: int, input_ids: List[int]):
@@ -276,11 +288,27 @@ class TokenizedDocument(PersistableContainer, Writable):
             if 'sent' in includes:
                 smap['sent'] = sent
             if 'word_pieces' in includes:
-                smap['word_pieces'] = tuple(map(
-                    lambda t: map_wp(t[1], six, input_sent),
-                    filter(lambda t: t[0], zip(mask_sent, it.count()))))
+                smap['word_pieces'] = tuple(filter(
+                    lambda t: t not in special_tokens,
+                    map(lambda t: map_wp(t[1], six, input_sent),
+                        filter(lambda t: t[0], zip(mask_sent, it.count())))))
             sents_map.append(smap)
         return sents_map
+
+    def get_wordpiece_count(self, **kwargs) -> int:
+        """The size of the document (sum over sentences) in number of word
+        pieces.  To keep special tokens (such BERT's as ``[CLS]`` and ``[SEP]``
+        tokens) when passing in a tokenizer in ``kwargs``, add
+        ``special_tokens={}``.
+
+        :param kwargs: any keyword arguments passed on to
+                       :meth:`.map_to_word_pieces` except (do not add
+                       ``index_tokens`` and ``includes``)
+
+        """
+        sents: List[Dict[str, Any]] = self.map_to_word_pieces(
+            index_tokens=False, includes={'word_pieces'}, **kwargs)
+        return sum(map(lambda s: len(s['word_pieces']), sents))
 
     def deallocate(self):
         super().deallocate()
@@ -299,17 +327,6 @@ class TokenizedDocument(PersistableContainer, Writable):
                 wps: Tuple[str]
                 for tok, wps in sent_map['map']:
                     self._write_line(f'{tok} -> {wps}', depth + 1, writer)
-
-    @property
-    def wordpiece_count(self) -> int:
-        """The size of the document (sum over sentences) in number of word
-        pieces.
-
-        """
-        sents: List[Dict[str, Any]] = self.map_to_word_pieces(
-            index_tokens=False,
-            includes=set('word_pieces'.split()))
-        return sum(map(lambda s: len(s['word_pieces']), sents))
 
     def __len__(self) -> int:
         """Longest sentence in word pieces with special tokens and padding."""
@@ -369,8 +386,7 @@ class TokenizedFeatureDocument(TokenizedDocument):
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout,
               include_tokens: bool = True, id2tok: Dict[int, str] = None):
         id2tok = self.id2tok if id2tok is None else id2tok
-        sent_map: Dict[str, Union[FeatureSentence,
-                                  Tuple[FeatureToken, Tuple[str]]]]
+        sent_map: Dict[str, Any]
         for sent_map in self.map_to_word_pieces(includes={'map', 'sent'}):
             sent: FeatureSentence = sent_map['sent']
             tmap: Tuple[FeatureToken, Tuple[str]] = sent_map['map']
