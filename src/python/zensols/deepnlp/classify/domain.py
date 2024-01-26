@@ -60,7 +60,7 @@ class TokenContainerDataPoint(DataPoint):
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
         super().write(depth, writer)
         self._write_line('container:', depth, writer)
-        self.sent.write(depth + 1, writer)
+        self.container.write(depth + 1, writer)
 
     def __str__(self):
         return self.container.__str__()
