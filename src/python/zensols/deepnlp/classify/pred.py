@@ -103,5 +103,5 @@ class SequencePredictionMapper(ClassificationPredictionMapper):
         return doc.sents
 
     def map_results(self, result: ResultsContainer) -> Settings:
-        classes = self._map_classes(result)
+        classes: List[List[int]] = self._map_classes(result)
         return Settings(classes=tuple(classes), docs=tuple(self._docs))

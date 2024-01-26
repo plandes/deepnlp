@@ -92,7 +92,7 @@ class TransformerSequenceNetworkSettings(EmbeddingNetworkSettings,
 
 class TransformerSequence(EmbeddingNetworkModule, SequenceNetworkModule):
     """A sequence based model for token classification use HuggingFace
-    transformers.
+    transformers layers (not their token classification API).
 
     """
     MODULE_NAME = 'transformer sequence'
