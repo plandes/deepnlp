@@ -87,6 +87,10 @@ class NLPFacadeModelApplication(FacadeApplication):
                                           'short_name': None}}})
 
     def _get_sentences(self, text_input: str) -> Tuple[str]:
+        """Read sentences from standard in, or passed command line string
+        ``text_input`` if not ``-``.
+
+        """
         def map_sents(din: TextIOBase):
             return map(lambda ln: ln.strip(), sys.stdin.readlines())
 
@@ -144,7 +148,7 @@ class NLPSequenceClassifyFacadeModelApplication(NLPFacadeModelApplication):
         :param verbose: if given, print the long format version of the document
 
         """
-        sents = self._get_sentences(text)
+        sents: Tuple[str] = self._get_sentences(text)
         with dealloc(self.create_facade()) as facade:
             pred: Settings = self._predict(facade, sents)
             docs: Tuple[FeatureDocument] = pred.docs
