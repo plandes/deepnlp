@@ -3,7 +3,9 @@
 """
 from __future__ import annotations
 __author__ = 'Paul Landes'
-from typing import List, Tuple, Dict, Any, Set, Union, Iterable, Callable
+from typing import (
+    List, Tuple, Dict, Any, Set, Union, Iterable, Callable, ClassVar
+)
 from dataclasses import dataclass, field
 import sys
 import logging
@@ -30,6 +32,11 @@ class TokenizedDocument(PersistableContainer, Writable):
     :class:`.TransformerEmbedding`.
 
     """
+    _INPUT_ID_IX: ClassVar[int] = 0
+    _ATTENTION_MASK_IX: ClassVar[int] = 1
+    _OFFSETS_IX: ClassVar[int] = 2
+    _TOKEN_TYPE_ID_IX: ClassVar[int] = 3
+
     tensor: Tensor = field()
     """Encodes the input IDs, attention mask, and word piece offset map."""
 
@@ -56,12 +63,12 @@ class TokenizedDocument(PersistableContainer, Writable):
     @property
     def input_ids(self) -> Tensor:
         """The token IDs as the output from the tokenizer."""
-        return self.tensor[0]
+        return self.tensor[self._INPUT_ID_IX]
 
     @property
     def attention_mask(self) -> Tensor:
         """The attention mask (0/1s)."""
-        return self.tensor[1]
+        return self.tensor[self._ATTENTION_MASK_IX]
 
     @property
     def offsets(self) -> Tensor:
@@ -69,13 +76,13 @@ class TokenizedDocument(PersistableContainer, Writable):
         document index mapping.
 
         """
-        return self.tensor[2]
+        return self.tensor[self._OFFSETS_IX]
 
     @property
     def token_type_ids(self) -> Tensor:
         """The token type IDs (0/1s)."""
         if self.tensor.size(0) > 3:
-            return self.tensor[3]
+            return self.tensor[self._TOKEN_TYPE_ID_IX]
 
     @property
     def shape(self) -> torch.Size:
@@ -246,8 +253,10 @@ class TokenizedDocument(PersistableContainer, Writable):
             return (tok, tix, x) if add_indices else tok
 
         id2tok: Dict[int, str] = None
-        input_ids: np.ndarray = self.input_ids.cpu().numpy()
-        sent_offsets: List[int] = self.offsets.numpy().tolist()
+        cdata: np.ndarray = self.tensor.cpu().numpy()
+        input_ids: np.ndarray = cdata[self._INPUT_ID_IX]
+        mask: np.ndarray = cdata[self._ATTENTION_MASK_IX]
+        sent_offsets: List[int] = cdata[self._OFFSETS_IX].tolist()
         sents_map: List[Dict[str, Union[List[Any], Tuple]]] = []
         if special_tokens is None:
             if hasattr(map_wp, 'all_special_tokens'):
@@ -274,7 +283,7 @@ class TokenizedDocument(PersistableContainer, Writable):
         tok_offsets: List[int]
         for six, (sent, tok_offsets) in sents:
             input_sent: np.ndarray = input_ids[six]
-            mask_sent: np.ndarray = self.attention_mask[six].numpy()
+            mask_sent: np.ndarray = mask[six]
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'sent idx: {six}, sent: {sent}')
                 logger.debug(f'offsets: {tok_offsets}')
