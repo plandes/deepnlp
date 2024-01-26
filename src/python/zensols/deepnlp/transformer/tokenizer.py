@@ -21,6 +21,10 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class TransformerDocumentTokenizer(PersistableContainer):
+    """Creates instances of :class:`.TokenziedFeatureDocument` using a
+    HuggingFace :class:`~transformers.PreTrainedTokenizer`.
+
+    """
     DEFAULT_PARAMS: ClassVar[Dict[str, Any]] = frozendict({
         'return_offsets_mapping': True,
         'is_split_into_words': True,
@@ -62,17 +66,34 @@ class TransformerDocumentTokenizer(PersistableContainer):
 
     @property
     def pretrained_tokenizer(self) -> PreTrainedTokenizer:
+        """The HuggingFace tokenized used to create tokenized documents."""
         return self.resource.tokenizer
+
+    @property
+    def token_max_length(self) -> int:
+        """The word piece token maximum length supported by the model."""
+        if self.word_piece_token_length is None or \
+           self.word_piece_token_length == 0:
+            return self.pretrained_tokenizer.model_max_length
+        return self.word_piece_token_length
 
     @property
     @persisted('_id2tok')
     def id2tok(self) -> Dict[int, str]:
+        """A mapping from the HuggingFace tokenizer's vocabulary to it's word
+        piece equivalent.
+
+        """
         vocab = self.pretrained_tokenizer.vocab
         return {vocab[k]: k for k in vocab.keys()}
 
     @property
     @persisted('_all_special_tokens')
     def all_special_tokens(self) -> Set[str]:
+        """Special tokens used by the model (such BERT's as ``[CLS]`` and
+        ``[SEP]`` tokens).
+
+        """
         return frozenset(self.pretrained_tokenizer.all_special_tokens)
 
     def tokenize(self, doc: FeatureDocument,
