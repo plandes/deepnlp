@@ -5,12 +5,15 @@ __author__ = 'Paul Landes'
 
 from typing import Callable, List, Tuple, Dict, Iterable, Any
 from dataclasses import dataclass, field
+import logging
 import pandas as pd
 from torch import Tensor
 from zensols.nlp import FeatureToken, FeatureSentence, FeatureDocument
 from zensols.deeplearn.batch import Batch, DataPoint
 from zensols.deeplearn.result import SequencePredictionsDataFrameFactory
 from . import TokenizedDocument
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -51,16 +54,14 @@ class TransformerSequencePredictionsDataFrameFactory(
             sentences=dps_doc,
             includes={'map', 'sent'})
         for dpix, dp in enumerate(batch.data_points):
-            sent: FeatureSentence = sent_maps[dpix]['sent']
             tmap: Tuple[FeatureToken, Tuple[Tuple[str, int, int], ...]] = \
                 sent_maps[dpix]['map']
-            yield sent.tokens[:len(tmap)]
+            yield len(tmap)
 
     def _calc_len(self, batch: Batch) -> int:
-        btoks: Tuple[Tuple[FeatureToken, ...], ...] = \
-            tuple(self._trunc_tokens(batch))
-        batch._truncated_tokens = btoks
-        return sum(map(lambda toks: len(toks), btoks))
+        trunc_lens: Tuple[int] = tuple(self._trunc_tokens(batch))
+        batch._trunc_lens = trunc_lens
+        return sum(map(lambda tl: tl, trunc_lens))
 
     def _transform_dataframe(self, batch: Batch, labs: List[str],
                              preds: List[str]):
@@ -68,18 +69,24 @@ class TransformerSequencePredictionsDataFrameFactory(
         start: int = 0
         transform: Callable = self.data_point_transform
         self._assert_label_pred_batch_size(batch, labs, preds, False)
-        bix: int
         dp: DataPoint
-        toks: Tuple[FeatureToken, ...]
-        for bix, (dp, toks) in enumerate(zip(
-                batch.data_points, batch._truncated_tokens)):
-            end: int = start + len(toks)
+        tl: int
+        for dp, tl in zip(batch.data_points, batch._trunc_lens):
+            end: int = start + tl
             df = pd.DataFrame({
                 self.ID_COL: dp.id,
                 self.LABEL_COL: labs[start:end],
                 self.PREDICTION_COL: preds[start:end]})
             dp_data: Tuple[Tuple[str, ...]] = transform(dp)
-            dp_data = dp_data[:len(toks)]
+            if len(dp_data) != tl and logger.isEnabledFor(logging.WARNING):
+                sent_str: str = ''
+                if hasattr(dp, 'doc'):
+                    doc: FeatureDocument = dp.doc
+                    sent_str: str = f' for document: {doc}'
+                    logger.warning(
+                        f'trimming outcomes from {len(dp_data)} ' +
+                        f'to word piece max (equivalent) {tl}{sent_str}')
+            dp_data = dp_data[:tl]
             df[list(self.column_names)] = dp_data
             dfs.append(df)
             start = end
