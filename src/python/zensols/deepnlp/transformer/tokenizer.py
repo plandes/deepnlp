@@ -48,6 +48,11 @@ class TransformerDocumentTokenizer(PersistableContainer):
     Otherwise, if this value is ``None``, set the length to the model's longest
     max length using the model's ``model_max_length`` value.
 
+    Setting this to a value to 0, making documents multi-length, has the
+    potential of creating token spans longer than the model can tolerate
+    (usually 512 word piece tokens).  In these cases, this value must be set to
+    (or lower) than the model's ``model_max_length``.
+
     Tokenization padding is on by default.
 
     :see: `HF Docs <https://huggingface.co/docs/transformers/pad_truncation>`_

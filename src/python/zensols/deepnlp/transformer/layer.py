@@ -215,16 +215,8 @@ class TransformerSequence(EmbeddingNetworkModule, SequenceNetworkModule):
             else:
                 active_loss = attention_mask.view(-1) == 1
                 active_logits = logits.view(-1, self._n_labels)
-                flat_labels = labels.view(-1)
-                if active_loss.shape != flat_labels.shape:
-                    # this happens when setting the max length in the tokenizer
-                    if self.logger.isEnabledFor(logging.DEBUG):
-                        self._debug(
-                            f'truncating labels ({flat_labels.shape}) ' +
-                            f'to match (padded) logits ({active_loss.shape})')
-                    flat_labels = flat_labels[:active_loss.size(0)]
                 active_labels = torch.where(
-                    active_loss, flat_labels,
+                    active_loss, labels.view(-1),
                     torch.tensor(pad_label).type_as(labels)
                 )
                 self._shape_debug('active_logits', active_logits)
@@ -246,13 +238,6 @@ class TransformerSequence(EmbeddingNetworkModule, SequenceNetworkModule):
             if labels is None:
                 to_collapse = preds.unsqueeze(0)
             else:
-                if labels.size(1) != preds.size(1):
-                    # this happens when setting the max length in the tokenizer
-                    if self.logger.isEnabledFor(logging.DEBUG):
-                        self._debug(
-                            f'truncating labels ({labels.size(1)}) ' +
-                            f'to match (padded) preds ({preds.size(1)})')
-                    labels = labels[:, :preds.size(1)]
                 to_collapse = torch.stack((preds, labels))
 
             preds, mapped_labels = self._to_lists(tdoc, to_collapse)

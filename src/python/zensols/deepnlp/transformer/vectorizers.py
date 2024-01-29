@@ -415,13 +415,12 @@ class TransformerNominalFeatureVectorizer(AggregateEncodableFeatureVectorizer,
         dtype: torch.dtype = delegate.data_type
         lab_all: bool = self.label_all_tokens
         n_sents: int = len(doc)
-        if self.word_piece_token_length > 0:
-            n_toks = self.word_piece_token_length
-        else:
-            n_toks = len(tdoc)
+        # even if self.word_piece_token_length > 0, the TokeizedDocument length
+        # gives the correct encoded size given the tokenizer's configuration,
+        # otherwise it will pad too wide causing an error in TransformerSequence
+        n_toks: int = len(tdoc)
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug('encoding using {n_toks} tokens with wp len: ' +
-                         f'{self.word_piece_token_length}')
+            logger.debug(f'encoding using {n_toks} length')
         arr = self.create_padded_tensor((n_sents, n_toks), dtype)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'output shape: {arr.shape}/{self.shape}')
