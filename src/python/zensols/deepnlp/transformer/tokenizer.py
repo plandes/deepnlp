@@ -119,11 +119,7 @@ class TransformerDocumentTokenizer(PersistableContainer):
         torch_config: TorchConfig = self.resource.torch_config
         tlen: int = self.word_piece_token_length
         tokenizer: PreTrainedTokenizer = self.pretrained_tokenizer
-        params: Dict[str, bool] = {
-            'return_offsets_mapping': True,
-            'is_split_into_words': True,
-            'return_special_tokens_mask': True,
-            'padding': 'longest'}
+        params: Dict[str, bool] = dict(self.DEFAULT_PARAMS)
         if self.params is not None:
             params.update(self.params)
 
@@ -135,9 +131,7 @@ class TransformerDocumentTokenizer(PersistableContainer):
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'parsing {sents} with token length: {tlen}')
 
-        if tlen == 0:
-            params['truncation'] = True
-        elif tlen > 0:
+        if tlen > 0:
             params.update({'truncation': True,
                            'max_length': tlen})
         else:
