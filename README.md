@@ -48,7 +48,7 @@ Features:
 
 The easiest way to install the command line program is via the `pip` installer:
 ```bash
-pip3 install --use-deprecated=legacy-resolver zensols.deepnlp
+pip3 install zensols.deepnlp
 ```
 
 Binaries are also available on [pypi].
