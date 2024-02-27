@@ -8,6 +8,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.12.0] - 2024-02-27
+### Changed
+- Fix sizing of logits to padded output for sequence transformer for truncated
+  word piece tokens limited by the HuggingFace tokenzier.
+- Fix token level classification prediction dataframes created from results.
+- Large refactoring of word piece mapping in `TokenizedDocument`.
+- Default to non-padding model truncation in HuggingFace tokenizer.
+- Merged `Feature{Sentence,Document}DataPoint` into `TokenContainerDataPoint`.
+- Folded directories with single module into parent name:
+  - `zensols.deepnlp.batch.domain` -> `zensols.deepnlp.batch`
+  - `zensols.deepnlp.cli.app` -> `zensols.deepnlp.cli`
+  - `zensols.deepnlp.feature.stash` -> `zensols.deepnlp.feature`
+  - `zensols.deepnlp.score.bertscore` -> `zensols.deepnlp.score`
+- Fold in [zensols.nlparse] `TokenAnnotatedFeatureDocument` class name typo.
+
+
 ## [1.11.1] - 2024-01-04
 ### Changed
 - Fix fill-mask example after spaCy 3.6 upgrade.
@@ -291,7 +307,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.11.1...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.12.0...HEAD
+[1.12.0]: https://github.com/plandes/deepnlp/compare/v1.11.1...v1.12.0
 [1.11.1]: https://github.com/plandes/deepnlp/compare/v1.11.0...v1.11.1
 [1.11.0]: https://github.com/plandes/deepnlp/compare/v1.10.1...v1.11.0
 [1.10.1]: https://github.com/plandes/deepnlp/compare/v1.10.0...v1.10.1
