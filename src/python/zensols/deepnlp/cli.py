@@ -11,12 +11,12 @@ import logging
 from pathlib import Path
 import pandas as pd
 from zensols.persist import dealloc, Stash
-from zensols.config import Settings
+from zensols.config import Settings, Writable
 from zensols.cli import ActionCliManager, ApplicationError
 from zensols.nlp import FeatureDocument
 from zensols.deeplearn import ModelError
 from zensols.deeplearn.batch import Batch, DataPoint
-from zensols.deeplearn.model import ModelFacade
+from zensols.deeplearn.model import ModelFacade, ModelUnpacker
 from zensols.deeplearn.cli import FacadeApplication
 from zensols.deepnlp.classify import (
     LabeledFeatureDocumentDataPoint, LabeledFeatureDocument
@@ -156,3 +156,68 @@ class NLPSequenceClassifyFacadeModelApplication(NLPFacadeModelApplication):
             for labels, doc in zip(classes, docs):
                 for label, tok in zip(labels, doc.token_iter()):
                     print(label, tok)
+
+
+@dataclass
+class NLPClassifyPackedModelApplication(object):
+    """Classifies data used a packed model.  The :obj:`unpacker` is used to
+    install the model (if not already), then provide access to it.  A
+    :class:`~zensols.deeplearn.model.facade.ModelFacade` is created from
+    packaged model that is downloaded.  The model then uses the facade's
+    :meth:`zensols.deeplearn.model.facade.ModelFacade.predict` method to output
+    the predictions.
+
+    """
+    CLI_META = {
+        'option_excludes': {'unpacker'},
+        'option_overrides': {
+            'text_or_file': {'long_name': 'input', 'metavar': '<TEXT|FILE>'},
+            'verbose': {'short_name': None}},
+        'mnemonic_excludes': {'predict'},
+        'mnemonic_overrides': {
+            'write_predictions': 'predict',
+            # careful of 'info' name collision in FacadeInfoApplication;
+            # override with something shorter in subclass decorator
+            'write_model_info': 'modelstat'}}
+
+    unpacker: ModelUnpacker = field()
+    """The model source."""
+
+    @property
+    def facade(self) -> ModelFacade:
+        """The packaged model's facade."""
+        return self.unpacker.facade
+
+    def predict(self, sents: Tuple[str]) -> Tuple[Any]:
+        """Predcit sentiment for each sentence in ``sents``."""
+        return self.facade.predict(sents)
+
+    def write_predictions(self, text_or_file: str, verbose: bool = False):
+        """Predict sentement of sentence(s).
+
+        :param text_or_file: newline delimited file of sentences or a sentence
+
+        :param verbose: write verbose prediction output
+
+        """
+        sents: Tuple[str] = text_or_file,
+        path = Path(text_or_file)
+        if path.is_file():
+            with open(path) as f:
+                sents = tuple(map(str.strip, f.readlines()))
+        try:
+            for pred in self.predict(sents):
+                if verbose:
+                    if isinstance(pred, Writable):
+                        pred.write()
+                    else:
+                        print(repr(pred))
+                else:
+                    print(pred)
+        except BrokenPipeError:
+            # don't complain for UNIX pipe (i.e. head)
+            pass
+
+    def write_model_info(self):
+        """Write the model information and metrics."""
+        self.unpacker.write()
