@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.13.0] - 2024-03-07
+### Added
+- A CLI application for prediction using packaged models.
+
+### Changed
+- Upgrade [zensols.deeplearn] v1.11.0 for updated model packaging, downloading
+  and inferencing.
+
+
 ## [1.12.0] - 2024-02-27
 ### Changed
 - Fix sizing of logits to padded output for sequence transformer for truncated
@@ -87,7 +96,7 @@ Downstream moderate risk update release.
 
 ## [1.7.0] - 2023-02-02
 ### Changed
-- Upgraded [zensols.util] to 1.12.1.
+- Upgraded [zensols.util] to 1.13.0.
 
 
 ## [1.6.0] - 2023-01-23
@@ -307,7 +316,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.12.0...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.13.0...HEAD
+[1.13.0]: https://github.com/plandes/deepnlp/compare/v1.12.0...v1.13.0
 [1.12.0]: https://github.com/plandes/deepnlp/compare/v1.11.1...v1.12.0
 [1.11.1]: https://github.com/plandes/deepnlp/compare/v1.11.0...v1.11.1
 [1.11.0]: https://github.com/plandes/deepnlp/compare/v1.10.1...v1.11.0
