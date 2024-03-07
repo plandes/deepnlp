@@ -1,0 +1,10 @@
+<map id="inheritanceb1f361da1e" name="inheritanceb1f361da1e">
+<area shape="rect" id="node1" title="Helper class that provides a standard way to create an ABC using" alt="" coords="205,5,277,36"/>
+<area shape="rect" id="node2" title="All subclasses have the ability to deallocate any resources. &#160;This is" alt="" coords="175,84,306,115"/>
+<area shape="rect" id="node3" title="Base class for applications that use :class:`.ModelFacade`." alt="" coords="155,163,326,193"/>
+<area shape="rect" id="node5" href="#zensols.deepnlp.cli.NLPFacadeModelApplication" target="_top" title="A base class facade application for predicting tokens or text." alt="" coords="63,241,317,272"/>
+<area shape="rect" id="node7" href="#zensols.deepnlp.cli.NLPFacadeBatchApplication" target="_top" title="A facade application for creating mini&#45;batches for training." alt="" coords="342,241,593,272"/>
+<area shape="rect" id="node4" href="#zensols.deepnlp.cli.NLPClassifyFacadeModelApplication" target="_top" title="A facade application for predicting text (for example sentiment" alt="" coords="5,320,324,351"/>
+<area shape="rect" id="node8" href="#zensols.deepnlp.cli.NLPSequenceClassifyFacadeModelApplication" target="_top" title="A facade application for predicting tokens (for example NER tasks)." alt="" coords="348,320,747,351"/>
+<area shape="rect" id="node6" href="#zensols.deepnlp.cli.NLPClassifyPackedModelApplication" target="_top" title="Classifies data used a packed model. &#160;The :obj:`unpacker` is used to" alt="" coords="452,5,771,36"/>
+</map>

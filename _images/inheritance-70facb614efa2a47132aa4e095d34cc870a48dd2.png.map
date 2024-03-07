@@ -1,0 +1,9 @@
+<map id="inheritanced20ee00933" name="inheritanced20ee00933">
+<area shape="rect" id="node1" title="Helper class that provides a standard way to create an ABC using" alt="" coords="35,5,107,36"/>
+<area shape="rect" id="node2" title="All subclasses have the ability to deallocate any resources. &#160;This is" alt="" coords="5,84,136,115"/>
+<area shape="rect" id="node5" href="#zensols.deepnlp.layer.embed.EmbeddingLayer" target="_top" title="A class used as an input layer to provide word embeddings to a deep neural" alt="" coords="85,163,243,193"/>
+<area shape="rect" id="node3" title="A utility base class that makes logging more understandable." alt="" coords="161,84,295,115"/>
+<area shape="rect" id="node4" title="Base class for all neural network modules." alt="" coords="187,5,269,36"/>
+<area shape="rect" id="node6" href="#zensols.deepnlp.layer.embed.TrainableEmbeddingLayer" target="_top" title="A non&#45;frozen embedding layer that has grad on parameters." alt="" coords="47,241,281,272"/>
+<area shape="rect" id="node7" href="#zensols.deepnlp.layer.wordvec.WordVectorEmbeddingLayer" target="_top" title="An input embedding layer. &#160;This uses an instance of" alt="" coords="37,320,291,351"/>
+</map>

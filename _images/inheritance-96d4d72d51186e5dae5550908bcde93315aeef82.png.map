@@ -1,0 +1,12 @@
+<map id="inheritance1b49ea0e51" name="inheritance1b49ea0e51">
+<area shape="rect" id="node1" title="Helper class that provides a standard way to create an ABC using" alt="" coords="279,5,351,36"/>
+<area shape="rect" id="node2" title="All subclasses have the ability to deallocate any resources. &#160;This is" alt="" coords="88,84,219,115"/>
+<area shape="rect" id="node6" title="An interface for classes that have multi&#45;line debuging capability." alt="" coords="271,84,359,115"/>
+<area shape="rect" id="node8" title="Any subclass that has the ability (and need) to do preprocessing. &#160;For" alt="" coords="397,163,501,193"/>
+<area shape="rect" id="node7" title="Classes can extend this that want to persist :class:`.PersistedWork`" alt="" coords="32,163,221,193"/>
+<area shape="rect" id="node3" href="#zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel" target="_top" title="This class uses the Stanford pretrained GloVE embeddings as a ``dict`` like" alt="" coords="158,399,421,429"/>
+<area shape="rect" id="node4" href="#zensols.deepnlp.embed.wordtext.TextWordEmbedModel" target="_top" title="Extensions of this class read a text vectors file and compile, then write" alt="" coords="186,320,393,351"/>
+<area shape="rect" id="node5" title="A class that that generates a dictionary recursively from data classes" alt="" coords="271,163,358,193"/>
+<area shape="rect" id="node10" href="#zensols.deepnlp.embed.wordtext.TextWordModelMetadata" target="_top" title="Describes a text based :class:`.WordEmbedModel`. &#160;This information in this" alt="" coords="203,241,427,272"/>
+<area shape="rect" id="node9" href="#zensols.deepnlp.embed.domain.WordEmbedModel" target="_top" title="This is an abstract base class that represents a set of word vectors" alt="" coords="5,241,179,272"/>
+</map>

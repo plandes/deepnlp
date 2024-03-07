@@ -1,0 +1,7 @@
+<map id="inheritance9d40cbd9f6" name="inheritance9d40cbd9f6">
+<area shape="rect" id="node1" title="Helper class that provides a standard way to create an ABC using" alt="" coords="64,5,136,36"/>
+<area shape="rect" id="node2" title="All subclasses have the ability to deallocate any resources. &#160;This is" alt="" coords="35,84,165,115"/>
+<area shape="rect" id="node3" title="Classes can extend this that want to persist :class:`.PersistedWork`" alt="" coords="5,163,195,193"/>
+<area shape="rect" id="node5" href="#zensols.deepnlp.embed.domain.WordEmbedModel" target="_top" title="This is an abstract base class that represents a set of word vectors" alt="" coords="13,241,187,272"/>
+<area shape="rect" id="node4" href="#zensols.deepnlp.embed.word2vec.Word2VecModel" target="_top" title="Load keyed or non&#45;keyed Gensim models." alt="" coords="23,320,177,351"/>
+</map>

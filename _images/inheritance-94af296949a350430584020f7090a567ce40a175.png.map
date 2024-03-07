@@ -1,0 +1,14 @@
+<map id="inheritancebe4800a423" name="inheritancebe4800a423">
+<area shape="rect" id="node1" title="Helper class that provides a standard way to create an ABC using" alt="" coords="266,5,338,36"/>
+<area shape="rect" id="node4" title="An interface for classes that have multi&#45;line debuging capability." alt="" coords="95,163,183,193"/>
+<area shape="rect" id="node5" title="All subclasses have the ability to deallocate any resources. &#160;This is" alt="" coords="237,84,367,115"/>
+<area shape="rect" id="node8" title="Any subclass that has the ability (and need) to do preprocessing. &#160;For" alt="" coords="375,241,479,272"/>
+<area shape="rect" id="node2" title="ConfigurableVectorization(name: str, config_factory: zensols.config.facbase.ConfigFactory)" alt="" coords="33,241,259,272"/>
+<area shape="rect" id="node10" title="An asbstrct base class that transforms a Python object in to a PyTorch" alt="" coords="64,320,228,351"/>
+<area shape="rect" id="node3" title="Classes can extend this that want to persist :class:`.PersistedWork`" alt="" coords="207,163,397,193"/>
+<area shape="rect" id="node6" href="#zensols.deepnlp.index.domain.DocumentIndexVectorizer" target="_top" title="A vectorizer that generates vectorized features based on the index documents" alt="" coords="210,635,439,665"/>
+<area shape="rect" id="node12" href="#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer" target="_top" title="Train a latent semantic indexing (LSI, aka LSA) model from::" alt="" coords="139,713,510,744"/>
+<area shape="rect" id="node7" href="zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizer" target="_top" title="Creates document or sentence level features using instances of" alt="" coords="32,556,279,587"/>
+<area shape="rect" id="node9" title="This vectorizer splits transformation up in to encoding and decoding." alt="" coords="21,399,271,429"/>
+<area shape="rect" id="node11" title="Instances of this class use the output of" alt="" coords="5,477,287,508"/>
+</map>

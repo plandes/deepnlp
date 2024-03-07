@@ -1,0 +1,23 @@
+<map id="inheritance6b9c684f3b" name="inheritance6b9c684f3b">
+<area shape="rect" id="node1" title="Helper class that provides a standard way to create an ABC using" alt="" coords="136,5,203,33"/>
+<area shape="rect" id="node4" title="All subclasses have the ability to deallocate any resources. &#160;This is" alt="" coords="109,78,230,106"/>
+<area shape="rect" id="node6" title="An interface for classes that have multi&#45;line debuging capability." alt="" coords="5,78,87,106"/>
+<area shape="rect" id="node9" title="Implementations can add, remove or modify features on a document." alt="" coords="253,78,482,106"/>
+<area shape="rect" id="node2" href="#zensols.deepnlp.transformer.wordpiece.CachingWordPieceFeatureDocumentFactory" target="_top" title="Caches the documents and their embeddings in a" alt="" coords="505,78,859,106"/>
+<area shape="rect" id="node3" href="#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocumentFactory" target="_top" title="Create instances of :class:`.WordPieceFeatureDocument` from" alt="" coords="536,5,828,33"/>
+<area shape="rect" id="node13" title="Classes can extend this that want to persist :class:`.PersistedWork`" alt="" coords="123,151,298,179"/>
+<area shape="rect" id="node5" title="A class that that generates a dictionary recursively from data classes" alt="" coords="19,151,100,179"/>
+<area shape="rect" id="node14" title="A *writable* class that has a ``text`` property or attribute. &#160;All" alt="" coords="5,224,129,253"/>
+<area shape="rect" id="node15" href="#zensols.deepnlp.transformer.wordpiece.WordPiece" target="_top" title="The word piece data." alt="" coords="152,224,254,253"/>
+<area shape="rect" id="node7" title="A container class of tokens that make a document. &#160;This class contains a" alt="" coords="232,370,387,399"/>
+<area shape="rect" id="node17" href="#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocument" target="_top" title="A document made up of word piece sentences." alt="" coords="218,443,455,472"/>
+<area shape="rect" id="node8" title="A base class for token container classes such as" alt="" coords="268,297,405,326"/>
+<area shape="rect" id="node11" title="A span of tokens as a :class:`.TokenContainer`, much like" alt="" coords="650,370,768,399"/>
+<area shape="rect" id="node18" href="#zensols.deepnlp.transformer.wordpiece.WordPieceTokenContainer" target="_top" title="Like :class:`~zensols.nlp.container.TokenContainer` but contains word" alt="" coords="409,370,628,399"/>
+<area shape="rect" id="node16" href="#zensols.deepnlp.transformer.wordpiece.WordPieceDocumentDecorator" target="_top" title="Populates sentence and token embeddings in the documents." alt="" coords="321,151,573,179"/>
+<area shape="rect" id="node10" title="A container class of tokens that make a sentence. &#160;Instances of this" alt="" coords="620,443,769,472"/>
+<area shape="rect" id="node19" href="#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureSentence" target="_top" title="WordPieceFeatureSentence(tokens: &#39;Tuple[FeatureToken, ...]&#39;, text: &#39;str&#39; = None, spacy_span: &#39;Span&#39; = None, embedding: &#39;Tensor&#39; = None)" alt="" coords="511,589,741,618"/>
+<area shape="rect" id="node20" href="#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureSpan" target="_top" title="A sentence made up of word pieces." alt="" coords="460,516,659,545"/>
+<area shape="rect" id="node12" title="A container class for features about a token. &#160;Subclasses such as" alt="" coords="46,297,169,326"/>
+<area shape="rect" id="node21" href="#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureToken" target="_top" title="The token and the word pieces that repesent it." alt="" coords="6,370,210,399"/>
+</map>

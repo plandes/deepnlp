@@ -1,0 +1,43 @@
+zensols.deepnlp.index package
+=============================
+
+Submodules
+----------
+
+zensols.deepnlp.index.domain
+----------------------------
+.. inheritance-diagram:: zensols.deepnlp.index.domain
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.index.domain
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.index.lda
+-------------------------
+.. inheritance-diagram:: zensols.deepnlp.index.lda
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.index.lda
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.index.lsi
+-------------------------
+.. inheritance-diagram:: zensols.deepnlp.index.lsi
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.index.lsi
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: zensols.deepnlp.index
+   :members:
+   :undoc-members:
+   :show-inheritance:

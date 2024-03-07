@@ -1,0 +1,10 @@
+<map id="inheritance179fe8706e" name="inheritance179fe8706e">
+<area shape="rect" id="node1" title="Helper class that provides a standard way to create an ABC using" alt="" coords="144,5,216,36"/>
+<area shape="rect" id="node4" title="All subclasses have the ability to deallocate any resources. &#160;This is" alt="" coords="49,84,180,115"/>
+<area shape="rect" id="node7" title="An interface for classes that have multi&#45;line debuging capability." alt="" coords="219,163,307,193"/>
+<area shape="rect" id="node2" href="#zensols.deepnlp.classify.facade.ClassifyModelFacade" target="_top" title="A facade for the text classification. &#160;See super classes for more" alt="" coords="84,399,279,429"/>
+<area shape="rect" id="node8" href="#zensols.deepnlp.classify.facade.TokenClassifyModelFacade" target="_top" title="A token level classification model facade." alt="" coords="60,477,303,508"/>
+<area shape="rect" id="node3" href="zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacade" target="_top" title="A facade that supports natural language model feature updating through a" alt="" coords="75,320,287,351"/>
+<area shape="rect" id="node6" title="Classes can extend this that want to persist :class:`.PersistedWork`" alt="" coords="5,163,195,193"/>
+<area shape="rect" id="node5" title="This class provides easy to use client entry points to the model" alt="" coords="115,241,247,272"/>
+</map>

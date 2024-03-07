@@ -1,0 +1,13 @@
+<map id="inheritancebf363bcfb1" name="inheritancebf363bcfb1">
+<area shape="rect" id="node1" title="Helper class that provides a standard way to create an ABC using" alt="" coords="161,5,233,36"/>
+<area shape="rect" id="node3" title="A dictionary&#45;like pure virtual class for CRUDing data, most of which read" alt="" coords="105,84,177,115"/>
+<area shape="rect" id="node11" title="Any subclass that has the ability (and need) to do preprocessing. &#160;For" alt="" coords="201,84,305,115"/>
+<area shape="rect" id="node2" title="Any stash that has a resource that needs to be closed." alt="" coords="5,163,153,193"/>
+<area shape="rect" id="node6" title="Delegate pattern. &#160;It can also be used as a no&#45;op if no delegate is" alt="" coords="24,241,164,272"/>
+<area shape="rect" id="node10" title="Any subclass that has the ability to do processing before any CRUD method" alt="" coords="177,163,328,193"/>
+<area shape="rect" id="node4" href="#zensols.deepnlp.feature.DataframeDocumentFeatureStash" target="_top" title="Creates :class:`.FeatureDocument` instances from :class:`pandas.Series`" alt="" coords="46,635,345,665"/>
+<area shape="rect" id="node5" href="#zensols.deepnlp.feature.DocumentFeatureStash" target="_top" title="This class parses natural language text in to :class:`.FeatureDocument`" alt="" coords="89,556,302,587"/>
+<area shape="rect" id="node9" title="Provide support for preemptively creating data in a stash. &#160;It provides" alt="" coords="29,320,189,351"/>
+<area shape="rect" id="node7" title="A stash that forks processes to process data in a distributed fashion." alt="" coords="109,477,281,508"/>
+<area shape="rect" id="node8" title="A stash that&#39;s primable and preemptive." alt="" coords="79,399,311,429"/>
+</map>
