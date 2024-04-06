@@ -82,7 +82,7 @@ class WordVectorEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
     FEATURE_TYPE = TextFeatureType.EMBEDDING
 
     token_feature_id: str = field(default='norm')
-    """The :class:`~zensols.nlp.FeatureToken` attribute used to index the
+    """The :class:`~zensols.nlp.tok.FeatureToken` attribute used to index the
     embedding vectors.
 
     """
