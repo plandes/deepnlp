@@ -66,8 +66,8 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
     FEATURE_TYPE = TextFeatureType.TOKEN
 
     decoded_feature_ids: Set[str] = field(default=None)
-    """The spaCy generated features used during *only* decoding (see class docs).
-    Examples include ``norm``, ``ent``, ``dep``, ``tag``.  When set to
+    """The spaCy generated features used during *only* decoding (see class
+    docs).  Examples include ``norm``, ``ent``, ``dep``, ``tag``.  When set to
     ``None``, use all those given in the
     :obj:`~.FeatureDocumentVectorizerManager.spacy_vectorizers`.
 
@@ -118,8 +118,8 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
                 arr[six, tix, col_start:col_end] = vec
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
-        """Encode tokens found in the container by aggregating the spaCy vectorizers
-        output.
+        """Encode tokens found in the container by aggregating the spaCy
+        vectorizers output.
 
         """
         arr = self.torch_config.zeros(self._get_shape_for_document(doc))
@@ -139,8 +139,8 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
             self.feature_id, arr, self.torch_config)
 
     def _slice_by_attributes(self, arr: Tensor) -> Tensor:
-        """Create a new tensor from column based slices of the encoded tensor for each
-        specified feature id given in :obj:`decoded_feature_ids`.
+        """Create a new tensor from column based slices of the encoded tensor
+        for each specified feature id given in :obj:`decoded_feature_ids`.
 
         """
         keeps = set(self.decoded_feature_ids)
@@ -200,8 +200,8 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
 
 @dataclass
 class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
-    """Vectorize the counts of parsed spaCy features.  This generates the count of
-    tokens as a S X M * N tensor where S is the number of sentences, M is the
+    """Vectorize the counts of parsed spaCy features.  This generates the count
+    of tokens as a S X M * N tensor where S is the number of sentences, M is the
     number of token feature ids and N is the number of columns of the output of
     the :class:`.SpacyFeatureVectorizer` vectorizer.  Each column position's
     count represents the number of counts for that spacy symol for that index
@@ -232,10 +232,10 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
 
     def get_feature_counts(self, sent: FeatureSentence,
                            fvec: SpacyFeatureVectorizer) -> Tensor:
-        """Return the count of all tokens as a S X N tensor where S is the number of
-        sentences, N is the columns of the ``fvec`` vectorizer.  Each column
-        position's count represents the number of counts for that spacy symol
-        for that index position in the ``fvec``.
+        """Return the count of all tokens as a S X N tensor where S is the
+        number of sentences, N is the columns of the ``fvec`` vectorizer.  Each
+        column position's count represents the number of counts for that spacy
+        symol for that index position in the ``fvec``.
 
         """
         fid = fvec.feature_id
@@ -268,8 +268,8 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
             self.feature_id, arr, self.torch_config)
 
     def _slice_by_attributes(self, arr: Tensor) -> Tensor:
-        """Create a new tensor from column based slices of the encoded tensor for each
-        specified feature id given in :obj:`decoded_feature_ids`.
+        """Create a new tensor from column based slices of the encoded tensor
+        for each specified feature id given in :obj:`decoded_feature_ids`.
 
         """
         keeps = set(self.decoded_feature_ids)
@@ -447,7 +447,16 @@ class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
         if len(root) == 1:
             root = root[0]
             tree = {tid_to_idx[root.i]: 0}
-            self._dep_branch(root, toks, tid_to_idx, 1, tree)
+            try:
+                self._dep_branch(root, toks, tid_to_idx, 1, tree)
+            except Exception as e:
+                dstr: str = 'Could not vectorize depth for'
+                try:
+                    dstr = f'sentence <{dstr}>, root: {root}, tree: {tree}'
+                except Exception as e:
+                    dstr = f'{dstr} <error: {e}>'
+                raise VectorizerError(
+                    f'Could not vectorize depth for : <{dstr}>') from e
             return map(lambda x: (x[0], toks[x[0]], x[1]), tree.items())
         else:
             return ()
@@ -654,9 +663,10 @@ class OverlappingFeatureDocumentVectorizer(MultiDocumentVectorizer):
 
 @dataclass
 class MutualFeaturesContainerFeatureVectorizer(MultiDocumentVectorizer):
-    """Vectorize the shared count of all tokens as a S X M * N tensor, where S is
-    the number of sentences, M is the number of token feature ids and N is the
-    columns of the output of the :class:`.SpacyFeatureVectorizer` vectorizer.
+    """Vectorize the shared count of all tokens as a S X M * N tensor, where S
+    is the number of sentences, M is the number of token feature ids and N is
+    the columns of the output of the :class:`.SpacyFeatureVectorizer`
+    vectorizer.
 
     This uses an instance of :class:`CountEnumContainerFeatureVectorizer` to
     compute across each spacy feature and then sums them up for only those
