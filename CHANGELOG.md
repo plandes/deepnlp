@@ -9,7 +9,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ## [1.14.0] - 2024-04-14
-
 ### Changed
 - Guard on cycles in botched dependency head trees when creating features.
 - Upgrade [zensols.nlparse] to 1.11.0.
