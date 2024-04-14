@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.14.0] - 2024-04-14
+
+### Changed
+- Guard on cycles in botched dependency head trees when creating features.
+- Upgrade [zensols.nlparse] to 1.11.0.
+
+
 ## [1.13.0] - 2024-03-07
 ### Added
 - A CLI application for prediction using packaged models.
@@ -316,7 +323,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.13.0...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.13.1...HEAD
+[1.13.1]: https://github.com/plandes/deepnlp/compare/v1.13.0...v1.13.1
 [1.13.0]: https://github.com/plandes/deepnlp/compare/v1.12.0...v1.13.0
 [1.12.0]: https://github.com/plandes/deepnlp/compare/v1.11.1...v1.12.0
 [1.11.1]: https://github.com/plandes/deepnlp/compare/v1.11.0...v1.11.1
