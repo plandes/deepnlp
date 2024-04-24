@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- The default for the word piece feature document parser/factory uses an
+  in-memory cache instead of file system.  Currently persisting embeddings
+  added to features and sentences is not implemented.
+
 
 ## [1.14.0] - 2024-04-14
 ### Changed
