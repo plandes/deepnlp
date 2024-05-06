@@ -100,9 +100,9 @@ encode_transformed to False or encode_tokenized to True.""")
         if self.embed_model.output != expected:
             raise VectorizerError(f"""\
 Some vectorizers only work at the token level, so output such as \
-`{expected}`, which provides an output for each token in the \
-transformer embedding, is required, got: `{self.embed_model.output}` \
-for attribute `output`""")
+'{expected}', which provides an output for each token in the \
+transformer embedding, is required, got: '{self.embed_model.output}' \
+for attribute `output` in '{self.name}'""")
 
     @property
     def feature_type(self) -> TextFeatureType:
