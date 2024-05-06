@@ -99,8 +99,9 @@ class FeatureDocumentVectorizer(TransformableFeatureVectorizer,
 
     def encode(self, doc: Union[Tuple[FeatureDocument], FeatureDocument]) -> \
             FeatureContext:
-        """Encode by combining documents in to one monolithic document when a tuple is
-        passed, otherwise default to the super class's encode functionality.
+        """Encode by combining documents in to one monolithic document when a
+        tuple is passed, otherwise default to the super class's encode
+        functionality.
 
         """
         self._assert_doc(doc)
@@ -114,8 +115,8 @@ class FeatureDocumentVectorizer(TransformableFeatureVectorizer,
                 f'Expecting FeatureDocument, but got type: {type(doc)}')
 
     def _assert_decoded_doc_dim(self, arr: Tensor, expect: int):
-        """Check the decoded document dimesion and rase an error for those that do not
-        match.
+        """Check the decoded document dimesion and rase an error for those that
+        do not match.
 
         """
         if len(arr.size()) != expect:
@@ -124,10 +125,10 @@ class FeatureDocumentVectorizer(TransformableFeatureVectorizer,
 
     @property
     def feature_type(self) -> TextFeatureType:
-        """The type of feature this vectorizer generates.  This is used by classes such
-        as :class:`~zensols.deepnlp.layer.EmbeddingNetworkModule` to determine
-        where to add the features, such as concating to the embedding layer,
-        join layer etc.
+        """The type of feature this vectorizer generates.  This is used by
+        classes such as :class:`~zensols.deepnlp.layer.EmbeddingNetworkModule`
+        to determine where to add the features, such as concating to the
+        embedding layer, join layer etc.
 
         """
         return self.FEATURE_TYPE
@@ -161,8 +162,8 @@ class FoldingDocumentVectorizer(FeatureDocumentVectorizer, metaclass=ABCMeta):
     _FOLD_METHODS = frozenset('raise concat_tokens sentence separate'.split())
 
     fold_method: str = field()
-    """How multiple documents are merged in to a single document for vectorization,
-    which is one of:
+    """How multiple documents are merged in to a single document for
+    vectorization, which is one of:
 
         * ``raise``: raise an error allowing only single documents to be
           vectorized
@@ -362,8 +363,8 @@ class FeatureDocumentVectorizerManager(FeatureVectorizerManager):
 
     """
     token_feature_ids: Set[str] = field(default=None)
-    """Indicates which spaCy parsed features to generate in the vectorizers held in
-    this instance.  Examples include ``norm``, ``ent``, ``dep``, ``tag``.
+    """Indicates which spaCy parsed features to generate in the vectorizers held
+    in this instance.  Examples include ``norm``, ``ent``, ``dep``, ``tag``.
 
     If this is not set, it defaults to the the `token_feature_ids` in
     :obj:`doc_parser`.
@@ -378,7 +379,8 @@ class FeatureDocumentVectorizerManager(FeatureVectorizerManager):
         if self.token_feature_ids is None:
             self.token_feature_ids = self.doc_parser.token_feature_ids
         else:
-            feat_diff = self.token_feature_ids - self.doc_parser.token_feature_ids
+            feat_diff = self.token_feature_ids - \
+                self.doc_parser.token_feature_ids
             if len(feat_diff) > 0:
                 fdiffs = ', '.join(feat_diff)
                 raise VectorizerError(
@@ -389,16 +391,17 @@ class FeatureDocumentVectorizerManager(FeatureVectorizerManager):
 
     @property
     def is_batch_token_length(self) -> bool:
-        """Return whether or not the token length is variable based on the longest
-        token length in the batch.
+        """Return whether or not the token length is variable based on the
+        longest token length in the batch.
 
         """
         return self.token_length < 0
 
     def get_token_length(self, doc: FeatureDocument) -> int:
-        """Get the token length for the document.  If :obj:`is_batch_token_length` is
-        ``True``, then the token length is computed based on the longest
-        sentence in the document ``doc``.  See the class docs.
+        """Get the token length for the document.  If
+        :obj:`is_batch_token_length` is ``True``, then the token length is
+        computed based on the longest sentence in the document ``doc``.  See the
+        class docs.
 
         :param doc: used to compute the longest sentence if
                     :obj:`is_batch_token_length` is ``True``
@@ -430,8 +433,8 @@ class FeatureDocumentVectorizerManager(FeatureVectorizerManager):
     @property
     @persisted('_spacy_vectorizers')
     def spacy_vectorizers(self) -> Dict[str, SpacyFeatureVectorizer]:
-        """Return vectorizers based on the :obj:`token_feature_ids` configured on this
-        instance.  Keys are token level feature ids found in
+        """Return vectorizers based on the :obj:`token_feature_ids` configured
+        on this instance.  Keys are token level feature ids found in
         :obj:`.SpacyFeatureVectorizer.VECTORIZERS`.
 
         :return: an :class:`collections.OrderedDict` of vectorizers
