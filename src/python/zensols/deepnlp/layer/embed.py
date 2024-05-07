@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 from dataclasses import dataclass, field
 from typing import Callable
 import logging
@@ -33,8 +33,8 @@ logger = logging.getLogger(__name__)
 
 
 class EmbeddingLayer(DebugModule, Deallocatable):
-    """A class used as an input layer to provide word embeddings to a deep neural
-    network.
+    """A class used as an input layer to provide word embeddings to a deep
+    neural network.
 
     **Important**: you must always check for attributes in
     :meth:`~zensols.persist.dealloc.Deallocatable.deallocate` since it might be
@@ -45,7 +45,8 @@ class EmbeddingLayer(DebugModule, Deallocatable):
     about initialization order.
 
     """
-    def __init__(self, feature_vectorizer_manager: FeatureDocumentVectorizerManager,
+    def __init__(self,
+                 feature_vectorizer_manager: FeatureDocumentVectorizerManager,
                  embedding_dim: int, sub_logger: logging.Logger = None,
                  trainable: bool = False):
         """Initialize.
@@ -190,7 +191,7 @@ class EmbeddingNetworkModule(BaseNetworkModule):
       * ``embedding_attribute_names`` the name of the word embedding vectorized
         feature attribute names (usually one, but possible to have more)
 
-      * ``embedding_output_size`` the outpu size of the embedding layer, note
+      * ``embedding_output_size`` the output size of the embedding layer, note
         this includes any features layered/concated given in all token level
         vectorizer's configuration
 
@@ -250,7 +251,6 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         self._embedding_layers = self._map_embedding_layers()
         self._embedding_sequence = nn.Sequential(
             *tuple(self._embedding_layers.values()))
-        field: BatchFieldMetadata
         meta: BatchMetadata = self.net_settings.batch_metadata
         fba: Dict[str, BatchFieldMetadata] = meta.fields_by_attribute
         if logger.isEnabledFor(logging.DEBUG):
@@ -279,8 +279,10 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         location as keys.
 
         """
-        els: Tuple[EmbeddingLayer]
-        els = self.net_settings.embedding_layer
+        els: Union[EmbeddingLayer, List[EmbeddingLayer, ...]] = \
+            self.net_settings.embedding_layer
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'embedding layers: {els}')
         if not isinstance(els, (tuple, list)):
             els = [els]
         return {id(el.embed_model): el for el in els}
@@ -291,6 +293,8 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         member datastructures.
 
         """
+        if logger.isEnabledFor(logging.DEBUG):
+            self._debug(f'adding for vec {vec}:')
         attr = field_meta.field.attr
         if vec.feature_type == TextFeatureType.TOKEN:
             if logger.isEnabledFor(logging.DEBUG):
@@ -330,8 +334,8 @@ class EmbeddingNetworkModule(BaseNetworkModule):
 
     @property
     def embedding_dimension(self) -> int:
-        """Return the dimension of the embeddings, which doesn't include any additional
-        token or document features potentially added.
+        """Return the dimension of the embeddings, which doesn't include any
+        additional token or document features potentially added.
 
         """
         return sum(map(lambda ec: ec.dim, self._embedding_containers))
@@ -361,7 +365,7 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         decoded: bool = False
         is_tok_vec: bool = isinstance(ec.vectorizer, EmbeddingFeatureVectorizer)
         x: Tensor = ec.get_embedding_tensor(batch)
-        self._shape_debug('input', x)
+        self._shape_debug('embedding input', x)
         if self.logger.isEnabledFor(logging.DEBUG):
             self._debug(f'vectorizer type: {type(ec.vectorizer)}')
         if is_tok_vec:
@@ -370,6 +374,9 @@ class EmbeddingNetworkModule(BaseNetworkModule):
                 self._debug(f'is embedding already decoded: {decoded}')
         if not decoded:
             x = ec.embedding_layer(x)
+            if self.logger.isEnabledFor(logging.DEBUG):
+                s: str = f'embedding transform output from {ec.embedding_layer}'
+                self._shape_debug(s, x)
         return x
 
     def forward_embedding_features(self, batch: Batch) -> Tensor:
@@ -417,7 +424,8 @@ class EmbeddingNetworkModule(BaseNetworkModule):
 
     def forward_document_features(self, batch: Batch, x: Tensor = None,
                                   include_fn: Callable = None) -> Tensor:
-        """Concatenate any document features given by the vectorizer configuration.
+        """Concatenate any document features given by the vectorizer
+        configuration.
 
         """
         self._shape_debug('forward document features', x)

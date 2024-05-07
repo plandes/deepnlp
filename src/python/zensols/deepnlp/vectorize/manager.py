@@ -77,12 +77,12 @@ class FeatureDocumentVectorizer(TransformableFeatureVectorizer,
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
         pass
 
-    def _is_mult(self, doc: Union[Tuple[FeatureDocument], FeatureDocument]) \
-            -> bool:
+    def _is_mult(self, doc: Union[Tuple[FeatureDocument, ...],
+                                  FeatureDocument]) -> bool:
         """Return ``True`` or not the input is a tuple (multiple) documents."""
         return isinstance(doc, (Tuple, List))
 
-    def _is_doc(self, doc: Union[Tuple[FeatureDocument], FeatureDocument]):
+    def _is_doc(self, doc: Union[Tuple[FeatureDocument, ...], FeatureDocument]):
         """Return whether ``doc`` is a :class:`.FeatureDocument`."""
         if self._is_mult(doc):
             docs = doc
@@ -93,12 +93,12 @@ class FeatureDocumentVectorizer(TransformableFeatureVectorizer,
             return False
         return True
 
-    def _combine_documents(self, docs: Tuple[FeatureDocument]) -> \
+    def _combine_documents(self, docs: Tuple[FeatureDocument, ...]) -> \
             FeatureDocument:
         return FeatureDocument.combine_documents(docs)
 
-    def encode(self, doc: Union[Tuple[FeatureDocument], FeatureDocument]) -> \
-            FeatureContext:
+    def encode(self, doc: Union[Tuple[FeatureDocument, ...],
+                                FeatureDocument]) -> FeatureContext:
         """Encode by combining documents in to one monolithic document when a
         tuple is passed, otherwise default to the super class's encode
         functionality.
@@ -109,7 +109,8 @@ class FeatureDocumentVectorizer(TransformableFeatureVectorizer,
             doc = self._combine_documents(doc)
         return super().encode(doc)
 
-    def _assert_doc(self, doc: Union[Tuple[FeatureDocument], FeatureDocument]):
+    def _assert_doc(self, doc: Union[Tuple[FeatureDocument, ...],
+                                     FeatureDocument]):
         if not self._is_doc(doc):
             raise VectorizerError(
                 f'Expecting FeatureDocument, but got type: {type(doc)}')
@@ -190,7 +191,7 @@ class FoldingDocumentVectorizer(FeatureDocumentVectorizer, metaclass=ABCMeta):
         if self.fold_method not in self._FOLD_METHODS:
             raise VectorizerError(f'No such fold method: {self.fold_method}')
 
-    def _combine_documents(self, docs: Tuple[FeatureDocument]) -> \
+    def _combine_documents(self, docs: Tuple[FeatureDocument, ...]) -> \
             FeatureDocument:
         if self.fold_method == 'raise' and len(docs) > 1:
             raise VectorizerError(
@@ -231,8 +232,8 @@ class FoldingDocumentVectorizer(FeatureDocumentVectorizer, metaclass=ABCMeta):
                 feature_id=None, contexts=tuple(sent_ctxs)))
         return MultiFeatureContext(self.feature_id, tuple(doc_ctxs))
 
-    def encode(self, doc: Union[Tuple[FeatureDocument], FeatureDocument]) -> \
-            FeatureContext:
+    def encode(self, doc: Union[Tuple[FeatureDocument, ...],
+                                FeatureDocument]) -> FeatureContext:
         ctx: FeatureContext
         if self.fold_method == 'concat_tokens' or \
            self.fold_method == 'sentence':
@@ -247,7 +248,7 @@ class FoldingDocumentVectorizer(FeatureDocumentVectorizer, metaclass=ABCMeta):
             ctx = super().encode(doc)
         return ctx
 
-    def _create_decoded_pad(self, shape: Tuple[int]) -> Tensor:
+    def _create_decoded_pad(self, shape: Tuple[int, ...]) -> Tensor:
         return self.torch_config.zeros(shape)
 
     def _decode_sentence(self, sent_ctx: FeatureContext) -> Tensor:
@@ -258,7 +259,7 @@ class FoldingDocumentVectorizer(FeatureDocumentVectorizer, metaclass=ABCMeta):
         darrs: List[Tensor] = []
         # each multi-context represents a document with sentence context
         # elements
-        doc_ctx: Tuple[MultiFeatureContext]
+        doc_ctx: Tuple[MultiFeatureContext, ...]
         for doc_ctx in context.contexts:
             sent_arrs: List[Tensor] = []
             # decode each sentence and track their decoded tensors for later
@@ -322,7 +323,7 @@ class MultiDocumentVectorizer(FeatureDocumentVectorizer, metaclass=ABCMeta):
     """
     FEATURE_TYPE = TextFeatureType.DOCUMENT
 
-    def encode(self, docs: Tuple[FeatureDocument]) -> FeatureContext:
+    def encode(self, docs: Tuple[FeatureDocument, ...]) -> FeatureContext:
         return self._encode(docs)
 
 

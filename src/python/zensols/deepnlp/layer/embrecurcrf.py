@@ -111,7 +111,6 @@ class EmbeddedRecurrentCRF(EmbeddingNetworkModule, SequenceNetworkModule):
         recur_crf: RecurrentCRF = self.recurcrf
         # no implementation yet for prediction sans-training
         labels: Optional[Tensor] = batch.get_labels()
-        pred_lists: List[List[int]]
 
         emb: Tensor = EmbeddingNetworkModule._forward(self, batch)
         self._shape_debug('embedding', emb)

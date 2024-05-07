@@ -25,8 +25,8 @@ logger = logging.getLogger(__name__)
 @dataclass
 class EmbeddingFeatureVectorizer(FoldingDocumentVectorizer,
                                  Primeable, Dictable):
-    """Vectorize a :class:`~zensols.nlp.container.FeatureDocument` as a vector of
-    embedding indexes.  Later, these indexes are used in a
+    """Vectorize a :class:`~zensols.nlp.container.FeatureDocument` as a vector
+    of embedding indexes.  Later, these indexes are used in a
     :class:`~zensols.deepnlp.layer.embed.EmbeddingLayer` to create the input
     word embedding during execution of the model.
 
