@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Removed
+- `ClassifyModelFacade.feature_stash` property override.  Overriding this
+  property only should be done in sub classes of `ClassifyModelFacade`.
+
+### Added
+- Word piece vectorizer for documents with added word piece embeddings.
+
 ### Changed
 - The default for the word piece feature document parser/factory uses an
   in-memory cache instead of file system.  Currently persisting embeddings

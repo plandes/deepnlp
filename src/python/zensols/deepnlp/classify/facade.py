@@ -56,11 +56,6 @@ class ClassifyModelFacade(LanguageModelFacade):
     def _get_language_model_config(self) -> LanguageModelFacadeConfig:
         return self.LANGUAGE_MODEL_CONFIG
 
-    @property
-    def feature_stash(self) -> Stash:
-        """The stash containing feature instances."""
-        return super().feature_stash.delegate
-
     def get_predictions(self, *args, **kwargs) -> pd.DataFrame:
         """Return a Pandas dataframe of the predictions with columns that
         include the correct label, the prediction, the text and the length of
