@@ -7,7 +7,6 @@ from typing import Iterable, Any, Type
 from dataclasses import dataclass, field
 import logging
 import pandas as pd
-from zensols.persist import Stash
 from zensols.deeplearn import NetworkSettings
 from zensols.deeplearn.result import (
     PredictionsDataFrameFactory,

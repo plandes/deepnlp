@@ -366,18 +366,52 @@ class WordPieceFeatureDocumentFactory(object):
             arrs: Dict[str, Tensor] = self.embed_model.transform(
                 tdoc, TransformerEmbedding.ALL_OUTPUT)
             if self.token_embeddings:
+                logger.debug('adding token embedding')
                 arr: Tensor = arrs[
                     TransformerEmbedding.LAST_HIDDEN_STATE_OUTPUT]
                 self.add_token_embeddings(doc, arr)
+            else:
+                logger.debug('skipping token embedding')
+                tok: FeatureToken
+                for tok in doc.token_iter():
+                    tok.embedding = None
             if self.sent_embeddings:
+                logger.debug('adding sent embedding')
                 arr: Tensor = arrs[TransformerEmbedding.POOLER_OUTPUT]
                 self.add_sent_embeddings(doc, arr)
+            else:
+                logger.debug('skipping sent embedding')
+                for sent in doc.sents:
+                    sent.embedding = None
         return doc
 
     def __call__(self, fdoc: FeatureDocument,
                  tdoc: TokenizedFeatureDocument = None) -> \
             WordPieceFeatureDocument:
         return self.create(fdoc, tdoc)
+
+    def populate(self, doc: FeatureDocument, truncate: bool = False):
+        """Populate sentence embeddings in a document by first feature parsing a
+        new document with :meth:`create` and then copying the embeddings with
+        :meth:`.WordPieceFeatureDocument.copy_embeddings`
+
+        :param truncate: if sentence lengths differ (i.e. from using different
+                         models to chunk sentences) trim the longer document to
+                         match the shorter
+
+        """
+        wpdoc: WordPieceFeatureDocument = self.create(doc)
+        if truncate:
+            slen: int = len(doc)
+            wlen: int = len(wpdoc)
+            if slen != wlen:
+                mx: int = min(slen, wlen)
+                doc.sents = doc.sents[:mx]
+                wpdoc.sents = wpdoc.sents[:mx]
+                logger.warning(
+                    'Word piece doc parser chunked unequal sentence ' +
+                    f'length (org: {slen}) != (wp: {wlen}), trimming larger')
+        wpdoc.copy_embedding(doc)
 
 
 @dataclass
@@ -457,8 +491,12 @@ class WordPieceFeatureVectorizer(EmbeddingFeatureVectorizer):
     DESCRIPTION: ClassVar[str] = 'wordpiece'
     FEATURE_TYPE: ClassVar[TextFeatureType] = TextFeatureType.EMBEDDING
 
+    word_piece_doc_factory: WordPieceFeatureDocumentFactory = field(
+        default=None)
+    """The feature document factory that populates embeddings."""
+
     embed_model: TransformerEmbedding = field(default=None)
-    """Used to populate the embeddings in ``WordPiece*`` classes."""
+    """This field is not applicable to this vectorizer--keep the default."""
 
     encode_transformed: bool = field(default=False)
     """This field is not applicable to this vectorizer--keep the default."""
@@ -471,6 +509,19 @@ class WordPieceFeatureVectorizer(EmbeddingFeatureVectorizer):
     vectorized from the ``embedding`` attribute(s).  Keep the default.
 
     """
+    access: str = field(default='raise')
+    """What to do when accessing the sentence embedding when encoding.  This is
+    one of:
+
+      * ``raise``: raises an error when missing
+      * ``add_missing``: create the embedding only if missing
+      * ``clobber``: always create a new embedding by replacing (if existed)
+
+    """
+    def __post_init__(self):
+        super().__post_init__()
+        self.embed_model = self.word_piece_doc_factory.embed_model
+
     def _get_shape(self) -> Tuple[int, int]:
         return -1, self.embed_model.vector_dimension
 
@@ -499,6 +550,13 @@ class WordPieceFeatureVectorizer(EmbeddingFeatureVectorizer):
                 raise TransformerError(f'No sentinal embedding in: {sent}')
             return sent.embedding
 
+        if len(doc) == 0:
+            raise TransformerError('Empty document')
+        has_emb: bool = hasattr(doc[0], 'embedding')
+        if not has_emb and self.access == 'raise':
+            raise TransformerError(f'No sentinal embedding in: {doc[0]}')
+        if not has_emb or self.access == 'clobber':
+            self.word_piece_doc_factory.populate(doc)
         tensors: Tuple[Tensor, ...] = tuple(map(map_sent, doc.sents))
         return torch.stack(tensors)
 
