@@ -29,6 +29,9 @@ from zensols.nlp import (
     TokenContainer, FeatureToken, FeatureSentence, FeatureDocument,
     FeatureDocumentDecorator,
 )
+from zensols.deeplearn import TorchConfig
+from zensols.deeplearn.vectorize import FeatureContext, TensorFeatureContext
+from ..vectorize import TextFeatureType, EmbeddingFeatureVectorizer
 from . import (
     TransformerError, TokenizedFeatureDocument, TransformerDocumentTokenizer,
     TransformerEmbedding,
@@ -223,6 +226,10 @@ class WordPieceFeatureDocument(FeatureDocument, WordPieceTokenContainer):
         """Copy embeddings (and children) from this instance to ``target``."""
         targ_sent: FeatureSentence
         org_sent: WordPieceFeatureSentence
+        if len(self.sents) != len(target.sents):
+            raise TransformerError(
+                'Can not copy embedding: different length ' +
+                f'sentenes: {len(self.sents)} != {len(target.sents)}')
         for org_sent, targ_sent in zip(self.sents, target.sents):
             org_sent.copy_embedding(targ_sent)
 
@@ -426,6 +433,74 @@ class WordPieceDocumentDecorator(FeatureDocumentDecorator):
     def decorate(self, doc: FeatureDocument):
         wpdoc: WordPieceFeatureDocument = self.word_piece_doc_factory(doc)
         wpdoc.copy_embedding(doc)
+
+
+@dataclass
+class WordPieceFeatureVectorizer(EmbeddingFeatureVectorizer):
+    """Uses the ``embeddings`` attributes added to documents, sentences and
+    tokens populated by :class:`.WordPieceFeatureDocumentFactory`.  Currently
+    only sentence sequences are supported.  For single sentence or token
+    classification, use :mod:`zensols.deepnlp.vectorizers`.
+
+    If aggregated documents are given to the vectorizer, they are flattened into
+    sentences and vectorized in the same was a single document's sentences would
+    be vectorized.  A batch is created for each document and only one batch is
+    created for singleton documents.
+
+    This embedding layer expects the following attribute settings to be left
+    with the defaults set: obj:`encode_transformed`, :obj:`fold_method`,
+    :obj:`decode_embedding`.
+
+    :shape: (|documents|, |sentences|, |embedding dimension|)
+
+    """
+    DESCRIPTION: ClassVar[str] = 'wordpiece'
+    FEATURE_TYPE: ClassVar[TextFeatureType] = TextFeatureType.EMBEDDING
+
+    embed_model: TransformerEmbedding = field(default=None)
+    """Used to populate the embeddings in ``WordPiece*`` classes."""
+
+    encode_transformed: bool = field(default=False)
+    """This field is not applicable to this vectorizer--keep the default."""
+
+    fold_method: str = field(default='raise')
+    """This field is not applicable to this vectorizer--keep the default."""
+
+    decode_embedding: bool = field(default=True)
+    """Turn off the :obj:`embed_model` forward pass to use the embeddings we
+    vectorized from the ``embedding`` attribute(s).  Keep the default.
+
+    """
+    def _get_shape(self) -> Tuple[int, int]:
+        return -1, self.embed_model.vector_dimension
+
+    def _encode(self, doc: FeatureDocument) -> FeatureContext:
+        # parent encode calls this abstract method
+        raise ValueError("Method 'encode' is overridden")
+
+    def encode(self, doc: Union[Tuple[FeatureDocument, ...],
+                                FeatureDocument]) -> FeatureContext:
+        docs: Tuple[FeatureDocument, ...] = \
+            doc if isinstance(doc, (list, tuple)) else [doc]
+        tc: TorchConfig = self.torch_config
+        emb_dim: int = self._get_shape()[1]
+        darrs: Tuple[Tensor, ...] = tuple(map(self._encode_doc, docs))
+        max_len: int = max(map(lambda t: t.size(0), darrs))
+        arr: Tensor = tc.zeros((len(docs), max_len, emb_dim))
+        bix: int
+        darr: Tensor
+        for bix, darr in enumerate(darrs):
+            arr[bix, :darr.size(0), :] = darr
+        return TensorFeatureContext(self.feature_id, arr)
+
+    def _encode_doc(self, doc: FeatureDocument) -> Tensor:
+        def map_sent(sent: FeatureSentence) -> Tensor:
+            if not hasattr(sent, 'embedding'):
+                raise TransformerError(f'No sentinal embedding in: {sent}')
+            return sent.embedding
+
+        tensors: Tuple[Tensor, ...] = tuple(map(map_sent, doc.sents))
+        return torch.stack(tensors)
 
 
 FeatureToken.SKIP_COMPARE_FEATURE_IDS.add('embedding')
