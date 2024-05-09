@@ -49,7 +49,7 @@ class ClassificationPredictionMapper(PredictionMapper):
         """The label vectorizer used to map classes in :meth:`get_classes`."""
         return self.vec_manager[self.label_feature_id]
 
-    def _create_features(self, sent_text: str) -> Tuple[FeatureDocument]:
+    def _create_features(self, sent_text: str) -> Tuple[FeatureDocument, ...]:
         doc: FeatureDocument = self.vec_manager.parse(sent_text)
         self._docs.append(doc)
         return [doc]
@@ -69,7 +69,7 @@ class ClassificationPredictionMapper(PredictionMapper):
         return list(map(lambda cl: vec.get_classes(cl).tolist(), nominals))
 
     def map_results(self, result: ResultsContainer) -> \
-            Tuple[LabeledFeatureDocument]:
+            Tuple[LabeledFeatureDocument, ...]:
         """Map class predictions, logits, and documents generated during use of
         this instance.  Each data point is aggregated across batches.
 
@@ -97,7 +97,7 @@ class SequencePredictionMapper(ClassificationPredictionMapper):
     parsed documents from the sentence text.
 
     """
-    def _create_features(self, sent_text: str) -> Tuple[FeatureSentence]:
+    def _create_features(self, sent_text: str) -> Tuple[FeatureSentence, ...]:
         doc: FeatureDocument = self.vec_manager.parse(sent_text)
         self._docs.append(doc)
         return doc.sents
