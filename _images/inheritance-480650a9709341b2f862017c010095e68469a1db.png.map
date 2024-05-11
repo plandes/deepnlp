@@ -1,0 +1,6 @@
+<map id="inheritance610f622ad4" name="inheritance610f622ad4">
+<area shape="rect" id="node1" title="Helper class that provides a standard way to create an ABC using" alt="" coords="110,5,182,36"/>
+<area shape="rect" id="node2" title="All subclasses have the ability to deallocate any resources. &#160;This is" alt="" coords="81,84,211,115"/>
+<area shape="rect" id="node3" title="Classes can extend this that want to persist :class:`.PersistedWork`" alt="" coords="51,163,241,193"/>
+<area shape="rect" id="node4" href="#zensols.deepnlp.transformer.tokenizer.TransformerDocumentTokenizer" target="_top" title="Creates instances of :class:`.TokenziedFeatureDocument` using a" alt="" coords="5,241,287,272"/>
+</map>

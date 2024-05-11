@@ -1,0 +1,113 @@
+zensols.deepnlp.transformer package
+===================================
+
+Submodules
+----------
+
+zensols.deepnlp.transformer.domain
+----------------------------------
+.. inheritance-diagram:: zensols.deepnlp.transformer.domain
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.transformer.domain
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.transformer.embed
+---------------------------------
+.. inheritance-diagram:: zensols.deepnlp.transformer.embed
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.transformer.embed
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.transformer.layer
+---------------------------------
+.. inheritance-diagram:: zensols.deepnlp.transformer.layer
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.transformer.layer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.transformer.mask
+--------------------------------
+.. inheritance-diagram:: zensols.deepnlp.transformer.mask
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.transformer.mask
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.transformer.optimizer
+-------------------------------------
+.. inheritance-diagram:: zensols.deepnlp.transformer.optimizer
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.transformer.optimizer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.transformer.pred
+--------------------------------
+.. inheritance-diagram:: zensols.deepnlp.transformer.pred
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.transformer.pred
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.transformer.resource
+------------------------------------
+.. inheritance-diagram:: zensols.deepnlp.transformer.resource
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.transformer.resource
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.transformer.tokenizer
+-------------------------------------
+.. inheritance-diagram:: zensols.deepnlp.transformer.tokenizer
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.transformer.tokenizer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.transformer.vectorizers
+---------------------------------------
+.. inheritance-diagram:: zensols.deepnlp.transformer.vectorizers
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.transformer.vectorizers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.transformer.wordpiece
+-------------------------------------
+.. inheritance-diagram:: zensols.deepnlp.transformer.wordpiece
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.transformer.wordpiece
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: zensols.deepnlp.transformer
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,73 @@
+zensols.deepnlp.embed package
+=============================
+
+Submodules
+----------
+
+zensols.deepnlp.embed.doc
+-------------------------
+.. inheritance-diagram:: zensols.deepnlp.embed.doc
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.embed.doc
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.embed.domain
+----------------------------
+.. inheritance-diagram:: zensols.deepnlp.embed.domain
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.embed.domain
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.embed.fasttext
+------------------------------
+.. inheritance-diagram:: zensols.deepnlp.embed.fasttext
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.embed.fasttext
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.embed.glove
+---------------------------
+.. inheritance-diagram:: zensols.deepnlp.embed.glove
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.embed.glove
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.embed.word2vec
+------------------------------
+.. inheritance-diagram:: zensols.deepnlp.embed.word2vec
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.embed.word2vec
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.embed.wordtext
+------------------------------
+.. inheritance-diagram:: zensols.deepnlp.embed.wordtext
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.embed.wordtext
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: zensols.deepnlp.embed
+   :members:
+   :undoc-members:
+   :show-inheritance:

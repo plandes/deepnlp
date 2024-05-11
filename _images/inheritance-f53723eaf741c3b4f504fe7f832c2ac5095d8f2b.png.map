@@ -1,0 +1,8 @@
+<map id="inheritancec2c981a210" name="inheritancec2c981a210">
+<area shape="rect" id="node1" title="Helper class that provides a standard way to create an ABC using" alt="" coords="144,5,216,36"/>
+<area shape="rect" id="node2" title="All subclasses have the ability to deallocate any resources. &#160;This is" alt="" coords="49,84,180,115"/>
+<area shape="rect" id="node5" title="An interface for classes that have multi&#45;line debuging capability." alt="" coords="219,163,307,193"/>
+<area shape="rect" id="node3" title="Classes can extend this that want to persist :class:`.PersistedWork`" alt="" coords="5,163,195,193"/>
+<area shape="rect" id="node4" href="#zensols.deepnlp.transformer.domain.TokenizedDocument" target="_top" title="This is the tokenized document output of" alt="" coords="88,241,275,272"/>
+<area shape="rect" id="node6" href="#zensols.deepnlp.transformer.domain.TokenizedFeatureDocument" target="_top" title="Instance of this class are created, then a picklable version returned" alt="" coords="57,320,305,351"/>
+</map>

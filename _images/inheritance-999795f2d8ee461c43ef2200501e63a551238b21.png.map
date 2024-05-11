@@ -1,0 +1,6 @@
+<map id="inheritance834b87e152" name="inheritance834b87e152">
+<area shape="rect" id="node1" title="Helper class that provides a standard way to create an ABC using" alt="" coords="219,5,291,36"/>
+<area shape="rect" id="node2" title="An abstract factory that creates either an optimizer or criteria by the" alt="" coords="150,84,359,115"/>
+<area shape="rect" id="node3" href="#zensols.deepnlp.transformer.optimizer.TransformerAdamFactory" target="_top" title="TransformerAdamFactory" alt="" coords="5,163,235,193"/>
+<area shape="rect" id="node4" href="#zensols.deepnlp.transformer.optimizer.TransformerSchedulerFactory" target="_top" title="Unified API to get any scheduler from its name. &#160;This simply calls" alt="" coords="259,163,522,193"/>
+</map>

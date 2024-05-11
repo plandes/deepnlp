@@ -1,0 +1,53 @@
+zensols.deepnlp.vectorize package
+=================================
+
+Submodules
+----------
+
+zensols.deepnlp.vectorize.embed
+-------------------------------
+.. inheritance-diagram:: zensols.deepnlp.vectorize.embed
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.vectorize.embed
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.vectorize.manager
+---------------------------------
+.. inheritance-diagram:: zensols.deepnlp.vectorize.manager
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.vectorize.manager
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.vectorize.spacy
+-------------------------------
+.. inheritance-diagram:: zensols.deepnlp.vectorize.spacy
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.vectorize.spacy
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.vectorize.vectorizers
+-------------------------------------
+.. inheritance-diagram:: zensols.deepnlp.vectorize.vectorizers
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.vectorize.vectorizers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: zensols.deepnlp.vectorize
+   :members:
+   :undoc-members:
+   :show-inheritance:

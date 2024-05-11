@@ -1,0 +1,10 @@
+<map id="inheritance809259820e" name="inheritance809259820e">
+<area shape="rect" id="node1" title="Helper class that provides a standard way to create an ABC using" alt="" coords="121,5,193,36"/>
+<area shape="rect" id="node3" title="All subclasses have the ability to deallocate any resources. &#160;This is" alt="" coords="41,84,172,115"/>
+<area shape="rect" id="node5" title="An interface for classes that have multi&#45;line debuging capability." alt="" coords="211,84,299,115"/>
+<area shape="rect" id="node2" href="#zensols.deepnlp.model.sequence.BioSequenceAnnotationMapper" target="_top" title="Matches feature documents/tokens with spaCy document/tokens and entity" alt="" coords="423,5,700,36"/>
+<area shape="rect" id="node6" title="Classes can extend this that want to persist :class:`.PersistedWork`" alt="" coords="5,163,195,193"/>
+<area shape="rect" id="node4" title="A class that that generates a dictionary recursively from data classes" alt="" coords="219,163,306,193"/>
+<area shape="rect" id="node7" href="#zensols.deepnlp.model.sequence.SequenceAnnotation" target="_top" title="An annotation of a pair matching feature and spaCy tokens." alt="" coords="5,241,195,272"/>
+<area shape="rect" id="node8" href="#zensols.deepnlp.model.sequence.SequenceDocumentAnnotation" target="_top" title="Contains token annotations for a :class:`~zensols.nlp.FeatureDocument` as a" alt="" coords="219,241,491,272"/>
+</map>

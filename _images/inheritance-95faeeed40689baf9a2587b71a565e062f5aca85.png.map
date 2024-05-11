@@ -1,0 +1,8 @@
+<map id="inheritance1b23b85f12" name="inheritance1b23b85f12">
+<area shape="rect" id="node1" title="Helper class that provides a standard way to create an ABC using" alt="" coords="105,5,177,36"/>
+<area shape="rect" id="node4" title="All subclasses have the ability to deallocate any resources. &#160;This is" alt="" coords="75,84,206,115"/>
+<area shape="rect" id="node2" href="#zensols.deepnlp.classify.pred.ClassificationPredictionMapper" target="_top" title="A prediction mapper for text classification. &#160;This mapper works at any" alt="" coords="5,320,276,351"/>
+<area shape="rect" id="node6" href="#zensols.deepnlp.classify.pred.SequencePredictionMapper" target="_top" title="Predicts sequences as a :class:`~zensols.config.serial.Settings` with" alt="" coords="18,399,263,429"/>
+<area shape="rect" id="node3" title="Used by a top level client to create features used to create instances of" alt="" coords="59,241,223,272"/>
+<area shape="rect" id="node5" title="Classes can extend this that want to persist :class:`.PersistedWork`" alt="" coords="46,163,235,193"/>
+</map>

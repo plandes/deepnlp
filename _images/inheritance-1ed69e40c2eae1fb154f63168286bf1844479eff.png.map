@@ -1,0 +1,10 @@
+<map id="inheritance1660b3c72a" name="inheritance1660b3c72a">
+<area shape="rect" id="node1" title="Helper class that provides a standard way to create an ABC using" alt="" coords="64,5,136,36"/>
+<area shape="rect" id="node3" title="All subclasses have the ability to deallocate any resources. &#160;This is" alt="" coords="35,84,165,115"/>
+<area shape="rect" id="node2" title="Base exception from which almost all library raised errors extend." alt="" coords="293,5,384,36"/>
+<area shape="rect" id="node4" title="Raised for any frame originated error." alt="" coords="263,84,414,115"/>
+<area shape="rect" id="node5" title="Classes can extend this that want to persist :class:`.PersistedWork`" alt="" coords="5,163,195,193"/>
+<area shape="rect" id="node6" href="#zensols.deepnlp.embed.domain.WordEmbedError" target="_top" title="Raised for any errors pertaining to word vectors." alt="" coords="257,163,420,193"/>
+<area shape="rect" id="node7" href="#zensols.deepnlp.embed.domain.WordEmbedModel" target="_top" title="This is an abstract base class that represents a set of word vectors" alt="" coords="13,241,187,272"/>
+<area shape="rect" id="node8" href="#zensols.deepnlp.embed.domain.WordVectorModel" target="_top" title="Vector data from the model" alt="" coords="563,5,730,36"/>
+</map>

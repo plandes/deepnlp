@@ -1,0 +1,8 @@
+<map id="inheritanceb91f2de0ba" name="inheritanceb91f2de0ba">
+<area shape="rect" id="node1" title="Helper class that provides a standard way to create an ABC using" alt="" coords="95,5,167,36"/>
+<area shape="rect" id="node3" title="An interface for classes that have multi&#45;line debuging capability." alt="" coords="87,84,175,115"/>
+<area shape="rect" id="node2" title="A class that that generates a dictionary recursively from data classes" alt="" coords="88,163,175,193"/>
+<area shape="rect" id="node5" href="#zensols.deepnlp.transformer.mask.Prediction" target="_top" title="A container class for masked token predictions produced by" alt="" coords="5,241,108,272"/>
+<area shape="rect" id="node6" href="#zensols.deepnlp.transformer.mask.TokenPrediction" target="_top" title="Couples a masked model prediction token to which it belongs and its" alt="" coords="132,241,283,272"/>
+<area shape="rect" id="node4" href="#zensols.deepnlp.transformer.mask.MaskFiller" target="_top" title="The class fills masked tokens with the prediction of the underlying maked" alt="" coords="504,5,609,36"/>
+</map>

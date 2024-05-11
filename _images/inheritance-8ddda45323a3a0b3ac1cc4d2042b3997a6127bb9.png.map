@@ -1,0 +1,12 @@
+<map id="inheritance97b600ed37" name="inheritance97b600ed37">
+<area shape="rect" id="node1" title="Helper class that provides a standard way to create an ABC using" alt="" coords="380,5,444,32"/>
+<area shape="rect" id="node4" title="An interface for classes that have multi&#45;line debuging capability." alt="" coords="314,145,393,173"/>
+<area shape="rect" id="node5" title="All subclasses have the ability to deallocate any resources. &#160;This is" alt="" coords="426,75,543,102"/>
+<area shape="rect" id="node2" title="ConfigurableVectorization(name: str, config_factory: zensols.config.facbase.ConfigFactory)" alt="" coords="325,216,527,243"/>
+<area shape="rect" id="node8" title="An asbstrct base class that transforms a Python object in to a PyTorch" alt="" coords="353,286,499,313"/>
+<area shape="rect" id="node3" title="Classes can extend this that want to persist :class:`.PersistedWork`" alt="" coords="414,145,583,173"/>
+<area shape="rect" id="node6" href="#zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer" target="_top" title="A feature vectorizor for dependency head trees." alt="" coords="5,427,242,454"/>
+<area shape="rect" id="node7" href="#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer" target="_top" title="This normalizes feature IDs of parsed token features in to a number between" alt="" coords="330,356,522,384"/>
+<area shape="rect" id="node9" href="#zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer" target="_top" title="A feature vectorizor for NER tags." alt="" coords="264,427,588,454"/>
+<area shape="rect" id="node10" href="#zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer" target="_top" title="A feature vectorizor for POS tags." alt="" coords="610,427,859,454"/>
+</map>

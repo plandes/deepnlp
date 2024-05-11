@@ -1,0 +1,6 @@
+<map id="inheritanceda9fc1cabd" name="inheritanceda9fc1cabd">
+<area shape="rect" id="node1" title="Helper class that provides a standard way to create an ABC using" alt="" coords="114,5,186,36"/>
+<area shape="rect" id="node3" title="Implementations can add, remove or modify features on a token container." alt="" coords="5,84,295,115"/>
+<area shape="rect" id="node2" title="Implementations can add, remove or modify features on a document." alt="" coords="27,163,273,193"/>
+<area shape="rect" id="node4" href="#zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator" target="_top" title="Populates sentence and token embeddings in the documents. &#160;Token&#39;s have" alt="" coords="7,241,293,272"/>
+</map>

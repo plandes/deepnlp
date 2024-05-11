@@ -1,0 +1,9 @@
+<map id="inheritance286a584d2d" name="inheritance286a584d2d">
+<area shape="rect" id="node1" title="Helper class that provides a standard way to create an ABC using" alt="" coords="131,5,203,36"/>
+<area shape="rect" id="node2" title="All subclasses have the ability to deallocate any resources. &#160;This is" alt="" coords="49,84,180,115"/>
+<area shape="rect" id="node7" title="An interface for classes that have multi&#45;line debuging capability." alt="" coords="219,163,307,193"/>
+<area shape="rect" id="node6" title="Classes can extend this that want to persist :class:`.PersistedWork`" alt="" coords="5,163,195,193"/>
+<area shape="rect" id="node3" href="#zensols.deepnlp.model.facade.LanguageModelFacade" target="_top" title="A facade that supports natural language model feature updating through a" alt="" coords="51,320,263,351"/>
+<area shape="rect" id="node4" title="This class provides easy to use client entry points to the model" alt="" coords="91,241,223,272"/>
+<area shape="rect" id="node5" href="#zensols.deepnlp.model.facade.LanguageModelFacadeConfig" target="_top" title="Configuration that defines how and what to access language configuration" alt="" coords="432,5,696,36"/>
+</map>

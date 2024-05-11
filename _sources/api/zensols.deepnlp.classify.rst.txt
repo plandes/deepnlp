@@ -1,0 +1,53 @@
+zensols.deepnlp.classify package
+================================
+
+Submodules
+----------
+
+zensols.deepnlp.classify.domain
+-------------------------------
+.. inheritance-diagram:: zensols.deepnlp.classify.domain
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.classify.domain
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.classify.facade
+-------------------------------
+.. inheritance-diagram:: zensols.deepnlp.classify.facade
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.classify.facade
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.classify.model
+------------------------------
+.. inheritance-diagram:: zensols.deepnlp.classify.model
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.classify.model
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.classify.pred
+-----------------------------
+.. inheritance-diagram:: zensols.deepnlp.classify.pred
+   :parts: 1
+
+.. automodule:: zensols.deepnlp.classify.pred
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: zensols.deepnlp.classify
+   :members:
+   :undoc-members:
+   :show-inheritance:
