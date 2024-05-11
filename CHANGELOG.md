@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
-## [1.14.0] - 2024-05-11
+## [1.15.0] - 2024-05-11
 ### Removed
 - `ClassifyModelFacade.feature_stash` property override.  Overriding this
   property only should be done in sub classes of `ClassifyModelFacade`.
