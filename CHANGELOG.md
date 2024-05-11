@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+
+## [1.14.0] - 2024-05-11
 ### Removed
 - `ClassifyModelFacade.feature_stash` property override.  Overriding this
   property only should be done in sub classes of `ClassifyModelFacade`.
@@ -19,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   in-memory cache instead of file system.  Currently persisting embeddings
   added to features and sentences is not implemented.
 - Add new RNN layer defaults for easier configuration.
+- Rename `word_piece_*` resource library configuration.
 
 
 ## [1.14.0] - 2024-04-14
@@ -335,7 +338,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.13.1...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.14.0...HEAD
+[1.14.0]: https://github.com/plandes/deepnlp/compare/v1.13.1...v1.14.0
 [1.13.1]: https://github.com/plandes/deepnlp/compare/v1.13.0...v1.13.1
 [1.13.0]: https://github.com/plandes/deepnlp/compare/v1.12.0...v1.13.0
 [1.12.0]: https://github.com/plandes/deepnlp/compare/v1.11.1...v1.12.0
