@@ -33,6 +33,11 @@ include ./zenbuild/main.mk
 modeldeps:
 		$(PIP_BIN) install $(PIP_ARGS) -r $(PY_SRC)/requirements-model.txt
 
+# install score method dependencies
+.PHONY:			scoredeps
+scoredeps:
+			$(PIP_BIN) install $(PIP_ARGS) -r $(PY_SRC)/requirements-score.txt
+
 # clean example output
 .PHONY:		exampleclean
 exampleclean:
