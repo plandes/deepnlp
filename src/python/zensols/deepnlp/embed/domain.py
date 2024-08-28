@@ -291,3 +291,26 @@ class WordEmbedModel(PersistableContainer, metaclass=ABCMeta):
         if self._data_inst.is_set():
             s += f', num words={len(self)}, dim={self.vector_dimension}'
         return s
+
+
+@dataclass(init=False)
+class NoOpWordEmbedModel(WordEmbedModel):
+    """A no operational implementation of a :class:`.WordEmbedModel`.  This is
+    useful in unit test cases that download large models that do not fit on
+    GitHub's workflow actions environments.
+
+    """
+    def __init__(self, name: str, *args, **kwargs):
+        self._id = f'No op {name}: [args={args}, kwargs={kwargs}]'
+        super().__init__(name=name)
+
+    def _get_model_id(self) -> str:
+        return self._id
+
+    def _create_data(self) -> WordVectorModel:
+        vecs = np.array([[0, 0]])
+        return WordVectorModel(
+            vectors=vecs,
+            word2vec={self.UNKNOWN: vecs},
+            words=[self.UNKNOWN],
+            word2idx={self.UNKNOWN: 0})

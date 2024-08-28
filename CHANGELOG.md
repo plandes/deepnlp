@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.15.1] - 2024-08-28
+### Added
+- A no operational implementation (`NoOpWordEmbedModel`) of `WordEmbedModel`.
+  This is used in unit test cases that download large models that do not fit
+  on GitHub's workflow actions environments.
+
+
 ## [1.15.0] - 2024-05-11
 ### Removed
 - `ClassifyModelFacade.feature_stash` property override.  Overriding this
@@ -338,7 +345,9 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.14.0...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.15.1...HEAD
+[1.15.1]: https://github.com/plandes/deepnlp/compare/v1.15.0...v1.15.1
+[1.15.0]: https://github.com/plandes/deepnlp/compare/v1.14.0...v1.15.0
 [1.14.0]: https://github.com/plandes/deepnlp/compare/v1.13.1...v1.14.0
 [1.13.1]: https://github.com/plandes/deepnlp/compare/v1.13.0...v1.13.1
 [1.13.0]: https://github.com/plandes/deepnlp/compare/v1.12.0...v1.13.0
