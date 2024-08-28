@@ -114,9 +114,9 @@ class WordEmbedModel(PersistableContainer, metaclass=ABCMeta):
     """
 
     lowercase: bool = field(default=False)
-    """If ``True``, downcase each word for all methods that take a word as input.
-    Use this for embeddings that are only lower case in order to find more hits
-    when querying for words that have uppercase characters.
+    """If ``True``, downcase each word for all methods that take a word as
+    input.  Use this for embeddings that are only lower case in order to find
+    more hits when querying for words that have uppercase characters.
 
     """
     def __post_init__(self):
@@ -125,8 +125,9 @@ class WordEmbedModel(PersistableContainer, metaclass=ABCMeta):
 
     @abstractmethod
     def _get_model_id(self) -> str:
-        """Return a string that uniquely identifies this instance of the embedding
-        model.  This should have the type, size and dimension of the embedding.
+        """Return a string that uniquely identifies this instance of the
+        embedding model.  This should have the type, size and dimension of the
+        embedding.
 
         :see: :obj:`model_id`
 
@@ -155,8 +156,9 @@ class WordEmbedModel(PersistableContainer, metaclass=ABCMeta):
 
     @property
     def model_id(self) -> str:
-        """Return a string that uniquely identifies this instance of the embedding
-        model.  This should have the type, size and dimension of the embedding.
+        """Return a string that uniquely identifies this instance of the
+        embedding model.  This should have the type, size and dimension of the
+        embedding.
 
         This string is used to cache models in both CPU and GPU memory so the
         layers can have the benefit of reusing the same in memeory word
@@ -186,7 +188,8 @@ class WordEmbedModel(PersistableContainer, metaclass=ABCMeta):
         return self.matrix.shape
 
     def to_matrix(self, torch_config: TorchConfig) -> Tensor:
-        """Return a matrix the represents the entire vector embedding as a tensor.
+        """Return a matrix the represents the entire vector embedding as a
+        tensor.
 
         :param torch_config: indicates where to load the new tensor
 
