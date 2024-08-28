@@ -25,8 +25,8 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class TextWordModelMetadata(Dictable):
-    """Describes a text based :class:`.WordEmbedModel`.  This information in this
-    class is used to construct paths both text source vector file and all
+    """Describes a text based :class:`.WordEmbedModel`.  This information in
+    this class is used to construct paths both text source vector file and all
     generated binary files
 
     """
@@ -216,8 +216,8 @@ class TextWordEmbedModel(WordEmbedModel, Primeable, metaclass=ABCMeta):
 
 @dataclass
 class DefaultTextWordEmbedModel(TextWordEmbedModel):
-    """This class uses the Stanford pretrained GloVE embeddings as a ``dict`` like
-    Python object.  It loads the glove vectors from a text file and then
+    """This class uses the Stanford pretrained GloVE embeddings as a ``dict``
+    like Python object.  It loads the glove vectors from a text file and then
     creates a binary file that's quick to load on subsequent uses.
 
     An example configuration would be::
