@@ -106,13 +106,11 @@ class WordEmbedModel(PersistableContainer, metaclass=ABCMeta):
     across word vector type and dimension.
 
     """
-
     cache: bool = field(default=True)
     """If ``True`` globally cache all data strucures, which should be ``False``
     if more than one embedding across a model type is used.
 
     """
-
     lowercase: bool = field(default=False)
     """If ``True``, downcase each word for all methods that take a word as
     input.  Use this for embeddings that are only lower case in order to find
