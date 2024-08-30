@@ -132,11 +132,12 @@ class TransformerEmbedding(PersistableContainer, Dictable):
 
         # a bug in transformers 4.4.2 requires this; 4.12.5 still does
         # https://github.com/huggingface/transformers/issues/2952
-        for attr in 'position_ids token_type_ids'.split():
-            if hasattr(model.embeddings, attr):
-                arr: Tensor = getattr(model.embeddings, attr)
-                if TorchTypes.is_float(arr.dtype):
-                    setattr(model.embeddings, attr, arr.long())
+        if hasattr(model, 'embeddings'):
+            for attr in 'position_ids token_type_ids'.split():
+                if hasattr(model.embeddings, attr):
+                    arr: Tensor = getattr(model.embeddings, attr)
+                    if TorchTypes.is_float(arr.dtype):
+                        setattr(model.embeddings, attr, arr.long())
 
         return model
 
