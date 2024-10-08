@@ -342,7 +342,7 @@ class WordPieceFeatureDocumentFactory(object):
             return ftok.clone(cls=WordPieceFeatureToken, words=words)
 
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'creating embeddings for: {fdoc}')
+            logger.debug(f'creating embeddings for: {fdoc} ({len(fdoc.text)})')
         tdoc = self.tokenizer.tokenize(fdoc) if tdoc is None else tdoc
         sents: List[WordPieceFeatureSentence] = []
         wps: List[Dict[str, Any]] = tdoc.map_to_word_pieces(
