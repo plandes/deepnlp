@@ -50,7 +50,8 @@ class DocumentFeatureStash(MultiProcessStash, metaclass=ABCMeta):
 
     def _process(self, chunk: List[str]) -> \
             Iterable[Tuple[str, FeatureDocument]]:
-        logger.info(f'processing chunk with {len(chunk)} ids')
+        if logger.isEnabledFor(logging.INFO):
+            logger.info(f'processing chunk with {len(chunk)} ids')
         for id, factory_data in map(lambda id: (id, self.factory[id]), chunk):
             data = self._parse_document(id, factory_data)
             yield (id, data)
