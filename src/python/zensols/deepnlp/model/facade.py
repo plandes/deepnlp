@@ -157,7 +157,6 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
 
     def _get_default_token_length(self, embedding: str) -> int:
         lvm: FeatureVectorizerManager = self.language_vectorizer_manager
-        #return self.config.get_option_int('token_length', 'language_defaults')
         return lvm.token_length
 
     @property
@@ -250,14 +249,14 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
         mng_set: FeatureVectorizerManagerSet = self.vectorizer_manager_set
         mng: FeatureVectorizerManager
         for mng in mng_set.values():
-            vec: FeatureVectorizer
+            vc: FeatureVectorizer
             for vc in mng.values():
                 if isinstance(vc, TransformerEmbeddingFeatureVectorizer):
                     return vc
 
     def get_max_word_piece_len(self) -> int:
-        """Get the longest word piece length for the first found configured transformer
-        embedding feature vectorizer.
+        """Get the longest word piece length for the first found configured
+        transformer embedding feature vectorizer.
 
         """
         vec: TransformerEmbeddingFeatureVectorizer = \
@@ -289,7 +288,8 @@ class LanguageModelFacade(ModelFacade, metaclass=ABCMeta):
 
     @property
     def doc_parser(self) -> FeatureDocumentParser:
-        """Return the document parser assocated with the language vectorizer manager.
+        """Return the document parser assocated with the language vectorizer
+        manager.
 
         :see: obj:`language_vectorizer_manager`
 
