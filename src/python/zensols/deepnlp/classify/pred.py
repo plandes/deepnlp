@@ -11,7 +11,10 @@ from zensols.config import Settings
 from zensols.nlp import FeatureSentence, FeatureDocument
 from zensols.deeplearn.vectorize import CategoryEncodableFeatureVectorizer
 from zensols.deeplearn.model import PredictionMapper
-from zensols.deeplearn.result import ResultsContainer
+from zensols.deeplearn.result import (
+    ResultsContainer,
+    PredictionsDataFrameFactory, SequencePredictionsDataFrameFactory
+)
 from zensols.deepnlp.vectorize import FeatureDocumentVectorizerManager
 from . import LabeledFeatureDocument
 
@@ -105,3 +108,39 @@ class SequencePredictionMapper(ClassificationPredictionMapper):
     def map_results(self, result: ResultsContainer) -> Settings:
         classes: List[List[int]] = self._map_classes(result)
         return Settings(classes=tuple(classes), docs=tuple(self._docs))
+
+
+@dataclass
+class ClassifyPredictionsDataFrameFactory(PredictionsDataFrameFactory):
+    """Creates predictions dataframes with columns that include the correct
+    label, the prediction, the text and the length of the text of the text.
+    This uses the token norms of the document.
+
+    """
+    def __post_init__(self):
+        super().__post_init__()
+        self.column_names = ('text', 'len')
+        self.metric_metadata = {
+            'text': 'natural language text',
+            'len': 'length of the sentence'
+        }
+        self.data_point_transform = \
+            lambda dp: (dp.doc.text, len(dp.doc.text))
+
+
+@dataclass
+class TokenClassifyPredictionsDataFrameFactory(
+        SequencePredictionsDataFrameFactory):
+    """Creates predictions dataframes with columns that include the correct
+    label, the prediction, the text and the length of the text of the text.
+    This uses the token norms of the document.
+
+    """
+    def __post_init__(self):
+        super().__post_init__()
+        self.column_names = ('text',)
+        self.metric_metadata = {'text': 'natural language text'}
+        self.data_point_transform = \
+            lambda dp: tuple(map(
+                lambda s: (s,),
+                dp.container.norm_token_iter()))

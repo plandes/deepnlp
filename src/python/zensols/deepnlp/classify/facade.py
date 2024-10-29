@@ -6,16 +6,13 @@ __author__ = 'Paul Landes'
 from typing import Iterable, Any, Type
 from dataclasses import dataclass, field
 import logging
-import pandas as pd
 from zensols.deeplearn import NetworkSettings
-from zensols.deeplearn.result import (
-    PredictionsDataFrameFactory,
-    SequencePredictionsDataFrameFactory,
-)
+from zensols.deeplearn.result import PredictionsDataFrameFactory
+from zensols.deepnlp.classify import TokenClassifyPredictionsDataFrameFactory
 from zensols.deepnlp.model import (
     LanguageModelFacade, LanguageModelFacadeConfig,
 )
-from . import LabeledBatch
+from . import LabeledBatch, ClassifyPredictionsDataFrameFactory
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +34,9 @@ class ClassifyModelFacade(LanguageModelFacade):
     :see: :class:`.LabeledBatch`
 
     """
+    predictions_dataframe_factory_class: Type[PredictionsDataFrameFactory] = \
+        field(default=ClassifyPredictionsDataFrameFactory)
+
     def __post_init__(self, *args, **kwargs):
         super().__post_init__(*args, **kwargs)
         settings: NetworkSettings = self.executor.net_settings
@@ -54,17 +54,6 @@ class ClassifyModelFacade(LanguageModelFacade):
 
     def _get_language_model_config(self) -> LanguageModelFacadeConfig:
         return self.LANGUAGE_MODEL_CONFIG
-
-    def get_predictions(self, *args, **kwargs) -> pd.DataFrame:
-        """Return a Pandas dataframe of the predictions with columns that
-        include the correct label, the prediction, the text and the length of
-        the text of the text.
-
-        """
-        return super().get_predictions(
-            column_names=('text', 'len'),
-            transform=lambda dp: (dp.doc.text, len(dp.doc.text)),
-            *args, **kwargs)
 
     def predict(self, datas: Iterable[Any]) -> Any:
         # remove expensive to load vectorizers for prediction only when we're
@@ -85,24 +74,4 @@ class TokenClassifyModelFacade(ClassifyModelFacade):
 
     """
     predictions_dataframe_factory_class: Type[PredictionsDataFrameFactory] = \
-        field(default=SequencePredictionsDataFrameFactory)
-
-    def get_predictions(self, *args, **kwargs) -> pd.DataFrame:
-        """Return a Pandas dataframe of the predictions with columns that
-        include the correct label, the prediction, the text and the length of
-        the text of the text.  This uses the token norms of the document.
-
-        :see: :meth:`get_predictions_factory`
-
-        :param args: arguments passed to :meth:`get_predictions_factory`
-
-        :param kwargs: arguments passed to :meth:`get_predictions_factory`
-
-        """
-        return LanguageModelFacade.get_predictions(
-            self,
-            column_names=('text',),
-            transform=lambda dp: tuple(map(
-                lambda s: (s,),
-                dp.container.norm_token_iter())),
-            *args, **kwargs)
+        field(default=TokenClassifyPredictionsDataFrameFactory)
