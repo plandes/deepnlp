@@ -7,12 +7,13 @@ from typing import Iterable, Any, Type
 from dataclasses import dataclass, field
 import logging
 from zensols.deeplearn import NetworkSettings
-from zensols.deeplearn.result import PredictionsDataFrameFactory
-from zensols.deepnlp.classify import TokenClassifyPredictionsDataFrameFactory
+from zensols.deeplearn.result import (
+    PredictionsDataFrameFactory, SequencePredictionsDataFrameFactory
+)
 from zensols.deepnlp.model import (
     LanguageModelFacade, LanguageModelFacadeConfig,
 )
-from . import LabeledBatch, ClassifyPredictionsDataFrameFactory
+from . import LabeledBatch
 
 logger = logging.getLogger(__name__)
 
@@ -34,9 +35,6 @@ class ClassifyModelFacade(LanguageModelFacade):
     :see: :class:`.LabeledBatch`
 
     """
-    predictions_dataframe_factory_class: Type[PredictionsDataFrameFactory] = \
-        field(default=ClassifyPredictionsDataFrameFactory)
-
     def __post_init__(self, *args, **kwargs):
         super().__post_init__(*args, **kwargs)
         settings: NetworkSettings = self.executor.net_settings
@@ -54,6 +52,16 @@ class ClassifyModelFacade(LanguageModelFacade):
 
     def _get_language_model_config(self) -> LanguageModelFacadeConfig:
         return self.LANGUAGE_MODEL_CONFIG
+
+    def _create_predictions_factory(self, **kwargs) -> \
+            PredictionsDataFrameFactory:
+        kwargs.update(dict(
+            column_names=('text', 'len'),
+            metric_metadata={
+                'text': 'natural language text',
+                'len': 'length of the sentence'},
+            data_point_transform=lambda dp: (dp.doc.text, len(dp.doc.text))))
+        return super()._create_predictions_factory(**kwargs)
 
     def predict(self, datas: Iterable[Any]) -> Any:
         # remove expensive to load vectorizers for prediction only when we're
@@ -74,4 +82,14 @@ class TokenClassifyModelFacade(ClassifyModelFacade):
 
     """
     predictions_dataframe_factory_class: Type[PredictionsDataFrameFactory] = \
-        field(default=TokenClassifyPredictionsDataFrameFactory)
+        field(default=SequencePredictionsDataFrameFactory)
+
+    def _create_predictions_factory(self, **kwargs) -> \
+            PredictionsDataFrameFactory:
+        kwargs.update(dict(
+            column_names=('text',),
+            metric_metadata={'text': 'natural language text'},
+            data_point_transform=lambda dp: tuple(map(
+                lambda s: (s,),
+                dp.container.norm_token_iter()))))
+        return LanguageModelFacade._create_predictions_factory(self, **kwargs)
