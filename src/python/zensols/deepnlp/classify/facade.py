@@ -55,6 +55,7 @@ class ClassifyModelFacade(LanguageModelFacade):
 
     def _create_predictions_factory(self, **kwargs) -> \
             PredictionsDataFrameFactory:
+        kwargs = dict(kwargs)
         kwargs.update(dict(
             column_names=('text', 'len'),
             metric_metadata={
@@ -86,6 +87,7 @@ class TokenClassifyModelFacade(ClassifyModelFacade):
 
     def _create_predictions_factory(self, **kwargs) -> \
             PredictionsDataFrameFactory:
+        kwargs = dict(kwargs)
         kwargs.update(dict(
             column_names=('text',),
             metric_metadata={'text': 'natural language text'},
