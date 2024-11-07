@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, List, Iterable
+from typing import Tuple, List, Dict, Iterable
 from dataclasses import dataclass, field
 from itertools import chain as ch
 import numpy as np
@@ -79,12 +79,16 @@ class ClassificationPredictionMapper(PredictionMapper):
         """
         class_groups: List[List[str]] = self._map_classes(result)
         classes: Iterable[str] = ch.from_iterable(class_groups)
-        logits: Iterable[np.ndarray] = ch.from_iterable(result.batch_outputs)
+        blogits: Iterable[np.ndarray] = ch.from_iterable(result.batch_outputs)
         docs: List[FeatureDocument] = self._docs
         labels: List[str] = self.label_vectorizer.label_encoder.classes_
-        for cl, doc, logits in zip(classes, docs, logits):
-            conf = np.exp(logits) / sum(np.exp(logits))
-            sms = dict(zip(labels, conf))
+
+        cl: str
+        doc: FeatureDocument
+        logits: np.ndarray
+        for cl, doc, logits in zip(classes, docs, blogits):
+            conf: np.ndarray = np.exp(logits) / sum(np.exp(logits))
+            sms: Dict[str, np.ndarray] = dict(zip(labels, conf))
             setattr(doc, self.pred_attribute, cl)
             setattr(doc, self.softmax_logit_attribute, sms)
         return tuple(docs)
