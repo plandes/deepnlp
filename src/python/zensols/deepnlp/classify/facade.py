@@ -10,10 +10,7 @@ from zensols.deeplearn import NetworkSettings
 from zensols.deeplearn.result import (
     PredictionsDataFrameFactory, SequencePredictionsDataFrameFactory
 )
-from zensols.deepnlp.model import (
-    LanguageModelFacade, LanguageModelFacadeConfig,
-)
-from . import LabeledBatch
+from zensols.deepnlp.model import LanguageModelFacade, LanguageModelFacadeConfig
 
 logger = logging.getLogger(__name__)
 
@@ -26,15 +23,88 @@ class ClassifyModelFacade(LanguageModelFacade):
     All the ``set_*`` methods set parameters in the model.
 
     """
-    LANGUAGE_MODEL_CONFIG = LanguageModelFacadeConfig(
-        manager_name=LabeledBatch.LANGUAGE_FEATURE_MANAGER_NAME,
-        attribs=LabeledBatch.LANGUAGE_ATTRIBUTES,
-        embedding_attribs=LabeledBatch.EMBEDDING_ATTRIBUTES)
-    """The label model configuration constructed from the batch metadata.
-
-    :see: :class:`.LabeledBatch`
+    LANGUAGE_FEATURE_MANAGER_NAME = 'language_vectorizer_manager'
+    """The configuration section of the definition of the
+    :class:`~zensols.deepnlp.vectorize.FeatureDocumentVectorizerManager`.
 
     """
+    GLOVE_50_EMBEDDING = 'glove_50_embedding'
+    """The configuration section name of the glove embedding
+    :class:`~zensols.deepnlp.embed.GloveWordEmbedModel` class.
+
+    """
+    GLOVE_300_EMBEDDING = 'glove_300_embedding'
+    """The configuration section name of the glove embedding
+    :class:`~zensols.deepnlp.embed.GloveWordEmbedModel` class.
+
+    """
+    WORD2VEC_300_EMBEDDING = 'word2vec_300_embedding'
+    """The configuration section name of the the Google word2vec embedding
+    :class:`~zensols.deepnlp.embed.Word2VecModel` class.
+
+    """
+    FASTTEXT_NEWS_300_EMBEDDING = 'fasttext_news_300_embedding'
+    """The configuration section name of the fasttext news embedding
+    :class:`~zensols.deepnlp.embed.FastTextEmbedModel` class.
+
+    """
+    FASTTEXT_CRAWL_300_EMBEDDING = 'fasttext_crawl_300_embedding'
+    """The configuration section name of the fasttext crawl embedding
+    :class:`~zensols.deepnlp.embed.FastTextEmbedModel` class.
+
+    """
+    TRANSFORMER_TRAINBLE_EMBEDDING = 'transformer_trainable_embedding'
+    """The configuration section name of the BERT transformer contextual
+    embedding :class:`~zensols.deepnlp.transformer.TransformerEmbedding` class.
+
+    """
+    TRANSFORMER_FIXED_EMBEDDING = 'transformer_fixed_embedding'
+    """Like :obj:`TRANSFORMER_TRAINBLE_EMBEDDING`, but all layers of the
+    tranformer are frozen and only the static embeddings are used.
+
+    """
+    EMBEDDING_ATTRIBUTES = {GLOVE_50_EMBEDDING,
+                            GLOVE_300_EMBEDDING,
+                            GLOVE_300_EMBEDDING,
+                            WORD2VEC_300_EMBEDDING,
+                            FASTTEXT_NEWS_300_EMBEDDING,
+                            FASTTEXT_CRAWL_300_EMBEDDING,
+                            TRANSFORMER_TRAINBLE_EMBEDDING,
+                            TRANSFORMER_FIXED_EMBEDDING}
+    """All embedding feature section names."""
+
+    STATS_ATTRIBUTE = 'stats'
+    """The statistics feature attribute name."""
+
+    ENUMS_ATTRIBUTE = 'enums'
+    """The enumeration feature attribute name."""
+
+    COUNTS_ATTRIBUTE = 'counts'
+    """The feature counts attribute name."""
+
+    DEPENDENCIES_ATTRIBUTE = 'dependencies'
+    """The dependency feature attribute name."""
+
+    ENUM_EXPANDER_ATTRIBUTE = 'transformer_enum_expander'
+    """Expands enumerated spaCy features to transformer wordpiece alignment."""
+
+    DEPENDENCY_EXPANDER_ATTRIBTE = 'transformer_dep_expander'
+    """Expands dependency tree spaCy features to transformer wordpiece
+    alignment.
+
+    """
+    LANGUAGE_ATTRIBUTES = {
+        STATS_ATTRIBUTE, ENUMS_ATTRIBUTE, COUNTS_ATTRIBUTE,
+        DEPENDENCIES_ATTRIBUTE,
+        ENUM_EXPANDER_ATTRIBUTE, DEPENDENCY_EXPANDER_ATTRIBTE}
+    """All linguistic feature attribute names."""
+
+    LANGUAGE_MODEL_CONFIG = LanguageModelFacadeConfig(
+        manager_name=LANGUAGE_FEATURE_MANAGER_NAME,
+        attribs=LANGUAGE_ATTRIBUTES,
+        embedding_attribs=EMBEDDING_ATTRIBUTES)
+    """The label model configuration constructed from the batch metadata."""
+
     def __post_init__(self, *args, **kwargs):
         super().__post_init__(*args, **kwargs)
         settings: NetworkSettings = self.executor.net_settings
