@@ -3,10 +3,11 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, Any
+from typing import Tuple, Dict, Any
 from dataclasses import dataclass, field
 import sys
 from io import TextIOBase
+import numpy as np
 from zensols.persist import persisted
 from zensols.nlp import (
     TokenContainer, FeatureDocument,
@@ -70,7 +71,28 @@ class TokenContainerDataPoint(DataPoint):
 
 
 @dataclass
-class LabeledFeatureDocument(FeatureDocument):
+class PredictionFeatureDocument(FeatureDocument):
+    """A feature document with a label, used for text classification.
+
+    """
+    softmax_logit: Dict[str, np.ndarray] = field(default=None)
+    """The document level softmax of the logits.
+
+    :see: :obj:`.ClassificationPredictionMapper.softmax_logit_attribute`
+
+    """
+    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
+        super().write(depth, writer)
+        sl = self.softmax_logit
+        sm = sl[self.pred] if sl is not None else ''
+        self._write_line(f'softmax logits: {sm}', depth + 1, writer)
+
+    def __str__(self) -> str:
+        return f'{self.softmax_logit}: {self.text}'
+
+
+@dataclass
+class LabeledFeatureDocument(PredictionFeatureDocument):
     """A feature document with a label, used for text classification.
 
     """
@@ -83,25 +105,16 @@ class LabeledFeatureDocument(FeatureDocument):
     :see: :obj:`.ClassificationPredictionMapper.pred_attribute`
 
     """
-    softmax_logit: float = field(default=None)
-    """The document level softmax of the logits.
-
-    :see: :obj:`.ClassificationPredictionMapper.softmax_logit_attribute`
-
-    """
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
         super().write(depth, writer)
-        sl = self.softmax_logit
-        sm = sl[self.pred] if sl is not None else ''
         self._write_line(f'label: {self.label}', depth + 1, writer)
         self._write_line(f'prediction: {self.pred}', depth + 1, writer)
-        self._write_line(f'softmax logits: {sm}', depth + 1, writer)
 
     def __str__(self) -> str:
         lab = '' if self.label is None else f'label: {self.label}'
         pred = ''
         if self.pred is not None:
-            pred = f'pred={self.pred}, logit={self.softmax_logit[self.pred]}'
+            pred = f'pred={self.pred}, '
         mid = ', ' if len(lab) > 0 and len(pred) > 0 else ''
         return (f'{lab}{mid}{pred}: {self.text}')
 
