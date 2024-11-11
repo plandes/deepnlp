@@ -8,7 +8,8 @@ from dataclasses import dataclass, field
 import logging
 from zensols.deeplearn import NetworkSettings
 from zensols.deeplearn.result import (
-    PredictionsDataFrameFactory, SequencePredictionsDataFrameFactory
+    PredictionsDataFrameFactory, SequencePredictionsDataFrameFactory,
+    MultiLabelPredictionsDataFrameFactory,
 )
 from zensols.deepnlp.model import LanguageModelFacade, LanguageModelFacadeConfig
 
@@ -145,6 +146,15 @@ class ClassifyModelFacade(LanguageModelFacade):
                 if emb_conf != feature_attr:
                     self.remove_metadata_mapping_field(feature_attr)
         return super().predict(datas)
+
+
+@dataclass
+class MultilabelClassifyModelFacade(ClassifyModelFacade):
+    """A multi-label sentence and document classification facade.
+
+    """
+    predictions_dataframe_factory_class: Type[PredictionsDataFrameFactory] = \
+        field(default=MultiLabelPredictionsDataFrameFactory)
 
 
 @dataclass
