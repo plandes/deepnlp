@@ -1,0 +1,93 @@
+# @meta {author: 'Paul Landes'}
+# @meta {desc: 'multi-label document classification', date: '2024-11-11'}
+# @meta {doc: 'to be used after classify.conf'}
+
+
+## Natural language parsing
+#
+# override for creating instances of a class that have an attribute for the
+# label of the text classification
+doc_parser:
+  doc_class: 'class: zensols.deepnlp.classify.multilabel.MultiLabelFeatureDocument'
+  components: >-
+    instance: list: mednlp_pyrush_component, mimic_component, mimic_tokenizer_component
+
+# the stash of extracted language features in child processes for SpaCy parsing
+feature_factory_stash:
+  additional_columns: 'list: labels'
+
+# stratified mult-label key splits
+feature_split_key_container:
+  class_name: zensols.dataset.multilabel.MultiLabelStratifierSplitKeyContainer
+  partition_attr: labels
+  split_preference: [test, validation, train]
+
+
+## Vectorization
+#
+# override to provide the labels to vectorize
+classify_label_vectorizer:
+  class_name: zensols.deeplearn.vectorize.NominalMultiLabelEncodedEncodableFeatureVectorizer
+  data_type: 'float${deeplearn_default:fp_precision}'
+  categories: >-
+    call({'param': {'method': 'get_labels'}}): dataframe_stash
+
+
+## Batch
+#
+# multilabel label attribute
+classify_label_batch_mappings:
+  label_attribute_name: labels
+  manager_mappings:
+    - vectorizer_manager_name: classify_label_vectorizer_manager
+      fields:
+        - attr: labels
+          feature_id: lblabel
+          is_agg: true
+
+# make labels plural
+batch_dir_stash:
+  groups: >-
+    eval: (
+       # there will be N (batch_stash:batch_size) batch labels in one file in a
+       # directory of just label files
+       set('labels'.split()),
+       # because we might want to switch between embeddings, separate them
+       set('glove_50_embedding'.split()),
+       set('glove_300_embedding'.split()),
+       set('word2vec_300_embedding'.split()),
+       set('fasttext_news_300_embedding'.split()),
+       set('fasttext_crawl_300_embedding'.split()),
+       set('enums stats counts dependencies'.split()),
+       set('transformer_trainable_embedding'.split()),
+       set('transformer_fixed_embedding'.split()),
+       set('transformer_sent_trainable_embedding'.split()),
+       set('transformer_sent_fixed_embedding'.split()),
+       set('transformer_enum_expander transformer_dep_expander'.split()))
+
+# add feature document with 'labels' attribute and add it to the decodable attributes
+batch_stash:
+  data_point_type: >-
+    eval({'import': ['zensols.deepnlp.classify.multilabel as ml']}): ml.MultiLabelFeatureDocumentDataPoint
+  decoded_attributes:
+    - labels
+
+
+## Model
+#
+linear_settings:
+  # let our decoder (last fully connected feed forward network) the output
+  # dimension as the number of labels to classify
+  out_features: >-
+    call({'param': {'method': 'get_label_count'}}): dataframe_stash
+
+model_settings:
+  # clamp and optionally softmax over the results
+  reduce_outcomes: zensols.deeplearn.model.multilabel.MultiLabelOutcomeReducer
+  # labels used by the reporting framework
+  labels: >-
+    call({'param': {'method': 'get_labels'}}): dataframe_stash
+
+facade:
+  # use MultiLabelPredictionsDataFrameFactory for by-label performance reports
+  class_name: zensols.deepnlp.classify.MultilabelClassifyModelFacade
