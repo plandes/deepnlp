@@ -16,10 +16,10 @@ from zensols.deeplearn.vectorize import FeatureVectorizer
 
 @dataclass
 class SpacyFeatureVectorizer(FeatureVectorizer):
-    """This normalizes feature IDs of parsed token features in to a number between
-    [0, 1].  This is useful for normalized feature vectors as input to neural
-    networks.  Input to this would be strings like ``token.ent_`` found on a
-    :class:`zensols.nlp.feature.TokenAttributes` instance.
+    """This normalizes feature IDs of parsed token features in to a number
+    between [0, 1].  This is useful for normalized feature vectors as input to
+    neural networks.  Input to this would be strings like ``token.ent_`` found
+    on a :class:`zensols.nlp.feature.TokenAttributes` instance.
 
     The class is also designed to create features using indexes, so there are
     methods to resolve to a unique ID from an identifier.
@@ -93,7 +93,8 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
         return self.symbol_to_norm[symbol]
 
     def id_from_spacy_symbol(self, id: int, default: int = -1) -> str:
-        """Return the Spacy text symbol for it's ID (``token.ent`` -> ``token.ent_``).
+        """Return the Spacy text symbol for it's ID (``token.ent`` ->
+        ``token.ent_``).
 
         """
         strs = self.vocab.strings
@@ -103,8 +104,8 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
             return default
 
     def from_spacy(self, id: int) -> Tensor:
-        """Return a binary feature from a Spacy ID or ``None`` if it doesn't have a
-        mapping the ID.
+        """Return a binary feature from a Spacy ID or ``None`` if it doesn't
+        have a mapping the ID.
 
         """
         symbol = self.id_from_spacy_symbol(id)
@@ -118,7 +119,8 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
         return self.symbol_to_id.get(symbol, default)
 
     def write(self, writer=sys.stdout):
-        """Pretty print a human readable representation of this feature vectorizer.
+        """Pretty print a human readable representation of this feature
+        vectorizer.
 
         """
         syms = self.symbol_to_id
