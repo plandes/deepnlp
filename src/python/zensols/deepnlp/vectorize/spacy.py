@@ -46,7 +46,6 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
     :see meth:`id_from_spacy_symbol`
 
     """
-
     def __post_init__(self):
         super().__post_init__()
         self.as_list = tuple(self.SYMBOLS.split())

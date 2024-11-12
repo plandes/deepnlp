@@ -218,7 +218,11 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
     FEATURE_TYPE = TextFeatureType.DOCUMENT
 
     decoded_feature_ids: Set[str] = field(default=None)
+    """The feature ids to use at train/test time, which currently are all those
+    defined in `zensols.deepnlp.vectorize.SpacyFeatureVectorizer`, and include
+    ``ent``, ``tag``, and ``dep``.
 
+    """
     def _get_shape(self) -> Tuple[int, int]:
         """Compute the shape based on what spacy feature ids are given.
 
