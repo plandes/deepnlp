@@ -9,8 +9,6 @@
 # label of the text classification
 doc_parser:
   doc_class: 'class: zensols.deepnlp.classify.multilabel.MultiLabelFeatureDocument'
-  components: >-
-    instance: list: mednlp_pyrush_component, mimic_component, mimic_tokenizer_component
 
 # the stash of extracted language features in child processes for SpaCy parsing
 feature_factory_stash:
