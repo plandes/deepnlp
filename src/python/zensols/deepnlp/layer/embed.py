@@ -410,6 +410,8 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         if x is not None:
             self._shape_debug('adding passed token features', x)
             arrs.append(x)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'token attributes: {self.token_attribs}')
         for attrib in self.token_attribs:
             feats = batch.attributes[attrib]
             self._shape_debug(f"token attrib '{attrib}'", feats)
@@ -438,6 +440,9 @@ class EmbeddingNetworkModule(BaseNetworkModule):
             st = batch.attributes[attrib]
             self._shape_debug(f'doc attrib {attrib}', st)
             arrs.append(st)
+        if self.logger.isEnabledFor(logging.DEBUG):
+            arr_str: str = ', '.join(map(lambda t: str(tuple(t.shape)), arrs))
+            self._debug(f'arrs to concat: <{arr_str}>')
         if len(arrs) > 0:
             x = torch.cat(arrs, 1)
             self._shape_debug('doc concat', x)

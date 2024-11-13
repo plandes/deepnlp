@@ -83,9 +83,9 @@ class ClassifyNetwork(EmbeddingNetworkModule):
             self._debug(f'linear in size: {ln_in_features}')
 
         ls.in_features = ln_in_features
-        if self.logger.isEnabledFor(logging.DEBUG):
-            self._debug(f'linear input settings: {ls}')
         self.fc_deep = DeepLinear(ls, self.logger)
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self._debug(f'linear: {self.fc_deep}')
 
     def _forward(self, batch: Batch) -> torch.Tensor:
         if self.logger.isEnabledFor(logging.DEBUG):
@@ -103,6 +103,7 @@ class ClassifyNetwork(EmbeddingNetworkModule):
             self._shape_debug('lstm', x)
 
         x = self.forward_document_features(batch, x)
+        self._shape_debug('doc features', x)
 
         x = self.fc_deep(x)
         self._shape_debug('deep linear', x)

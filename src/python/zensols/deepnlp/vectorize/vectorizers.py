@@ -229,16 +229,24 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
     ``ent``, ``tag``, and ``dep``.
 
     """
+    def _get_spacy_vectorizers(self) -> List[SpacyFeatureVectorizer]:
+        feature_ids: Set[str] = self.decoded_feature_ids
+        fvecs: List[SpacyFeatureVectorizer] = []
+        fvec: SpacyFeatureVectorizer
+        for fvec in self.manager.spacy_vectorizers.values():
+            if feature_ids is None or fvec.feature_id in feature_ids:
+                fvecs.append(fvec)
+        return fvecs
+
     def _get_shape(self) -> Tuple[int, int]:
         """Compute the shape based on what spacy feature ids are given.
 
         """
-        feature_ids = self.decoded_feature_ids
-        flen = 0
-        for fvec in self.manager.spacy_vectorizers.values():
-            if feature_ids is None or fvec.feature_id in feature_ids:
-                flen += fvec.shape[1]
-        return -1, flen
+        fln: int = sum(map(lambda v: v.shape[1], self._get_spacy_vectorizers()))
+        if logger.isEnabledFor(logging.DEBUG):
+            vecs = ', '.join(map(str, self.manager.spacy_vectorizers.values()))
+            logger.debug(f'count enum feature len: {fln}, vecs: {vecs}')
+        return -1, fln
 
     def get_feature_counts(self, sent: FeatureSentence,
                            fvec: SpacyFeatureVectorizer) -> Tensor:
@@ -263,7 +271,9 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'encoding doc: {doc}')
+            vec_shape: Tuple[int, int] = self._get_shape()
+            text: str = tw.shorten(str(doc), 80)
+            logger.debug(f'encoding, shape: {vec_shape} doc: {text}')
         sent_arrs = []
         for sent in doc.sents:
             if logger.isEnabledFor(logging.DEBUG):
@@ -292,6 +302,7 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug('registered spacy vectorizers: ' +
                          f"{', '.join(self.manager.spacy_vectorizers.keys())}")
+            logger.debug(f'keeping: {keeps}')
         fvec: SpacyFeatureVectorizer
         for fvec in self.manager.spacy_vectorizers.values():
             col_end: int = col_start + fvec.shape[1]
@@ -335,8 +346,13 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
     def _decode(self, context: FeatureContext) -> Tensor:
         arr = super()._decode(context)
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'decoded features: {self.decoded_feature_ids}, ' +
-                         f'shape: {arr.shape}')
+            feature_ids: Set[str] = self.decoded_feature_ids
+            fvecs: List[SpacyFeatureVectorizer] = self._get_spacy_vectorizers()
+            fvstr = ', '.join(map(str, fvecs))
+            logger.debug(f'decoding features(configured)={feature_ids}, ' +
+                         f'decode shape={tuple(arr.shape)}, ' +
+                         f'vec shape={self.shape}, ' +
+                         f'vectorizers=[{fvstr}]')
         if self.decoded_feature_ids is not None:
             arr = self._slice_by_attributes(arr)
         if logger.isEnabledFor(logging.DEBUG):

@@ -14,7 +14,7 @@ from zensols.deeplearn import TorchConfig
 from zensols.deeplearn.vectorize import FeatureVectorizer
 
 
-@dataclass
+@dataclass(repr=False)
 class SpacyFeatureVectorizer(FeatureVectorizer):
     """This normalizes feature IDs of parsed token features in to a number
     between [0, 1].  This is useful for normalized feature vectors as input to
@@ -54,7 +54,7 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
     """
     def __post_init__(self):
         super().__post_init__()
-        self.as_list = tuple(self.SYMBOLS.split())
+        self.as_list: Tuple[str] = tuple(self.SYMBOLS.split())
         syms = dict(zip(self.as_list, it.count()))
         self.symbol_to_id = syms
         self.id_to_symbol = dict(map(lambda x: (x[1], x[0]), syms.items()))
@@ -137,8 +137,11 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
         for k in sorted(syms.keys()):
             writer.write(f'  {k} => {syms[k]} ({self.transform(k)})\n')
 
-    def __str__(self):
-        return f'{self.description} ({self.feature_id})'
+    def __str__(self) -> str:
+        return self.feature_id
+
+    def __repr__(self) -> str:
+        return f'{self.feature_id}: {self.description}, len={self.as_list}'
 
 
 @dataclass

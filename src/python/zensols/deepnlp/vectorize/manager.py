@@ -377,6 +377,12 @@ class FeatureDocumentVectorizerManager(FeatureVectorizerManager):
     :see: :obj:`.SpacyFeatureVectorizer.VECTORIZERS`
 
     """
+    unregistered_spacy_vectorizers: Tuple[Type[SpacyFeatureVectorizer], ...] = \
+        field(default=())
+    """Additional vectorizers that aren't registered, such as those added from
+    external packages.
+
+    """
     def __post_init__(self):
         super().__post_init__()
         if logger.isEnabledFor(logging.DEBUG):
@@ -464,16 +470,22 @@ class FeatureDocumentVectorizerManager(FeatureVectorizerManager):
         :return: an :class:`collections.OrderedDict` of vectorizers
 
         """
-        registered_feature_ids = set(SpacyFeatureVectorizer.VECTORIZERS.keys())
-        token_feature_ids = registered_feature_ids & self.token_feature_ids
-        token_feature_ids = sorted(token_feature_ids)
-        vectorizers = collections.OrderedDict()
+        combined_vecs: List[Type[SpacyFeatureVectorizer]] = \
+            list(self.unregistered_spacy_vectorizers)
+        combined_vecs.extend(SpacyFeatureVectorizer.VECTORIZERS.values())
+        vecs: Dict[str, Type[SpacyFeatureVectorizer]] = \
+            dict(map(lambda v: (v.FEATURE_ID, v), combined_vecs))
+        registered_feature_ids: Set[str] = set(vecs.keys())
+        token_feature_ids: Set[str] = \
+            registered_feature_ids & self.token_feature_ids
+        token_feature_ids: List[str] = sorted(token_feature_ids)
+        vectorizers: Dict[str, SpacyFeatureVectorizer] = \
+            collections.OrderedDict()
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'regisetered vectorizers: {registered_feature_ids}')
+            logger.debug(f'registered vectorizers: {registered_feature_ids}')
             logger.debug(f'creating token features: {token_feature_ids}')
         for feature_id in sorted(token_feature_ids):
-            cls: Type[SpacyFeatureVectorizer] = \
-                SpacyFeatureVectorizer.VECTORIZERS[feature_id]
+            cls: Type[SpacyFeatureVectorizer] = vecs[feature_id]
             model: Language = self._find_model(self.doc_parser)
             inst: SpacyFeatureVectorizer = cls(
                 name=f'spacy vectorizer: {feature_id}',
