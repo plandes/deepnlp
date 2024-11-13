@@ -8,6 +8,7 @@ from dataclasses import dataclass, field
 import logging
 import sys
 from functools import reduce
+import textwrap as tw
 import torch
 import numpy as np
 from torch import Tensor
@@ -106,12 +107,17 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
         the spacy vectorizer ``fvec`` across all tokens for a column range.
 
         """
-        attr_name = fvec.feature_id
-        col_end = col_start + fvec.shape[1]
-        toks = sent.tokens[:arr.shape[1]]
+        fid: str = fvec.feature_id
+        col_end: int = col_start + fvec.shape[1]
+        toks: List[FeatureToken] = sent.tokens[:arr.shape[1]]
+        tix: int
+        tok: FeatureToken
         for tix, tok in enumerate(toks):
-            val = getattr(tok, attr_name)
-            vec = fvec.from_spacy(val)
+            val = getattr(tok, fid)
+            val: int = tok.get_feature(
+                feature_id=fid,
+                message=f'in {self.manager.doc_parser}')
+            vec: Tensor = fvec.from_spacy(val)
             if vec is not None:
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.debug(f'adding vec {fvec} for {tok}: {vec.shape}')
@@ -242,11 +248,15 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
         symol for that index position in the ``fvec``.
 
         """
-        fid = fvec.feature_id
-        fcounts = self.torch_config.zeros(fvec.shape[1])
+        fid: str = fvec.feature_id
+        fcounts: Tensor = self.torch_config.zeros(fvec.shape[1])
+        tok: FeatureToken
         for tok in sent.tokens:
-            val = getattr(tok, fid)
-            fnid = fvec.id_from_spacy(val, -1)
+            val = tok.get_feature(
+                feature_id=fid,
+                message=f'in {self.manager.doc_parser}')
+            val: int = getattr(tok, fid)
+            fnid: Tensor = fvec.id_from_spacy(val, -1)
             if fnid > -1:
                 fcounts[fnid] += 1
         return fcounts
@@ -261,8 +271,8 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
             tok_arrs = []
             for fvec in self.manager.spacy_vectorizers.values():
                 cnts: Tensor = self.get_feature_counts(sent, fvec)
-                if logger.isEnabledFor(logging.DEBUG):
-                    logger.debug(f'encoding with {fvec}')
+                if logger.isEnabledFor(logging.TRACE):
+                    logger.trace(f'encoding with {fvec}')
                 tok_arrs.append(cnts)
             sent_arrs.append(torch.cat(tok_arrs))
         arr = torch.stack(sent_arrs)
@@ -276,12 +286,16 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
         for each specified feature id given in :obj:`decoded_feature_ids`.
 
         """
-        keeps = set(self.decoded_feature_ids)
-        col_start = 0
-        tensors = []
+        keeps: Set[str] = set(self.decoded_feature_ids)
+        col_start: int = 0
+        tensors: List[Tensor] = []
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug('registered spacy vectorizers: ' +
+                         f"{', '.join(self.manager.spacy_vectorizers.keys())}")
+        fvec: SpacyFeatureVectorizer
         for fvec in self.manager.spacy_vectorizers.values():
-            col_end = col_start + fvec.shape[1]
-            fid = fvec.feature_id
+            col_end: int = col_start + fvec.shape[1]
+            fid: str = fvec.feature_id
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'type={fid}, to keep={keeps}')
             if fid in keeps:
@@ -385,7 +399,8 @@ class DepthFeatureDocumentVectorizer(FeatureDocumentVectorizer):
         arr = self.torch_config.zeros((n_sents, n_toks))
         u_doc = doc.uncombine_sentences()
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'encoding doc: {len(doc)}/{len(u_doc)}: {doc}')
+            text: str = tw.shorten(str(doc), 80)
+            logger.debug(f'encoding doc: {len(doc)}/{len(u_doc)}: {text}')
         # if the doc is combined as several sentences concatenated in one, un
         # pack and write all features in one row
         if len(doc) != len(u_doc):

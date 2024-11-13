@@ -1,8 +1,14 @@
+"""Stashes that parse feature documents.
+
+"""
+__author__ = 'Paul Landes'
+
 from typing import Iterable, List, Tuple, Any
 from dataclasses import dataclass, field
-import logging
-import sys
 from abc import abstractmethod, ABCMeta
+import sys
+import logging
+import textwrap as tw
 import itertools as it
 import pandas as pd
 from zensols.persist import Stash, PrimeableStash
@@ -72,6 +78,9 @@ class DataframeDocumentFeatureStash(DocumentFeatureStash):
     def _parse_document(self, id: int, row: pd.Series) -> FeatureDocument:
         # text to parse with SpaCy
         text = row[self.text_column]
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'parsing {tw.shorten(text, 80)} with ' +
+                         str(self.vec_manager.doc_parser))
         if self.additional_columns is None:
             return self.vec_manager.parse(text)
         else:

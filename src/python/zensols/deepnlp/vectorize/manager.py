@@ -4,7 +4,7 @@ natural language.
 """
 __author__ = 'Paul Landes'
 
-from typing import List, Union, Set, Dict, Tuple, Sequence
+from typing import List, Union, Set, Dict, Tuple, Type, Sequence
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from abc import abstractmethod, ABCMeta
@@ -12,6 +12,7 @@ import logging
 import collections
 import torch
 from torch import Tensor
+from spacy.language import Language
 from zensols.persist import persisted, PersistedWork
 from zensols.deeplearn.vectorize import (
     FeatureContext,
@@ -20,7 +21,10 @@ from zensols.deeplearn.vectorize import (
     TransformableFeatureVectorizer,
     MultiFeatureContext,
 )
-from zensols.nlp import FeatureSentence, FeatureDocument, FeatureDocumentParser
+from zensols.nlp import (
+    FeatureSentence, FeatureDocument, FeatureDocumentParser,
+    DecoratedFeatureDocumentParser
+)
 from . import SpacyFeatureVectorizer
 
 logger = logging.getLogger(__name__)
@@ -385,8 +389,8 @@ class FeatureDocumentVectorizerManager(FeatureVectorizerManager):
             if len(feat_diff) > 0:
                 fdiffs = ', '.join(feat_diff)
                 raise VectorizerError(
-                    'Parser token features do not exist in vectorizer: ' +
-                    f'{self.token_feature_ids} - ' +
+                    'Parser token features do not exist in vectorizer ' +
+                    f'for {self.doc_parser}: {self.token_feature_ids} - ' +
                     f'{self.doc_parser.token_feature_ids} = {fdiffs}')
         self._spacy_vectorizers = PersistedWork('_spacy_vectorizers', self)
 
@@ -431,6 +435,25 @@ class FeatureDocumentVectorizerManager(FeatureVectorizerManager):
         """
         return self.doc_parser.parse(text, *args, **kwargs)
 
+    def _find_model(self, doc_parser: FeatureDocumentParser) -> Language:
+        """Only :class:`~zensols.nlp.sparser.SpacyFeatureDocumentParser` has a
+        model needed for its vocabulary.  Find it in ``doc_parser`` or
+        potentially its delegate.
+
+        """
+        model: Language = None
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'looking for model in {doc_parser}')
+        if hasattr(doc_parser, 'model'):
+            model = doc_parser.model
+        if model is None and \
+           isinstance(doc_parser, DecoratedFeatureDocumentParser):
+            model = self._find_model(doc_parser.delegate)
+        if model is None:
+            raise VectorizerError(
+                f'Not a spaCy feature document parser: {self.doc_parser}')
+        return model
+
     @property
     @persisted('_spacy_vectorizers')
     def spacy_vectorizers(self) -> Dict[str, SpacyFeatureVectorizer]:
@@ -441,21 +464,23 @@ class FeatureDocumentVectorizerManager(FeatureVectorizerManager):
         :return: an :class:`collections.OrderedDict` of vectorizers
 
         """
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug('creating spacy vectorizers')
-        token_feature_ids = set(SpacyFeatureVectorizer.VECTORIZERS.keys())
-        token_feature_ids = token_feature_ids & self.token_feature_ids
+        registered_feature_ids = set(SpacyFeatureVectorizer.VECTORIZERS.keys())
+        token_feature_ids = registered_feature_ids & self.token_feature_ids
         token_feature_ids = sorted(token_feature_ids)
         vectorizers = collections.OrderedDict()
         if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'regisetered vectorizers: {registered_feature_ids}')
             logger.debug(f'creating token features: {token_feature_ids}')
         for feature_id in sorted(token_feature_ids):
-            cls = SpacyFeatureVectorizer.VECTORIZERS[feature_id]
-            inst = cls(name=f'spacy vectorizer: {feature_id}',
-                       config_factory=self.config_factory,
-                       feature_id=feature_id,
-                       torch_config=self.torch_config,
-                       vocab=self.doc_parser.model.vocab)
+            cls: Type[SpacyFeatureVectorizer] = \
+                SpacyFeatureVectorizer.VECTORIZERS[feature_id]
+            model: Language = self._find_model(self.doc_parser)
+            inst: SpacyFeatureVectorizer = cls(
+                name=f'spacy vectorizer: {feature_id}',
+                config_factory=self.config_factory,
+                feature_id=feature_id,
+                torch_config=self.torch_config,
+                vocab=model.vocab)
             vectorizers[feature_id] = inst
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'created {len(vectorizers)} vectorizers')

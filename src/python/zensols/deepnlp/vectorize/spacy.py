@@ -1,9 +1,9 @@
 """Feature (ID) normalization.
 
 """
+from __future__ import annotations
 __author__ = 'Paul Landes'
-
-from typing import Tuple, Any
+from typing import Tuple, Dict, Any, Type, ClassVar
 from dataclasses import dataclass, field
 import sys
 import math
@@ -37,6 +37,12 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
     :see: :class:`zensols.nlp.feature.TokenAttributes`
 
     """
+    VECTORIZERS: ClassVar[Dict[str, Type[SpacyFeatureVectorizer]]] = {}
+    """Registered spaCy feature vectorizers.
+
+    :see: :meth:`register`
+
+    """
     torch_config: TorchConfig = field()
     """The torch configuration used to create tensors."""
 
@@ -58,6 +64,10 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
         rows = zip(syms, map(lambda i: arr[i], range(n)))
         self.symbol_to_vector = dict(rows)
         self.symbol_to_norm = {k: syms[k] / q for k in syms}
+
+    @classmethod
+    def register(cls: Type[SpacyFeatureVectorizer]):
+        cls.VECTORIZERS[cls.FEATURE_ID] = cls
 
     def _is_settable(self, name: str, value: Any) -> bool:
         return False
@@ -138,11 +148,15 @@ class NamedEntityRecognitionFeatureVectorizer(SpacyFeatureVectorizer):
     :see: :class:`.SpacyFeatureVectorizer`
 
     """
-    DESCRIPTION = 'named entity recognition'
-    LANG = 'en'
-    FEATURE_ID = 'ent'
-    SYMBOLS = """PERSON NORP FACILITY FAC ORG GPE LOC PRODUCT EVENT WORK_OF_ART LAW LANGUAGE
-    DATE TIME PERCENT MONEY QUANTITY ORDINAL CARDINAL PER MISC"""
+    DESCRIPTION: ClassVar[str] = 'named entity recognition'
+    LANG: ClassVar[str] = 'en'
+    FEATURE_ID: ClassVar[str] = 'ent'
+    SYMBOLS: ClassVar[str] = """PERSON NORP FACILITY FAC ORG GPE LOC PRODUCT
+EVENT WORK_OF_ART LAW LANGUAGE DATE TIME PERCENT MONEY QUANTITY ORDINAL CARDINAL
+PER MISC"""
+
+
+NamedEntityRecognitionFeatureVectorizer.register()
 
 
 @dataclass
@@ -152,15 +166,18 @@ class DependencyFeatureVectorizer(SpacyFeatureVectorizer):
     :see: :class:`.SpacyFeatureVectorizer`
 
     """
-    DESCRIPTION = 'dependency'
-    LANG = 'en'
-    FEATURE_ID = 'dep'
-    SYMBOLS = """acl acomp advcl advmod agent amod appos attr aux auxpass case cc ccomp clf
-complm compound conj cop csubj csubjpass dative dep det discourse dislocated
-dobj expl fixed flat goeswith hmod hyph infmod intj iobj list mark meta neg
-nmod nn npadvmod nsubj nsubjpass nounmod npmod num number nummod oprd obj obl
-orphan parataxis partmod pcomp pobj poss possessive preconj prep prt punct
-quantmod rcmod relcl reparandum root vocative xcomp ROOT"""
+    DESCRIPTION: ClassVar[str] = 'dependency'
+    LANG: ClassVar[str] = 'en'
+    FEATURE_ID: ClassVar[str] = 'dep'
+    SYMBOLS: ClassVar[str] = """acl acomp advcl advmod agent amod appos attr aux
+auxpass case cc ccomp clf complm compound conj cop csubj csubjpass dative dep
+det discourse dislocated dobj expl fixed flat goeswith hmod hyph infmod intj
+iobj list mark meta neg nmod nn npadvmod nsubj nsubjpass nounmod npmod num
+number nummod oprd obj obl orphan parataxis partmod pcomp pobj poss possessive
+preconj prep prt punct quantmod rcmod relcl reparandum root vocative xcomp ROOT"""
+
+
+DependencyFeatureVectorizer.register()
 
 
 @dataclass
@@ -170,20 +187,14 @@ class PartOfSpeechFeatureVectorizer(SpacyFeatureVectorizer):
     :see: :class:`.SpacyFeatureVectorizer`
 
     """
-    DESCRIPTION = 'part of speech'
-    LANG = 'en'
-    FEATURE_ID = 'tag'
-    SYMBOLS = """ADJ ADP ADV AUX CONJ CCONJ DET INTJ NOUN NUM PART PRON PROPN PUNCT SCONJ SYM
-VERB X EOL SPACE . , -LRB- -RRB- `` " ' $ # AFX CC CD DT EX FW HYPH IN JJ JJR
-JJS LS MD NIL NN NNP NNPS NNS PDT POS PRP PRP$ RB RBR RBS RP TO UH VB VBD VBG
-VBN VBP VBZ WDT WP WP$ WRB SP ADD NFP GW XX BES HVS NP PP VP ADVP ADJP SBAR PRT
-PNP"""
+    DESCRIPTION: ClassVar[str] = 'part of speech'
+    LANG: ClassVar[str] = 'en'
+    FEATURE_ID: ClassVar[str] = 'tag'
+    SYMBOLS: ClassVar[str] = """ADJ ADP ADV AUX CONJ CCONJ DET INTJ NOUN NUM
+PART PRON PROPN PUNCT SCONJ SYM VERB X EOL SPACE . , -LRB- -RRB- `` " ' $ # AFX
+CC CD DT EX FW HYPH IN JJ JJR JJS LS MD NIL NN NNP NNPS NNS PDT POS PRP PRP$ RB
+RBR RBS RP TO UH VB VBD VBG VBN VBP VBZ WDT WP WP$ WRB SP ADD NFP GW XX BES HVS
+NP PP VP ADVP ADJP SBAR PRT PNP"""
 
 
-SpacyFeatureVectorizer.VECTORIZERS = \
-    {cls.FEATURE_ID: cls for cls in (NamedEntityRecognitionFeatureVectorizer,
-                                     DependencyFeatureVectorizer,
-                                     PartOfSpeechFeatureVectorizer)}
-"""The default set of spaCy feature vectorizers.
-
-"""
+PartOfSpeechFeatureVectorizer.register()
