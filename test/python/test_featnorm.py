@@ -51,6 +51,7 @@ class TestFeatureVectorizationSpacy(TestFeatureVectorization):
              0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
              0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
              0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
+        should = fnorm.torch_config.to(should)
         self.assertTensorEquals(should, tensor)
 
     def test_vectorize_ent(self):
