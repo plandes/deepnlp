@@ -377,7 +377,7 @@ class FeatureDocumentVectorizerManager(FeatureVectorizerManager):
     :see: :obj:`.SpacyFeatureVectorizer.VECTORIZERS`
 
     """
-    unregistered_spacy_vectorizers: Tuple[Type[SpacyFeatureVectorizer], ...] = \
+    configured_spacy_vectorizers: Tuple[SpacyFeatureVectorizer, ...] = \
         field(default=())
     """Additional vectorizers that aren't registered, such as those added from
     external packages.
@@ -470,11 +470,11 @@ class FeatureDocumentVectorizerManager(FeatureVectorizerManager):
         :return: an :class:`collections.OrderedDict` of vectorizers
 
         """
-        combined_vecs: List[Type[SpacyFeatureVectorizer]] = \
-            list(self.unregistered_spacy_vectorizers)
-        combined_vecs.extend(SpacyFeatureVectorizer.VECTORIZERS.values())
-        vecs: Dict[str, Type[SpacyFeatureVectorizer]] = \
-            dict(map(lambda v: (v.FEATURE_ID, v), combined_vecs))
+        # combined_vecs: List[Type[SpacyFeatureVectorizer]] = \
+        #     list(self.unregistered_spacy_vectorizers)
+        #combined_vecs.extend(SpacyFeatureVectorizer.VECTORIZERS.values())
+        vecs: Dict[str, SpacyFeatureVectorizer] = dict(map(
+            lambda v: (v.feature_id, v), self.configured_spacy_vectorizers))
         registered_feature_ids: Set[str] = set(vecs.keys())
         token_feature_ids: Set[str] = \
             registered_feature_ids & self.token_feature_ids
@@ -485,15 +485,17 @@ class FeatureDocumentVectorizerManager(FeatureVectorizerManager):
             logger.debug(f'registered vectorizers: {registered_feature_ids}')
             logger.debug(f'creating token features: {token_feature_ids}')
         for feature_id in sorted(token_feature_ids):
-            cls: Type[SpacyFeatureVectorizer] = vecs[feature_id]
-            model: Language = self._find_model(self.doc_parser)
-            inst: SpacyFeatureVectorizer = cls(
-                name=f'spacy vectorizer: {feature_id}',
-                config_factory=self.config_factory,
-                feature_id=feature_id,
-                torch_config=self.torch_config,
-                vocab=model.vocab)
-            vectorizers[feature_id] = inst
+            # inst = vecs[feature_id]
+            # cls: Type[SpacyFeatureVectorizer] = vecs[feature_id]
+            # model: Language = self._find_model(self.doc_parser)
+            # inst: SpacyFeatureVectorizer = cls(
+            #     name=f'spacy vectorizer: {feature_id}',
+            #     config_factory=self.config_factory,
+            #     feature_id=feature_id,
+            #     torch_config=self.torch_config,
+            #     vocab=model.vocab)
+            # vectorizers[feature_id] = inst
+            vectorizers[feature_id] = vecs[feature_id]
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'created {len(vectorizers)} vectorizers')
         return vectorizers

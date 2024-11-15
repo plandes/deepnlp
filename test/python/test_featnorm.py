@@ -44,7 +44,7 @@ class TestFeatureVectorizationSpacy(TestFeatureVectorization):
         fnorm = self.vmng.spacy_vectorizers['tag']
         self.assertEqual((1, 82), fnorm.shape)
         tensor = fnorm.transform('VB')
-        self.assertEqual(torch.float64, tensor.dtype)
+        self.assertEqual(torch.float32, tensor.dtype)
         should = self.vmng.torch_config.from_iterable(
             [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
              0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,

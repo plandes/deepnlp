@@ -5,6 +5,11 @@ from util import TestFeatureVectorization
 
 logger = logging.getLogger(__name__)
 
+if 0:
+    logging.basicConfig(level=logging.WARNING)
+    logging.getLogger('zensols.deepnlp.vectorize').setLevel(logging.DEBUG)
+    logger.setLevel(logging.DEBUG)
+
 
 class TestEnumVectorizer(TestFeatureVectorization):
     CONF_FILE = 'test-resources/enum.conf'

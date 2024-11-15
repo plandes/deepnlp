@@ -18,6 +18,7 @@ config_files = list: parser.conf
 [imp_obj]
 type = importini
 config_files = list:
+  resource(zensols.util): resources/escape.conf,
   resource(zensols.deeplearn): resources/default.conf,
   resource(zensols.deepnlp): resources/default.conf,
   resource(zensols.deeplearn): resources/obj.conf,

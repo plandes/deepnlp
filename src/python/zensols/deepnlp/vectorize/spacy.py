@@ -3,12 +3,12 @@
 """
 from __future__ import annotations
 __author__ = 'Paul Landes'
-from typing import Tuple, Dict, Any, Type, ClassVar
+from typing import Tuple, Dict, Any, Type, Sequence, ClassVar
 from dataclasses import dataclass, field
 import sys
 import math
 import itertools as it
-from spacy.vocab import Vocab
+from spacy.language import Language
 from torch import Tensor
 from zensols.deeplearn import TorchConfig
 from zensols.deeplearn.vectorize import FeatureVectorizer
@@ -43,19 +43,32 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
     :see: :meth:`register`
 
     """
+    description: str = field()
+    """A short human readable name.
+
+    :see: obj:`feature_id`
+
+    """
     torch_config: TorchConfig = field()
     """The torch configuration used to create tensors."""
 
-    vocab: Vocab = field()
+    model: Language = field()
     """The spaCy vocabulary used to create IDs from strings.
 
     :see meth:`id_from_spacy_symbol`
 
     """
+    symbols: Sequence[str] = field()
+    """The list of symbols to vectorize and provided by spaCy as a feature."""
     def __post_init__(self):
         super().__post_init__()
-        self.as_list: Tuple[str] = tuple(self.SYMBOLS.split())
-        syms = dict(zip(self.as_list, it.count()))
+        # TMP: remove
+        self.as_list = self.symbols
+        if isinstance(self.symbols, str):
+            self.symbols = tuple(self.symbols.encode('utf-8').decode('unicode_escape').split(' '))
+        if isinstance(self.symbols, list):
+            self.symbols = tuple(self.symbols)
+        syms = dict(zip(self.symbols, it.count()))
         self.symbol_to_id = syms
         self.id_to_symbol = dict(map(lambda x: (x[1], x[0]), syms.items()))
         n = len(syms)
@@ -68,6 +81,14 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
     @classmethod
     def register(cls: Type[SpacyFeatureVectorizer]):
         cls.VECTORIZERS[cls.FEATURE_ID] = cls
+
+    @property
+    def _description(self) -> str:
+        return self._description_val
+
+    @_description.setter
+    def _description(self, description: str):
+        self._description_val = description
 
     def _is_settable(self, name: str, value: Any) -> bool:
         return False
@@ -87,7 +108,7 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
         return arr
 
     def _get_shape(self) -> Tuple[int, int]:
-        return 1, len(self.as_list)
+        return 1, len(self.symbols)
 
     def transform(self, symbol: str) -> Tensor:
         return self.symbol_to_vector[symbol]
@@ -106,7 +127,7 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
         ``token.ent_``).
 
         """
-        strs = self.vocab.strings
+        strs = self.model.vocab.strings
         if id in strs:
             return strs[id]
         else:
@@ -141,7 +162,10 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
         return self.feature_id
 
     def __repr__(self) -> str:
-        return f'{self.feature_id}: {self.description}, len={self.as_list}'
+        return f'{self.feature_id}: {self.description}, len={self.symbols}'
+
+
+SpacyFeatureVectorizer.description = SpacyFeatureVectorizer._description
 
 
 @dataclass
@@ -157,9 +181,6 @@ class NamedEntityRecognitionFeatureVectorizer(SpacyFeatureVectorizer):
     SYMBOLS: ClassVar[str] = """PERSON NORP FACILITY FAC ORG GPE LOC PRODUCT
 EVENT WORK_OF_ART LAW LANGUAGE DATE TIME PERCENT MONEY QUANTITY ORDINAL CARDINAL
 PER MISC"""
-
-
-NamedEntityRecognitionFeatureVectorizer.register()
 
 
 @dataclass
@@ -180,9 +201,6 @@ number nummod oprd obj obl orphan parataxis partmod pcomp pobj poss possessive
 preconj prep prt punct quantmod rcmod relcl reparandum root vocative xcomp ROOT"""
 
 
-DependencyFeatureVectorizer.register()
-
-
 @dataclass
 class PartOfSpeechFeatureVectorizer(SpacyFeatureVectorizer):
     """A feature vectorizor for POS tags.
@@ -198,6 +216,3 @@ PART PRON PROPN PUNCT SCONJ SYM VERB X EOL SPACE . , -LRB- -RRB- `` " ' $ # AFX
 CC CD DT EX FW HYPH IN JJ JJR JJS LS MD NIL NN NNP NNPS NNS PDT POS PRP PRP$ RB
 RBR RBS RP TO UH VB VBD VBG VBN VBP VBZ WDT WP WP$ WRB SP ADD NFP GW XX BES HVS
 NP PP VP ADVP ADJP SBAR PRT PNP"""
-
-
-PartOfSpeechFeatureVectorizer.register()

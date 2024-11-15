@@ -27,6 +27,7 @@ references = list: package
 sections = list: imp_obj
 config_files = list:
     resource(zensols.util): resources/default.conf,
+    resource(zensols.util): resources/escape.conf,
     resource(zensols.util): resources/cli.conf,
     resource(zensols.util): resources/cleaner.conf
 

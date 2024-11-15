@@ -188,7 +188,7 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
                     fid = fvec.feature_id
                     vec = tensor[six, tix, col_start:col_end]
                     cnts = dict(filter(lambda x: x[1] > 0,
-                                       zip(fvec.as_list, vec.tolist())))
+                                       zip(fvec.symbols, vec.tolist())))
                     by_fid[fid] = cnts
                     col_start = col_end
         return sents
@@ -338,7 +338,7 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
                 fid = fvec.feature_id
                 vec = arr[col_start:col_end]
                 cnts = dict(filter(lambda x: x[1] > 0,
-                                   zip(fvec.as_list, vec.tolist())))
+                                   zip(fvec.symbols, vec.tolist())))
                 by_fid[fid] = cnts
                 col_start = col_end
         return sents

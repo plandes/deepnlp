@@ -4,7 +4,7 @@ from torch import Tensor
 from zensols.deeplearn import TorchConfig
 from zensols.deeplearn.vectorize import SparseTensorFeatureContext
 from zensols.config import ExtendedInterpolationConfig as AppConfig
-from zensols.config import ImportConfigFactory
+from zensols.config import ImportConfigFactory, ImportIniConfig
 
 logger = logging.getLogger(__name__)
 
@@ -15,8 +15,8 @@ class TestFeatureVectorization(unittest.TestCase):
             path = self.CONF_FILE
         else:
             path = 'test-resources/features.conf'
-        config = AppConfig(path)
-        self.fac = ImportConfigFactory(config, shared=True)
+        #config = AppConfig(path)
+        self.fac = ImportConfigFactory(ImportIniConfig(path), shared=True)
         self.sent_text = 'I am a citizen of the United States of America.'
         self.def_parse = ('I', 'am', 'a', 'citizen', 'of',
                           'the United States of America', '.')
