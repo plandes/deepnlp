@@ -1,3 +1,4 @@
+
 from typing import Tuple
 import logging
 import torch
@@ -42,15 +43,13 @@ class TestFeatureVectorizationParse(TestFeatureVectorization):
 class TestFeatureVectorizationSpacy(TestFeatureVectorization):
     def test_vectorize_tag(self):
         fnorm = self.vmng.spacy_vectorizers['tag']
-        self.assertEqual((1, 82), fnorm.shape)
+        self.assertEqual((1, 50), fnorm.shape)
         tensor = fnorm.transform('VB')
         self.assertEqual(torch.float32, tensor.dtype)
         should = self.vmng.torch_config.from_iterable(
             [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
              0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-             0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-             0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-             0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
+             0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
         should = fnorm.torch_config.to(should)
         self.assertTensorEquals(should, tensor)
 
@@ -61,8 +60,7 @@ class TestFeatureVectorizationSpacy(TestFeatureVectorization):
         tensor = tvec.get_feature_counts(fdoc, fent)
         self.assertTrue(isinstance(tensor, torch.Tensor))
         should = self.vmng.torch_config.from_iterable(
-            [0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0.,
-             0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
+            [0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
         self.assertTensorEquals(should, tensor)
 
 
@@ -73,57 +71,52 @@ class TestFeatureVectorizationCount(TestFeatureVectorization):
         tvec = vec['count']
         tensor = tvec.transform(fdoc)
         self.assertTrue(isinstance(tensor, torch.Tensor))
-        self.assertEqual((1, 174), tuple(tensor.shape))
+        self.assertEqual((1, 113), tuple(tensor.shape))
         should = self.vmng.torch_config.from_iterable(
-            [[0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-              0., 0., 0., 0., 2., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-              0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-              0., 0., 0., 0., 0., 0., 1., 0., 1., 0., 0., 0., 0., 0., 0., 0., 1., 0.,
-              0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-              0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-              0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 2., 0.,
-              0., 0., 1., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 1., 0., 0.,
-              0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0.,
-              0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.]])
+            [[1., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+              0., 0., 2., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0.,
+              0., 0., 0., 1., 0., 1., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0.,
+              0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0.,
+              0., 0., 2., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0.,
+              0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0.,
+              0., 0., 0., 0., 0.]])
         self.assertTensorEquals(should, tensor)
-        self.assertEqual((-1, 174), tvec.shape)
+        self.assertEqual((-1, 113), tvec.shape)
 
         fdoc = vec.parse(self.sent_text2)
         tensor = tvec.transform(fdoc.combine_sentences())
         self.assertTrue(isinstance(tensor, torch.Tensor))
-        self.assertEqual((1, 174), tuple(tensor.shape))
+        self.assertEqual((1, 113), tuple(tensor.shape))
         should = self.vmng.torch_config.from_iterable(
-            [[0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0.,
-              0., 0., 0., 0., 2., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-              0., 0., 0., 0., 0., 0., 2., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-              0., 0., 0., 1., 0., 0., 1., 0., 2., 0., 0., 0., 0., 0., 0., 0., 2., 1.,
-              0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-              0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-              0., 0., 0., 0., 2., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 2., 0.,
-              0., 0., 1., 0., 0., 0., 0., 0., 0., 2., 1., 0., 0., 0., 0., 1., 1., 0.,
-              0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 1., 0., 0., 0., 0., 0., 0., 0.,
-              0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.]])
+            [[2., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 1., 0., 0., 0.,
+              0., 0., 2., 0., 0., 0., 0., 0., 0., 0., 0., 2., 0., 0., 0., 0., 0., 0.,
+              1., 0., 0., 1., 0., 2., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0.,
+              0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 2., 0., 0., 0.,
+              0., 0., 2., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 2., 1., 0., 0., 0.,
+              0., 1., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 1., 0., 0.,
+              0., 0., 0., 0., 0.]])
         self.assertEqual(should.shape, tensor.shape)
         self.assertTensorEquals(should, tensor)
 
         fdoc = vec.parse(self.sent_text2)
         tensor = tvec.transform(fdoc)
         self.assertTrue(isinstance(tensor, torch.Tensor))
-        self.assertEqual((2, 174), tuple(tensor.shape))
+        self.assertEqual((2, 113), tuple(tensor.shape))
         self.assertEqual(torch.sum(should).item(), torch.sum(tensor))
         sm = self._to_sparse(tensor)
         self.assertEqual(
-            [1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1,
-             1, 1, 1, 1, 1, 1, 1, 1, 1, 1], sm.data.tolist())
+            [1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+             1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+            sm.data.tolist())
         self.assertEqual(
-            [7, 22, 42, 60, 62, 70, 76, 112, 124, 128, 135, 141,
-             153, 15, 42, 57, 62, 70, 71, 112, 135, 136, 142, 154],
+            [0, 8, 20, 29, 39, 41, 49, 68, 74, 78, 85, 91, 104, 0, 14,
+             29, 36, 41, 58, 68, 85, 86, 92, 105],
             sm.indices.tolist())
         vec = self.fac.instance('skinnier_feature_vectorizer_manager')
         fdoc = vec.parse(self.sent_text)
         tvec = vec['count']
         tensor = tvec.transform(fdoc)
-        self.assertEqual((1, 174), tuple(tensor.shape))
+        self.assertEqual((1, 113), tuple(tensor.shape))
 
 
 class TestFeatureVectorizationDepth(TestFeatureVectorization):
@@ -211,14 +204,16 @@ class TestFeatureVectorizationCombinedSpacy(TestFeatureVectorization):
         tensor = tvec.transform(fdoc)
         self.assertTrue(isinstance(tensor, torch.Tensor))
         should = self.vmng.torch_config.sparse(
-            [[7,  22,  22,  42,  60,  62,  70,  76, 112, 124, 124,
-              128, 135, 141, 153],
-             [3,   2,   5,   0,   4,   6,   1,   5,   6,   2,   5,
-              4,   3,   0,   1]],
+            [[  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+                0,   0,   0,   0],
+             [  0,   0,   1,   1,   2,   2,   3,   3,   4,   4,   5,
+                5,   5,   6,   6],
+             [ 29,  91,   0, 104,  20,  74,   8,  85,  39,  78,  20,
+               49,  74,  41,  68]],
             [1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],
-            (174, 30))
+            (1, 30, 113))
         # transpose added after transposed vectorizer
-        should = should.to_dense().T.unsqueeze(0)
+        should = should.to_dense()#.T.unsqueeze(0)
         self.assertTensorEquals(should, tensor)
         self.assertEqual(tuple([-1] + list(should.shape[1:])),
                          tuple(tvec.shape))
@@ -236,7 +231,7 @@ class TestFeatureVectorizationCombined(TestFeatureVectorization):
         feature_ids = ', '.join(map(lambda x: x[1].feature_id, res))
         self.assertEqual('count, dep, enum, stats', feature_ids)
         shapes = tuple(map(lambda x: tuple(x[0].shape), res))
-        self.assertEqual(((2, 174), (2, 30, 1), (2, 30, 174), (1, 9)), shapes)
+        self.assertEqual(((2, 113), (2, 30, 1), (2, 30, 113), (1, 9)), shapes)
 
     def test_fewer_feats(self):
         vec = self.fac.instance('single_vectorizer_feature_vectorizer_manager')
@@ -249,7 +244,7 @@ class TestFeatureVectorizationCombined(TestFeatureVectorization):
         feature_ids = ', '.join(map(lambda x: x[1].feature_id, res))
         self.assertEqual('count, enum, stats', feature_ids)
         shapes = tuple(map(lambda x: tuple(x[0].shape), res))
-        self.assertEqual(((2, 174), (2, 25, 174), (1, 9)), shapes)
+        self.assertEqual(((2, 113), (2, 25, 113), (1, 9)), shapes)
 
 
 class TestFeatureVectorizationOverlap(TestFeatureVectorization):
@@ -268,17 +263,14 @@ class TestFeatureVectorizationOverlap(TestFeatureVectorization):
         fdoc = vec.parse(self.sent_text)
         fdoc2 = vec.parse('I be a Citizen.  I am Paul Landes.  I made $3 from my plasma.')
         tvec = vec['mutual_count']
-        self.assertEqual((-1, 174), tvec.shape)
+        self.assertEqual((-1, 113), tvec.shape)
         tensor = tvec.transform((fdoc, fdoc2))
-        self.assertEqual((1, 174), tuple(tensor.shape))
-        ar = [[0., 0., 0., 0., 0., 0., 0., 2., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-               0., 0., 0., 0., 3., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-               0., 0., 0., 0., 0., 0., 4., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-               0., 0., 0., 0., 0., 0., 2., 0., 4., 0., 0., 0., 0., 0., 0., 0., 4., 0.,
-               0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-               0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-               0., 0., 0., 0., 4., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 3., 0.,
-               0., 0., 2., 0., 0., 0., 0., 0., 0., 2., 0., 0., 0., 0., 0., 4., 0., 0.,
-               0., 0., 0., 0., 0., 0., 0., 0., 0., 3., 0., 0., 0., 0., 0., 0., 0., 0.,
-               0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.]]
+        self.assertEqual((1, 113), tuple(tensor.shape))
+        ar = [[4., 0., 0., 0., 0., 0., 0., 0., 2., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+               0., 0., 3., 0., 0., 0., 0., 0., 0., 0., 0., 4., 0., 0., 0., 0., 0., 0.,
+               0., 0., 0., 2., 0., 4., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+               0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 4., 0., 0., 0.,
+               0., 0., 3., 0., 0., 0., 2., 0., 0., 0., 0., 0., 0., 2., 0., 0., 0., 0.,
+               0., 4., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 3., 0., 0., 0.,
+               0., 0., 0., 0., 0.]]
         self.assertTensorEquals(torch.tensor(ar), tensor)

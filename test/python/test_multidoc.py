@@ -91,11 +91,11 @@ class TestMultiDoc(TestFeatureVectorization):
 class TestMultiDocVectorize(TestMultiDoc):
     """Test fixed token lengths."""
     def test_counts(self):
-        self._test_counts((2, 174), (1, 174), (2, 174))
+        self._test_counts((2, 113), (1, 113), (2, 113))
 
     def test_enums(self):
         tl = 30
-        self._test_enums((2, tl, 174), (1, tl, 174), (2, tl, 174), 'enum')
+        self._test_enums((2, tl, 113), (1, tl, 113), (2, tl, 113), 'enum')
 
 
 class TestMultiDocVarBatch(TestMultiDoc):
@@ -106,11 +106,11 @@ class TestMultiDocVarBatch(TestMultiDoc):
         self.vmng = self.fac.instance('feature_vectorizer_manager_nolen')
 
     def test_counts(self):
-        self._test_counts((2, 174), (1, 174), (2, 174))
+        self._test_counts((2, 113), (1, 113), (2, 113))
 
     def test_enums(self):
         # the first sentence will only have 6 tokens (United States counts as
         # one), second has 9 (with punct); both have the max of the first
         # sentence combined (11 tokens) since the first sentence is combined in
         # the second
-        self._test_enums((2, 6, 174), (1, 9, 174), (2, 11, 174), 'enum_nolen')
+        self._test_enums((2, 6, 113), (1, 9, 113), (2, 11, 113), 'enum_nolen')

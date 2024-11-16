@@ -3,15 +3,19 @@
 """
 from __future__ import annotations
 __author__ = 'Paul Landes'
-from typing import Tuple, Dict, Any, Type, Sequence, ClassVar
+from typing import Tuple, Dict, Any, Sequence, Iterable, Union, ClassVar
 from dataclasses import dataclass, field
 import sys
+import logging
 import math
 import itertools as it
 from spacy.language import Language
 from torch import Tensor
 from zensols.deeplearn import TorchConfig
 from zensols.deeplearn.vectorize import FeatureVectorizer
+from zensols.deeplearn.vectorize import VectorizerError
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(repr=False)
@@ -37,12 +41,6 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
     :see: :class:`zensols.nlp.feature.TokenAttributes`
 
     """
-    VECTORIZERS: ClassVar[Dict[str, Type[SpacyFeatureVectorizer]]] = {}
-    """Registered spaCy feature vectorizers.
-
-    :see: :meth:`register`
-
-    """
     description: str = field()
     """A short human readable name.
 
@@ -58,29 +56,34 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
     :see meth:`id_from_spacy_symbol`
 
     """
-    symbols: Sequence[str] = field()
+    symbols: Union[str, Sequence[str]] = field()
     """The list of symbols to vectorize and provided by spaCy as a feature."""
+
     def __post_init__(self):
         super().__post_init__()
-        # TMP: remove
-        self.as_list = self.symbols
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'configuring spacy vectorizer: {self.feature_id}')
         if isinstance(self.symbols, str):
-            self.symbols = tuple(self.symbols.encode('utf-8').decode('unicode_escape').split(' '))
-        if isinstance(self.symbols, list):
+            self.symbols = self.model.get_pipe(self.symbols).labels
+        elif isinstance(self.symbols, list):
             self.symbols = tuple(self.symbols)
-        syms = dict(zip(self.symbols, it.count()))
-        self.symbol_to_id = syms
-        self.id_to_symbol = dict(map(lambda x: (x[1], x[0]), syms.items()))
-        n = len(syms)
-        q = n - 1
-        arr = self._to_hot_coded_matrix(n)
-        rows = zip(syms, map(lambda i: arr[i], range(n)))
-        self.symbol_to_vector = dict(rows)
-        self.symbol_to_norm = {k: syms[k] / q for k in syms}
-
-    @classmethod
-    def register(cls: Type[SpacyFeatureVectorizer]):
-        cls.VECTORIZERS[cls.FEATURE_ID] = cls
+        elif not isinstance(self.symbols, tuple):
+            raise VectorizerError(
+                f'Wrong type for symbols: {type(self.symbols)}')
+        if len(self.symbols) <= 1:
+            raise VectorizerError(
+                f'Symbol list is too short: {len(self.symbols)}')
+        syms: Dict[str, int] = dict(zip(self.symbols, it.count()))
+        self.symbol_to_id: Dict[str, int] = syms
+        self.id_to_symbol: Dict[int, str] = dict(map(
+            lambda x: (x[1], x[0]), syms.items()))
+        n: int = len(syms)
+        q: int = n - 1
+        arr: Tensor = self._to_hot_coded_matrix(n)
+        rows: Iterable[Tuple[str, int], ...] = \
+            zip(syms, map(lambda i: arr[i], range(n)))
+        self.symbol_to_vector: Dict[str, int] = dict(rows)
+        self.symbol_to_norm: Dict[str, float] = {k: syms[k] / q for k in syms}
 
     @property
     def _description(self) -> str:
@@ -93,8 +96,8 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
     def _is_settable(self, name: str, value: Any) -> bool:
         return False
 
-    def _to_hot_coded_matrix(self, rows: int):
-        arr = self.torch_config.zeros((rows, rows))
+    def _to_hot_coded_matrix(self, rows: int) -> Tensor:
+        arr: Tensor = self.torch_config.zeros((rows, rows))
         for i in range(rows):
             arr[i][i] = 1
         return arr

@@ -1,4 +1,5 @@
 import logging
+import sys
 import unittest
 from torch import Tensor
 from zensols.deeplearn import TorchConfig
@@ -23,8 +24,22 @@ class TestFeatureVectorization(unittest.TestCase):
         if not hasattr(self.__class__, 'NO_VECTORIZER'):
             self.vmng = self.fac.instance('feature_vectorizer_manager')
         self.sent_text2 = self.sent_text + " My name is Paul Landes."
+        self.maxDiff = sys.maxsize
 
     def assertTensorEquals(self, should, tensor):
+        def pr():
+            import torch
+            torch.set_printoptions(threshold=10_000)
+            print()
+            print('output:')
+            if 1:
+                print(tensor)
+            else:
+                print(tensor.to_sparse())
+            print('_' * 80)
+
+        if not should.shape == tensor.shape:
+            pr()
         self.assertEqual(should.shape, tensor.shape)
         try:
             eq = TorchConfig.equal(should, tensor)
@@ -33,6 +48,8 @@ class TestFeatureVectorization(unittest.TestCase):
             raise e
         if not eq:
             logger.error(f'tensor {should} does not equal {tensor}')
+        if not eq:
+            pr()
         self.assertTrue(eq)
 
     def _to_sparse(self, arr: Tensor):

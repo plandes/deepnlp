@@ -12,7 +12,7 @@ ner_spacy_feature_vectorizer:
   torch_config: 'instance: gpu_torch_config'
   model: >-
     call({'param': {'attribute': 'model'}}): ${deepnlp_default:vectorizer_doc_parser}
-  symbols: [PERSON, NORP, FACILITY, FAC, ORG, GPE, LOC, PRODUCT, EVENT, WORK_OF_ART, LAW, LANGUAGE, DATE, TIME, PERCENT, MONEY, QUANTITY, ORDINAL, CARDINAL, PER, MISC]
+  symbols: ner
 
 # head dependency
 dep_spacy_feature_vectorizer:
@@ -22,7 +22,7 @@ dep_spacy_feature_vectorizer:
   torch_config: 'instance: gpu_torch_config'
   model: >-
     call({'param': {'attribute': 'model'}}): ${deepnlp_default:vectorizer_doc_parser}
-  symbols: [acl, acomp, advcl, advmod, agent, amod, appos, attr, aux, auxpass, case, cc,   ccomp, clf, complm, compound, conj, cop, csubj, csubjpass, dative, dep, det,   discourse, dislocated, dobj, expl, fixed, flat, goeswith, hmod, hyph, infmod,   intj, iobj, list, mark, meta, neg, nmod, nn, npadvmod, nsubj, nsubjpass,   nounmod, npmod, num, number, nummod, oprd, obj, obl, orphan, parataxis,   partmod, pcomp, pobj, poss, possessive, preconj, prep, prt, punct, quantmod,   rcmod, relcl, reparandum, root, vocative, xcomp, ROOT]
+  symbols: parser
 
 # part of speech
 pos_spacy_feature_vectorizer:
@@ -32,10 +32,4 @@ pos_spacy_feature_vectorizer:
   torch_config: 'instance: gpu_torch_config'
   model: >-
     call({'param': {'attribute': 'model'}}): ${deepnlp_default:vectorizer_doc_parser}
-  symbols: >-
-    ADJ ADP ADV AUX CONJ CCONJ DET INTJ NOUN NUM PART PRON PROPN PUNCT SCONJ
-    SYM VERB X EOL SPACE . , -LRB- -RRB- `` " ' ${conf_esc:dollar}
-    ${conf_esc:hash} AFX CC CD DT EX FW HYPH IN JJ JJR JJS LS MD NIL NN NNP
-    NNPS NNS PDT POS PRP PRP${conf_esc:dollar} RB RBR RBS RP TO UH VB VBD VBG
-    VBN VBP VBZ WDT WP WP${conf_esc:dollar} WRB SP ADD NFP GW XX BES HVS NP PP
-    VP ADVP ADJP SBAR PRT PNP
+  symbols: tagger

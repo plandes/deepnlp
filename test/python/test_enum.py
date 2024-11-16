@@ -23,8 +23,8 @@ class TestEnumVectorizer(TestFeatureVectorization):
         arr, vec = res[0]
         self.assertTrue(isinstance(vec, FeatureDocumentVectorizer))
         self.assertEqual('enum', vec.feature_id)
-        self.assertEqual((2, 30, 92), arr.shape)
-        self.assertEqual((-1, 30, 92), vec.shape)
+        self.assertEqual((2, 30, 63), arr.shape)
+        self.assertEqual((-1, 30, 63), vec.shape)
 
     def test_ent(self):
         vec = self.fac.instance('ent_vectorizer_manager')
@@ -35,11 +35,11 @@ class TestEnumVectorizer(TestFeatureVectorization):
         arr, vec = res[0]
         sm = self._to_sparse(arr)
         self.assertEqual(np.array([1], dtype=float), sm.data)
-        self.assertEqual(np.array([5]), sm.indices)
+        self.assertEqual(np.array([4]), sm.indices)
         self.assertTrue(isinstance(vec, FeatureDocumentVectorizer))
         self.assertEqual('enum', vec.feature_id)
-        self.assertEqual((2, 30, 21), arr.shape)
-        self.assertEqual((-1, 30, 21), vec.shape)
+        self.assertEqual((2, 30, 18), arr.shape)
+        self.assertEqual((-1, 30, 18), vec.shape)
 
     def test_ent_nolen(self):
         vec = self.fac.instance('ent_vectorizer_manager_nolen')
@@ -50,8 +50,8 @@ class TestEnumVectorizer(TestFeatureVectorization):
         arr, vec = res[0]
         sm = self._to_sparse(arr)
         self.assertEqual(np.array([1.], dtype=float), sm.data)
-        self.assertEqual(np.array([5]), sm.indices)
+        self.assertEqual(np.array([4]), sm.indices)
         self.assertTrue(isinstance(vec, FeatureDocumentVectorizer))
         self.assertEqual('enum', vec.feature_id)
-        self.assertEqual((2, 7, 21), arr.shape)
-        self.assertEqual((-1, -1, 21), vec.shape)
+        self.assertEqual((2, 7, 18), arr.shape)
+        self.assertEqual((-1, -1, 18), vec.shape)
