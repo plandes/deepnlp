@@ -439,7 +439,7 @@ class FeatureDocumentVectorizerManager(FeatureVectorizerManager):
                      the list
 
         """
-        self._log_parse(text, logger)
+        #self._log_parse(text, logger)
         return self.doc_parser.parse(text, *args, **kwargs)
 
     def _find_model(self, doc_parser: FeatureDocumentParser) -> Language:
@@ -474,9 +474,8 @@ class FeatureDocumentVectorizerManager(FeatureVectorizerManager):
         vecs: Dict[str, SpacyFeatureVectorizer] = dict(map(
             lambda v: (v.feature_id, v), self.configured_spacy_vectorizers))
         registered_feature_ids: Set[str] = set(vecs.keys())
-        token_feature_ids: Set[str] = \
-            registered_feature_ids & self.token_feature_ids
-        token_feature_ids: List[str] = sorted(token_feature_ids)
+        token_feature_ids: List[str] = sorted(
+            registered_feature_ids & self.token_feature_ids)
         vectorizers: Dict[str, SpacyFeatureVectorizer] = \
             collections.OrderedDict()
         if logger.isEnabledFor(logging.DEBUG):
