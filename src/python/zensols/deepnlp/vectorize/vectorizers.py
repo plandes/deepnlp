@@ -258,11 +258,12 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
         """
         fid: str = fvec.feature_id
         fcounts: Tensor = self.torch_config.zeros(fvec.shape[1])
+        desc: str = f'in vec={self}, parser={self.manager.doc_parser}'
         tok: FeatureToken
         for tok in sent.tokens:
             val = tok.get_feature(
                 feature_id=fid,
-                message=f'in {self.manager.doc_parser}')
+                message=desc)
             val: int = getattr(tok, fid)
             fnid: Tensor = fvec.id_from_spacy(val, -1)
             if fnid > -1:
