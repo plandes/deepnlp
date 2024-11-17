@@ -33,7 +33,7 @@ class Application(object):
             for t in d.tokens:
                 print(t.i, t.i_sent, t.text, t.dep_, t.ent_, t.children)
             print('-' * 30)
-        with loglevel('zensols.deepnlp', init=True):
+        with loglevel('zensols.deepnlp', level=logging.INFO, init=True):
             arr = vec.transform(docs[0])
         print(arr.shape)
         print(arr)
