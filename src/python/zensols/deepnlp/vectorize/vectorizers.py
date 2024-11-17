@@ -233,7 +233,7 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
         feature_ids: Set[str] = self.decoded_feature_ids
         fvecs: List[SpacyFeatureVectorizer] = []
         fvec: SpacyFeatureVectorizer
-        for fvec in self.manager.spacy_vectorizers.values():
+        for _, fvec in self.manager.ordered_spacy_vectorizers:
             if feature_ids is None or fvec.feature_id in feature_ids:
                 fvecs.append(fvec)
         return fvecs
@@ -244,7 +244,7 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
         """
         fln: int = sum(map(lambda v: v.shape[1], self._get_spacy_vectorizers()))
         if logger.isEnabledFor(logging.DEBUG):
-            vecs = ', '.join(map(str, self.manager.spacy_vectorizers.values()))
+            vecs = ', '.join(map(str, self.manager.ordered_spacy_vectorizers))
             logger.debug(f'count enum feature len: {fln}, vecs: {vecs}')
         return -1, fln
 
@@ -280,7 +280,7 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'encoding sentence: {sent}')
             tok_arrs = []
-            for fvec in self.manager.spacy_vectorizers.values():
+            for _, fvec in self.manager.ordered_spacy_vectorizers:
                 cnts: Tensor = self.get_feature_counts(sent, fvec)
                 if logger.isEnabledFor(logging.TRACE):
                     logger.trace(f'encoding with {fvec}')
@@ -305,7 +305,7 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
                          f"{', '.join(self.manager.spacy_vectorizers.keys())}")
             logger.debug(f'keeping: {keeps}')
         fvec: SpacyFeatureVectorizer
-        for fvec in self.manager.spacy_vectorizers.values():
+        for _, fvec in self.manager.ordered_spacy_vectorizers:
             col_end: int = col_start + fvec.shape[1]
             fid: str = fvec.feature_id
             if logger.isEnabledFor(logging.DEBUG):
@@ -334,7 +334,7 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
             by_fid = {}
             sents.append(by_fid)
             arr = tensor[six]
-            for fvec in self.manager.spacy_vectorizers.values():
+            for _, fvec in self.manager.ordered_spacy_vectorizers:
                 col_end = col_start + fvec.shape[1]
                 fid = fvec.feature_id
                 vec = arr[col_start:col_end]

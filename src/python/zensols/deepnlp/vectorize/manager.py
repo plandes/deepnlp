@@ -487,6 +487,13 @@ class FeatureDocumentVectorizerManager(FeatureVectorizerManager):
             logger.debug(f'created {len(vectorizers)} vectorizers')
         return vectorizers
 
+    @property
+    @persisted('_ordered_spacy_vectorizers')
+    def ordered_spacy_vectorizers(self) -> \
+            Tuple[Tuple[str, SpacyFeatureVectorizer], ...]:
+        """The spaCy vectorizers in a guaranteed stable ordering."""
+        return tuple(sorted(self.spacy_vectorizers.items(), key=lambda t: t[0]))
+
     def deallocate(self):
         if self._spacy_vectorizers.is_set():
             vecs = self.spacy_vectorizers
