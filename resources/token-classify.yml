@@ -49,6 +49,14 @@ vectorizer_manager_set:
     - tok_label_vectorizer_manager
 
 
+## Batch
+#
+batch_stash:
+  # this stash is used to generate instances of what will be used to create batches
+  split_stash_container: 'instance: feature_stash'
+
+
+
 ## Model
 #
 # configure model to handle sequences for tokens
