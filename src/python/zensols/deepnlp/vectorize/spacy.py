@@ -73,17 +73,17 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
         if len(self.symbols) <= 1:
             raise VectorizerError(
                 f'Symbol list is too short: {len(self.symbols)}')
-        syms: Dict[str, int] = dict(zip(self.symbols, it.count()))
-        self.symbol_to_id: Dict[str, int] = syms
+        self.symbol_to_id: Dict[str, int] = dict(zip(self.symbols, it.count()))
         self.id_to_symbol: Dict[int, str] = dict(map(
-            lambda x: (x[1], x[0]), syms.items()))
-        n: int = len(syms)
+            lambda x: (x[1], x[0]), self.symbol_to_id.items()))
+        n: int = len(self.symbol_to_id)
         q: int = n - 1
         arr: Tensor = self._to_hot_coded_matrix(n)
         rows: Iterable[Tuple[str, int], ...] = \
-            zip(syms, map(lambda i: arr[i], range(n)))
+            zip(self.symbol_to_id, map(lambda i: arr[i], range(n)))
         self.symbol_to_vector: Dict[str, int] = dict(rows)
-        self.symbol_to_norm: Dict[str, float] = {k: syms[k] / q for k in syms}
+        self.symbol_to_norm: Dict[str, float] = \
+            dict(map(lambda t: (t[0], t[1] / q), self.symbol_to_id.items()))
 
     @property
     def _description(self) -> str:
@@ -130,7 +130,7 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
         ``token.ent_``).
 
         """
-        strs = self.model.vocab.strings
+        strs: str = self.model.vocab.strings
         if id in strs:
             return strs[id]
         else:
@@ -141,7 +141,7 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
         have a mapping the ID.
 
         """
-        symbol = self.id_from_spacy_symbol(id)
+        symbol: str = self.id_from_spacy_symbol(id)
         return self.symbol_to_vector.get(symbol, None)
 
     def id_from_spacy(self, id: int, default: int = -1) -> int:
@@ -165,7 +165,7 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
         return self.feature_id
 
     def __repr__(self) -> str:
-        return f'{self.feature_id}: {self.description}, len={self.symbols}'
+        return f'{self.feature_id}: {self.description}, len={len(self.symbols)}'
 
 
 SpacyFeatureVectorizer.description = SpacyFeatureVectorizer._description
