@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import List, Tuple, Set, Union, Dict, Iterable
+from typing import List, Tuple, Set, Union, Dict, Iterable, Callable
 from dataclasses import dataclass, field
 import logging
 import sys
@@ -229,6 +229,12 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
     ``ent``, ``tag``, and ``dep``.
 
     """
+    string_symbol_feature_ids: Set[str] = field(default=None)
+    """Feature IDs of vectorizers that use string symbols rather than their
+    integers, which are used to look up the string equivelants in
+    :obj:`spacy.vocab.Vocab.strings`.
+
+    """
     def _get_spacy_vectorizers(self) -> List[SpacyFeatureVectorizer]:
         feature_ids: Set[str] = self.decoded_feature_ids
         fvecs: List[SpacyFeatureVectorizer] = []
@@ -259,13 +265,16 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
         fid: str = fvec.feature_id
         fcounts: Tensor = self.torch_config.zeros(fvec.shape[1])
         desc: str = f'in vec={self}, parser={self.manager.doc_parser}'
+        string_fids: Set[str] = self.string_symbol_feature_ids
+        map_fn: Callable = fvec.id_from_spacy
+        if string_fids is not None and fid in string_fids:
+            map_fn = fvec.symbol_to_id.get
         tok: FeatureToken
         for tok in sent.tokens:
-            val = tok.get_feature(
+            val: Union[str, int] = tok.get_feature(
                 feature_id=fid,
                 message=desc)
-            val: int = getattr(tok, fid)
-            fnid: Tensor = fvec.id_from_spacy(val, -1)
+            fnid: Tensor = map_fn(val, -1)
             if fnid > -1:
                 fcounts[fnid] += 1
         return fcounts
