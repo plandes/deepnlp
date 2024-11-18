@@ -9,6 +9,7 @@ import sys
 import logging
 import math
 import itertools as it
+from frozendict import frozendict
 from spacy.language import Language
 from torch import Tensor
 from zensols.deeplearn import TorchConfig
@@ -57,33 +58,47 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
 
     """
     symbols: Union[str, Sequence[str]] = field()
-    """The list of symbols to vectorize and provided by spaCy as a feature."""
+    """The list of symbols to vectorize and provided by spaCy as a feature if a
+    tuple or list.  If a string, then use it as the name of the pipe with the
+    ``labels`` attribute.
 
-    def __post_init__(self):
-        super().__post_init__()
+    """
+    def _map_symbols(self, symbols: Union[str, Sequence[str]]) -> Sequence[str]:
+        if isinstance(symbols, str):
+            symbols = self.model.get_pipe(symbols).labels
+        elif isinstance(symbols, list):
+            symbols = tuple(symbols)
+        elif not isinstance(symbols, tuple):
+            raise VectorizerError(
+                f'Wrong type for symbols: {type(symbols)}')
+        if len(symbols) <= 1:
+            raise VectorizerError(
+                f'Symbol list is too short: {len(symbols)}')
+        return symbols
+
+    def _initialize(self, symbols: Union[str, Sequence[str]]):
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'configuring spacy vectorizer: {self.feature_id}')
-        if isinstance(self.symbols, str):
-            self.symbols = self.model.get_pipe(self.symbols).labels
-        elif isinstance(self.symbols, list):
-            self.symbols = tuple(self.symbols)
-        elif not isinstance(self.symbols, tuple):
-            raise VectorizerError(
-                f'Wrong type for symbols: {type(self.symbols)}')
-        if len(self.symbols) <= 1:
-            raise VectorizerError(
-                f'Symbol list is too short: {len(self.symbols)}')
-        self.symbol_to_id: Dict[str, int] = dict(zip(self.symbols, it.count()))
-        self.id_to_symbol: Dict[int, str] = dict(map(
-            lambda x: (x[1], x[0]), self.symbol_to_id.items()))
+        self.symbol_to_id: Dict[str, int] = dict(zip(symbols, it.count()))
         n: int = len(self.symbol_to_id)
         q: int = n - 1
         arr: Tensor = self._to_hot_coded_matrix(n)
         rows: Iterable[Tuple[str, int], ...] = \
             zip(self.symbol_to_id, map(lambda i: arr[i], range(n)))
-        self.symbol_to_vector: Dict[str, int] = dict(rows)
+        self.symbol_to_vector: Dict[str, int] = frozendict(rows)
         self.symbol_to_norm: Dict[str, float] = \
-            dict(map(lambda t: (t[0], t[1] / q), self.symbol_to_id.items()))
+            frozendict(map(lambda t: (t[0], t[1] / q),
+                           self.symbol_to_id.items()))
+
+    @property
+    def _symbols(self) -> Sequence[str]:
+        return self._symbols_val
+
+    @_symbols.setter
+    def _symbols(self, symbols: Union[str, Sequence[str]]):
+        symbols = self._map_symbols(symbols)
+        self._symbols_val = symbols
+        self._initialize(symbols)
 
     @property
     def _description(self) -> str:
@@ -169,6 +184,7 @@ class SpacyFeatureVectorizer(FeatureVectorizer):
 
 
 SpacyFeatureVectorizer.description = SpacyFeatureVectorizer._description
+SpacyFeatureVectorizer.symbols = SpacyFeatureVectorizer._symbols
 
 
 @dataclass
