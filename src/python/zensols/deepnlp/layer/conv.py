@@ -31,8 +31,8 @@ logger = logging.getLogger(__name__)
 class DeepConvolution1dNetworkSettings(ActivationNetworkSettings,
                                        DropoutNetworkSettings,
                                        Writable):
-    """Configurable repeated series of 1-dimension convolution, pooling, batch norm
-    and activation layers.  This layer is specifically designed for natural
+    """Configurable repeated series of 1-dimension convolution, pooling, batch
+    norm and activation layers.  This layer is specifically designed for natural
     language processing task, which is why this configuration includes
     parameters for token counts.
 
@@ -165,8 +165,8 @@ class DeepConvolution1dNetworkSettings(ActivationNetworkSettings,
 
 
 class DeepConvolution1d(BaseNetworkModule):
-    """Configurable repeated series of 1-dimension convolution, pooling, batch norm
-    and activation layers. See :meth:`get_layers`.
+    """Configurable repeated series of 1-dimension convolution, pooling, batch
+    norm and activation layers. See :meth:`get_layers`.
 
     :see: :class:`.DeepConvolution1dNetworkSettings`
 
@@ -178,8 +178,8 @@ class DeepConvolution1d(BaseNetworkModule):
         """Initialize the deep convolution layer.
 
         *Implementation note*: all layers are stored sequentially using a
-         :class:`torch.nn.Sequential` to get normal weight persistance on torch
-         save/loads.
+        :class:`torch.nn.Sequential` to get normal weight persistance on torch
+        save/loads.
 
         :param net_settings: the deep convolution layer configuration
 
@@ -193,9 +193,9 @@ class DeepConvolution1d(BaseNetworkModule):
         self.seq_layers = nn.Sequential(*layers)
 
     def _create_layers(self, layers: List[nn.Module],
-                       layer_sets: List[Tuple[nn.Module, nn.Module, nn.Module]]):
-        """Create the convolution, max pool and batch norm layers used to forward
-        through.
+                       layer_sets: List[Tuple[nn.Module, ...]]):
+        """Create the convolution, max pool and batch norm layers used to
+        forward through.
 
         :param layers: the layers to populate used in an
                        :class:`torch.nn.Sequential`
@@ -242,18 +242,19 @@ class DeepConvolution1d(BaseNetworkModule):
         self._deallocate_attribute('seq_layers')
 
     def get_layers(self) -> Tuple[Tuple[nn.Module, nn.Module, nn.Module]]:
-        """Return a tuple of layer sets, with each having the form: ``(convolution, max
-        pool, batch_norm)``.  The ``batch_norm`` norm is ``None`` if not
-        configured.
+        """Return a tuple of layer sets, with each having the form:
+        ``(convolution, max pool, batch_norm)``.  The ``batch_norm`` norm is
+        ``None`` if not configured.
 
         """
         return tuple(self.seq_layers)
 
     def _forward(self, x: torch.Tensor) -> torch.Tensor:
-        """Forward convolution, batch normalization, pool, activation and dropout for
-        those layers that are configured.
+        """Forward convolution, batch normalization, pool, activation and
+        dropout for those layers that are configured.
 
         :see: `Sunghean et al <http://mipal.snu.ac.kr/images/1/16/Dropout_ACCV2016.pdf>`_
+
         :see: `Ioffe et al <https://arxiv.org/pdf/1502.03167.pdf>`_
 
         """
