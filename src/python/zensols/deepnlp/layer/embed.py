@@ -406,7 +406,7 @@ class EmbeddingNetworkModule(BaseNetworkModule):
 
         """
         self._shape_debug('forward token features', x)
-        arrs = []
+        arrs: List[Tensor] = []
         if x is not None:
             self._shape_debug('adding passed token features', x)
             arrs.append(x)
@@ -431,7 +431,7 @@ class EmbeddingNetworkModule(BaseNetworkModule):
 
         """
         self._shape_debug('forward document features', x)
-        arrs = []
+        arrs: List[Tensor] = []
         if x is not None:
             arrs.append(x)
         for attrib in self.doc_attribs:

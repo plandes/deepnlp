@@ -3,9 +3,11 @@ features in batches of matrices and persists matrix only (sans features) for
 efficient retrival.
 
 """
+from __future__ import annotations
 __author__ = 'Paul Landes'
-
-from typing import Tuple, Iterable, List, Union
+from typing import Tuple, Iterable, List, Union, TYPE_CHECKING
+if TYPE_CHECKING:
+    from ..transformer.embed import TransformerEmbedding
 from dataclasses import dataclass, field
 import logging
 from itertools import chain
@@ -31,7 +33,7 @@ class EmbeddingFeatureVectorizer(FoldingDocumentVectorizer,
     word embedding during execution of the model.
 
     """
-    embed_model: Union[WordEmbedModel, 'TransformerEmbedding'] = field()
+    embed_model: Union[WordEmbedModel, TransformerEmbedding] = field()
     """The word vector model.
 
     Types for this value include:
