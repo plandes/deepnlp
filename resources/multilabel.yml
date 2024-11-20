@@ -45,23 +45,23 @@ classify_label_batch_mappings:
 
 # make labels plural
 batch_dir_stash:
-  groups: >-
-    eval: (
-       # there will be N (batch_stash:batch_size) batch labels in one file in a
-       # directory of just label files
-       set('labels'.split()),
-       # because we might want to switch between embeddings, separate them
-       set('glove_50_embedding'.split()),
-       set('glove_300_embedding'.split()),
-       set('word2vec_300_embedding'.split()),
-       set('fasttext_news_300_embedding'.split()),
-       set('fasttext_crawl_300_embedding'.split()),
-       set('enums stats counts dependencies'.split()),
-       set('transformer_trainable_embedding'.split()),
-       set('transformer_fixed_embedding'.split()),
-       set('transformer_sent_trainable_embedding'.split()),
-       set('transformer_sent_fixed_embedding'.split()),
-       set('transformer_enum_expander transformer_dep_expander'.split()))
+  groups:
+    # there will be N (batch_stash:batch_size) batch labels in one file in a
+    # directory of just label files
+    - [labels]
+    # because we might want to switch between embeddings, separate them
+    - [glove_50_embedding]
+    - [glove_300_embedding]
+    - [word2vec_300_embedding]
+    - [fasttext_news_300_embedding]
+    - [fasttext_crawl_300_embedding]
+    - [enums, stats, counts, dependencies]
+    - [transformer_trainable_embedding]
+    - [transformer_fixed_embedding]
+    - [transformer_sent_trainable_embedding]
+    - [transformer_sent_fixed_embedding]
+    - [transformer_enum_expander transformer_dep_expander]
+
 
 # add feature document with 'labels' attribute and add it to the decodable attributes
 batch_stash:
