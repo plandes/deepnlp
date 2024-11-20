@@ -9,6 +9,7 @@ import logging
 import sys
 from functools import reduce
 import textwrap as tw
+from io import TextIOBase
 import torch
 import numpy as np
 from torch import Tensor
@@ -36,7 +37,30 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
+class DecodedContainerFeatureVectorizer(FeatureDocumentVectorizer):
+    """A base class that allows for configuring decoded features after batches
+    are created at train time.
+
+    """
+    decoded_feature_ids: Set[str] = field(default=None)
+    """The spaCy generated features used during *only* decoding (see class
+    docs).  Examples include ``norm``, ``ent``, ``dep``, ``tag``.  When set to
+    ``None``, use all those given in the
+    :obj:`~.FeatureDocumentVectorizerManager.spacy_vectorizers`.
+
+    """
+    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
+        dfids: Set[str] = self.decoded_feature_ids
+        super().write(depth, writer)
+        self._write_line('decoded spacy vectorizers:', depth, writer)
+        for fvec in self.manager.spacy_vectorizers.values():
+            decoded: bool = dfids is None or fvec.feature_id in dfids
+            self._write_line(f'{fvec.feature_id}: {decoded}',
+                             depth + 1, writer)
+
+
+@dataclass
+class EnumContainerFeatureVectorizer(DecodedContainerFeatureVectorizer):
     """Encode tokens found in the container by aggregating the spaCy vectorizers
     output.  The result is a concatenated binary representation of all
     configured token level features for each token.  This adds only token
@@ -66,20 +90,13 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
     DESCRIPTION = 'spacy feature vectorizer'
     FEATURE_TYPE = TextFeatureType.TOKEN
 
-    decoded_feature_ids: Set[str] = field(default=None)
-    """The spaCy generated features used during *only* decoding (see class
-    docs).  Examples include ``norm``, ``ent``, ``dep``, ``tag``.  When set to
-    ``None``, use all those given in the
-    :obj:`~.FeatureDocumentVectorizerManager.spacy_vectorizers`.
-
-    """
     def _get_shape_with_feature_ids(self, feature_ids: Set[str]):
         """Compute the shape based on what spacy feature ids are given.
 
         :param feature_ids: the spacy feature ids used to filter the result
 
         """
-        flen = 0
+        flen: int = 0
         for fvec in self.manager.spacy_vectorizers.values():
             if feature_ids is None or fvec.feature_id in feature_ids:
                 flen += fvec.shape[1]
@@ -205,7 +222,7 @@ class EnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
 
 
 @dataclass
-class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
+class CountEnumContainerFeatureVectorizer(DecodedContainerFeatureVectorizer):
     """Vectorize the counts of parsed spaCy features.  This generates the count
     of tokens as a S X M * N tensor where S is the number of sentences, M is the
     number of token feature ids and N is the number of columns of the output of
@@ -223,12 +240,6 @@ class CountEnumContainerFeatureVectorizer(FeatureDocumentVectorizer):
     DESCRIPTION = 'token level feature counts'
     FEATURE_TYPE = TextFeatureType.DOCUMENT
 
-    decoded_feature_ids: Set[str] = field(default=None)
-    """The feature ids to use at train/test time, which currently are all those
-    defined in `zensols.deepnlp.vectorize.SpacyFeatureVectorizer`, and include
-    ``ent``, ``tag``, and ``dep``.
-
-    """
     string_symbol_feature_ids: Set[str] = field(default=None)
     """Feature IDs of vectorizers that use string symbols rather than their
     integers, which are used to look up the string equivelants in
