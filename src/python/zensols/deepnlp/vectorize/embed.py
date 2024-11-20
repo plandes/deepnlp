@@ -38,7 +38,7 @@ class EmbeddingFeatureVectorizer(FoldingDocumentVectorizer,
 
     Types for this value include:
 
-      * :class:`~znesols.deepnlp.embed.domain.WordEmbedModel`
+      * :class:`~zensols.deepnlp.embed.domain.WordEmbedModel`
       * :class:`~zensols.deepnlp.transformer.embed.TransformerEmbedding`
 
     """
