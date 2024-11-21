@@ -138,7 +138,8 @@ class TransformerDocumentTokenizer(PersistableContainer):
 
         if tlen > 0:
             params.update({'truncation': True,
-                           'max_length': tlen})
+                           'max_length': tlen,
+                           'padding': 'max_length'})
         else:
             params.update({'truncation': False})
 
