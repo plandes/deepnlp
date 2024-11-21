@@ -427,7 +427,8 @@ class EmbeddingNetworkModule(BaseNetworkModule):
             x = arrs[0]
         elif len(arrs) > 1:
             if logger.isEnabledFor(logging.DEBUG):
-                self._debug(f'concating {len(arrs)} token features')
+                dims = ', '.join(map(lambda t: str(tuple(t.shape)), arrs))
+                self._debug(f'concating token features with dims: {dims}')
             x = torch.cat(arrs, 2)
             self._shape_debug('token concat', x)
         return x
