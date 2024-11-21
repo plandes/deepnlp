@@ -30,6 +30,8 @@ class ClassifyNetworkSettings(DropoutNetworkSettings, EmbeddingNetworkSettings):
     """A utility container settings class for convulsion network models.  This
     class also updates the recurrent network's drop out settings when changed.
 
+    :see: :class:`.ClassifyNetwork`
+
     """
     recurrent_settings: RecurrentAggregationNetworkSettings = field()
     """Contains the confgiuration for the models RNN."""
@@ -52,8 +54,18 @@ class ClassifyNetworkSettings(DropoutNetworkSettings, EmbeddingNetworkSettings):
 
 
 class ClassifyNetwork(EmbeddingNetworkModule):
-    """A model that either allows for an RNN or a BERT transforemr to classify
-    text.
+    """A model that either allows for an RNN or a masked trained transforemr
+    model to classify text for document level classification.  A RNN should be
+    used when the input are non-contextual word vectors, such as GLoVE.
+
+    For transformer input, either the pooled (i.e. ``[CLS]`` BERT token) may be
+    be used with document level features.  Token (last transformer layer output)
+    may also be used, but in this case, the input must be truncated and padded
+    wordpiece size by setting the ``deepnlp_default:word_piece_token_length``
+    resource library configuration.
+
+    The RNN should not be set for transformer input, but the linear fully
+    connected terminal output is used for both.
 
     """
     MODULE_NAME: ClassVar[str] = 'classify'
@@ -96,7 +108,7 @@ class ClassifyNetwork(EmbeddingNetworkModule):
             self.recur = RecurrentAggregation(rs)
             self._debug(f'embedding join size: {self.join_size}')
             self.join_size += self.recur.out_features
-            self._debug(f'after lstm join size: {self.join_size}')
+            self._debug(f'after rnn join size: {self.join_size}')
             ln_in_features = self.join_size
 
         ls.in_features = ln_in_features
