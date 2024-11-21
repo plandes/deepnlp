@@ -35,6 +35,8 @@ executor:
 # model that uses the output bindings directly
 trans_net_settings:
   class_name: zensols.deepnlp.transformer.TransformerSequenceNetworkSettings
+  # gpu layer configuration
+  torch_config: 'instance: ${deeplearn_default:layer_torch_config}'
   # embedding layer used as the input layer
   embedding_layer: 'instance: ${ner_default:embedding}_layer'
   # dropout used on the output from the embedding layer
@@ -47,6 +49,8 @@ trans_net_settings:
 # configure the dense layer that decodes the transformer output to NER labels
 trans_decoder_settings:
   class_name: zensols.deeplearn.layer.DeepLinearNetworkSettings
+  # gpu layer configuration
+  torch_config: 'instance: ${deeplearn_default:layer_torch_config}'
   # number deep linear layers configured after the LSTM
   middle_features: 'eval: ()'
   # number of output features
