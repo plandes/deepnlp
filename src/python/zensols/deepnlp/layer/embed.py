@@ -195,6 +195,8 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         this includes any features layered/concated given in all token level
         vectorizer's configuration
 
+      * ``token_size`` the sum of the token feature size
+
       * ``join_size`` if a join layer is to be used, this has the size of the
         part of the join layer that will have the document level features
 
@@ -244,6 +246,7 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         """
         super().__init__(net_settings, module_logger)
         self.embedding_output_size: int = 0
+        self.token_size: int = 0
         self.join_size: int = 0
         self.token_attribs: List[str] = []
         self.doc_attribs: List[str] = []
@@ -293,6 +296,7 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         member datastructures.
 
         """
+        #tok_len: int = next(iter(self._embedding_layers.values())).token_length
         if logger.isEnabledFor(logging.DEBUG):
             self._debug(f'adding for vec {vec}:')
         attr = field_meta.field.attr
@@ -300,6 +304,9 @@ class EmbeddingNetworkModule(BaseNetworkModule):
             if logger.isEnabledFor(logging.DEBUG):
                 self._debug(f'adding tok type {attr}: {vec.shape[2]}')
             self.embedding_output_size += vec.shape[2]
+            self.token_size += vec.shape[2]
+            #print('O', tok_len, vec.shape[2], (tok_len * vec.shape[2]))
+            #self.embedding_output_size += (tok_len * vec.shape[2])
             self.token_attribs.append(attr)
         elif vec.feature_type == TextFeatureType.DOCUMENT:
             if logger.isEnabledFor(logging.DEBUG):
@@ -419,7 +426,8 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         if len(arrs) == 1:
             x = arrs[0]
         elif len(arrs) > 1:
-            self._debug(f'concating {len(arrs)} token features')
+            if logger.isEnabledFor(logging.DEBUG):
+                self._debug(f'concating {len(arrs)} token features')
             x = torch.cat(arrs, 2)
             self._shape_debug('token concat', x)
         return x

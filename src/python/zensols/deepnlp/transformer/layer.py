@@ -10,7 +10,7 @@ import itertools as it
 import torch
 from torch import Tensor
 from torch import nn
-from zensols.deeplearn import DropoutNetworkSettings
+from zensols.deeplearn import DeepLearnError, DropoutNetworkSettings
 from zensols.deeplearn.batch import Batch
 from zensols.deeplearn.model import (
     SequenceNetworkModule, SequenceNetworkContext, SequenceNetworkOutput
@@ -44,8 +44,12 @@ class TransformerEmbeddingLayer(EmbeddingLayer):
                             embeddings
 
         """
-        super().__init__(
-            *args, embedding_dim=embed_model.vector_dimension, **kwargs)
+        dim: int = embed_model.vector_dimension
+        if embed_model.output == 'last_hidden_state':
+            wp_len: int = embed_model.tokenizer.word_piece_token_length
+            if wp_len > 0:
+                dim *= wp_len
+        super().__init__(*args, embedding_dim=dim, **kwargs)
         self.embed_model = embed_model
         if self.embed_model.trainable:
             self.emb = embed_model.model
