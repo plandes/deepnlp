@@ -116,7 +116,7 @@ class ClassifyModelFacade(LanguageModelFacade):
     def _configure_debug_logging(self):
         super()._configure_debug_logging()
         for i in ['zensols.deeplearn.layer',
-                  'zensols.deepnlp.vectorize.vectorizers',
+                  #'zensols.deepnlp.vectorize.vectorizers',
                   'zensols.deepnlp.transformer.layer',
                   'zensols.deepnlp.layer',
                   'zensols.deepnlp.classify']:
