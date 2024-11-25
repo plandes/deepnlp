@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+### Added
+- Classification model supports full transformer layer output.
+
+### Changed
+- Symmetric output shape across multiple (deep) 1D convolutional layers. Moved
+  batch layer creation to the convolution layer factory.
+
+
 ## [1.16.0] - 2024-10-14
 ### Changed
 - Bug fix on embedding attribute setting.

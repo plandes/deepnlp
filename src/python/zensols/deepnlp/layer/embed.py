@@ -49,7 +49,8 @@ class EmbeddingLayer(DebugModule, Deallocatable):
                  feature_vectorizer_manager: FeatureDocumentVectorizerManager,
                  embedding_dim: int, sub_logger: logging.Logger = None,
                  trainable: bool = False):
-        """Initialize.
+        """Initialize.  Creates ``embedding_output_size`` which are the total
+        embedding output parameters.
 
         :param feature_vectorizer_manager: the feature vectorizer manager that
                                            manages this instance
@@ -62,6 +63,7 @@ class EmbeddingLayer(DebugModule, Deallocatable):
         super().__init__(sub_logger)
         self.feature_vectorizer_manager = feature_vectorizer_manager
         self.embedding_dim = embedding_dim
+        self.embedding_output_size = embedding_dim
         self.trainable = trainable
 
     @property
@@ -161,6 +163,14 @@ class _EmbeddingContainer(object):
     def dim(self) -> int:
         """The embedding's dimension."""
         return self.embedding_layer.embedding_dim
+
+    @property
+    def output_size(self) -> int:
+        """The total output size of the embedding.  This is larger for
+        transformers' last hidden layer output.
+
+        """
+        return self.embedding_layer.embedding_output_size
 
     @property
     def attr(self) -> str:
@@ -296,17 +306,15 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         member datastructures.
 
         """
-        #tok_len: int = next(iter(self._embedding_layers.values())).token_length
         if logger.isEnabledFor(logging.DEBUG):
             self._debug(f'adding for vec {vec}:')
         attr = field_meta.field.attr
         if vec.feature_type == TextFeatureType.TOKEN:
-            if logger.isEnabledFor(logging.DEBUG):
-                self._debug(f'adding tok type {attr}: {vec.shape[2]}')
             self.embedding_output_size += vec.shape[2]
             self.token_size += vec.shape[2]
-            #print('O', tok_len, vec.shape[2], (tok_len * vec.shape[2]))
-            #self.embedding_output_size += (tok_len * vec.shape[2])
+            if logger.isEnabledFor(logging.DEBUG):
+                self._debug(f'adding tok type {attr}: {vec.shape[2]}, ' +
+                            f'cum token size={self.token_size}')
             self.token_attribs.append(attr)
         elif vec.feature_type == TextFeatureType.DOCUMENT:
             if logger.isEnabledFor(logging.DEBUG):
@@ -326,7 +334,7 @@ class EmbeddingNetworkModule(BaseNetworkModule):
                 self.logger.info(f'embeddings: {we_model.name}')
             ec = _EmbeddingContainer(field_meta, vec, embedding_layer)
             self._embedding_containers.append(ec)
-            self.embedding_output_size += ec.dim
+            self.embedding_output_size += ec.output_size
 
     def get_embedding_tensors(self, batch: Batch) -> Tuple[Tensor]:
         """Get the embedding tensors (or indexes depending on how it was

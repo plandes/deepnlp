@@ -1,0 +1,58 @@
+torch_config:
+  class_name: zensols.deeplearn.TorchConfig
+  use_gpu: false
+
+conv_1d_nominal_net_settings:
+  class_name: zensols.deepnlp.layer.DeepConvolution1dNetworkSettings
+  torch_config: 'instance: torch_config'
+  dropout: 0.5
+  activation: leaky_relu
+  embedding_dimension: 768
+  token_length: 200
+  token_kernel: 2
+  stride: 2
+
+conv_1d_repeat_net_settings:
+  class_name: zensols.deepnlp.layer.DeepConvolution1dNetworkSettings
+  torch_config: 'instance: torch_config'
+  dropout: 0.5
+  activation: leaky_relu
+  embedding_dimension: 768
+  token_length: 200
+  token_kernel: 2
+  stride: 2
+  repeats: 3
+
+conv_1d_stride_net_settings:
+  class_name: zensols.deepnlp.layer.DeepConvolution1dNetworkSettings
+  torch_config: 'instance: torch_config'
+  dropout: 0.5
+  activation: leaky_relu
+  embedding_dimension: 768
+  token_length: 200
+  token_kernel: 2
+  stride: 5
+  repeats: 3
+
+conv_1d_pad_net_settings:
+  class_name: zensols.deepnlp.layer.DeepConvolution1dNetworkSettings
+  torch_config: 'instance: torch_config'
+  dropout: 0.5
+  activation: leaky_relu
+  embedding_dimension: 768
+  token_length: 200
+  token_kernel: 2
+  stride: 5
+  padding: 2
+  repeats: 3
+
+tests:
+  one_d:
+    - batches: [32, 1, 5]
+      name: conv_1d_nominal_net_settings
+    - batches: [32]
+      name: conv_1d_repeat_net_settings
+    - batches: [1, 2, 3, 10, 100]
+      name: conv_1d_stride_net_settings
+    - batches: [32, 4, 1]
+      name: conv_1d_pad_net_settings

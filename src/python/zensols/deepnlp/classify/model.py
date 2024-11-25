@@ -19,8 +19,11 @@ from zensols.deepnlp.layer import (
     EmbeddingLayer,
     EmbeddingNetworkSettings,
     EmbeddingNetworkModule,
+    DeepConvolution1d,
+    DeepConvolution1dNetworkSettings,
 )
 from zensols.deepnlp.transformer import TransformerEmbedding
+from ..layer.embed import _EmbeddingContainer
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +38,9 @@ class ClassifyNetworkSettings(DropoutNetworkSettings, EmbeddingNetworkSettings):
     """
     recurrent_settings: RecurrentAggregationNetworkSettings = field()
     """Contains the confgiuration for the models RNN."""
+
+    convolution_settings: DeepConvolution1dNetworkSettings = field()
+    """Contains the configuration for the model's convolution layer(s)."""
 
     linear_settings: DeepLinearNetworkSettings = field()
     """Contains the configuration for the model's terminal layer."""
@@ -73,48 +79,78 @@ class ClassifyNetwork(EmbeddingNetworkModule):
     def __init__(self, net_settings: ClassifyNetworkSettings):
         super().__init__(net_settings, logger)
         ns: ClassifyNetworkSettings = self.net_settings
-        rs: RecurrentAggregationNetworkSettings = ns.recurrent_settings
-        ls: DeepLinearNetworkSettings = ns.linear_settings
-        ln_in_features: int
-
         self._is_token_output: bool = False
+        self.linear: DeepLinear = None
+        self.recur: RecurrentAggregation = None
+        self.conv: DeepConvolution1d = None
+
+        # determine if transformer, and if so, if last hidden layer used
+        ec: _EmbeddingContainer
         for ec in self._embedding_containers:
             embed_model: EmbeddingLayer = ec.embedding_layer.embed_model
             if isinstance(embed_model, TransformerEmbedding):
                 if embed_model.output == 'last_hidden_state':
                     self._is_token_output = True
-
         if logger.isEnabledFor(logging.DEBUG):
             self._debug(f'embed output size: {self.embedding_output_size}, ' +
                         f'embed dim: {self.embedding_dimension}, ' +
                         f'join size: {self.join_size}, ' +
+                        f'token size: {self.token_size}, ' +
                         f'resize batches: {self._is_token_output}')
-        if rs is None:
-            ln_in_features = self.embedding_output_size + self.join_size
-            if self._is_token_output:
-                add_token_feats: int = 0
-                layer: EmbeddingLayer
-                for layer in self._embedding_layers.values():
-                    add_token_feats += (self.token_size * layer.token_length)
-                if logger.isEnabledFor(logging.DEBUG):
-                    self._debug(f'adding token features: {add_token_feats}')
-                # by default, the token size is to the pooled output, so we need
-                # to subtract it off and add the token features X token count
-                ln_in_features += add_token_feats - self.token_size
-            self.recur = None
-        else:
-            rs.input_size = self.embedding_output_size
-            self._debug(f'recur settings: {rs}')
-            self.recur = RecurrentAggregation(rs)
-            self._debug(f'embedding join size: {self.join_size}')
-            self.join_size += self.recur.out_features
-            self._debug(f'after rnn join size: {self.join_size}')
-            ln_in_features = self.join_size
+        # configure layers
+        if ns.linear_settings is not None:
+            self._init_linear(ns.linear_settings)
+        if ns.recurrent_settings is not None:
+            self._init_recur(ns.recurrent_settings)
+        if ns.convolution_settings is not None:
+            self._init_conv(ns.convolution_settings)
+        # create layers
+        if ns.linear_settings is not None:
+            self.linear = DeepLinear(ns.linear_settings, self.logger)
+            if self.logger.isEnabledFor(logging.DEBUG):
+                self._debug(f'linear settings: {ns.linear_settings}')
+        if ns.recurrent_settings is not None:
+            self.recur = RecurrentAggregation(ns.recurrent_settings)
+            if self.logger.isEnabledFor(logging.DEBUG):
+                self._debug(f'recur settings: {ns.recurrent_settings}')
+        if ns.convolution_settings is not None:
+            self.conv = DeepConvolution1d(ns.convolution_settings, self.logger)
+            if self.logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'conv settings: {ns.convolution_settings}')
 
+    def _init_linear(self, ls: DeepLinearNetworkSettings):
+        ln_in_features: int = self.embedding_output_size + self.join_size
+        if self._is_token_output:
+            add_token_feats: int = 0
+            layer: EmbeddingLayer
+            for layer in self._embedding_layers.values():
+                add_token_feats += (self.token_size * layer.token_length)
+            if logger.isEnabledFor(logging.DEBUG):
+                self._debug(f'adding token features: {add_token_feats}')
+            # by default, the token size is to the pooled output, so we need
+            # to subtract it off and add the token features X token count
+            ln_in_features += add_token_feats - self.token_size
         ls.in_features = ln_in_features
-        self.fc_deep = DeepLinear(ls, self.logger)
+
+    def _init_recur(self, rs: RecurrentAggregationNetworkSettings):
+        rs.input_size = self.embedding_output_size
         if self.logger.isEnabledFor(logging.DEBUG):
-            self._debug(f'linear: {self.fc_deep}')
+            self._debug(f'embedding join size: {self.join_size}')
+        self.join_size += rs.hidden_size
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self._debug(f'after rnn join size: {self.join_size}')
+        if self.net_settings.linear_settings is not None:
+            self.net_settings.linear_settings.in_features = self.join_size
+
+    def _init_conv(self, cs: DeepConvolution1d):
+        cs.token_length = sum(map(
+            lambda el: el.token_length,
+            self._embedding_layers.values()))
+        cs.embedding_dimension = self.embedding_dimension + self.token_size
+        self._debug(f'conv shapes: {cs.embedding_dimension} -> {cs.out_shape}')
+        if self.net_settings.linear_settings is not None:
+            flatten_dim: int = cs.out_shape[0] * cs.out_shape[1]
+            self.net_settings.linear_settings.in_features = flatten_dim
 
     def _forward(self, batch: Batch) -> torch.Tensor:
         if self.logger.isEnabledFor(logging.DEBUG):
@@ -134,11 +170,16 @@ class ClassifyNetwork(EmbeddingNetworkModule):
         x = self.forward_document_features(batch, x)
         self._shape_debug('doc features', x)
 
-        if self._is_token_output:
-            x = x.view(batch.size(), -1)
-            self._shape_debug('reshaped', x)
+        if self.conv is not None:
+            x = self.conv(x)
+            self._shape_debug('conv', x)
 
-        x = self.fc_deep(x)
-        self._shape_debug('deep linear', x)
+        if self.linear is not None:
+            if self._is_token_output:
+                x = x.view(batch.size(), -1)
+                self._shape_debug('linear reshaped', x)
+
+            x = self.linear(x)
+            self._shape_debug('deep linear', x)
 
         return x

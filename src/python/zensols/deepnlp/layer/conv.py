@@ -3,28 +3,53 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import List, Tuple
+from typing import List, Tuple, Set, Callable, Union, ClassVar
 from dataclasses import dataclass, field, asdict
 import logging
 import sys
-import copy as cp
+import itertools as it
 from io import TextIOBase
 from zensols.config import Writable
 import torch
-from torch import nn
+from torch import nn, Tensor
 from zensols.persist import persisted
 from zensols.deeplearn import (
     ActivationNetworkSettings,
     DropoutNetworkSettings,
     BatchNormNetworkSettings,
 )
-from zensols.deeplearn.layer import (
-    LayerError, ConvolutionLayerFactory, MaxPool1dFactory
-)
+from zensols.deeplearn.layer import LayerError, Convolution1DLayerFactory
 from zensols.deeplearn.model import BaseNetworkModule
-from . import EmbeddingNetworkModule
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class _Layer(object):
+    """A layer or action to perform on the convolution layer grouping.
+
+    """
+    desc: str = field()
+    impl: Union[nn.Module, Callable] = field()
+
+    def __str__(self) -> str:
+        return f'{self.desc}: {type(self.impl)}'
+
+
+@dataclass
+class _LayerSet(object):
+    """A grouping of alyers for one pass of what's typically called a single
+    convolution layer.
+
+    """
+    index: int = field()
+    layers: List[_Layer] = field(default_factory=list)
+
+    def add(self, desc: str, impl: Callable):
+        self.layers.append(_Layer(desc, impl))
+
+    def __str__(self) -> str:
+        return f'index: {self.index}, n_layers: {len(self.layers)}'
 
 
 @dataclass
@@ -36,10 +61,11 @@ class DeepConvolution1dNetworkSettings(ActivationNetworkSettings,
     language processing task, which is why this configuration includes
     parameters for token counts.
 
-    Each layer repeat consists of::
+    Each layer repeat consists of (based on the ordering in :obj:`applies`):
+
       1. convolution
       2. max pool
-      3. batch (optional)
+      3. batch
       4. activation
 
     This class is used directly after embedding (and in conjuction with) a
@@ -48,120 +74,89 @@ class DeepConvolution1dNetworkSettings(ActivationNetworkSettings,
     :class:`~zensols.config.factory.ImportConfigFactory`), then cloned with
     :meth:`clone` during the initialization on the layer from which it's used.
 
-    :param token_length: the number of tokens processed through the layer (used
-                         as the width kernel parameter ``W``)
-
-    :param embedding_dimension: the dimension of the embedding (word vector)
-                                layer (height dimension ``H`` and the kernel
-                                parameter ``F``)
-
-    :param token_kernel: the size of the kernel in number of tokens (width
-                         dimension of kernel parameter ``F``)
-
-    :param n_filters: number of filters to use, aka filter depth/volume (``K``)
-
-    :param stride: the stride, which is the number of cells to skip for each
-                   convolution (``S``)
-
-    :param padding: the zero'd number of cells on the ends of tokens X
-                    embedding neurons (``P``)
-
-    :param pool_token_kernel: like ``token_length`` but in the pooling layer
-
-    :param pool_stride: like ``stride`` but in the pooling layer
-
-    :param pool_padding: like ``padding`` but in the pooling layer
-
-    :param repeats: number of times the convolution, max pool, batch,
-                    activation layers are repeated
-
-    :param batch_norm_d: the dimension of the batch norm (should be ``1``) or
-                         ``None`` to disable
-
     :see: :class:`.DeepConvolution1d`
 
     :see :class:`.EmbeddingNetworkModule`
 
     """
     token_length: int = field(default=None)
+    """The number of tokens processed through the layer (used as the width
+    kernel parameter ``W``).
+
+    """
     embedding_dimension: int = field(default=None)
+    """The dimension of the embedding (word vector) layer (depth dimension
+    ``e``).
+
+    """
     token_kernel: int = field(default=2)
+    """The size of sliding window in number of tokens (width dimension of kernel
+    parameter ``F``).
+
+    """
     stride: int = field(default=1)
-    n_filters: int = field(default=1)
+    """The number of cells to skip for each convolution (``S``)."""
+
     padding: int = field(default=1)
+    """The zero'd number of cells on the ends of tokens X embedding neurons
+    (``P``).
+
+    """
     pool_token_kernel: int = field(default=2)
+    """Like ``token_length`` but in the pooling layer."""
+
     pool_stride: int = field(default=1)
+    """Like ``stride`` but in the pooling layer."""
+
     pool_padding: int = field(default=0)
+    """Like ``padding`` but in the pooling layer."""
+
     repeats: int = field(default=1)
-    batch_norm_d: int = field(default=None)
+    """Number of times the convolution, max pool, batch, activation layers are
+    repeated.
 
-    def _assert_module(self):
-        """Raise an exception if we don't have an embedding module configured.
+    """
+    applies: Tuple[str, ...] = field(default=(tuple(
+        'convolution batch_norm pool activation dropout'.split())))
+    """"A sequence of strings indicating the order or the layers to apply with
+    default; if a layer is omitted it won't be applied.
 
-        """
-        if not hasattr(self, 'module'):
-            raise LayerError('Not created with embedding module')
-
+    """
     @property
     @persisted('_layer_factory')
-    def layer_factory(self) -> ConvolutionLayerFactory:
-        """Return the factory used to create convolution layers.
-
-        """
-        self._assert_module()
-        return ConvolutionLayerFactory(
-            width=self.token_length,
-            height=self.embedding_dimension,
-            n_filters=self.n_filters,
-            kernel_filter=(self.token_kernel, self.embedding_dimension),
+    def layer_factory(self) -> Convolution1DLayerFactory:
+        """The factory used to create convolution layers."""
+        return Convolution1DLayerFactory(
+            in_channels=self.embedding_dimension,
+            out_channels=self.token_length,
+            kernel_filter=self.token_kernel,
             stride=self.stride,
-            padding=self.padding)
+            padding=self.padding,
+            pool_kernel_filter=self.pool_token_kernel,
+            pool_stride=self.pool_stride,
+            pool_padding=self.pool_padding)
 
     @property
-    @persisted('_pool_factory')
-    def pool_factory(self) -> MaxPool1dFactory:
-        """Return the factory used to create max 1D pool layers.
-
-        """
-        self._assert_module()
-        return MaxPool1dFactory(
-            layer_factory=self.layer_factory,
-            kernel_filter=self.pool_token_kernel,
-            stride=self.pool_stride,
-            padding=self.pool_padding)
-
-    def clone(self, module: EmbeddingNetworkModule, **kwargs):
-        """Clone this network settings configuration with a different embedding
-        settings.
-
-        :param module: the embedding settings to use in the clone
-
-        :param kwargs: arguments as attributes on the clone
-
-        """
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'cloning module from module with {kwargs}')
-        if hasattr(self, 'module'):
-            raise LayerError('Not nascent: module already set')
-        params = {
-            'token_length': module.embedding.token_length,
-            'embedding_dimension': module.embedding_output_size,
-            'module': module,
-        }
-        params.update(kwargs)
-        clone = cp.copy(self)
-        clone.__dict__.update(params)
-        return clone
+    @persisted('_out_shape')
+    def out_shape(self) -> Tuple[int, ...]:
+        """The shape of the last convolution pool stacked layer."""
+        conv_factory: Convolution1DLayerFactory = self.layer_factory
+        pool_shapes: Tuple[Tuple[int, ...]] = \
+            tuple(it.islice(conv_factory.get_shapes(), self.repeats))
+        return pool_shapes[-1]
 
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
         self._write_line('embedding layer factory:', depth, writer)
         self._write_dict(asdict(self), depth + 1, writer)
         self._write_line('convolution layer factory:', depth, writer)
-        self._write_dict(asdict(self.create_layer_factory()),
-                         depth + 1, writer)
+        self._write_object(self.layer_factory, depth + 1, writer)
 
     def get_module_class_name(self) -> str:
         return __name__ + '.DeepConvolution1d'
+
+    def __str__(self) -> str:
+        return ', '.join(map(
+            lambda t: f'{t[0]}={t[1]}', self.asflatdict().items()))
 
 
 class DeepConvolution1d(BaseNetworkModule):
@@ -171,7 +166,7 @@ class DeepConvolution1d(BaseNetworkModule):
     :see: :class:`.DeepConvolution1dNetworkSettings`
 
     """
-    MODULE_NAME = 'conv'
+    MODULE_NAME: ClassVar[str] = 'conv'
 
     def __init__(self, net_settings: DeepConvolution1dNetworkSettings,
                  logger: logging.Logger):
@@ -187,8 +182,10 @@ class DeepConvolution1d(BaseNetworkModule):
 
         """
         super().__init__(net_settings, logger)
-        layers = []
-        self.layer_sets = []
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self._debug(f'initializing conv layer with with: {net_settings}')
+        layers: List[nn.Module] = []
+        self.layer_sets: List[_LayerSet] = []
         self._create_layers(layers, self.layer_sets)
         self.seq_layers = nn.Sequential(*layers)
 
@@ -203,39 +200,61 @@ class DeepConvolution1d(BaseNetworkModule):
         :param layer_sets: tuples of (conv, pool, batch_norm) layers
 
         """
-        pool_factory: MaxPool1dFactory = self.net_settings.pool_factory
-        conv_factory: ConvolutionLayerFactory = pool_factory.layer_factory
-        repeats = self.net_settings.repeats
+        conv_factory: Convolution1DLayerFactory = \
+            self.net_settings.layer_factory
+        applies: Tuple[str, ...] = self.net_settings.applies
+        apply_set: Set[str] = set(applies)
+        repeats: int = self.net_settings.repeats
+        # modules and other actions that are the same for each group
+        activation: nn.Module = self._forward_activation
+        dropout: nn.Module = self._forward_dropout
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self._debug(f'conv_factory: {conv_factory}')
+        # create groupings of layers for the specified count; each grouping is
+        # generally called the "convolution layer"
+        n_set: int
         for n_set in range(repeats):
+            # create (only) the asked for layers
+            layer_set = _LayerSet(n_set)
+            convolution: nn.Conv1d = None
+            pool: nn.MaxPool1d = None
+            batch_norm: nn.BatchNorm1d = None
+            conv_factory.validate()
+            if 'convolution' in apply_set:
+                convolution = conv_factory.create_conv_layer()
             if self.logger.isEnabledFor(logging.DEBUG):
-                self._debug(f'conv_factory: {conv_factory}')
-                self._debug(f'pool factory: {pool_factory}')
-            pool = pool_factory.create_pool()
+                self._debug(f'conv: {convolution}')
+            if 'pool' in apply_set:
+                pool = conv_factory.create_pool_layer()
             if self.logger.isEnabledFor(logging.DEBUG):
                 self._debug(f'pool: {pool}')
-            conv = conv_factory.conv1d()
-            if self.logger.isEnabledFor(logging.DEBUG):
-                self._debug(f'conv: {conv}')
-            if self.net_settings.batch_norm_d is not None:
-                batch_norm = BatchNormNetworkSettings.create_batch_norm_layer(
-                    self.net_settings.batch_norm_d, pool_factory.out_shape[0])
-            else:
-                batch_norm = None
+            if 'batch_norm' in apply_set:
+                batch_norm = conv_factory.create_batch_norm_layer()
             if self.logger.isEnabledFor(logging.DEBUG):
                 self._debug(f'batch_norm: {batch_norm}')
-            layer_set = (conv, pool, batch_norm)
-            layer_sets.append(layer_set)
-            layers.extend(layer_set)
-            pool_out = pool_factory.flatten_dim
-            if n_set < repeats:
-                conv_factory.width = pool_out
-                conv_factory.height = 1
-                conv_factory.kernel_filter = (conv_factory.kernel_filter[0], 1)
+            desc: str
+            for desc in applies:
+                layer: Union[Callable, nn.Module] = locals().get(desc)
                 if self.logger.isEnabledFor(logging.DEBUG):
-                    self._debug(f'pool out: {pool_out}')
-        self.out_features = pool_out
-        if self.logger.isEnabledFor(logging.DEBUG):
-            self._debug(f'out features: {self.out_features}')
+                    self._debug(f'adding abstract layer: {desc} -> {layer}')
+                if layer is None:
+                    # skip layers not configured or given
+                    continue
+                if not isinstance(layer, Callable):
+                    raise LayerError(f'Bad or missing layer: {type(layer)}')
+                layer_set.add(desc, layer)
+                if isinstance(layer, nn.Module):
+                    if self.logger.isEnabledFor(logging.DEBUG):
+                        self._debug(f'adding layer: {layer}')
+                    # add to the model (PyTorch framework lifecycle actions)
+                    layers.append(layer)
+            layer_sets.append(layer_set)
+            next_conv_factory: Convolution1DLayerFactory = \
+                conv_factory.next_layer()
+            if self.logger.isEnabledFor(logging.DEBUG):
+                self._debug(f'this repeat pool {conv_factory.out_pool_shape}' +
+                            f', next pool: {next_conv_factory.out_pool_shape}')
+            conv_factory = next_conv_factory
 
     def deallocate(self):
         super().deallocate()
@@ -253,37 +272,24 @@ class DeepConvolution1d(BaseNetworkModule):
         """Forward convolution, batch normalization, pool, activation and
         dropout for those layers that are configured.
 
-        :see: `Sunghean et al <http://mipal.snu.ac.kr/images/1/16/Dropout_ACCV2016.pdf>`_
-
         :see: `Ioffe et al <https://arxiv.org/pdf/1502.03167.pdf>`_
 
         """
-        layer_sets = self.layer_sets
-        ls_len = len(layer_sets)
-
-        for i, (conv, pool, batch_norm) in enumerate(layer_sets):
+        ls_len: int = len(self.layer_sets)
+        x = x.permute(0, 2, 1)
+        self._shape_debug('permute', x)
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self._shape_debug(f'applying {ls_len} layer sets', x)
+        layer_set: _LayerSet
+        for i, layer_set in enumerate(self.layer_sets):
             if self.logger.isEnabledFor(logging.DEBUG):
-                self._debug(f'layer set iter: {i}')
-            x = conv(x)
-            self._shape_debug('conv', x)
-
-            if batch_norm is not None:
+                self._debug(f'applying layer set: {layer_set}')
+            layer: _Layer
+            for layer in layer_set.layers:
                 if self.logger.isEnabledFor(logging.DEBUG):
-                    self._debug(f'batch norm: {batch_norm}')
-                x = batch_norm(x)
-
-            x = x.view(x.shape[0], 1, -1)
-            self._shape_debug('flatten', x)
-
-            x = pool(x)
-            self._shape_debug('pool', x)
-
-            self._forward_activation(x)
-
-            self._forward_dropout(x)
-
-            if i < ls_len - 1:
-                x = x.unsqueeze(3)
-                self._shape_debug('unsqueeze', x)
-
+                    self._debug(f'applying layer: {layer}')
+                x = layer.impl(x)
+                self._shape_debug(layer.desc, x)
+            self._shape_debug(f'repeat {i}', x)
+        self._shape_debug('conv layer sets', x)
         return x

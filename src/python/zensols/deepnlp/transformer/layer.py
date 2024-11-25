@@ -45,11 +45,11 @@ class TransformerEmbeddingLayer(EmbeddingLayer):
 
         """
         dim: int = embed_model.vector_dimension
+        super().__init__(*args, embedding_dim=dim, **kwargs)
         if embed_model.output == 'last_hidden_state':
             wp_len: int = embed_model.tokenizer.word_piece_token_length
             if wp_len > 0:
-                dim *= wp_len
-        super().__init__(*args, embedding_dim=dim, **kwargs)
+                self.embedding_output_size *= wp_len
         self.embed_model = embed_model
         if self.embed_model.trainable:
             self.emb = embed_model.model
