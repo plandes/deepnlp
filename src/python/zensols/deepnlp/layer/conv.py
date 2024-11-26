@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import List, Tuple, Set, Callable, Union, ClassVar
+from typing import List, Tuple, Set, Iterable, Callable, Union, ClassVar
 from dataclasses import dataclass, field, asdict
 import logging
 import sys
@@ -123,10 +123,10 @@ class DeepConvolution1dNetworkSettings(ActivationNetworkSettings,
 
     """
     @property
-    @persisted('_layer_factory')
-    def layer_factory(self) -> Convolution1DLayerFactory:
+    @persisted('_layer_factories')
+    def layer_factories(self) -> Tuple[Convolution1DLayerFactory, ...]:
         """The factory used to create convolution layers."""
-        return Convolution1DLayerFactory(
+        fac = Convolution1DLayerFactory(
             in_channels=self.embedding_dimension,
             out_channels=self.token_length,
             kernel_filter=self.token_kernel,
@@ -135,15 +135,26 @@ class DeepConvolution1dNetworkSettings(ActivationNetworkSettings,
             pool_kernel_filter=self.pool_token_kernel,
             pool_stride=self.pool_stride,
             pool_padding=self.pool_padding)
+        facs = list(it.islice(fac.iter_layers(), self.repeats - 1))
+        facs.insert(0, fac)
+        return tuple(facs)
 
     @property
-    @persisted('_out_shape')
     def out_shape(self) -> Tuple[int, ...]:
         """The shape of the last convolution pool stacked layer."""
-        conv_factory: Convolution1DLayerFactory = self.layer_factory
-        pool_shapes: Tuple[Tuple[int, ...]] = \
-            tuple(it.islice(conv_factory.get_shapes(), self.repeats))
-        return pool_shapes[-1]
+        return self[-1].out_pool_shape
+
+    def validate(self):
+        """Validate the dimensionality all layers of the convolutional network.
+
+        :raise LayerError: if any convolution layer is not valid
+
+        """
+        conv_factory: Convolution1DLayerFactory
+        for i, conv_factory in enumerate(self):
+            err: str = conv_factory.validate(False)
+            if err is not None:
+                raise LayerError(f'Layer {i} not valid: {err}')
 
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
         self._write_line('embedding layer factory:', depth, writer)
@@ -153,6 +164,12 @@ class DeepConvolution1dNetworkSettings(ActivationNetworkSettings,
 
     def get_module_class_name(self) -> str:
         return __name__ + '.DeepConvolution1d'
+
+    def __getitem__(self, i: int) -> Convolution1DLayerFactory:
+        return self.layer_factories[i]
+
+    def __iter__(self) -> Iterable[Convolution1DLayerFactory]:
+        return iter(self.layer_factories)
 
     def __str__(self) -> str:
         return ', '.join(map(
@@ -200,26 +217,26 @@ class DeepConvolution1d(BaseNetworkModule):
         :param layer_sets: tuples of (conv, pool, batch_norm) layers
 
         """
-        conv_factory: Convolution1DLayerFactory = \
-            self.net_settings.layer_factory
+        layer_factories: Tuple[Convolution1DLayerFactory, ...] = \
+            self.net_settings.layer_factories
         applies: Tuple[str, ...] = self.net_settings.applies
         apply_set: Set[str] = set(applies)
         repeats: int = self.net_settings.repeats
         # modules and other actions that are the same for each group
         activation: nn.Module = self._forward_activation
         dropout: nn.Module = self._forward_dropout
-        if self.logger.isEnabledFor(logging.DEBUG):
-            self._debug(f'conv_factory: {conv_factory}')
         # create groupings of layers for the specified count; each grouping is
         # generally called the "convolution layer"
         n_set: int
-        for n_set in range(repeats):
+        conv_factory: Convolution1DLayerFactory
+        for n_set, conv_factory in enumerate(layer_factories):
+            if self.logger.isEnabledFor(logging.DEBUG):
+                self._debug(f'conv_factory: {conv_factory}')
             # create (only) the asked for layers
             layer_set = _LayerSet(n_set)
             convolution: nn.Conv1d = None
             pool: nn.MaxPool1d = None
             batch_norm: nn.BatchNorm1d = None
-            conv_factory.validate()
             if 'convolution' in apply_set:
                 convolution = conv_factory.create_conv_layer()
             if self.logger.isEnabledFor(logging.DEBUG):
@@ -249,12 +266,12 @@ class DeepConvolution1d(BaseNetworkModule):
                     # add to the model (PyTorch framework lifecycle actions)
                     layers.append(layer)
             layer_sets.append(layer_set)
-            next_conv_factory: Convolution1DLayerFactory = \
-                conv_factory.next_layer()
-            if self.logger.isEnabledFor(logging.DEBUG):
-                self._debug(f'this repeat pool {conv_factory.out_pool_shape}' +
-                            f', next pool: {next_conv_factory.out_pool_shape}')
-            conv_factory = next_conv_factory
+            if n_set < (self.net_settings.repeats - 1):
+                next_factory: Convolution1DLayerFactory = \
+                    layer_factories[n_set + 1]
+                if self.logger.isEnabledFor(logging.DEBUG):
+                    self._debug(f'this repeat {conv_factory.out_pool_shape}' +
+                                f', next: {next_factory.out_pool_shape}')
 
     def deallocate(self):
         super().deallocate()

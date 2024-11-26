@@ -148,6 +148,8 @@ class ClassifyNetwork(EmbeddingNetworkModule):
             self._embedding_layers.values()))
         cs.embedding_dimension = self.embedding_dimension + self.token_size
         self._debug(f'conv shapes: {cs.embedding_dimension} -> {cs.out_shape}')
+        # fail fast on layer creation
+        self.net_settings.convolution_settings.validate()
         if self.net_settings.linear_settings is not None:
             flatten_dim: int = cs.out_shape[0] * cs.out_shape[1]
             self.net_settings.linear_settings.in_features = flatten_dim

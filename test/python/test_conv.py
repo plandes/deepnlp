@@ -30,9 +30,7 @@ class TestFeatureVectorization(unittest.TestCase):
                  ns: DeepConvolution1dNetworkSettings):
         logger.debug(f'test: {name}, batches: {batches}' + ('-' * 20))
         emb_dim: int = ns.embedding_dimension
-        conv_factory: Convolution1DLayerFactory = ns.layer_factory
-        pool_shapes: Tuple[Tuple[int, ...]] = tuple(
-            it.islice(conv_factory.get_shapes(), 3))
+        conv_factory: Convolution1DLayerFactory = ns.layer_factories[0]
         conv_factory.write_to_log(logger)
         conv = conv_factory.create_conv_layer()
         pool = conv_factory.create_pool_layer()
@@ -54,7 +52,7 @@ class TestFeatureVectorization(unittest.TestCase):
             x = pool(x)
             should = x.shape[1:]
             self.assertEqual(should, pool_shape)
-            self.assertEqual(should, pool_shapes[i])
+            self.assertEqual(should, ns.layer_factories[i].out_pool_shape)
             conv_factory = conv_factory.next_layer()
             conv = conv_factory.create_conv_layer()
 
@@ -81,7 +79,8 @@ class TestFeatureVectorization(unittest.TestCase):
             stride=4,
             padding=0,
             n_filters=96)
-        pool_shapes: Tuple[Tuple[int, ...]] = tuple(cf.get_shapes())
+        subs_conv_factories: Tuple[Convolution1DLayerFactory, ...] = \
+            tuple(cf.iter_layers())
         # conv layer 1
         cf.validate()
         conv = cf.create_conv_layer()
@@ -98,8 +97,7 @@ class TestFeatureVectorization(unittest.TestCase):
         logger.debug(f'pool: {x.shape}, calc conv: {cf.out_conv_shape}, ' +
                      f'calc pool: {cf.out_conv_shape}')
         self.assertEqual(tuple(x.shape[1:]), cf.out_pool_shape)
-        self.assertEqual(2, len(pool_shapes))
-        self.assertEqual(pool_shapes[0], cf.out_pool_shape)
+        self.assertEqual(1, len(subs_conv_factories))
 
         # conv layer 2
         cf.validate()
@@ -114,7 +112,8 @@ class TestFeatureVectorization(unittest.TestCase):
         x = pool(x)
         x = bn(x)
         self.assertEqual(tuple(x.shape[1:]), cf.out_pool_shape)
-        self.assertEqual(pool_shapes[1], cf.out_pool_shape)
+        self.assertEqual(subs_conv_factories[0].out_pool_shape,
+                         cf.out_pool_shape)
 
         s = r'^Invalid con.*kernel/filter \(11, 11\) must be <= height 10 \+ 2'
         with self.assertRaisesRegex(LayerError, s):
