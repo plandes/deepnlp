@@ -159,8 +159,9 @@ class DeepConvolution1dNetworkSettings(ActivationNetworkSettings,
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
         self._write_line('embedding layer factory:', depth, writer)
         self._write_dict(asdict(self), depth + 1, writer)
+        self._write_line(f'output shape: {self.out_shape}', depth, writer)
         self._write_line('convolution layer factory:', depth, writer)
-        self._write_object(self.layer_factory, depth + 1, writer)
+        self._write_object(self[0], depth + 1, writer)
 
     def get_module_class_name(self) -> str:
         return __name__ + '.DeepConvolution1d'
