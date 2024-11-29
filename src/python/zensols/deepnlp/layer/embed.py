@@ -338,7 +338,7 @@ class EmbeddingNetworkModule(BaseNetworkModule):
 
     def get_embedding_tensors(self, batch: Batch) -> Tuple[Tensor]:
         """Get the embedding tensors (or indexes depending on how it was
-        vectorize) from a batch.
+        vectorized) from a batch.
 
         :param batch: contains the vectorized embeddings
 
@@ -349,8 +349,8 @@ class EmbeddingNetworkModule(BaseNetworkModule):
 
     @property
     def embedding_dimension(self) -> int:
-        """Return the dimension of the embeddings, which doesn't include any
-        additional token or document features potentially added.
+        """The dimension of the embeddings, which doesn't include any additional
+        token or document features potentially added.
 
         """
         return sum(map(lambda ec: ec.dim, self._embedding_containers))
@@ -403,13 +403,18 @@ class EmbeddingNetworkModule(BaseNetworkModule):
         ec: _EmbeddingContainer
         for ec in self._embedding_containers:
             x: Tensor = self._forward_embedding_layer(ec, batch)
-            self._shape_debug(f'decoded sub embedding ({ec}):', x)
+            if self.logger.isEnabledFor(logging.DEBUG):
+                self._shape_debug(f'decoded sub embedding ({ec}):', x)
             arrs.append(x)
         if len(arrs) == 1:
             arr = arrs[0]
         else:
+            if self.logger.isEnabledFor(logging.DEBUG):
+                shape_strs: str = ', '.join(map(lambda t: str(t.shape), arrs))
+                self.logger.debug(f'concat embed shapes: {shape_strs}')
             arr = torch.concat(arrs, dim=-1)
-            self._shape_debug(f'decoded concat embedding ({ec}):', arr)
+            if self.logger.isEnabledFor(logging.DEBUG):
+                self._shape_debug(f'decoded concat embedding ({ec}):', arr)
         return arr
 
     def forward_token_features(self, batch: Batch, x: Tensor = None) -> Tensor:

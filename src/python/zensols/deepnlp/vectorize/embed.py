@@ -5,7 +5,7 @@ efficient retrival.
 """
 from __future__ import annotations
 __author__ = 'Paul Landes'
-from typing import Tuple, Iterable, List, Union, TYPE_CHECKING
+from typing import Tuple, Iterable, List, Union, ClassVar, TYPE_CHECKING
 if TYPE_CHECKING:
     from ..transformer.embed import TransformerEmbedding
 from dataclasses import dataclass, field
@@ -80,8 +80,8 @@ class WordVectorEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
     (usually :class:`~zensols.deepnlp.layer.EmbeddingLayer`).
 
     """
-    DESCRIPTION = 'word vector document embedding'
-    FEATURE_TYPE = TextFeatureType.EMBEDDING
+    DESCRIPTION: ClassVar[str] = 'word vector document embedding'
+    FEATURE_TYPE: ClassVar[TextFeatureType] = TextFeatureType.EMBEDDING
 
     token_feature_id: str = field(default='norm')
     """The :class:`~zensols.nlp.tok.FeatureToken` attribute used to index the
@@ -89,15 +89,15 @@ class WordVectorEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
 
     """
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
-        emodel = self.embed_model
+        emodel: WordEmbedModel = self.embed_model
         tw: int = self.manager.get_token_length(doc)
         sents: Tuple[FeatureSentence] = doc.sents
         shape: Tuple[int, int] = (len(sents), tw)
         tfid: str = self.token_feature_id
+        arr: Tensor = self.torch_config.empty(shape, dtype=torch.long)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'using token length: {tw} with shape: {shape}, ' +
                          f'sents: {len(sents)}')
-        arr = self.torch_config.empty(shape, dtype=torch.long)
         row: int
         sent: FeatureSentence
         for row, sent in enumerate(sents):
@@ -129,8 +129,10 @@ class WordVectorEmbeddingFeatureVectorizer(EmbeddingFeatureVectorizer):
                 logger.debug(f'decoding using: {self.decode_embedding}')
             src_vecs: Tensor = self.vectors
             batches: List[Tensor] = []
-            vecs = []
+            vecs: List[Tensor] = []
+            batch_idx: Tensor
             for batch_idx in x:
+                idxt: int
                 for idxt in batch_idx:
                     vecs.append(src_vecs[idxt])
                 batches.append(torch.stack(vecs))

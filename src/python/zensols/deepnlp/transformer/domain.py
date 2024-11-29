@@ -403,7 +403,7 @@ class TokenizedFeatureDocument(TokenizedDocument):
             if include_tokens:
                 self._write_line('tokens:', depth, writer)
                 tok: FeatureToken
-                ttoks: Tuple[str]
+                ttoks: Tuple[str, ...]
                 for tok, ttoks in tmap:
                     stext = tok.text.replace('\n', '\\n')
                     stext = f'<{stext}>'
