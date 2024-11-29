@@ -4,22 +4,25 @@ embeddings.
 """
 from __future__ import annotations
 __author__ = 'Paul Landes'
-from typing import Tuple, List, Dict, Union, Sequence, Any
+from typing import (
+    Tuple, List, Dict, Union, Sequence, Set, Iterable, Any, Optional, ClassVar
+)
 from dataclasses import dataclass, field
 from abc import ABCMeta
 import sys
 import logging
 from itertools import chain
+import collections
 from io import TextIOBase
 import torch
 from torch import Tensor
 from zensols.persist import persisted, Deallocatable
+from zensols.nlp import FeatureToken, FeatureDocument, FeatureSentence
 from zensols.deeplearn.vectorize import (
     VectorizerError, TensorFeatureContext, EncodableFeatureVectorizer,
     FeatureContext, AggregateEncodableFeatureVectorizer,
     NominalEncodedEncodableFeatureVectorizer, MaskFeatureVectorizer,
 )
-from zensols.nlp import FeatureDocument, FeatureSentence
 from zensols.deepnlp.vectorize import (
     EmbeddingFeatureVectorizer, TextFeatureType, FeatureDocumentVectorizer
 )
@@ -159,8 +162,8 @@ class TransformerEmbeddingFeatureVectorizer(TransformerFeatureVectorizer):
     :class:`.FeatureDocument` instances.
 
     """
-    DESCRIPTION = 'transformer document embedding'
-    FEATURE_TYPE = TextFeatureType.EMBEDDING
+    DESCRIPTION: ClassVar[str] = 'transformer document embedding'
+    FEATURE_TYPE: ClassVar[TextFeatureType] = TextFeatureType.EMBEDDING
 
     def __post_init__(self):
         super().__post_init__()
@@ -168,8 +171,8 @@ class TransformerEmbeddingFeatureVectorizer(TransformerFeatureVectorizer):
             # once the transformer last hidden state is dumped during encode
             # the parameters are lost, which are needed to train the model
             # properly
-            raise VectorizerError('a trainable model can not encode ' +
-                                  'transformed vectorized features')
+            raise VectorizerError(
+                "trainable models can't encode transformed vectorized features")
 
     def _encode(self, doc: FeatureDocument) -> FeatureContext:
         return self._create_context(doc)
@@ -236,8 +239,8 @@ class TransformerExpanderFeatureVectorizer(TransformerFeatureVectorizer):
             shapes across all three dimensions
 
     """
-    DESCRIPTION = 'transformer expander'
-    FEATURE_TYPE = TextFeatureType.TOKEN
+    DESCRIPTION: ClassVar[str] = 'transformer expander'
+    FEATURE_TYPE: ClassVar[TextFeatureType] = TextFeatureType.TOKEN
 
     delegate_feature_ids: Tuple[str] = field(default=None)
     """A list of feature IDs of vectorizers whose output will be expanded."""
@@ -350,14 +353,14 @@ class LabelTransformerFeatureVectorizer(TransformerFeatureVectorizer,
     :shape: (|sentences|, |max word piece length|)
 
     """
+    FEATURE_TYPE: ClassVar[TextFeatureType] = TextFeatureType.TOKEN
+
     is_labeler: bool = field(default=True)
     """If ``True``, make this a labeling specific vectorizer.  Otherwise,
     certain layers will use the output of the vectorizer as features rather than
     the labels.
 
     """
-    FEATURE_TYPE = TextFeatureType.TOKEN
-
     def _get_shape(self) -> Tuple[int, int]:
         return (-1, self.word_piece_token_length)
 
@@ -378,7 +381,7 @@ class TransformerNominalFeatureVectorizer(AggregateEncodableFeatureVectorizer,
     :shape: (|sentences|, |max word piece length|)
 
     """
-    DESCRIPTION = 'transformer seq labeler'
+    DESCRIPTION: ClassVar[str] = 'transformer seq labeler'
 
     delegate_feature_id: str = field(default=None)
     """The feature ID for the aggregate encodeable feature vectorizer."""
@@ -480,7 +483,7 @@ class TransformerMaskFeatureVectorizer(LabelTransformerFeatureVectorizer):
     :shape: (|sentences|, |max word piece length|)
 
     """
-    DESCRIPTION = 'transformer mask'
+    DESCRIPTION: ClassVar[str] = 'transformer mask'
 
     data_type: Union[str, None, torch.dtype] = field(default='bool')
     """The mask tensor type.  To use the int type that matches the resolution of
@@ -519,3 +522,111 @@ class TransformerMaskFeatureVectorizer(LabelTransformerFeatureVectorizer):
             arr: Tensor = self._encode_mask(doc)
             context = TensorFeatureContext(self.feature_id, arr)
         return super()._decode(context)
+
+
+class DocumentMappedTransformerFeatureContext(TransformerFeatureContext):
+    def __init__(self, feature_id: str,
+                 document: Union[TokenizedDocument, FeatureDocument],
+                 sent_len: int, pos: Dict[int, List[int]]):
+        super().__init__(feature_id, document)
+        self.sent_len = sent_len
+        self.pos = pos
+
+
+@dataclass
+class DocumentEmbeddingFeatureVectorizer(TransformerEmbeddingFeatureVectorizer):
+    """Vectorizes a feature from each token as a single sentence document.  It
+    does this by tracking the sentence and token positions that have tokens with
+    the necessary features to create what becomes sentences to parse and
+    vectorize.  During decoding, each pooled sentence's embedding is added to
+    the respective position in the returned data.
+
+    """
+    DESCRIPTION: ClassVar[str] = 'transformer document embedding'
+    FEATURE_TYPE: ClassVar[TextFeatureType] = TextFeatureType.TOKEN
+
+    token_pattern: str = field(default='{norm}')
+    """The :meth:`builtins.str.format` string used to format the sentence to be
+    parsed and vectorized.
+
+    """
+    token_feature_ids: Set[str] = field(default=frozenset({'norm'}))
+    """The features IDs used in :obj:`token_pattern`."""
+
+    def __post_init__(self):
+        super().__post_init__()
+        const: str = self.embed_model.POOLER_OUTPUT
+        out: str = self.embed_model.output
+        if out != const:
+            raise VectorizerError(
+                f"Expecting {const} for embedding output but got: '{out}'")
+
+    def _encode(self, doc: FeatureDocument) -> \
+            DocumentMappedTransformerFeatureContext:
+        def map_feat(tok: FeatureToken, fid: str) -> Optional[Tuple[str, Any]]:
+            val: Any = tok.get_feature(fid, expect=False, check_none=True)
+            if val is not None:
+                return (fid, val)
+
+        def map_tok(tok: FeatureToken) -> Iterable[Tuple[str, Any]]:
+            return filter(
+                lambda t: t is not None,
+                map(lambda fid: map_feat(tok, fid), fids))
+
+        if logger.isEnabledFor(logging.INFO):
+            logger.info(f'encoding {doc}')
+        sents: List[FeatureSentence] = []
+        pos: Dict[int, List[int]] = collections.defaultdict(list)
+        fids: Set[str] = self.token_feature_ids
+        flen: int = len(fids)
+        pat: str = self.token_pattern
+        dix: int = 0
+        six: int
+        sent: FeatureSentence
+        for six, sent in enumerate(doc.sent_iter()):
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'{six}: {sent}')
+            tix: int
+            tok: FeatureToken
+            for tix, tok in enumerate(sent.token_iter()):
+                feats: Dict[str, Any] = dict(map_tok(tok))
+                if len(feats) == flen:
+                    text: str = pat.format(**feats)
+                    fdoc: FeatureDocument = self.manager.doc_parser(text)
+                    sents.append(fdoc.to_sentence())
+                    if logger.isEnabledFor(logging.TRACE):
+                        logger.trace(f'sent({six}:{tix}): {text}')
+                    pos[six].append(tix)
+                    dix += 1
+        return DocumentMappedTransformerFeatureContext(
+            feature_id=self.feature_id,
+            document=FeatureDocument(sents=tuple(sents)),
+            sent_len=len(doc),
+            pos=pos)
+
+    def _decode(self, context: DocumentMappedTransformerFeatureContext) -> \
+            Tensor:
+        emb: TransformerEmbedding = self.embed_model
+        if logger.isEnabledFor(logging.INFO):
+            logger.info(f'decoding {context} with trainable: {emb.trainable}')
+        doc: TokenizedDocument = self._context_to_document(context)
+        doc_arr: Tensor = emb.transform(doc)
+        zero: Tensor = self.torch_config.zeros((emb.vector_dimension,))
+        tw: int = self.manager.get_token_length(doc)
+        batch_emb: List[Tensor] = []
+        dix: int = 0
+        six: int
+        for six in range(context.sent_len):
+            sent_emb: List[Tensor] = []
+            sent_ixs: Set[int] = set(context.pos.get(six, ()))
+            tix: int
+            for tix in range(tw):
+                sent_arr: Tensor
+                if tix in sent_ixs:
+                    sent_arr = doc_arr[dix]
+                    dix += 1
+                else:
+                    sent_arr = zero
+                sent_emb.append(sent_arr)
+            batch_emb.append(torch.stack(sent_emb))
+        return torch.stack(batch_emb, dim=0)
