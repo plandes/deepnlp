@@ -63,6 +63,11 @@ class TransformerDocumentTokenizer(PersistableContainer):
     :class:`transformers.PreTrainedTokenizer`.
 
     """
+    feature_id: str = field(default='text')
+    """The feature ID to use for token string values from
+    :class:`~zensols.nlp.tok.FeatureToken`.
+
+    """
     def __post_init__(self):
         super().__init__()
         if self.word_piece_token_length is None:
@@ -114,8 +119,9 @@ class TransformerDocumentTokenizer(PersistableContainer):
             raise TransformerError(
                 'only fast tokenizers are supported for needed offset mapping')
 
+        fid: str = self.feature_id
         sents = list(map(lambda sent: list(
-            map(lambda tok: tok.text, sent)), doc))
+            map(lambda tok: tok.get_feature(fid), sent)), doc))
         return self._from_tokens(sents, doc, tokenizer_kwargs)
 
     def _from_tokens(self, sents: List[List[str]], doc: FeatureDocument,
