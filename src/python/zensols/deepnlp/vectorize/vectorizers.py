@@ -90,6 +90,12 @@ class EnumContainerFeatureVectorizer(DecodedContainerFeatureVectorizer):
     DESCRIPTION = 'spacy feature vectorizer'
     FEATURE_TYPE = TextFeatureType.TOKEN
 
+    string_symbol_feature_ids: Set[str] = field(default=None)
+    """Feature IDs of vectorizers that use string symbols rather than their
+    integers, which are used to look up the string equivelants in
+    :obj:`spacy.vocab.Vocab.strings`.
+
+    """
     def _get_shape_with_feature_ids(self, feature_ids: Set[str]):
         """Compute the shape based on what spacy feature ids are given.
 
@@ -127,14 +133,20 @@ class EnumContainerFeatureVectorizer(DecodedContainerFeatureVectorizer):
         fid: str = fvec.feature_id
         col_end: int = col_start + fvec.shape[1]
         toks: List[FeatureToken] = sent.tokens[:arr.shape[1]]
+        desc: str = f'in {self.manager.doc_parser}'
+        string_fids: Set[str] = self.string_symbol_feature_ids
+        map_fn: Callable = fvec.from_spacy
+        if string_fids is not None and fid in string_fids:
+            map_fn = fvec.symbol_to_vector.get
         tix: int
         tok: FeatureToken
         for tix, tok in enumerate(toks):
-            val = getattr(tok, fid)
-            val: int = tok.get_feature(
+            val: Union[str, int] = tok.get_feature(
                 feature_id=fid,
-                message=f'in {self.manager.doc_parser}')
-            vec: Tensor = fvec.from_spacy(val)
+                message=desc)
+            vec: Tensor = map_fn(val)
+            if logger.isEnabledFor(logging.TRACE):
+                logger.trace(f'encode value: {val}')
             if vec is not None:
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.debug(f'adding vec {fvec} for {tok}: {vec.shape}')
@@ -285,7 +297,7 @@ class CountEnumContainerFeatureVectorizer(DecodedContainerFeatureVectorizer):
             val: Union[str, int] = tok.get_feature(
                 feature_id=fid,
                 message=desc)
-            fnid: Tensor = map_fn(val, -1)
+            fnid: int = map_fn(val, -1)
             if fnid > -1:
                 fcounts[fnid] += 1
         return fcounts
