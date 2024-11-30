@@ -555,11 +555,15 @@ class DocumentEmbeddingFeatureVectorizer(TransformerEmbeddingFeatureVectorizer):
 
     def __post_init__(self):
         super().__post_init__()
-        const: str = self.embed_model.POOLER_OUTPUT
-        out: str = self.embed_model.output
+        emb: TransformerEmbedding = self.embed_model
+        const: str = emb.POOLER_OUTPUT
+        out: str = emb.output
         if out != const:
             raise VectorizerError(
                 f"Expecting {const} for embedding output but got: '{out}'")
+        if emb.resource.trainable:
+            logger.warning(f'Vectorizer ({self}) expecting a ' +
+                           f'non-trainable embedding: {emb}')
 
     def _encode(self, doc: FeatureDocument) -> \
             DocumentMappedTransformerFeatureContext:
@@ -580,24 +584,35 @@ class DocumentEmbeddingFeatureVectorizer(TransformerEmbeddingFeatureVectorizer):
         fids: Set[str] = self.token_feature_ids
         flen: int = len(fids)
         pat: str = self.token_pattern
-        dix: int = 0
-        six: int
+        # iterate through each sentence and record it's position (sentence and
+        # token indexes) for tokens that have the target features
+        dix: int = 0  # document index used in the encoded feature document
+        six: int  # sentence index
         sent: FeatureSentence
         for six, sent in enumerate(doc.sent_iter()):
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'{six}: {sent}')
+            # look for tokens that have all the (linguistic) features we need
             tix: int
             tok: FeatureToken
             for tix, tok in enumerate(sent.token_iter()):
                 feats: Dict[str, Any] = dict(map_tok(tok))
                 if len(feats) == flen:
+                    # format the features into text to parse
                     text: str = pat.format(**feats)
+                    if len(text) == 0:
+                        if logger.isEnabledFor(logging.INFO):
+                            logger.info('skipping empty feature sentence in ' +
+                                        f"token '{tok}' from sentence: {sent}")
+                        continue
+                    # parse the text and record it's position
                     fdoc: FeatureDocument = self.manager.doc_parser(text)
                     sents.append(fdoc.to_sentence())
                     if logger.isEnabledFor(logging.TRACE):
                         logger.trace(f'sent({six}:{tix}): {text}')
                     pos[six].append(tix)
                     dix += 1
+        # the context has the mapped positions of where the features originated
         return DocumentMappedTransformerFeatureContext(
             feature_id=self.feature_id,
             document=FeatureDocument(sents=tuple(sents)),
@@ -606,27 +621,42 @@ class DocumentEmbeddingFeatureVectorizer(TransformerEmbeddingFeatureVectorizer):
 
     def _decode(self, context: DocumentMappedTransformerFeatureContext) -> \
             Tensor:
+        arr: Tensor
         emb: TransformerEmbedding = self.embed_model
         if logger.isEnabledFor(logging.INFO):
             logger.info(f'decoding {context} with trainable: {emb.trainable}')
+        emb_dim: int = emb.vector_dimension
         doc: TokenizedDocument = self._context_to_document(context)
-        doc_arr: Tensor = emb.transform(doc)
-        zero: Tensor = self.torch_config.zeros((emb.vector_dimension,))
         tw: int = self.manager.get_token_length(doc)
-        batch_emb: List[Tensor] = []
-        dix: int = 0
-        six: int
-        for six in range(context.sent_len):
-            sent_emb: List[Tensor] = []
-            sent_ixs: Set[int] = set(context.pos.get(six, ()))
-            tix: int
-            for tix in range(tw):
-                sent_arr: Tensor
-                if tix in sent_ixs:
-                    sent_arr = doc_arr[dix]
-                    dix += 1
-                else:
-                    sent_arr = zero
-                sent_emb.append(sent_arr)
-            batch_emb.append(torch.stack(sent_emb))
-        return torch.stack(batch_emb, dim=0)
+        if doc.is_empty:
+            # many documents will be empty if the derived (linguistic) features
+            # are sparse
+            arr = self.torch_config.zeros(
+                size=(context.sent_len, tw, emb_dim),
+                dtype=torch.float)
+        else:
+            # documents with at least one sentence with at least one feature
+            doc_arr: Tensor = emb.transform(doc)
+            zero: Tensor = self.torch_config.zeros((emb_dim,))
+            batch_emb: List[Tensor] = []
+            dix: int = 0  # doc index, which becomes the batch dimension
+            six: int  # sentence index
+            for six in range(context.sent_len):
+                sent_emb: List[Tensor] = []
+                sent_ixs: Set[int] = set(context.pos.get(six, ()))
+                # add sentence level embeddings for each token position from
+                # where each originated
+                tix: int
+                for tix in range(tw):
+                    sent_arr: Tensor
+                    if tix in sent_ixs:
+                        sent_arr = doc_arr[dix]
+                        dix += 1
+                    else:
+                        sent_arr = zero
+                    sent_emb.append(sent_arr)
+                # each batch concat'd sentence embeddings for respective tokens
+                batch_emb.append(torch.stack(sent_emb))
+            # one batch for each sentence in the original document
+            arr = torch.stack(batch_emb)
+        return arr

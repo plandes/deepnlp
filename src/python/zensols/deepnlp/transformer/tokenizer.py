@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import List, Dict, Set, ClassVar, Any
+from typing import List, Tuple, Dict, Set, ClassVar, Any
 from dataclasses import dataclass, field
 import logging
 from frozendict import frozendict
@@ -128,10 +128,13 @@ class TransformerDocumentTokenizer(PersistableContainer):
         if self.params is not None:
             params.update(self.params)
 
-        for i, sent in enumerate(sents):
-            if len(sent) == 0:
-                raise TransformerError(
-                    f'Sentence {i} is empty: can not tokenize')
+        if len(sents) == 0:
+            return TokenizedFeatureDocument(
+                tensor=torch_config.singleton([[], [], []], dtype=torch.long),
+                boundary_tokens=False,
+                char_offsets=[],
+                feature=doc,
+                id2tok=self.id2tok)
 
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'parsing {sents} with token length: {tlen}')
@@ -154,17 +157,21 @@ class TransformerDocumentTokenizer(PersistableContainer):
             logger.debug(f"lengths: {[len(i) for i in tok_dat['input_ids']]}")
             logger.debug(f"inputs: {tok_dat['input_ids']}")
 
-        input_ids = tok_dat.input_ids
-        char_offsets = tok_dat.offset_mapping
-        boundary_tokens = (tok_dat.special_tokens_mask[0][0]) == 1
-        sent_offsets = tuple(
-            map(lambda s: tuple(map(lambda x: -1 if x is None else x, s)),
-                map(lambda si: tok_dat.word_ids(batch_index=si),
-                    range(len(input_ids)))))
+        input_ids: List[List[int]] = tok_dat.input_ids
+        char_offsets: List[List[int]] = tok_dat.offset_mapping
+        boundary_tokens: bool = (tok_dat.special_tokens_mask[0][0]) == 1
+        sent_offsets: Tuple[Tuple[int, Tuple[Tuple[int, int], ...]], ...] = \
+            tuple(map(lambda s: tuple(map(lambda x: -1 if x is None else x, s)),
+                      map(lambda si: tok_dat.word_ids(batch_index=si),
+                          range(len(input_ids)))))
 
         if logger.isEnabledFor(logging.DEBUG):
+            six: int
+            tids: Tuple[Tuple[int, int], ...]
             for six, tids in enumerate(sent_offsets):
                 logger.debug(f'tok ids: {tids}')
+                stix: int
+                tix: int
                 for stix, tix in enumerate(tids):
                     bid = tok_dat['input_ids'][six][stix]
                     wtok = self.id2tok[bid]

@@ -61,6 +61,11 @@ class TokenizedDocument(PersistableContainer, Writable):
         return cls(tensor, None)
 
     @property
+    def is_empty(self) -> bool:
+        """Whether the document in this instance has no sentences."""
+        return self.tensor.size(-1) == 0
+
+    @property
     def input_ids(self) -> Tensor:
         """The token IDs as the output from the tokenizer."""
         return self.tensor[self._INPUT_ID_IX]
