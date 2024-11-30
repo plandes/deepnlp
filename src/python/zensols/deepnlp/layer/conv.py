@@ -97,7 +97,7 @@ class DeepConvolution1dNetworkSettings(ActivationNetworkSettings,
     stride: int = field(default=1)
     """The number of cells to skip for each convolution (``S``)."""
 
-    padding: int = field(default=1)
+    padding: int = field(default=0)
     """The zero'd number of cells on the ends of tokens X embedding neurons
     (``P``).
 

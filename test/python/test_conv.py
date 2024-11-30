@@ -58,7 +58,7 @@ class TestFeatureVectorization(unittest.TestCase):
 
     def test_1d(self):
         test_set: Dict[str, Any]
-        for test_set in self.fac('tests').one_d[:1]:
+        for test_set in self.fac('tests').one_d:
             batches: List[int] = test_set['batches']
             for n_batches in batches:
                 sec: str = test_set['name']
