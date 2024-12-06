@@ -10,7 +10,7 @@ from itertools import chain
 import torch
 from torch import Tensor
 from torch import nn
-from transformers import PreTrainedModel
+from transformers import PreTrainedTokenizer, PreTrainedModel
 from transformers.modeling_outputs import \
     BaseModelOutput, BaseModelOutputWithPoolingAndCrossAttentions
 from zensols.config import Dictable
@@ -91,7 +91,9 @@ class TransformerEmbedding(PersistableContainer, Dictable):
 
         """
         toker: TransformerDocumentTokenizer = self.tokenizer
-        doc: TokenizedFeatureDocument = toker._from_tokens([['the']], None)
+        pt_tok: PreTrainedTokenizer = toker.pretrained_tokenizer
+        test_tok: str = next(iter(pt_tok.vocab.keys()))
+        doc: TokenizedFeatureDocument = toker._from_tokens([[test_tok]], None)
         emb = self.transform(doc, self.POOLER_OUTPUT)
         size = emb.size(-1)
         if logger.isEnabledFor(logging.DEBUG):
