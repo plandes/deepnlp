@@ -8,12 +8,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.17.0] - 2025-01-11
+### Removed
+- Support for Python 3.10.
+
 ### Added
 - Classification model supports full transformer layer output.
 
 ### Changed
 - Symmetric output shape across multiple (deep) 1D convolutional layers. Moved
   batch layer creation to the convolution layer factory.
+- Upgraded to [zensols.util] version 1.15.
 
 
 ## [1.16.0] - 2024-10-14
@@ -359,7 +364,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.16.0...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.17.0...HEAD
+[1.17.0]: https://github.com/plandes/deepnlp/compare/v1.16.0...v1.17.0
 [1.16.0]: https://github.com/plandes/deepnlp/compare/v1.15.1...v1.16.0
 [1.15.1]: https://github.com/plandes/deepnlp/compare/v1.15.0...v1.15.1
 [1.15.0]: https://github.com/plandes/deepnlp/compare/v1.14.0...v1.15.0
