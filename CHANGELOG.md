@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.17.1] - 2025-01-24
+### Changed
+- Upgrade [HuggingFace Transformers] to version 4.48.1.
+
+
 ## [1.17.0] - 2025-01-11
 ### Removed
 - Support for Python 3.10.
@@ -364,7 +369,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.17.0...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.17.1...HEAD
+[1.17.1]: https://github.com/plandes/deepnlp/compare/v1.17.0...v1.17.1
 [1.17.0]: https://github.com/plandes/deepnlp/compare/v1.16.0...v1.17.0
 [1.16.0]: https://github.com/plandes/deepnlp/compare/v1.15.1...v1.16.0
 [1.15.1]: https://github.com/plandes/deepnlp/compare/v1.15.0...v1.15.1
