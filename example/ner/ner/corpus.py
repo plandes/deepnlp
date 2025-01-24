@@ -18,7 +18,7 @@ from zensols.persist import (
 )
 from zensols.config import Dictable, ConfigFactory
 from zensols.install import Installer, Resource
-from zensols.nlp import FeatureToken, FeatureSentence
+from zensols.nlp import LexicalSpan, FeatureToken, FeatureSentence
 from zensols.dataset import AbstractSplitKeyContainer, DatasetSplitStash
 
 logger = logging.getLogger(__name__)
@@ -38,7 +38,7 @@ class NERFeatureToken(FeatureToken):
     FEATURE_SET = frozenset(set(WRITABLE_FEATURE_IDS) | set('syn_'.split()))
 
     def __init__(self, i: int, text: str, tag_: str, syn_: str, ent_: str):
-        super().__init__(i, i, i, text)
+        super().__init__(i, i, i, text, LexicalSpan(i, i + len(text)))
         # not one to one with token in sentence index, but works for this
         # example
         self.tag_ = tag_
