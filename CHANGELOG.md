@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.17.2] - 2025-01-28
+Compatibility release.
+
+### Changed
+- Relax dependencies to HuggingFace transformers version `4.47 <= x <= 4.48` as
+  a temporary workaround for [unlsoth issue 1476].  This API has been
+  successfully tested using both versions.
+
+
 ## [1.17.1] - 2025-01-24
 ### Changed
 - Upgrade [HuggingFace Transformers] to version 4.48.1.
@@ -369,7 +378,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.17.1...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.17.2...HEAD
+[1.17.2]: https://github.com/plandes/deepnlp/compare/v1.17.1...v1.17.2
 [1.17.1]: https://github.com/plandes/deepnlp/compare/v1.17.0...v1.17.1
 [1.17.0]: https://github.com/plandes/deepnlp/compare/v1.16.0...v1.17.0
 [1.16.0]: https://github.com/plandes/deepnlp/compare/v1.15.1...v1.16.0
@@ -415,3 +425,5 @@ Maintenance release.
 [H5PY]: https://www.h5py.org
 [HuggingFace Transformers]: https://pypi.org/project/transformers/
 [spaCy]: https://spacy.io
+
+[unlsoth issue 1476]: https://github.com/unslothai/unsloth/issues/1476#issuecomment-2566258016
