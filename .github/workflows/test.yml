@@ -44,5 +44,8 @@ jobs:
       - name: Build information
         run: 'make info'
 
-      - name: Run tests
-        run: 'make test'
+      - name: Run tests previous Python version tests
+        run: 'make testprev'
+
+      - name: Run tests current Python version tests
+        run: 'make testcur'
