@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.18.0] - 2025-06-22
+### Changed
+- Switch build tools to [pixi].
+- Upgrade [zensols.deeplearn] to 1.14.1 and [zensols.nlparse] to 1.12.5.
+- Fixed GLoVE word vector download to broken Stanford cert.
+
+
 ## [1.17.2] - 2025-01-28
 Compatibility release.
 
@@ -378,7 +385,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.17.2...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.18.0...HEAD
+[1.18.0]: https://github.com/plandes/deepnlp/compare/v1.17.2...v1.18.0
 [1.17.2]: https://github.com/plandes/deepnlp/compare/v1.17.1...v1.17.2
 [1.17.1]: https://github.com/plandes/deepnlp/compare/v1.17.0...v1.17.1
 [1.17.0]: https://github.com/plandes/deepnlp/compare/v1.16.0...v1.17.0
@@ -427,3 +435,4 @@ Maintenance release.
 [spaCy]: https://spacy.io
 
 [unlsoth issue 1476]: https://github.com/unslothai/unsloth/issues/1476#issuecomment-2566258016
+[pixi]: https://pixi.sh
