@@ -1,7 +1,0 @@
-{"includes": {"named": ["numpy", "sklearn", "pandas", "torch",
-			"zensols.util", "zensols.nlp"],
-	      "mapped": [["zensols.nlparse", "{url}/nlp/"],
-			 ["zensols.deeplearn", "{url}/deeplearn/"],
-			 ["spacy", "https://spacy.io/api/doc/"],
-			 ["gensim", "https://radimrehurek.com/gensim/"],
-			 ["bert_score", "https://torchmetrics.readthedocs.io/en/stable/"]]}}

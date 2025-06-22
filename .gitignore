@@ -1,3 +1,6 @@
 *.pyc
 *_flymake.py
 /target
+# pixi environments
+.pixi
+/pyproject.toml
