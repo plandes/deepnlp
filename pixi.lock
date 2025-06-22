@@ -93,7 +93,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/4b/2a/0a131f572aa09f741c30ccd45a8e56316e8be8dfc7bc19bf0ab7cfef7b19/nvidia_nccl_cu12-2.20.5-py3-none-manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/46/0c/c75bbfb967457a0b7670b8ad267bfc4fffdf341c074e0a80db06c24ccfd4/nvidia_nvjitlink_cu12-12.9.86-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/da/d3/8057f0587683ed2fcd4dbfbdfdfa807b9160b809976099d36b8f60d08f03/nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/5b/5f/076b1ce74f80df0a9db244d30e30c4d4dee45342cbfa5f3e01f64cadf663/pandas-2.1.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/01/a5/931fc3ad333d9d87b10107d948d757d67ebcfc33b1988d5faccc39c6845c/pandas-2.3.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/d0/31/ba45bf0b2aa7898d81cbbfac0e88c267befb59ad91a19e36e1bc5578ddb1/parse-1.20.2-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/43/94/52243ddff508780dd2d8110964320ab4851134a55ab102285b46e740f76a/patool-1.12-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/fe/7c/d8b1330458e4d2f3f45d9508796d7caf0c0d3764c00c823d10f6f1a3b76d/pillow-11.2.1-cp312-cp312-manylinux_2_28_x86_64.whl
@@ -143,8 +143,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/2a/5a/04cde32b07a7431d4ed0553a76fdb7a61270e78c5fd5a603e190ac389f14/wrapt-1.17.2-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/87/b9/bc9e4fe0c6a2656d0baa40aa324f9c11e07e5bcec51be9e90ee4deebb309/XlsxWriter-3.0.9-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/99/f8/c715d4b76e304245fee18b8d4e8d005de75bcb8b3f241e705ecfa55db7a7/zensols.install-1.2.1-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/d8/7b/fa58d57071589c8705dc24f00b53cf6d8ebb9689917c7f1e972339b17990/zensols_datdesc-1.2.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/dd/44/ec25f5e2a5a010b0774a76308c4676b5a23f451c6f629e79cc3c0d9497ad/zensols_deeplearn-1.14.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/35/3e/42bee1a25877a4fda6b671921384038a5c7de12a3ab3f2bdb78f777dde03/zensols_datdesc-1.2.2-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/db/97/9079cff35a6fda860a3fbf7e1c81c9655ce4e6b99b4d3a8f34bfb09905d2/zensols_deeplearn-1.14.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7f/44/2782fcf8c01caf389d470227f6e26fce2cd853bfeca0acfc48dc39e2b7e2/zensols_nlp-1.12.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/26/6d/dc7360b6425dbe13c191f674100176544a60921714e869cc110204749b38/zensols_util-1.15.11-py3-none-any.whl
       osx-arm64:
@@ -213,7 +213,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/eb/8d/776adee7bbf76365fdd7f2552710282c79a4ead5d2a46408c9043a2b70ba/networkx-3.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/4d/66/7d9e26593edda06e8cb531874633f7c2372279c3b0f46235539fe546df8b/nltk-3.9.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/75/5b/ca6c8bd14007e5ca171c7c03102d17b4f4e0ceb53957e8c44343a9546dcc/numpy-1.26.4-cp312-cp312-macosx_11_0_arm64.whl
-      - pypi: https://files.pythonhosted.org/packages/0b/e0/8d97c7ecd73624f4cd5755578990b3cfbc6bbe350b8e017ede3580173a6f/pandas-2.1.4-cp312-cp312-macosx_11_0_arm64.whl
+      - pypi: https://files.pythonhosted.org/packages/9f/cc/ae8ea3b800757a70c9fdccc68b67dc0280a6e814efcf74e4211fd5dea1ca/pandas-2.3.0-cp312-cp312-macosx_11_0_arm64.whl
       - pypi: https://files.pythonhosted.org/packages/d0/31/ba45bf0b2aa7898d81cbbfac0e88c267befb59ad91a19e36e1bc5578ddb1/parse-1.20.2-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/43/94/52243ddff508780dd2d8110964320ab4851134a55ab102285b46e740f76a/patool-1.12-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/e5/7e/b86dbd35a5f938632093dc40d1682874c33dcfe832558fc80ca56bfcb774/pillow-11.2.1-cp312-cp312-macosx_11_0_arm64.whl
@@ -263,8 +263,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/48/2a/97928387d6ed1c1ebbfd4efc4133a0633546bec8481a2dd5ec961313a1c7/wrapt-1.17.2-cp312-cp312-macosx_11_0_arm64.whl
       - pypi: https://files.pythonhosted.org/packages/87/b9/bc9e4fe0c6a2656d0baa40aa324f9c11e07e5bcec51be9e90ee4deebb309/XlsxWriter-3.0.9-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/99/f8/c715d4b76e304245fee18b8d4e8d005de75bcb8b3f241e705ecfa55db7a7/zensols.install-1.2.1-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/d8/7b/fa58d57071589c8705dc24f00b53cf6d8ebb9689917c7f1e972339b17990/zensols_datdesc-1.2.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/dd/44/ec25f5e2a5a010b0774a76308c4676b5a23f451c6f629e79cc3c0d9497ad/zensols_deeplearn-1.14.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/35/3e/42bee1a25877a4fda6b671921384038a5c7de12a3ab3f2bdb78f777dde03/zensols_datdesc-1.2.2-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/db/97/9079cff35a6fda860a3fbf7e1c81c9655ce4e6b99b4d3a8f34bfb09905d2/zensols_deeplearn-1.14.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7f/44/2782fcf8c01caf389d470227f6e26fce2cd853bfeca0acfc48dc39e2b7e2/zensols_nlp-1.12.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/26/6d/dc7360b6425dbe13c191f674100176544a60921714e869cc110204749b38/zensols_util-1.15.11-py3-none-any.whl
       win-64:
@@ -337,7 +337,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/eb/8d/776adee7bbf76365fdd7f2552710282c79a4ead5d2a46408c9043a2b70ba/networkx-3.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/4d/66/7d9e26593edda06e8cb531874633f7c2372279c3b0f46235539fe546df8b/nltk-3.9.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/16/2e/86f24451c2d530c88daf997cb8d6ac622c1d40d19f5a031ed68a4b73a374/numpy-1.26.4-cp312-cp312-win_amd64.whl
-      - pypi: https://files.pythonhosted.org/packages/ae/d9/3741b344f57484b423cd22194025a8489992ad9962196a62721ef9980045/pandas-2.1.4-cp312-cp312-win_amd64.whl
+      - pypi: https://files.pythonhosted.org/packages/1f/d9/74017c4eec7a28892d8d6e31ae9de3baef71f5a5286e74e6b7aad7f8c837/pandas-2.3.0-cp312-cp312-win_amd64.whl
       - pypi: https://files.pythonhosted.org/packages/d0/31/ba45bf0b2aa7898d81cbbfac0e88c267befb59ad91a19e36e1bc5578ddb1/parse-1.20.2-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/43/94/52243ddff508780dd2d8110964320ab4851134a55ab102285b46e740f76a/patool-1.12-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7c/18/24bff2ad716257fc03da964c5e8f05d9790a779a8895d6566e493ccf0189/pillow-11.2.1-cp312-cp312-win_amd64.whl
@@ -388,8 +388,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/15/06/1dbf478ea45c03e78a6a8c4be4fdc3c3bddea5c8de8a93bc971415e47f0f/wrapt-1.17.2-cp312-cp312-win_amd64.whl
       - pypi: https://files.pythonhosted.org/packages/87/b9/bc9e4fe0c6a2656d0baa40aa324f9c11e07e5bcec51be9e90ee4deebb309/XlsxWriter-3.0.9-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/99/f8/c715d4b76e304245fee18b8d4e8d005de75bcb8b3f241e705ecfa55db7a7/zensols.install-1.2.1-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/d8/7b/fa58d57071589c8705dc24f00b53cf6d8ebb9689917c7f1e972339b17990/zensols_datdesc-1.2.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/dd/44/ec25f5e2a5a010b0774a76308c4676b5a23f451c6f629e79cc3c0d9497ad/zensols_deeplearn-1.14.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/35/3e/42bee1a25877a4fda6b671921384038a5c7de12a3ab3f2bdb78f777dde03/zensols_datdesc-1.2.2-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/db/97/9079cff35a6fda860a3fbf7e1c81c9655ce4e6b99b4d3a8f34bfb09905d2/zensols_deeplearn-1.14.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7f/44/2782fcf8c01caf389d470227f6e26fce2cd853bfeca0acfc48dc39e2b7e2/zensols_nlp-1.12.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/26/6d/dc7360b6425dbe13c191f674100176544a60921714e869cc110204749b38/zensols_util-1.15.11-py3-none-any.whl
   default:
@@ -477,7 +477,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/4b/2a/0a131f572aa09f741c30ccd45a8e56316e8be8dfc7bc19bf0ab7cfef7b19/nvidia_nccl_cu12-2.20.5-py3-none-manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/46/0c/c75bbfb967457a0b7670b8ad267bfc4fffdf341c074e0a80db06c24ccfd4/nvidia_nvjitlink_cu12-12.9.86-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/da/d3/8057f0587683ed2fcd4dbfbdfdfa807b9160b809976099d36b8f60d08f03/nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/5b/5f/076b1ce74f80df0a9db244d30e30c4d4dee45342cbfa5f3e01f64cadf663/pandas-2.1.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/01/a5/931fc3ad333d9d87b10107d948d757d67ebcfc33b1988d5faccc39c6845c/pandas-2.3.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/d0/31/ba45bf0b2aa7898d81cbbfac0e88c267befb59ad91a19e36e1bc5578ddb1/parse-1.20.2-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/43/94/52243ddff508780dd2d8110964320ab4851134a55ab102285b46e740f76a/patool-1.12-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/fe/7c/d8b1330458e4d2f3f45d9508796d7caf0c0d3764c00c823d10f6f1a3b76d/pillow-11.2.1-cp312-cp312-manylinux_2_28_x86_64.whl
@@ -527,8 +527,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/2a/5a/04cde32b07a7431d4ed0553a76fdb7a61270e78c5fd5a603e190ac389f14/wrapt-1.17.2-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/87/b9/bc9e4fe0c6a2656d0baa40aa324f9c11e07e5bcec51be9e90ee4deebb309/XlsxWriter-3.0.9-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/99/f8/c715d4b76e304245fee18b8d4e8d005de75bcb8b3f241e705ecfa55db7a7/zensols.install-1.2.1-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/d8/7b/fa58d57071589c8705dc24f00b53cf6d8ebb9689917c7f1e972339b17990/zensols_datdesc-1.2.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/dd/44/ec25f5e2a5a010b0774a76308c4676b5a23f451c6f629e79cc3c0d9497ad/zensols_deeplearn-1.14.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/35/3e/42bee1a25877a4fda6b671921384038a5c7de12a3ab3f2bdb78f777dde03/zensols_datdesc-1.2.2-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/db/97/9079cff35a6fda860a3fbf7e1c81c9655ce4e6b99b4d3a8f34bfb09905d2/zensols_deeplearn-1.14.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7f/44/2782fcf8c01caf389d470227f6e26fce2cd853bfeca0acfc48dc39e2b7e2/zensols_nlp-1.12.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/26/6d/dc7360b6425dbe13c191f674100176544a60921714e869cc110204749b38/zensols_util-1.15.11-py3-none-any.whl
       osx-arm64:
@@ -589,7 +589,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/eb/8d/776adee7bbf76365fdd7f2552710282c79a4ead5d2a46408c9043a2b70ba/networkx-3.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/4d/66/7d9e26593edda06e8cb531874633f7c2372279c3b0f46235539fe546df8b/nltk-3.9.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/75/5b/ca6c8bd14007e5ca171c7c03102d17b4f4e0ceb53957e8c44343a9546dcc/numpy-1.26.4-cp312-cp312-macosx_11_0_arm64.whl
-      - pypi: https://files.pythonhosted.org/packages/0b/e0/8d97c7ecd73624f4cd5755578990b3cfbc6bbe350b8e017ede3580173a6f/pandas-2.1.4-cp312-cp312-macosx_11_0_arm64.whl
+      - pypi: https://files.pythonhosted.org/packages/9f/cc/ae8ea3b800757a70c9fdccc68b67dc0280a6e814efcf74e4211fd5dea1ca/pandas-2.3.0-cp312-cp312-macosx_11_0_arm64.whl
       - pypi: https://files.pythonhosted.org/packages/d0/31/ba45bf0b2aa7898d81cbbfac0e88c267befb59ad91a19e36e1bc5578ddb1/parse-1.20.2-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/43/94/52243ddff508780dd2d8110964320ab4851134a55ab102285b46e740f76a/patool-1.12-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/e5/7e/b86dbd35a5f938632093dc40d1682874c33dcfe832558fc80ca56bfcb774/pillow-11.2.1-cp312-cp312-macosx_11_0_arm64.whl
@@ -639,8 +639,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/48/2a/97928387d6ed1c1ebbfd4efc4133a0633546bec8481a2dd5ec961313a1c7/wrapt-1.17.2-cp312-cp312-macosx_11_0_arm64.whl
       - pypi: https://files.pythonhosted.org/packages/87/b9/bc9e4fe0c6a2656d0baa40aa324f9c11e07e5bcec51be9e90ee4deebb309/XlsxWriter-3.0.9-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/99/f8/c715d4b76e304245fee18b8d4e8d005de75bcb8b3f241e705ecfa55db7a7/zensols.install-1.2.1-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/d8/7b/fa58d57071589c8705dc24f00b53cf6d8ebb9689917c7f1e972339b17990/zensols_datdesc-1.2.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/dd/44/ec25f5e2a5a010b0774a76308c4676b5a23f451c6f629e79cc3c0d9497ad/zensols_deeplearn-1.14.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/35/3e/42bee1a25877a4fda6b671921384038a5c7de12a3ab3f2bdb78f777dde03/zensols_datdesc-1.2.2-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/db/97/9079cff35a6fda860a3fbf7e1c81c9655ce4e6b99b4d3a8f34bfb09905d2/zensols_deeplearn-1.14.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7f/44/2782fcf8c01caf389d470227f6e26fce2cd853bfeca0acfc48dc39e2b7e2/zensols_nlp-1.12.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/26/6d/dc7360b6425dbe13c191f674100176544a60921714e869cc110204749b38/zensols_util-1.15.11-py3-none-any.whl
       win-64:
@@ -705,7 +705,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/eb/8d/776adee7bbf76365fdd7f2552710282c79a4ead5d2a46408c9043a2b70ba/networkx-3.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/4d/66/7d9e26593edda06e8cb531874633f7c2372279c3b0f46235539fe546df8b/nltk-3.9.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/16/2e/86f24451c2d530c88daf997cb8d6ac622c1d40d19f5a031ed68a4b73a374/numpy-1.26.4-cp312-cp312-win_amd64.whl
-      - pypi: https://files.pythonhosted.org/packages/ae/d9/3741b344f57484b423cd22194025a8489992ad9962196a62721ef9980045/pandas-2.1.4-cp312-cp312-win_amd64.whl
+      - pypi: https://files.pythonhosted.org/packages/1f/d9/74017c4eec7a28892d8d6e31ae9de3baef71f5a5286e74e6b7aad7f8c837/pandas-2.3.0-cp312-cp312-win_amd64.whl
       - pypi: https://files.pythonhosted.org/packages/d0/31/ba45bf0b2aa7898d81cbbfac0e88c267befb59ad91a19e36e1bc5578ddb1/parse-1.20.2-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/43/94/52243ddff508780dd2d8110964320ab4851134a55ab102285b46e740f76a/patool-1.12-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7c/18/24bff2ad716257fc03da964c5e8f05d9790a779a8895d6566e493ccf0189/pillow-11.2.1-cp312-cp312-win_amd64.whl
@@ -756,8 +756,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/15/06/1dbf478ea45c03e78a6a8c4be4fdc3c3bddea5c8de8a93bc971415e47f0f/wrapt-1.17.2-cp312-cp312-win_amd64.whl
       - pypi: https://files.pythonhosted.org/packages/87/b9/bc9e4fe0c6a2656d0baa40aa324f9c11e07e5bcec51be9e90ee4deebb309/XlsxWriter-3.0.9-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/99/f8/c715d4b76e304245fee18b8d4e8d005de75bcb8b3f241e705ecfa55db7a7/zensols.install-1.2.1-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/d8/7b/fa58d57071589c8705dc24f00b53cf6d8ebb9689917c7f1e972339b17990/zensols_datdesc-1.2.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/dd/44/ec25f5e2a5a010b0774a76308c4676b5a23f451c6f629e79cc3c0d9497ad/zensols_deeplearn-1.14.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/35/3e/42bee1a25877a4fda6b671921384038a5c7de12a3ab3f2bdb78f777dde03/zensols_datdesc-1.2.2-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/db/97/9079cff35a6fda860a3fbf7e1c81c9655ce4e6b99b4d3a8f34bfb09905d2/zensols_deeplearn-1.14.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7f/44/2782fcf8c01caf389d470227f6e26fce2cd853bfeca0acfc48dc39e2b7e2/zensols_nlp-1.12.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/26/6d/dc7360b6425dbe13c191f674100176544a60921714e869cc110204749b38/zensols_util-1.15.11-py3-none-any.whl
   testcur:
@@ -845,7 +845,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/46/0c/c75bbfb967457a0b7670b8ad267bfc4fffdf341c074e0a80db06c24ccfd4/nvidia_nvjitlink_cu12-12.9.86-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/da/d3/8057f0587683ed2fcd4dbfbdfdfa807b9160b809976099d36b8f60d08f03/nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/20/12/38679034af332785aac8774540895e234f4d07f7545804097de4b666afd8/packaging-25.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/5b/5f/076b1ce74f80df0a9db244d30e30c4d4dee45342cbfa5f3e01f64cadf663/pandas-2.1.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/01/a5/931fc3ad333d9d87b10107d948d757d67ebcfc33b1988d5faccc39c6845c/pandas-2.3.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/d0/31/ba45bf0b2aa7898d81cbbfac0e88c267befb59ad91a19e36e1bc5578ddb1/parse-1.20.2-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/43/94/52243ddff508780dd2d8110964320ab4851134a55ab102285b46e740f76a/patool-1.12-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/fe/7c/d8b1330458e4d2f3f45d9508796d7caf0c0d3764c00c823d10f6f1a3b76d/pillow-11.2.1-cp312-cp312-manylinux_2_28_x86_64.whl
@@ -895,8 +895,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/2a/5a/04cde32b07a7431d4ed0553a76fdb7a61270e78c5fd5a603e190ac389f14/wrapt-1.17.2-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/87/b9/bc9e4fe0c6a2656d0baa40aa324f9c11e07e5bcec51be9e90ee4deebb309/XlsxWriter-3.0.9-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/99/f8/c715d4b76e304245fee18b8d4e8d005de75bcb8b3f241e705ecfa55db7a7/zensols.install-1.2.1-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/d8/7b/fa58d57071589c8705dc24f00b53cf6d8ebb9689917c7f1e972339b17990/zensols_datdesc-1.2.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/dd/44/ec25f5e2a5a010b0774a76308c4676b5a23f451c6f629e79cc3c0d9497ad/zensols_deeplearn-1.14.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/35/3e/42bee1a25877a4fda6b671921384038a5c7de12a3ab3f2bdb78f777dde03/zensols_datdesc-1.2.2-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/db/97/9079cff35a6fda860a3fbf7e1c81c9655ce4e6b99b4d3a8f34bfb09905d2/zensols_deeplearn-1.14.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7f/44/2782fcf8c01caf389d470227f6e26fce2cd853bfeca0acfc48dc39e2b7e2/zensols_nlp-1.12.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/26/6d/dc7360b6425dbe13c191f674100176544a60921714e869cc110204749b38/zensols_util-1.15.11-py3-none-any.whl
       osx-arm64:
@@ -957,7 +957,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/4d/66/7d9e26593edda06e8cb531874633f7c2372279c3b0f46235539fe546df8b/nltk-3.9.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/75/5b/ca6c8bd14007e5ca171c7c03102d17b4f4e0ceb53957e8c44343a9546dcc/numpy-1.26.4-cp312-cp312-macosx_11_0_arm64.whl
       - pypi: https://files.pythonhosted.org/packages/20/12/38679034af332785aac8774540895e234f4d07f7545804097de4b666afd8/packaging-25.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/0b/e0/8d97c7ecd73624f4cd5755578990b3cfbc6bbe350b8e017ede3580173a6f/pandas-2.1.4-cp312-cp312-macosx_11_0_arm64.whl
+      - pypi: https://files.pythonhosted.org/packages/9f/cc/ae8ea3b800757a70c9fdccc68b67dc0280a6e814efcf74e4211fd5dea1ca/pandas-2.3.0-cp312-cp312-macosx_11_0_arm64.whl
       - pypi: https://files.pythonhosted.org/packages/d0/31/ba45bf0b2aa7898d81cbbfac0e88c267befb59ad91a19e36e1bc5578ddb1/parse-1.20.2-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/43/94/52243ddff508780dd2d8110964320ab4851134a55ab102285b46e740f76a/patool-1.12-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/e5/7e/b86dbd35a5f938632093dc40d1682874c33dcfe832558fc80ca56bfcb774/pillow-11.2.1-cp312-cp312-macosx_11_0_arm64.whl
@@ -1007,8 +1007,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/48/2a/97928387d6ed1c1ebbfd4efc4133a0633546bec8481a2dd5ec961313a1c7/wrapt-1.17.2-cp312-cp312-macosx_11_0_arm64.whl
       - pypi: https://files.pythonhosted.org/packages/87/b9/bc9e4fe0c6a2656d0baa40aa324f9c11e07e5bcec51be9e90ee4deebb309/XlsxWriter-3.0.9-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/99/f8/c715d4b76e304245fee18b8d4e8d005de75bcb8b3f241e705ecfa55db7a7/zensols.install-1.2.1-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/d8/7b/fa58d57071589c8705dc24f00b53cf6d8ebb9689917c7f1e972339b17990/zensols_datdesc-1.2.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/dd/44/ec25f5e2a5a010b0774a76308c4676b5a23f451c6f629e79cc3c0d9497ad/zensols_deeplearn-1.14.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/35/3e/42bee1a25877a4fda6b671921384038a5c7de12a3ab3f2bdb78f777dde03/zensols_datdesc-1.2.2-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/db/97/9079cff35a6fda860a3fbf7e1c81c9655ce4e6b99b4d3a8f34bfb09905d2/zensols_deeplearn-1.14.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7f/44/2782fcf8c01caf389d470227f6e26fce2cd853bfeca0acfc48dc39e2b7e2/zensols_nlp-1.12.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/26/6d/dc7360b6425dbe13c191f674100176544a60921714e869cc110204749b38/zensols_util-1.15.11-py3-none-any.whl
       win-64:
@@ -1073,7 +1073,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/4d/66/7d9e26593edda06e8cb531874633f7c2372279c3b0f46235539fe546df8b/nltk-3.9.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/16/2e/86f24451c2d530c88daf997cb8d6ac622c1d40d19f5a031ed68a4b73a374/numpy-1.26.4-cp312-cp312-win_amd64.whl
       - pypi: https://files.pythonhosted.org/packages/20/12/38679034af332785aac8774540895e234f4d07f7545804097de4b666afd8/packaging-25.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/ae/d9/3741b344f57484b423cd22194025a8489992ad9962196a62721ef9980045/pandas-2.1.4-cp312-cp312-win_amd64.whl
+      - pypi: https://files.pythonhosted.org/packages/1f/d9/74017c4eec7a28892d8d6e31ae9de3baef71f5a5286e74e6b7aad7f8c837/pandas-2.3.0-cp312-cp312-win_amd64.whl
       - pypi: https://files.pythonhosted.org/packages/d0/31/ba45bf0b2aa7898d81cbbfac0e88c267befb59ad91a19e36e1bc5578ddb1/parse-1.20.2-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/43/94/52243ddff508780dd2d8110964320ab4851134a55ab102285b46e740f76a/patool-1.12-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7c/18/24bff2ad716257fc03da964c5e8f05d9790a779a8895d6566e493ccf0189/pillow-11.2.1-cp312-cp312-win_amd64.whl
@@ -1124,8 +1124,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/15/06/1dbf478ea45c03e78a6a8c4be4fdc3c3bddea5c8de8a93bc971415e47f0f/wrapt-1.17.2-cp312-cp312-win_amd64.whl
       - pypi: https://files.pythonhosted.org/packages/87/b9/bc9e4fe0c6a2656d0baa40aa324f9c11e07e5bcec51be9e90ee4deebb309/XlsxWriter-3.0.9-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/99/f8/c715d4b76e304245fee18b8d4e8d005de75bcb8b3f241e705ecfa55db7a7/zensols.install-1.2.1-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/d8/7b/fa58d57071589c8705dc24f00b53cf6d8ebb9689917c7f1e972339b17990/zensols_datdesc-1.2.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/dd/44/ec25f5e2a5a010b0774a76308c4676b5a23f451c6f629e79cc3c0d9497ad/zensols_deeplearn-1.14.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/35/3e/42bee1a25877a4fda6b671921384038a5c7de12a3ab3f2bdb78f777dde03/zensols_datdesc-1.2.2-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/db/97/9079cff35a6fda860a3fbf7e1c81c9655ce4e6b99b4d3a8f34bfb09905d2/zensols_deeplearn-1.14.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7f/44/2782fcf8c01caf389d470227f6e26fce2cd853bfeca0acfc48dc39e2b7e2/zensols_nlp-1.12.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/26/6d/dc7360b6425dbe13c191f674100176544a60921714e869cc110204749b38/zensols_util-1.15.11-py3-none-any.whl
   testprev:
@@ -1213,7 +1213,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/46/0c/c75bbfb967457a0b7670b8ad267bfc4fffdf341c074e0a80db06c24ccfd4/nvidia_nvjitlink_cu12-12.9.86-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/da/d3/8057f0587683ed2fcd4dbfbdfdfa807b9160b809976099d36b8f60d08f03/nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/20/12/38679034af332785aac8774540895e234f4d07f7545804097de4b666afd8/packaging-25.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/f8/8c/9ad173c5cd2c7178c84075c02ec37b5d1d53fb1d015f51ea3e623ea9c31c/pandas-2.1.4-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/14/22/b493ec614582307faf3f94989be0f7f0a71932ed6f56c9a80c0bb4a3b51e/pandas-2.3.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/d0/31/ba45bf0b2aa7898d81cbbfac0e88c267befb59ad91a19e36e1bc5578ddb1/parse-1.20.2-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/43/94/52243ddff508780dd2d8110964320ab4851134a55ab102285b46e740f76a/patool-1.12-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/20/f2/805ad600fc59ebe4f1ba6129cd3a75fb0da126975c8579b8f57abeb61e80/pillow-11.2.1-cp311-cp311-manylinux_2_28_x86_64.whl
@@ -1264,8 +1264,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/b4/b0/9fc566b0fe08b282c850063591a756057c3247b2362b9286429ec5bf1721/wrapt-1.17.2-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/87/b9/bc9e4fe0c6a2656d0baa40aa324f9c11e07e5bcec51be9e90ee4deebb309/XlsxWriter-3.0.9-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/99/f8/c715d4b76e304245fee18b8d4e8d005de75bcb8b3f241e705ecfa55db7a7/zensols.install-1.2.1-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/d8/7b/fa58d57071589c8705dc24f00b53cf6d8ebb9689917c7f1e972339b17990/zensols_datdesc-1.2.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/dd/44/ec25f5e2a5a010b0774a76308c4676b5a23f451c6f629e79cc3c0d9497ad/zensols_deeplearn-1.14.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/35/3e/42bee1a25877a4fda6b671921384038a5c7de12a3ab3f2bdb78f777dde03/zensols_datdesc-1.2.2-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/db/97/9079cff35a6fda860a3fbf7e1c81c9655ce4e6b99b4d3a8f34bfb09905d2/zensols_deeplearn-1.14.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7f/44/2782fcf8c01caf389d470227f6e26fce2cd853bfeca0acfc48dc39e2b7e2/zensols_nlp-1.12.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/26/6d/dc7360b6425dbe13c191f674100176544a60921714e869cc110204749b38/zensols_util-1.15.11-py3-none-any.whl
       osx-arm64:
@@ -1326,7 +1326,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/4d/66/7d9e26593edda06e8cb531874633f7c2372279c3b0f46235539fe546df8b/nltk-3.9.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/1a/2e/151484f49fd03944c4a3ad9c418ed193cfd02724e138ac8a9505d056c582/numpy-1.26.4-cp311-cp311-macosx_11_0_arm64.whl
       - pypi: https://files.pythonhosted.org/packages/20/12/38679034af332785aac8774540895e234f4d07f7545804097de4b666afd8/packaging-25.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/3e/89/cbca600319463a91ae6a46e537d548900ddf2114df66c902344c4fe6bb4c/pandas-2.1.4-cp311-cp311-macosx_11_0_arm64.whl
+      - pypi: https://files.pythonhosted.org/packages/1b/cc/0af9c07f8d714ea563b12383a7e5bde9479cf32413ee2f346a9c5a801f22/pandas-2.3.0-cp311-cp311-macosx_11_0_arm64.whl
       - pypi: https://files.pythonhosted.org/packages/d0/31/ba45bf0b2aa7898d81cbbfac0e88c267befb59ad91a19e36e1bc5578ddb1/parse-1.20.2-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/43/94/52243ddff508780dd2d8110964320ab4851134a55ab102285b46e740f76a/patool-1.12-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/84/92/6505b1af3d2849d5e714fc75ba9e69b7255c05ee42383a35a4d58f576b16/pillow-11.2.1-cp311-cp311-macosx_11_0_arm64.whl
@@ -1376,8 +1376,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/65/46/5a917ce85b5c3b490d35c02bf71aedaa9f2f63f2d15d9949cc4ba56e8ba9/wrapt-1.17.2-cp311-cp311-macosx_11_0_arm64.whl
       - pypi: https://files.pythonhosted.org/packages/87/b9/bc9e4fe0c6a2656d0baa40aa324f9c11e07e5bcec51be9e90ee4deebb309/XlsxWriter-3.0.9-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/99/f8/c715d4b76e304245fee18b8d4e8d005de75bcb8b3f241e705ecfa55db7a7/zensols.install-1.2.1-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/d8/7b/fa58d57071589c8705dc24f00b53cf6d8ebb9689917c7f1e972339b17990/zensols_datdesc-1.2.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/dd/44/ec25f5e2a5a010b0774a76308c4676b5a23f451c6f629e79cc3c0d9497ad/zensols_deeplearn-1.14.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/35/3e/42bee1a25877a4fda6b671921384038a5c7de12a3ab3f2bdb78f777dde03/zensols_datdesc-1.2.2-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/db/97/9079cff35a6fda860a3fbf7e1c81c9655ce4e6b99b4d3a8f34bfb09905d2/zensols_deeplearn-1.14.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7f/44/2782fcf8c01caf389d470227f6e26fce2cd853bfeca0acfc48dc39e2b7e2/zensols_nlp-1.12.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/26/6d/dc7360b6425dbe13c191f674100176544a60921714e869cc110204749b38/zensols_util-1.15.11-py3-none-any.whl
       win-64:
@@ -1442,7 +1442,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/4d/66/7d9e26593edda06e8cb531874633f7c2372279c3b0f46235539fe546df8b/nltk-3.9.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/3f/6b/5610004206cf7f8e7ad91c5a85a8c71b2f2f8051a0c0c4d5916b76d6cbb2/numpy-1.26.4-cp311-cp311-win_amd64.whl
       - pypi: https://files.pythonhosted.org/packages/20/12/38679034af332785aac8774540895e234f4d07f7545804097de4b666afd8/packaging-25.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/11/17/fb1a34f3e73debbc2fd15a01ea17eaab3717943d08463ff4979a4f024b3f/pandas-2.1.4-cp311-cp311-win_amd64.whl
+      - pypi: https://files.pythonhosted.org/packages/25/ac/f6ee5250a8881b55bd3aecde9b8cfddea2f2b43e3588bca68a4e9aaf46c8/pandas-2.3.0-cp311-cp311-win_amd64.whl
       - pypi: https://files.pythonhosted.org/packages/d0/31/ba45bf0b2aa7898d81cbbfac0e88c267befb59ad91a19e36e1bc5578ddb1/parse-1.20.2-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/43/94/52243ddff508780dd2d8110964320ab4851134a55ab102285b46e740f76a/patool-1.12-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/e2/72/25a8f40170dc262e86e90f37cb72cb3de5e307f75bf4b02535a61afcd519/pillow-11.2.1-cp311-cp311-win_amd64.whl
@@ -1493,8 +1493,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/47/f8/fb1773491a253cbc123c5d5dc15c86041f746ed30416535f2a8df1f4a392/wrapt-1.17.2-cp311-cp311-win_amd64.whl
       - pypi: https://files.pythonhosted.org/packages/87/b9/bc9e4fe0c6a2656d0baa40aa324f9c11e07e5bcec51be9e90ee4deebb309/XlsxWriter-3.0.9-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/99/f8/c715d4b76e304245fee18b8d4e8d005de75bcb8b3f241e705ecfa55db7a7/zensols.install-1.2.1-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/d8/7b/fa58d57071589c8705dc24f00b53cf6d8ebb9689917c7f1e972339b17990/zensols_datdesc-1.2.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/dd/44/ec25f5e2a5a010b0774a76308c4676b5a23f451c6f629e79cc3c0d9497ad/zensols_deeplearn-1.14.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/35/3e/42bee1a25877a4fda6b671921384038a5c7de12a3ab3f2bdb78f777dde03/zensols_datdesc-1.2.2-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/db/97/9079cff35a6fda860a3fbf7e1c81c9655ce4e6b99b4d3a8f34bfb09905d2/zensols_deeplearn-1.14.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7f/44/2782fcf8c01caf389d470227f6e26fce2cd853bfeca0acfc48dc39e2b7e2/zensols_nlp-1.12.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/26/6d/dc7360b6425dbe13c191f674100176544a60921714e869cc110204749b38/zensols_util-1.15.11-py3-none-any.whl
 packages:
@@ -3575,503 +3575,551 @@ packages:
   - pkg:pypi/packaging?source=compressed-mapping
   size: 62477
   timestamp: 1745345660407
-- pypi: https://files.pythonhosted.org/packages/0b/e0/8d97c7ecd73624f4cd5755578990b3cfbc6bbe350b8e017ede3580173a6f/pandas-2.1.4-cp312-cp312-macosx_11_0_arm64.whl
+- pypi: https://files.pythonhosted.org/packages/01/a5/931fc3ad333d9d87b10107d948d757d67ebcfc33b1988d5faccc39c6845c/pandas-2.3.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
   name: pandas
-  version: 2.1.4
-  sha256: 8a706cfe7955c4ca59af8c7a0517370eafbd98593155b48f10f9811da440248b
+  version: 2.3.0
+  sha256: ba24af48643b12ffe49b27065d3babd52702d95ab70f50e1b34f71ca703e2c0d
   requires_dist:
-  - numpy>=1.22.4,<2 ; python_full_version < '3.11'
-  - numpy>=1.23.2,<2 ; python_full_version == '3.11.*'
-  - numpy>=1.26.0,<2 ; python_full_version >= '3.12'
+  - numpy>=1.22.4 ; python_full_version < '3.11'
+  - numpy>=1.23.2 ; python_full_version == '3.11.*'
+  - numpy>=1.26.0 ; python_full_version >= '3.12'
   - python-dateutil>=2.8.2
   - pytz>=2020.1
-  - tzdata>=2022.1
+  - tzdata>=2022.7
   - hypothesis>=6.46.1 ; extra == 'test'
   - pytest>=7.3.2 ; extra == 'test'
   - pytest-xdist>=2.2.0 ; extra == 'test'
-  - bottleneck>=1.3.4 ; extra == 'performance'
-  - numba>=0.55.2 ; extra == 'performance'
-  - numexpr>=2.8.0 ; extra == 'performance'
-  - scipy>=1.8.1 ; extra == 'computation'
-  - xarray>=2022.3.0 ; extra == 'computation'
-  - fsspec>=2022.5.0 ; extra == 'fss'
-  - s3fs>=2022.5.0 ; extra == 'aws'
-  - gcsfs>=2022.5.0 ; extra == 'gcp'
-  - pandas-gbq>=0.17.5 ; extra == 'gcp'
+  - pyarrow>=10.0.1 ; extra == 'pyarrow'
+  - bottleneck>=1.3.6 ; extra == 'performance'
+  - numba>=0.56.4 ; extra == 'performance'
+  - numexpr>=2.8.4 ; extra == 'performance'
+  - scipy>=1.10.0 ; extra == 'computation'
+  - xarray>=2022.12.0 ; extra == 'computation'
+  - fsspec>=2022.11.0 ; extra == 'fss'
+  - s3fs>=2022.11.0 ; extra == 'aws'
+  - gcsfs>=2022.11.0 ; extra == 'gcp'
+  - pandas-gbq>=0.19.0 ; extra == 'gcp'
   - odfpy>=1.4.1 ; extra == 'excel'
-  - openpyxl>=3.0.10 ; extra == 'excel'
-  - pyxlsb>=1.0.9 ; extra == 'excel'
+  - openpyxl>=3.1.0 ; extra == 'excel'
+  - python-calamine>=0.1.7 ; extra == 'excel'
+  - pyxlsb>=1.0.10 ; extra == 'excel'
   - xlrd>=2.0.1 ; extra == 'excel'
-  - xlsxwriter>=3.0.3 ; extra == 'excel'
-  - pyarrow>=7.0.0 ; extra == 'parquet'
-  - pyarrow>=7.0.0 ; extra == 'feather'
-  - tables>=3.7.0 ; extra == 'hdf5'
-  - pyreadstat>=1.1.5 ; extra == 'spss'
-  - sqlalchemy>=1.4.36 ; extra == 'postgresql'
-  - psycopg2>=2.9.3 ; extra == 'postgresql'
-  - sqlalchemy>=1.4.36 ; extra == 'mysql'
+  - xlsxwriter>=3.0.5 ; extra == 'excel'
+  - pyarrow>=10.0.1 ; extra == 'parquet'
+  - pyarrow>=10.0.1 ; extra == 'feather'
+  - tables>=3.8.0 ; extra == 'hdf5'
+  - pyreadstat>=1.2.0 ; extra == 'spss'
+  - sqlalchemy>=2.0.0 ; extra == 'postgresql'
+  - psycopg2>=2.9.6 ; extra == 'postgresql'
+  - adbc-driver-postgresql>=0.8.0 ; extra == 'postgresql'
+  - sqlalchemy>=2.0.0 ; extra == 'mysql'
   - pymysql>=1.0.2 ; extra == 'mysql'
-  - sqlalchemy>=1.4.36 ; extra == 'sql-other'
-  - beautifulsoup4>=4.11.1 ; extra == 'html'
+  - sqlalchemy>=2.0.0 ; extra == 'sql-other'
+  - adbc-driver-postgresql>=0.8.0 ; extra == 'sql-other'
+  - adbc-driver-sqlite>=0.8.0 ; extra == 'sql-other'
+  - beautifulsoup4>=4.11.2 ; extra == 'html'
   - html5lib>=1.1 ; extra == 'html'
-  - lxml>=4.8.0 ; extra == 'html'
-  - lxml>=4.8.0 ; extra == 'xml'
-  - matplotlib>=3.6.1 ; extra == 'plot'
+  - lxml>=4.9.2 ; extra == 'html'
+  - lxml>=4.9.2 ; extra == 'xml'
+  - matplotlib>=3.6.3 ; extra == 'plot'
   - jinja2>=3.1.2 ; extra == 'output-formatting'
-  - tabulate>=0.8.10 ; extra == 'output-formatting'
-  - pyqt5>=5.15.6 ; extra == 'clipboard'
-  - qtpy>=2.2.0 ; extra == 'clipboard'
-  - zstandard>=0.17.0 ; extra == 'compression'
+  - tabulate>=0.9.0 ; extra == 'output-formatting'
+  - pyqt5>=5.15.9 ; extra == 'clipboard'
+  - qtpy>=2.3.0 ; extra == 'clipboard'
+  - zstandard>=0.19.0 ; extra == 'compression'
   - dataframe-api-compat>=0.1.7 ; extra == 'consortium-standard'
-  - beautifulsoup4>=4.11.1 ; extra == 'all'
-  - bottleneck>=1.3.4 ; extra == 'all'
+  - adbc-driver-postgresql>=0.8.0 ; extra == 'all'
+  - adbc-driver-sqlite>=0.8.0 ; extra == 'all'
+  - beautifulsoup4>=4.11.2 ; extra == 'all'
+  - bottleneck>=1.3.6 ; extra == 'all'
   - dataframe-api-compat>=0.1.7 ; extra == 'all'
-  - fastparquet>=0.8.1 ; extra == 'all'
-  - fsspec>=2022.5.0 ; extra == 'all'
-  - gcsfs>=2022.5.0 ; extra == 'all'
+  - fastparquet>=2022.12.0 ; extra == 'all'
+  - fsspec>=2022.11.0 ; extra == 'all'
+  - gcsfs>=2022.11.0 ; extra == 'all'
   - html5lib>=1.1 ; extra == 'all'
   - hypothesis>=6.46.1 ; extra == 'all'
   - jinja2>=3.1.2 ; extra == 'all'
-  - lxml>=4.8.0 ; extra == 'all'
-  - matplotlib>=3.6.1 ; extra == 'all'
-  - numba>=0.55.2 ; extra == 'all'
-  - numexpr>=2.8.0 ; extra == 'all'
+  - lxml>=4.9.2 ; extra == 'all'
+  - matplotlib>=3.6.3 ; extra == 'all'
+  - numba>=0.56.4 ; extra == 'all'
+  - numexpr>=2.8.4 ; extra == 'all'
   - odfpy>=1.4.1 ; extra == 'all'
-  - openpyxl>=3.0.10 ; extra == 'all'
-  - pandas-gbq>=0.17.5 ; extra == 'all'
-  - psycopg2>=2.9.3 ; extra == 'all'
-  - pyarrow>=7.0.0 ; extra == 'all'
+  - openpyxl>=3.1.0 ; extra == 'all'
+  - pandas-gbq>=0.19.0 ; extra == 'all'
+  - psycopg2>=2.9.6 ; extra == 'all'
+  - pyarrow>=10.0.1 ; extra == 'all'
   - pymysql>=1.0.2 ; extra == 'all'
-  - pyqt5>=5.15.6 ; extra == 'all'
-  - pyreadstat>=1.1.5 ; extra == 'all'
+  - pyqt5>=5.15.9 ; extra == 'all'
+  - pyreadstat>=1.2.0 ; extra == 'all'
   - pytest>=7.3.2 ; extra == 'all'
   - pytest-xdist>=2.2.0 ; extra == 'all'
-  - pyxlsb>=1.0.9 ; extra == 'all'
-  - qtpy>=2.2.0 ; extra == 'all'
-  - scipy>=1.8.1 ; extra == 'all'
-  - s3fs>=2022.5.0 ; extra == 'all'
-  - sqlalchemy>=1.4.36 ; extra == 'all'
-  - tables>=3.7.0 ; extra == 'all'
-  - tabulate>=0.8.10 ; extra == 'all'
-  - xarray>=2022.3.0 ; extra == 'all'
+  - python-calamine>=0.1.7 ; extra == 'all'
+  - pyxlsb>=1.0.10 ; extra == 'all'
+  - qtpy>=2.3.0 ; extra == 'all'
+  - scipy>=1.10.0 ; extra == 'all'
+  - s3fs>=2022.11.0 ; extra == 'all'
+  - sqlalchemy>=2.0.0 ; extra == 'all'
+  - tables>=3.8.0 ; extra == 'all'
+  - tabulate>=0.9.0 ; extra == 'all'
+  - xarray>=2022.12.0 ; extra == 'all'
   - xlrd>=2.0.1 ; extra == 'all'
-  - xlsxwriter>=3.0.3 ; extra == 'all'
-  - zstandard>=0.17.0 ; extra == 'all'
+  - xlsxwriter>=3.0.5 ; extra == 'all'
+  - zstandard>=0.19.0 ; extra == 'all'
   requires_python: '>=3.9'
-- pypi: https://files.pythonhosted.org/packages/11/17/fb1a34f3e73debbc2fd15a01ea17eaab3717943d08463ff4979a4f024b3f/pandas-2.1.4-cp311-cp311-win_amd64.whl
+- pypi: https://files.pythonhosted.org/packages/14/22/b493ec614582307faf3f94989be0f7f0a71932ed6f56c9a80c0bb4a3b51e/pandas-2.3.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
   name: pandas
-  version: 2.1.4
-  sha256: dc9bf7ade01143cddc0074aa6995edd05323974e6e40d9dbde081021ded8510e
+  version: 2.3.0
+  sha256: 14a0cc77b0f089d2d2ffe3007db58f170dae9b9f54e569b299db871a3ab5bf46
   requires_dist:
-  - numpy>=1.22.4,<2 ; python_full_version < '3.11'
-  - numpy>=1.23.2,<2 ; python_full_version == '3.11.*'
-  - numpy>=1.26.0,<2 ; python_full_version >= '3.12'
+  - numpy>=1.22.4 ; python_full_version < '3.11'
+  - numpy>=1.23.2 ; python_full_version == '3.11.*'
+  - numpy>=1.26.0 ; python_full_version >= '3.12'
   - python-dateutil>=2.8.2
   - pytz>=2020.1
-  - tzdata>=2022.1
+  - tzdata>=2022.7
   - hypothesis>=6.46.1 ; extra == 'test'
   - pytest>=7.3.2 ; extra == 'test'
   - pytest-xdist>=2.2.0 ; extra == 'test'
-  - bottleneck>=1.3.4 ; extra == 'performance'
-  - numba>=0.55.2 ; extra == 'performance'
-  - numexpr>=2.8.0 ; extra == 'performance'
-  - scipy>=1.8.1 ; extra == 'computation'
-  - xarray>=2022.3.0 ; extra == 'computation'
-  - fsspec>=2022.5.0 ; extra == 'fss'
-  - s3fs>=2022.5.0 ; extra == 'aws'
-  - gcsfs>=2022.5.0 ; extra == 'gcp'
-  - pandas-gbq>=0.17.5 ; extra == 'gcp'
+  - pyarrow>=10.0.1 ; extra == 'pyarrow'
+  - bottleneck>=1.3.6 ; extra == 'performance'
+  - numba>=0.56.4 ; extra == 'performance'
+  - numexpr>=2.8.4 ; extra == 'performance'
+  - scipy>=1.10.0 ; extra == 'computation'
+  - xarray>=2022.12.0 ; extra == 'computation'
+  - fsspec>=2022.11.0 ; extra == 'fss'
+  - s3fs>=2022.11.0 ; extra == 'aws'
+  - gcsfs>=2022.11.0 ; extra == 'gcp'
+  - pandas-gbq>=0.19.0 ; extra == 'gcp'
   - odfpy>=1.4.1 ; extra == 'excel'
-  - openpyxl>=3.0.10 ; extra == 'excel'
-  - pyxlsb>=1.0.9 ; extra == 'excel'
+  - openpyxl>=3.1.0 ; extra == 'excel'
+  - python-calamine>=0.1.7 ; extra == 'excel'
+  - pyxlsb>=1.0.10 ; extra == 'excel'
   - xlrd>=2.0.1 ; extra == 'excel'
-  - xlsxwriter>=3.0.3 ; extra == 'excel'
-  - pyarrow>=7.0.0 ; extra == 'parquet'
-  - pyarrow>=7.0.0 ; extra == 'feather'
-  - tables>=3.7.0 ; extra == 'hdf5'
-  - pyreadstat>=1.1.5 ; extra == 'spss'
-  - sqlalchemy>=1.4.36 ; extra == 'postgresql'
-  - psycopg2>=2.9.3 ; extra == 'postgresql'
-  - sqlalchemy>=1.4.36 ; extra == 'mysql'
+  - xlsxwriter>=3.0.5 ; extra == 'excel'
+  - pyarrow>=10.0.1 ; extra == 'parquet'
+  - pyarrow>=10.0.1 ; extra == 'feather'
+  - tables>=3.8.0 ; extra == 'hdf5'
+  - pyreadstat>=1.2.0 ; extra == 'spss'
+  - sqlalchemy>=2.0.0 ; extra == 'postgresql'
+  - psycopg2>=2.9.6 ; extra == 'postgresql'
+  - adbc-driver-postgresql>=0.8.0 ; extra == 'postgresql'
+  - sqlalchemy>=2.0.0 ; extra == 'mysql'
   - pymysql>=1.0.2 ; extra == 'mysql'
-  - sqlalchemy>=1.4.36 ; extra == 'sql-other'
-  - beautifulsoup4>=4.11.1 ; extra == 'html'
+  - sqlalchemy>=2.0.0 ; extra == 'sql-other'
+  - adbc-driver-postgresql>=0.8.0 ; extra == 'sql-other'
+  - adbc-driver-sqlite>=0.8.0 ; extra == 'sql-other'
+  - beautifulsoup4>=4.11.2 ; extra == 'html'
   - html5lib>=1.1 ; extra == 'html'
-  - lxml>=4.8.0 ; extra == 'html'
-  - lxml>=4.8.0 ; extra == 'xml'
-  - matplotlib>=3.6.1 ; extra == 'plot'
+  - lxml>=4.9.2 ; extra == 'html'
+  - lxml>=4.9.2 ; extra == 'xml'
+  - matplotlib>=3.6.3 ; extra == 'plot'
   - jinja2>=3.1.2 ; extra == 'output-formatting'
-  - tabulate>=0.8.10 ; extra == 'output-formatting'
-  - pyqt5>=5.15.6 ; extra == 'clipboard'
-  - qtpy>=2.2.0 ; extra == 'clipboard'
-  - zstandard>=0.17.0 ; extra == 'compression'
+  - tabulate>=0.9.0 ; extra == 'output-formatting'
+  - pyqt5>=5.15.9 ; extra == 'clipboard'
+  - qtpy>=2.3.0 ; extra == 'clipboard'
+  - zstandard>=0.19.0 ; extra == 'compression'
   - dataframe-api-compat>=0.1.7 ; extra == 'consortium-standard'
-  - beautifulsoup4>=4.11.1 ; extra == 'all'
-  - bottleneck>=1.3.4 ; extra == 'all'
+  - adbc-driver-postgresql>=0.8.0 ; extra == 'all'
+  - adbc-driver-sqlite>=0.8.0 ; extra == 'all'
+  - beautifulsoup4>=4.11.2 ; extra == 'all'
+  - bottleneck>=1.3.6 ; extra == 'all'
   - dataframe-api-compat>=0.1.7 ; extra == 'all'
-  - fastparquet>=0.8.1 ; extra == 'all'
-  - fsspec>=2022.5.0 ; extra == 'all'
-  - gcsfs>=2022.5.0 ; extra == 'all'
+  - fastparquet>=2022.12.0 ; extra == 'all'
+  - fsspec>=2022.11.0 ; extra == 'all'
+  - gcsfs>=2022.11.0 ; extra == 'all'
   - html5lib>=1.1 ; extra == 'all'
   - hypothesis>=6.46.1 ; extra == 'all'
   - jinja2>=3.1.2 ; extra == 'all'
-  - lxml>=4.8.0 ; extra == 'all'
-  - matplotlib>=3.6.1 ; extra == 'all'
-  - numba>=0.55.2 ; extra == 'all'
-  - numexpr>=2.8.0 ; extra == 'all'
+  - lxml>=4.9.2 ; extra == 'all'
+  - matplotlib>=3.6.3 ; extra == 'all'
+  - numba>=0.56.4 ; extra == 'all'
+  - numexpr>=2.8.4 ; extra == 'all'
   - odfpy>=1.4.1 ; extra == 'all'
-  - openpyxl>=3.0.10 ; extra == 'all'
-  - pandas-gbq>=0.17.5 ; extra == 'all'
-  - psycopg2>=2.9.3 ; extra == 'all'
-  - pyarrow>=7.0.0 ; extra == 'all'
+  - openpyxl>=3.1.0 ; extra == 'all'
+  - pandas-gbq>=0.19.0 ; extra == 'all'
+  - psycopg2>=2.9.6 ; extra == 'all'
+  - pyarrow>=10.0.1 ; extra == 'all'
   - pymysql>=1.0.2 ; extra == 'all'
-  - pyqt5>=5.15.6 ; extra == 'all'
-  - pyreadstat>=1.1.5 ; extra == 'all'
+  - pyqt5>=5.15.9 ; extra == 'all'
+  - pyreadstat>=1.2.0 ; extra == 'all'
   - pytest>=7.3.2 ; extra == 'all'
   - pytest-xdist>=2.2.0 ; extra == 'all'
-  - pyxlsb>=1.0.9 ; extra == 'all'
-  - qtpy>=2.2.0 ; extra == 'all'
-  - scipy>=1.8.1 ; extra == 'all'
-  - s3fs>=2022.5.0 ; extra == 'all'
-  - sqlalchemy>=1.4.36 ; extra == 'all'
-  - tables>=3.7.0 ; extra == 'all'
-  - tabulate>=0.8.10 ; extra == 'all'
-  - xarray>=2022.3.0 ; extra == 'all'
+  - python-calamine>=0.1.7 ; extra == 'all'
+  - pyxlsb>=1.0.10 ; extra == 'all'
+  - qtpy>=2.3.0 ; extra == 'all'
+  - scipy>=1.10.0 ; extra == 'all'
+  - s3fs>=2022.11.0 ; extra == 'all'
+  - sqlalchemy>=2.0.0 ; extra == 'all'
+  - tables>=3.8.0 ; extra == 'all'
+  - tabulate>=0.9.0 ; extra == 'all'
+  - xarray>=2022.12.0 ; extra == 'all'
   - xlrd>=2.0.1 ; extra == 'all'
-  - xlsxwriter>=3.0.3 ; extra == 'all'
-  - zstandard>=0.17.0 ; extra == 'all'
+  - xlsxwriter>=3.0.5 ; extra == 'all'
+  - zstandard>=0.19.0 ; extra == 'all'
   requires_python: '>=3.9'
-- pypi: https://files.pythonhosted.org/packages/3e/89/cbca600319463a91ae6a46e537d548900ddf2114df66c902344c4fe6bb4c/pandas-2.1.4-cp311-cp311-macosx_11_0_arm64.whl
+- pypi: https://files.pythonhosted.org/packages/1b/cc/0af9c07f8d714ea563b12383a7e5bde9479cf32413ee2f346a9c5a801f22/pandas-2.3.0-cp311-cp311-macosx_11_0_arm64.whl
   name: pandas
-  version: 2.1.4
-  sha256: bd7d5f2f54f78164b3d7a40f33bf79a74cdee72c31affec86bfcabe7e0789821
+  version: 2.3.0
+  sha256: e5f08eb9a445d07720776df6e641975665c9ea12c9d8a331e0f6890f2dcd76ef
   requires_dist:
-  - numpy>=1.22.4,<2 ; python_full_version < '3.11'
-  - numpy>=1.23.2,<2 ; python_full_version == '3.11.*'
-  - numpy>=1.26.0,<2 ; python_full_version >= '3.12'
+  - numpy>=1.22.4 ; python_full_version < '3.11'
+  - numpy>=1.23.2 ; python_full_version == '3.11.*'
+  - numpy>=1.26.0 ; python_full_version >= '3.12'
   - python-dateutil>=2.8.2
   - pytz>=2020.1
-  - tzdata>=2022.1
+  - tzdata>=2022.7
   - hypothesis>=6.46.1 ; extra == 'test'
   - pytest>=7.3.2 ; extra == 'test'
   - pytest-xdist>=2.2.0 ; extra == 'test'
-  - bottleneck>=1.3.4 ; extra == 'performance'
-  - numba>=0.55.2 ; extra == 'performance'
-  - numexpr>=2.8.0 ; extra == 'performance'
-  - scipy>=1.8.1 ; extra == 'computation'
-  - xarray>=2022.3.0 ; extra == 'computation'
-  - fsspec>=2022.5.0 ; extra == 'fss'
-  - s3fs>=2022.5.0 ; extra == 'aws'
-  - gcsfs>=2022.5.0 ; extra == 'gcp'
-  - pandas-gbq>=0.17.5 ; extra == 'gcp'
+  - pyarrow>=10.0.1 ; extra == 'pyarrow'
+  - bottleneck>=1.3.6 ; extra == 'performance'
+  - numba>=0.56.4 ; extra == 'performance'
+  - numexpr>=2.8.4 ; extra == 'performance'
+  - scipy>=1.10.0 ; extra == 'computation'
+  - xarray>=2022.12.0 ; extra == 'computation'
+  - fsspec>=2022.11.0 ; extra == 'fss'
+  - s3fs>=2022.11.0 ; extra == 'aws'
+  - gcsfs>=2022.11.0 ; extra == 'gcp'
+  - pandas-gbq>=0.19.0 ; extra == 'gcp'
   - odfpy>=1.4.1 ; extra == 'excel'
-  - openpyxl>=3.0.10 ; extra == 'excel'
-  - pyxlsb>=1.0.9 ; extra == 'excel'
+  - openpyxl>=3.1.0 ; extra == 'excel'
+  - python-calamine>=0.1.7 ; extra == 'excel'
+  - pyxlsb>=1.0.10 ; extra == 'excel'
   - xlrd>=2.0.1 ; extra == 'excel'
-  - xlsxwriter>=3.0.3 ; extra == 'excel'
-  - pyarrow>=7.0.0 ; extra == 'parquet'
-  - pyarrow>=7.0.0 ; extra == 'feather'
-  - tables>=3.7.0 ; extra == 'hdf5'
-  - pyreadstat>=1.1.5 ; extra == 'spss'
-  - sqlalchemy>=1.4.36 ; extra == 'postgresql'
-  - psycopg2>=2.9.3 ; extra == 'postgresql'
-  - sqlalchemy>=1.4.36 ; extra == 'mysql'
+  - xlsxwriter>=3.0.5 ; extra == 'excel'
+  - pyarrow>=10.0.1 ; extra == 'parquet'
+  - pyarrow>=10.0.1 ; extra == 'feather'
+  - tables>=3.8.0 ; extra == 'hdf5'
+  - pyreadstat>=1.2.0 ; extra == 'spss'
+  - sqlalchemy>=2.0.0 ; extra == 'postgresql'
+  - psycopg2>=2.9.6 ; extra == 'postgresql'
+  - adbc-driver-postgresql>=0.8.0 ; extra == 'postgresql'
+  - sqlalchemy>=2.0.0 ; extra == 'mysql'
   - pymysql>=1.0.2 ; extra == 'mysql'
-  - sqlalchemy>=1.4.36 ; extra == 'sql-other'
-  - beautifulsoup4>=4.11.1 ; extra == 'html'
+  - sqlalchemy>=2.0.0 ; extra == 'sql-other'
+  - adbc-driver-postgresql>=0.8.0 ; extra == 'sql-other'
+  - adbc-driver-sqlite>=0.8.0 ; extra == 'sql-other'
+  - beautifulsoup4>=4.11.2 ; extra == 'html'
   - html5lib>=1.1 ; extra == 'html'
-  - lxml>=4.8.0 ; extra == 'html'
-  - lxml>=4.8.0 ; extra == 'xml'
-  - matplotlib>=3.6.1 ; extra == 'plot'
+  - lxml>=4.9.2 ; extra == 'html'
+  - lxml>=4.9.2 ; extra == 'xml'
+  - matplotlib>=3.6.3 ; extra == 'plot'
   - jinja2>=3.1.2 ; extra == 'output-formatting'
-  - tabulate>=0.8.10 ; extra == 'output-formatting'
-  - pyqt5>=5.15.6 ; extra == 'clipboard'
-  - qtpy>=2.2.0 ; extra == 'clipboard'
-  - zstandard>=0.17.0 ; extra == 'compression'
+  - tabulate>=0.9.0 ; extra == 'output-formatting'
+  - pyqt5>=5.15.9 ; extra == 'clipboard'
+  - qtpy>=2.3.0 ; extra == 'clipboard'
+  - zstandard>=0.19.0 ; extra == 'compression'
   - dataframe-api-compat>=0.1.7 ; extra == 'consortium-standard'
-  - beautifulsoup4>=4.11.1 ; extra == 'all'
-  - bottleneck>=1.3.4 ; extra == 'all'
+  - adbc-driver-postgresql>=0.8.0 ; extra == 'all'
+  - adbc-driver-sqlite>=0.8.0 ; extra == 'all'
+  - beautifulsoup4>=4.11.2 ; extra == 'all'
+  - bottleneck>=1.3.6 ; extra == 'all'
   - dataframe-api-compat>=0.1.7 ; extra == 'all'
-  - fastparquet>=0.8.1 ; extra == 'all'
-  - fsspec>=2022.5.0 ; extra == 'all'
-  - gcsfs>=2022.5.0 ; extra == 'all'
+  - fastparquet>=2022.12.0 ; extra == 'all'
+  - fsspec>=2022.11.0 ; extra == 'all'
+  - gcsfs>=2022.11.0 ; extra == 'all'
   - html5lib>=1.1 ; extra == 'all'
   - hypothesis>=6.46.1 ; extra == 'all'
   - jinja2>=3.1.2 ; extra == 'all'
-  - lxml>=4.8.0 ; extra == 'all'
-  - matplotlib>=3.6.1 ; extra == 'all'
-  - numba>=0.55.2 ; extra == 'all'
-  - numexpr>=2.8.0 ; extra == 'all'
+  - lxml>=4.9.2 ; extra == 'all'
+  - matplotlib>=3.6.3 ; extra == 'all'
+  - numba>=0.56.4 ; extra == 'all'
+  - numexpr>=2.8.4 ; extra == 'all'
   - odfpy>=1.4.1 ; extra == 'all'
-  - openpyxl>=3.0.10 ; extra == 'all'
-  - pandas-gbq>=0.17.5 ; extra == 'all'
-  - psycopg2>=2.9.3 ; extra == 'all'
-  - pyarrow>=7.0.0 ; extra == 'all'
+  - openpyxl>=3.1.0 ; extra == 'all'
+  - pandas-gbq>=0.19.0 ; extra == 'all'
+  - psycopg2>=2.9.6 ; extra == 'all'
+  - pyarrow>=10.0.1 ; extra == 'all'
   - pymysql>=1.0.2 ; extra == 'all'
-  - pyqt5>=5.15.6 ; extra == 'all'
-  - pyreadstat>=1.1.5 ; extra == 'all'
+  - pyqt5>=5.15.9 ; extra == 'all'
+  - pyreadstat>=1.2.0 ; extra == 'all'
   - pytest>=7.3.2 ; extra == 'all'
   - pytest-xdist>=2.2.0 ; extra == 'all'
-  - pyxlsb>=1.0.9 ; extra == 'all'
-  - qtpy>=2.2.0 ; extra == 'all'
-  - scipy>=1.8.1 ; extra == 'all'
-  - s3fs>=2022.5.0 ; extra == 'all'
-  - sqlalchemy>=1.4.36 ; extra == 'all'
-  - tables>=3.7.0 ; extra == 'all'
-  - tabulate>=0.8.10 ; extra == 'all'
-  - xarray>=2022.3.0 ; extra == 'all'
+  - python-calamine>=0.1.7 ; extra == 'all'
+  - pyxlsb>=1.0.10 ; extra == 'all'
+  - qtpy>=2.3.0 ; extra == 'all'
+  - scipy>=1.10.0 ; extra == 'all'
+  - s3fs>=2022.11.0 ; extra == 'all'
+  - sqlalchemy>=2.0.0 ; extra == 'all'
+  - tables>=3.8.0 ; extra == 'all'
+  - tabulate>=0.9.0 ; extra == 'all'
+  - xarray>=2022.12.0 ; extra == 'all'
   - xlrd>=2.0.1 ; extra == 'all'
-  - xlsxwriter>=3.0.3 ; extra == 'all'
-  - zstandard>=0.17.0 ; extra == 'all'
+  - xlsxwriter>=3.0.5 ; extra == 'all'
+  - zstandard>=0.19.0 ; extra == 'all'
   requires_python: '>=3.9'
-- pypi: https://files.pythonhosted.org/packages/5b/5f/076b1ce74f80df0a9db244d30e30c4d4dee45342cbfa5f3e01f64cadf663/pandas-2.1.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+- pypi: https://files.pythonhosted.org/packages/1f/d9/74017c4eec7a28892d8d6e31ae9de3baef71f5a5286e74e6b7aad7f8c837/pandas-2.3.0-cp312-cp312-win_amd64.whl
   name: pandas
-  version: 2.1.4
-  sha256: e9f17f2b6fc076b2a0078862547595d66244db0f41bf79fc5f64a5c4d635bead
+  version: 2.3.0
+  sha256: 094e271a15b579650ebf4c5155c05dcd2a14fd4fdd72cf4854b2f7ad31ea30be
   requires_dist:
-  - numpy>=1.22.4,<2 ; python_full_version < '3.11'
-  - numpy>=1.23.2,<2 ; python_full_version == '3.11.*'
-  - numpy>=1.26.0,<2 ; python_full_version >= '3.12'
+  - numpy>=1.22.4 ; python_full_version < '3.11'
+  - numpy>=1.23.2 ; python_full_version == '3.11.*'
+  - numpy>=1.26.0 ; python_full_version >= '3.12'
   - python-dateutil>=2.8.2
   - pytz>=2020.1
-  - tzdata>=2022.1
+  - tzdata>=2022.7
   - hypothesis>=6.46.1 ; extra == 'test'
   - pytest>=7.3.2 ; extra == 'test'
   - pytest-xdist>=2.2.0 ; extra == 'test'
-  - bottleneck>=1.3.4 ; extra == 'performance'
-  - numba>=0.55.2 ; extra == 'performance'
-  - numexpr>=2.8.0 ; extra == 'performance'
-  - scipy>=1.8.1 ; extra == 'computation'
-  - xarray>=2022.3.0 ; extra == 'computation'
-  - fsspec>=2022.5.0 ; extra == 'fss'
-  - s3fs>=2022.5.0 ; extra == 'aws'
-  - gcsfs>=2022.5.0 ; extra == 'gcp'
-  - pandas-gbq>=0.17.5 ; extra == 'gcp'
+  - pyarrow>=10.0.1 ; extra == 'pyarrow'
+  - bottleneck>=1.3.6 ; extra == 'performance'
+  - numba>=0.56.4 ; extra == 'performance'
+  - numexpr>=2.8.4 ; extra == 'performance'
+  - scipy>=1.10.0 ; extra == 'computation'
+  - xarray>=2022.12.0 ; extra == 'computation'
+  - fsspec>=2022.11.0 ; extra == 'fss'
+  - s3fs>=2022.11.0 ; extra == 'aws'
+  - gcsfs>=2022.11.0 ; extra == 'gcp'
+  - pandas-gbq>=0.19.0 ; extra == 'gcp'
   - odfpy>=1.4.1 ; extra == 'excel'
-  - openpyxl>=3.0.10 ; extra == 'excel'
-  - pyxlsb>=1.0.9 ; extra == 'excel'
+  - openpyxl>=3.1.0 ; extra == 'excel'
+  - python-calamine>=0.1.7 ; extra == 'excel'
+  - pyxlsb>=1.0.10 ; extra == 'excel'
   - xlrd>=2.0.1 ; extra == 'excel'
-  - xlsxwriter>=3.0.3 ; extra == 'excel'
-  - pyarrow>=7.0.0 ; extra == 'parquet'
-  - pyarrow>=7.0.0 ; extra == 'feather'
-  - tables>=3.7.0 ; extra == 'hdf5'
-  - pyreadstat>=1.1.5 ; extra == 'spss'
-  - sqlalchemy>=1.4.36 ; extra == 'postgresql'
-  - psycopg2>=2.9.3 ; extra == 'postgresql'
-  - sqlalchemy>=1.4.36 ; extra == 'mysql'
+  - xlsxwriter>=3.0.5 ; extra == 'excel'
+  - pyarrow>=10.0.1 ; extra == 'parquet'
+  - pyarrow>=10.0.1 ; extra == 'feather'
+  - tables>=3.8.0 ; extra == 'hdf5'
+  - pyreadstat>=1.2.0 ; extra == 'spss'
+  - sqlalchemy>=2.0.0 ; extra == 'postgresql'
+  - psycopg2>=2.9.6 ; extra == 'postgresql'
+  - adbc-driver-postgresql>=0.8.0 ; extra == 'postgresql'
+  - sqlalchemy>=2.0.0 ; extra == 'mysql'
   - pymysql>=1.0.2 ; extra == 'mysql'
-  - sqlalchemy>=1.4.36 ; extra == 'sql-other'
-  - beautifulsoup4>=4.11.1 ; extra == 'html'
+  - sqlalchemy>=2.0.0 ; extra == 'sql-other'
+  - adbc-driver-postgresql>=0.8.0 ; extra == 'sql-other'
+  - adbc-driver-sqlite>=0.8.0 ; extra == 'sql-other'
+  - beautifulsoup4>=4.11.2 ; extra == 'html'
   - html5lib>=1.1 ; extra == 'html'
-  - lxml>=4.8.0 ; extra == 'html'
-  - lxml>=4.8.0 ; extra == 'xml'
-  - matplotlib>=3.6.1 ; extra == 'plot'
+  - lxml>=4.9.2 ; extra == 'html'
+  - lxml>=4.9.2 ; extra == 'xml'
+  - matplotlib>=3.6.3 ; extra == 'plot'
   - jinja2>=3.1.2 ; extra == 'output-formatting'
-  - tabulate>=0.8.10 ; extra == 'output-formatting'
-  - pyqt5>=5.15.6 ; extra == 'clipboard'
-  - qtpy>=2.2.0 ; extra == 'clipboard'
-  - zstandard>=0.17.0 ; extra == 'compression'
+  - tabulate>=0.9.0 ; extra == 'output-formatting'
+  - pyqt5>=5.15.9 ; extra == 'clipboard'
+  - qtpy>=2.3.0 ; extra == 'clipboard'
+  - zstandard>=0.19.0 ; extra == 'compression'
   - dataframe-api-compat>=0.1.7 ; extra == 'consortium-standard'
-  - beautifulsoup4>=4.11.1 ; extra == 'all'
-  - bottleneck>=1.3.4 ; extra == 'all'
+  - adbc-driver-postgresql>=0.8.0 ; extra == 'all'
+  - adbc-driver-sqlite>=0.8.0 ; extra == 'all'
+  - beautifulsoup4>=4.11.2 ; extra == 'all'
+  - bottleneck>=1.3.6 ; extra == 'all'
   - dataframe-api-compat>=0.1.7 ; extra == 'all'
-  - fastparquet>=0.8.1 ; extra == 'all'
-  - fsspec>=2022.5.0 ; extra == 'all'
-  - gcsfs>=2022.5.0 ; extra == 'all'
+  - fastparquet>=2022.12.0 ; extra == 'all'
+  - fsspec>=2022.11.0 ; extra == 'all'
+  - gcsfs>=2022.11.0 ; extra == 'all'
   - html5lib>=1.1 ; extra == 'all'
   - hypothesis>=6.46.1 ; extra == 'all'
   - jinja2>=3.1.2 ; extra == 'all'
-  - lxml>=4.8.0 ; extra == 'all'
-  - matplotlib>=3.6.1 ; extra == 'all'
-  - numba>=0.55.2 ; extra == 'all'
-  - numexpr>=2.8.0 ; extra == 'all'
+  - lxml>=4.9.2 ; extra == 'all'
+  - matplotlib>=3.6.3 ; extra == 'all'
+  - numba>=0.56.4 ; extra == 'all'
+  - numexpr>=2.8.4 ; extra == 'all'
   - odfpy>=1.4.1 ; extra == 'all'
-  - openpyxl>=3.0.10 ; extra == 'all'
-  - pandas-gbq>=0.17.5 ; extra == 'all'
-  - psycopg2>=2.9.3 ; extra == 'all'
-  - pyarrow>=7.0.0 ; extra == 'all'
+  - openpyxl>=3.1.0 ; extra == 'all'
+  - pandas-gbq>=0.19.0 ; extra == 'all'
+  - psycopg2>=2.9.6 ; extra == 'all'
+  - pyarrow>=10.0.1 ; extra == 'all'
   - pymysql>=1.0.2 ; extra == 'all'
-  - pyqt5>=5.15.6 ; extra == 'all'
-  - pyreadstat>=1.1.5 ; extra == 'all'
+  - pyqt5>=5.15.9 ; extra == 'all'
+  - pyreadstat>=1.2.0 ; extra == 'all'
   - pytest>=7.3.2 ; extra == 'all'
   - pytest-xdist>=2.2.0 ; extra == 'all'
-  - pyxlsb>=1.0.9 ; extra == 'all'
-  - qtpy>=2.2.0 ; extra == 'all'
-  - scipy>=1.8.1 ; extra == 'all'
-  - s3fs>=2022.5.0 ; extra == 'all'
-  - sqlalchemy>=1.4.36 ; extra == 'all'
-  - tables>=3.7.0 ; extra == 'all'
-  - tabulate>=0.8.10 ; extra == 'all'
-  - xarray>=2022.3.0 ; extra == 'all'
+  - python-calamine>=0.1.7 ; extra == 'all'
+  - pyxlsb>=1.0.10 ; extra == 'all'
+  - qtpy>=2.3.0 ; extra == 'all'
+  - scipy>=1.10.0 ; extra == 'all'
+  - s3fs>=2022.11.0 ; extra == 'all'
+  - sqlalchemy>=2.0.0 ; extra == 'all'
+  - tables>=3.8.0 ; extra == 'all'
+  - tabulate>=0.9.0 ; extra == 'all'
+  - xarray>=2022.12.0 ; extra == 'all'
   - xlrd>=2.0.1 ; extra == 'all'
-  - xlsxwriter>=3.0.3 ; extra == 'all'
-  - zstandard>=0.17.0 ; extra == 'all'
+  - xlsxwriter>=3.0.5 ; extra == 'all'
+  - zstandard>=0.19.0 ; extra == 'all'
   requires_python: '>=3.9'
-- pypi: https://files.pythonhosted.org/packages/ae/d9/3741b344f57484b423cd22194025a8489992ad9962196a62721ef9980045/pandas-2.1.4-cp312-cp312-win_amd64.whl
+- pypi: https://files.pythonhosted.org/packages/25/ac/f6ee5250a8881b55bd3aecde9b8cfddea2f2b43e3588bca68a4e9aaf46c8/pandas-2.3.0-cp311-cp311-win_amd64.whl
   name: pandas
-  version: 2.1.4
-  sha256: f69b0c9bb174a2342818d3e2778584e18c740d56857fc5cdb944ec8bbe4082cf
+  version: 2.3.0
+  sha256: fa07e138b3f6c04addfeaf56cc7fdb96c3b68a3fe5e5401251f231fce40a0d7a
   requires_dist:
-  - numpy>=1.22.4,<2 ; python_full_version < '3.11'
-  - numpy>=1.23.2,<2 ; python_full_version == '3.11.*'
-  - numpy>=1.26.0,<2 ; python_full_version >= '3.12'
+  - numpy>=1.22.4 ; python_full_version < '3.11'
+  - numpy>=1.23.2 ; python_full_version == '3.11.*'
+  - numpy>=1.26.0 ; python_full_version >= '3.12'
   - python-dateutil>=2.8.2
   - pytz>=2020.1
-  - tzdata>=2022.1
+  - tzdata>=2022.7
   - hypothesis>=6.46.1 ; extra == 'test'
   - pytest>=7.3.2 ; extra == 'test'
   - pytest-xdist>=2.2.0 ; extra == 'test'
-  - bottleneck>=1.3.4 ; extra == 'performance'
-  - numba>=0.55.2 ; extra == 'performance'
-  - numexpr>=2.8.0 ; extra == 'performance'
-  - scipy>=1.8.1 ; extra == 'computation'
-  - xarray>=2022.3.0 ; extra == 'computation'
-  - fsspec>=2022.5.0 ; extra == 'fss'
-  - s3fs>=2022.5.0 ; extra == 'aws'
-  - gcsfs>=2022.5.0 ; extra == 'gcp'
-  - pandas-gbq>=0.17.5 ; extra == 'gcp'
+  - pyarrow>=10.0.1 ; extra == 'pyarrow'
+  - bottleneck>=1.3.6 ; extra == 'performance'
+  - numba>=0.56.4 ; extra == 'performance'
+  - numexpr>=2.8.4 ; extra == 'performance'
+  - scipy>=1.10.0 ; extra == 'computation'
+  - xarray>=2022.12.0 ; extra == 'computation'
+  - fsspec>=2022.11.0 ; extra == 'fss'
+  - s3fs>=2022.11.0 ; extra == 'aws'
+  - gcsfs>=2022.11.0 ; extra == 'gcp'
+  - pandas-gbq>=0.19.0 ; extra == 'gcp'
   - odfpy>=1.4.1 ; extra == 'excel'
-  - openpyxl>=3.0.10 ; extra == 'excel'
-  - pyxlsb>=1.0.9 ; extra == 'excel'
+  - openpyxl>=3.1.0 ; extra == 'excel'
+  - python-calamine>=0.1.7 ; extra == 'excel'
+  - pyxlsb>=1.0.10 ; extra == 'excel'
   - xlrd>=2.0.1 ; extra == 'excel'
-  - xlsxwriter>=3.0.3 ; extra == 'excel'
-  - pyarrow>=7.0.0 ; extra == 'parquet'
-  - pyarrow>=7.0.0 ; extra == 'feather'
-  - tables>=3.7.0 ; extra == 'hdf5'
-  - pyreadstat>=1.1.5 ; extra == 'spss'
-  - sqlalchemy>=1.4.36 ; extra == 'postgresql'
-  - psycopg2>=2.9.3 ; extra == 'postgresql'
-  - sqlalchemy>=1.4.36 ; extra == 'mysql'
+  - xlsxwriter>=3.0.5 ; extra == 'excel'
+  - pyarrow>=10.0.1 ; extra == 'parquet'
+  - pyarrow>=10.0.1 ; extra == 'feather'
+  - tables>=3.8.0 ; extra == 'hdf5'
+  - pyreadstat>=1.2.0 ; extra == 'spss'
+  - sqlalchemy>=2.0.0 ; extra == 'postgresql'
+  - psycopg2>=2.9.6 ; extra == 'postgresql'
+  - adbc-driver-postgresql>=0.8.0 ; extra == 'postgresql'
+  - sqlalchemy>=2.0.0 ; extra == 'mysql'
   - pymysql>=1.0.2 ; extra == 'mysql'
-  - sqlalchemy>=1.4.36 ; extra == 'sql-other'
-  - beautifulsoup4>=4.11.1 ; extra == 'html'
+  - sqlalchemy>=2.0.0 ; extra == 'sql-other'
+  - adbc-driver-postgresql>=0.8.0 ; extra == 'sql-other'
+  - adbc-driver-sqlite>=0.8.0 ; extra == 'sql-other'
+  - beautifulsoup4>=4.11.2 ; extra == 'html'
   - html5lib>=1.1 ; extra == 'html'
-  - lxml>=4.8.0 ; extra == 'html'
-  - lxml>=4.8.0 ; extra == 'xml'
-  - matplotlib>=3.6.1 ; extra == 'plot'
+  - lxml>=4.9.2 ; extra == 'html'
+  - lxml>=4.9.2 ; extra == 'xml'
+  - matplotlib>=3.6.3 ; extra == 'plot'
   - jinja2>=3.1.2 ; extra == 'output-formatting'
-  - tabulate>=0.8.10 ; extra == 'output-formatting'
-  - pyqt5>=5.15.6 ; extra == 'clipboard'
-  - qtpy>=2.2.0 ; extra == 'clipboard'
-  - zstandard>=0.17.0 ; extra == 'compression'
+  - tabulate>=0.9.0 ; extra == 'output-formatting'
+  - pyqt5>=5.15.9 ; extra == 'clipboard'
+  - qtpy>=2.3.0 ; extra == 'clipboard'
+  - zstandard>=0.19.0 ; extra == 'compression'
   - dataframe-api-compat>=0.1.7 ; extra == 'consortium-standard'
-  - beautifulsoup4>=4.11.1 ; extra == 'all'
-  - bottleneck>=1.3.4 ; extra == 'all'
+  - adbc-driver-postgresql>=0.8.0 ; extra == 'all'
+  - adbc-driver-sqlite>=0.8.0 ; extra == 'all'
+  - beautifulsoup4>=4.11.2 ; extra == 'all'
+  - bottleneck>=1.3.6 ; extra == 'all'
   - dataframe-api-compat>=0.1.7 ; extra == 'all'
-  - fastparquet>=0.8.1 ; extra == 'all'
-  - fsspec>=2022.5.0 ; extra == 'all'
-  - gcsfs>=2022.5.0 ; extra == 'all'
+  - fastparquet>=2022.12.0 ; extra == 'all'
+  - fsspec>=2022.11.0 ; extra == 'all'
+  - gcsfs>=2022.11.0 ; extra == 'all'
   - html5lib>=1.1 ; extra == 'all'
   - hypothesis>=6.46.1 ; extra == 'all'
   - jinja2>=3.1.2 ; extra == 'all'
-  - lxml>=4.8.0 ; extra == 'all'
-  - matplotlib>=3.6.1 ; extra == 'all'
-  - numba>=0.55.2 ; extra == 'all'
-  - numexpr>=2.8.0 ; extra == 'all'
+  - lxml>=4.9.2 ; extra == 'all'
+  - matplotlib>=3.6.3 ; extra == 'all'
+  - numba>=0.56.4 ; extra == 'all'
+  - numexpr>=2.8.4 ; extra == 'all'
   - odfpy>=1.4.1 ; extra == 'all'
-  - openpyxl>=3.0.10 ; extra == 'all'
-  - pandas-gbq>=0.17.5 ; extra == 'all'
-  - psycopg2>=2.9.3 ; extra == 'all'
-  - pyarrow>=7.0.0 ; extra == 'all'
+  - openpyxl>=3.1.0 ; extra == 'all'
+  - pandas-gbq>=0.19.0 ; extra == 'all'
+  - psycopg2>=2.9.6 ; extra == 'all'
+  - pyarrow>=10.0.1 ; extra == 'all'
   - pymysql>=1.0.2 ; extra == 'all'
-  - pyqt5>=5.15.6 ; extra == 'all'
-  - pyreadstat>=1.1.5 ; extra == 'all'
+  - pyqt5>=5.15.9 ; extra == 'all'
+  - pyreadstat>=1.2.0 ; extra == 'all'
   - pytest>=7.3.2 ; extra == 'all'
   - pytest-xdist>=2.2.0 ; extra == 'all'
-  - pyxlsb>=1.0.9 ; extra == 'all'
-  - qtpy>=2.2.0 ; extra == 'all'
-  - scipy>=1.8.1 ; extra == 'all'
-  - s3fs>=2022.5.0 ; extra == 'all'
-  - sqlalchemy>=1.4.36 ; extra == 'all'
-  - tables>=3.7.0 ; extra == 'all'
-  - tabulate>=0.8.10 ; extra == 'all'
-  - xarray>=2022.3.0 ; extra == 'all'
+  - python-calamine>=0.1.7 ; extra == 'all'
+  - pyxlsb>=1.0.10 ; extra == 'all'
+  - qtpy>=2.3.0 ; extra == 'all'
+  - scipy>=1.10.0 ; extra == 'all'
+  - s3fs>=2022.11.0 ; extra == 'all'
+  - sqlalchemy>=2.0.0 ; extra == 'all'
+  - tables>=3.8.0 ; extra == 'all'
+  - tabulate>=0.9.0 ; extra == 'all'
+  - xarray>=2022.12.0 ; extra == 'all'
   - xlrd>=2.0.1 ; extra == 'all'
-  - xlsxwriter>=3.0.3 ; extra == 'all'
-  - zstandard>=0.17.0 ; extra == 'all'
+  - xlsxwriter>=3.0.5 ; extra == 'all'
+  - zstandard>=0.19.0 ; extra == 'all'
   requires_python: '>=3.9'
-- pypi: https://files.pythonhosted.org/packages/f8/8c/9ad173c5cd2c7178c84075c02ec37b5d1d53fb1d015f51ea3e623ea9c31c/pandas-2.1.4-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+- pypi: https://files.pythonhosted.org/packages/9f/cc/ae8ea3b800757a70c9fdccc68b67dc0280a6e814efcf74e4211fd5dea1ca/pandas-2.3.0-cp312-cp312-macosx_11_0_arm64.whl
   name: pandas
-  version: 2.1.4
-  sha256: d797591b6846b9db79e65dc2d0d48e61f7db8d10b2a9480b4e3faaddc421a171
+  version: 2.3.0
+  sha256: b9d8c3187be7479ea5c3d30c32a5d73d62a621166675063b2edd21bc47614027
   requires_dist:
-  - numpy>=1.22.4,<2 ; python_full_version < '3.11'
-  - numpy>=1.23.2,<2 ; python_full_version == '3.11.*'
-  - numpy>=1.26.0,<2 ; python_full_version >= '3.12'
+  - numpy>=1.22.4 ; python_full_version < '3.11'
+  - numpy>=1.23.2 ; python_full_version == '3.11.*'
+  - numpy>=1.26.0 ; python_full_version >= '3.12'
   - python-dateutil>=2.8.2
   - pytz>=2020.1
-  - tzdata>=2022.1
+  - tzdata>=2022.7
   - hypothesis>=6.46.1 ; extra == 'test'
   - pytest>=7.3.2 ; extra == 'test'
   - pytest-xdist>=2.2.0 ; extra == 'test'
-  - bottleneck>=1.3.4 ; extra == 'performance'
-  - numba>=0.55.2 ; extra == 'performance'
-  - numexpr>=2.8.0 ; extra == 'performance'
-  - scipy>=1.8.1 ; extra == 'computation'
-  - xarray>=2022.3.0 ; extra == 'computation'
-  - fsspec>=2022.5.0 ; extra == 'fss'
-  - s3fs>=2022.5.0 ; extra == 'aws'
-  - gcsfs>=2022.5.0 ; extra == 'gcp'
-  - pandas-gbq>=0.17.5 ; extra == 'gcp'
+  - pyarrow>=10.0.1 ; extra == 'pyarrow'
+  - bottleneck>=1.3.6 ; extra == 'performance'
+  - numba>=0.56.4 ; extra == 'performance'
+  - numexpr>=2.8.4 ; extra == 'performance'
+  - scipy>=1.10.0 ; extra == 'computation'
+  - xarray>=2022.12.0 ; extra == 'computation'
+  - fsspec>=2022.11.0 ; extra == 'fss'
+  - s3fs>=2022.11.0 ; extra == 'aws'
+  - gcsfs>=2022.11.0 ; extra == 'gcp'
+  - pandas-gbq>=0.19.0 ; extra == 'gcp'
   - odfpy>=1.4.1 ; extra == 'excel'
-  - openpyxl>=3.0.10 ; extra == 'excel'
-  - pyxlsb>=1.0.9 ; extra == 'excel'
+  - openpyxl>=3.1.0 ; extra == 'excel'
+  - python-calamine>=0.1.7 ; extra == 'excel'
+  - pyxlsb>=1.0.10 ; extra == 'excel'
   - xlrd>=2.0.1 ; extra == 'excel'
-  - xlsxwriter>=3.0.3 ; extra == 'excel'
-  - pyarrow>=7.0.0 ; extra == 'parquet'
-  - pyarrow>=7.0.0 ; extra == 'feather'
-  - tables>=3.7.0 ; extra == 'hdf5'
-  - pyreadstat>=1.1.5 ; extra == 'spss'
-  - sqlalchemy>=1.4.36 ; extra == 'postgresql'
-  - psycopg2>=2.9.3 ; extra == 'postgresql'
-  - sqlalchemy>=1.4.36 ; extra == 'mysql'
+  - xlsxwriter>=3.0.5 ; extra == 'excel'
+  - pyarrow>=10.0.1 ; extra == 'parquet'
+  - pyarrow>=10.0.1 ; extra == 'feather'
+  - tables>=3.8.0 ; extra == 'hdf5'
+  - pyreadstat>=1.2.0 ; extra == 'spss'
+  - sqlalchemy>=2.0.0 ; extra == 'postgresql'
+  - psycopg2>=2.9.6 ; extra == 'postgresql'
+  - adbc-driver-postgresql>=0.8.0 ; extra == 'postgresql'
+  - sqlalchemy>=2.0.0 ; extra == 'mysql'
   - pymysql>=1.0.2 ; extra == 'mysql'
-  - sqlalchemy>=1.4.36 ; extra == 'sql-other'
-  - beautifulsoup4>=4.11.1 ; extra == 'html'
+  - sqlalchemy>=2.0.0 ; extra == 'sql-other'
+  - adbc-driver-postgresql>=0.8.0 ; extra == 'sql-other'
+  - adbc-driver-sqlite>=0.8.0 ; extra == 'sql-other'
+  - beautifulsoup4>=4.11.2 ; extra == 'html'
   - html5lib>=1.1 ; extra == 'html'
-  - lxml>=4.8.0 ; extra == 'html'
-  - lxml>=4.8.0 ; extra == 'xml'
-  - matplotlib>=3.6.1 ; extra == 'plot'
+  - lxml>=4.9.2 ; extra == 'html'
+  - lxml>=4.9.2 ; extra == 'xml'
+  - matplotlib>=3.6.3 ; extra == 'plot'
   - jinja2>=3.1.2 ; extra == 'output-formatting'
-  - tabulate>=0.8.10 ; extra == 'output-formatting'
-  - pyqt5>=5.15.6 ; extra == 'clipboard'
-  - qtpy>=2.2.0 ; extra == 'clipboard'
-  - zstandard>=0.17.0 ; extra == 'compression'
+  - tabulate>=0.9.0 ; extra == 'output-formatting'
+  - pyqt5>=5.15.9 ; extra == 'clipboard'
+  - qtpy>=2.3.0 ; extra == 'clipboard'
+  - zstandard>=0.19.0 ; extra == 'compression'
   - dataframe-api-compat>=0.1.7 ; extra == 'consortium-standard'
-  - beautifulsoup4>=4.11.1 ; extra == 'all'
-  - bottleneck>=1.3.4 ; extra == 'all'
+  - adbc-driver-postgresql>=0.8.0 ; extra == 'all'
+  - adbc-driver-sqlite>=0.8.0 ; extra == 'all'
+  - beautifulsoup4>=4.11.2 ; extra == 'all'
+  - bottleneck>=1.3.6 ; extra == 'all'
   - dataframe-api-compat>=0.1.7 ; extra == 'all'
-  - fastparquet>=0.8.1 ; extra == 'all'
-  - fsspec>=2022.5.0 ; extra == 'all'
-  - gcsfs>=2022.5.0 ; extra == 'all'
+  - fastparquet>=2022.12.0 ; extra == 'all'
+  - fsspec>=2022.11.0 ; extra == 'all'
+  - gcsfs>=2022.11.0 ; extra == 'all'
   - html5lib>=1.1 ; extra == 'all'
   - hypothesis>=6.46.1 ; extra == 'all'
   - jinja2>=3.1.2 ; extra == 'all'
-  - lxml>=4.8.0 ; extra == 'all'
-  - matplotlib>=3.6.1 ; extra == 'all'
-  - numba>=0.55.2 ; extra == 'all'
-  - numexpr>=2.8.0 ; extra == 'all'
+  - lxml>=4.9.2 ; extra == 'all'
+  - matplotlib>=3.6.3 ; extra == 'all'
+  - numba>=0.56.4 ; extra == 'all'
+  - numexpr>=2.8.4 ; extra == 'all'
   - odfpy>=1.4.1 ; extra == 'all'
-  - openpyxl>=3.0.10 ; extra == 'all'
-  - pandas-gbq>=0.17.5 ; extra == 'all'
-  - psycopg2>=2.9.3 ; extra == 'all'
-  - pyarrow>=7.0.0 ; extra == 'all'
+  - openpyxl>=3.1.0 ; extra == 'all'
+  - pandas-gbq>=0.19.0 ; extra == 'all'
+  - psycopg2>=2.9.6 ; extra == 'all'
+  - pyarrow>=10.0.1 ; extra == 'all'
   - pymysql>=1.0.2 ; extra == 'all'
-  - pyqt5>=5.15.6 ; extra == 'all'
-  - pyreadstat>=1.1.5 ; extra == 'all'
+  - pyqt5>=5.15.9 ; extra == 'all'
+  - pyreadstat>=1.2.0 ; extra == 'all'
   - pytest>=7.3.2 ; extra == 'all'
   - pytest-xdist>=2.2.0 ; extra == 'all'
-  - pyxlsb>=1.0.9 ; extra == 'all'
-  - qtpy>=2.2.0 ; extra == 'all'
-  - scipy>=1.8.1 ; extra == 'all'
-  - s3fs>=2022.5.0 ; extra == 'all'
-  - sqlalchemy>=1.4.36 ; extra == 'all'
-  - tables>=3.7.0 ; extra == 'all'
-  - tabulate>=0.8.10 ; extra == 'all'
-  - xarray>=2022.3.0 ; extra == 'all'
+  - python-calamine>=0.1.7 ; extra == 'all'
+  - pyxlsb>=1.0.10 ; extra == 'all'
+  - qtpy>=2.3.0 ; extra == 'all'
+  - scipy>=1.10.0 ; extra == 'all'
+  - s3fs>=2022.11.0 ; extra == 'all'
+  - sqlalchemy>=2.0.0 ; extra == 'all'
+  - tables>=3.8.0 ; extra == 'all'
+  - tabulate>=0.9.0 ; extra == 'all'
+  - xarray>=2022.12.0 ; extra == 'all'
   - xlrd>=2.0.1 ; extra == 'all'
-  - xlsxwriter>=3.0.3 ; extra == 'all'
-  - zstandard>=0.17.0 ; extra == 'all'
+  - xlsxwriter>=3.0.5 ; extra == 'all'
+  - zstandard>=0.19.0 ; extra == 'all'
   requires_python: '>=3.9'
 - pypi: https://files.pythonhosted.org/packages/d0/31/ba45bf0b2aa7898d81cbbfac0e88c267befb59ad91a19e36e1bc5578ddb1/parse-1.20.2-py2.py3-none-any.whl
   name: parse
@@ -6955,36 +7003,34 @@ packages:
   version: 3.0.9
   sha256: 5eaaf3c6f791cba1dd1c3065147c35982180f693436093aabe5b7d6c16148e95
   requires_python: '>=3.6'
-- pypi: https://files.pythonhosted.org/packages/d8/7b/fa58d57071589c8705dc24f00b53cf6d8ebb9689917c7f1e972339b17990/zensols_datdesc-1.2.0-py3-none-any.whl
+- pypi: https://files.pythonhosted.org/packages/35/3e/42bee1a25877a4fda6b671921384038a5c7de12a3ab3f2bdb78f777dde03/zensols_datdesc-1.2.2-py3-none-any.whl
   name: zensols-datdesc
-  version: 1.2.0
-  sha256: 5c60c258ae04bfc7afe7c9a1661a16a688943d32e03cfdba7973633641ecff4d
+  version: 1.2.2
+  sha256: a8bb11d4f18ff56ecee24c1319d1daddd916292e0f3608e32cfb6cf5bb6acd5c
   requires_dist:
   - hyperopt~=0.2.7
   - jinja2>=3.1
   - matplotlib~=3.8.2
-  - pandas~=2.1.3
+  - numpy~=1.26.4
+  - pandas~=2.3.0
   - seaborn~=0.13.2
   - tabulate~=0.9.0
   - xlsxwriter~=3.0.3
-  - zensols-util~=1.15.8
+  - zensols-util~=1.15.11
   requires_python: '>=3.11,<3.13'
-- pypi: https://files.pythonhosted.org/packages/dd/44/ec25f5e2a5a010b0774a76308c4676b5a23f451c6f629e79cc3c0d9497ad/zensols_deeplearn-1.14.0-py3-none-any.whl
+- pypi: https://files.pythonhosted.org/packages/db/97/9079cff35a6fda860a3fbf7e1c81c9655ce4e6b99b4d3a8f34bfb09905d2/zensols_deeplearn-1.14.1-py3-none-any.whl
   name: zensols-deeplearn
-  version: 1.14.0
-  sha256: e170a63f7503a737b12d3477bc2ae9d61c3639999fa564474680405f371cf7f1
+  version: 1.14.1
+  sha256: 0c04bbfaf2ff5a0cf6b7cbd9dfabf01fbd4eefcb09af5d1a3e4682ed104c85de
   requires_dist:
   - iterative-stratification~=0.1.9
-  - numpy~=1.26.4
-  - pandas~=2.1.3
   - scikit-learn~=1.3.2
   - scipy~=1.13.1
   - torchvision
   - torch~=2.3.1
   - tqdm
-  - zensols-datdesc~=1.2.0
+  - zensols-datdesc~=1.2.2
   - zensols-install~=1.2.1
-  - zensols-util~=1.15.8
   requires_python: '>=3.11,<3.13'
 - pypi: https://files.pythonhosted.org/packages/99/f8/c715d4b76e304245fee18b8d4e8d005de75bcb8b3f241e705ecfa55db7a7/zensols.install-1.2.1-py3-none-any.whl
   name: zensols-install

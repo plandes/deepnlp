@@ -45,7 +45,7 @@ project:
       - 'protobuf~=3.20.1'
       # framework
       - 'zensols.nlp~=1.12.5'
-      - 'zensols.deeplearn~=1.14.0'
+      - 'zensols.deeplearn~=1.14.1'
 doc:
   api_config:
     intersphinx_mapping:
