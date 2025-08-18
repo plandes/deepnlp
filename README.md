@@ -5,7 +5,8 @@
 [![Build Status][build-badge]][build-link]
 
 Deep learning utility library for natural language processing that aids in
-feature engineering and embedding layers.
+feature engineering and embedding layers from the paper [A Deep Learning
+Natural Language Processing Framework for Experimentation and Reproducibility].
 
 * See the [full documentation].
 * See the [paper](https://aclanthology.org/2023.nlposs-1.16)
@@ -167,6 +168,8 @@ Copyright (c) 2020 - 2025 Paul Landes
 [python311-link]: https://www.python.org/downloads/release/python-3110
 [build-badge]: https://github.com/plandes/deepnlp/workflows/CI/badge.svg
 [build-link]: https://github.com/plandes/deepnlp/actions
+
+[A Deep Learning Natural Language Processing Framework for Experimentation and Reproducibility]: https://aclanthology.org/2023.nlposs-1.16
 
 [PyTorch]: https://pytorch.org
 [Gensim]: https://radimrehurek.com/gensim/
