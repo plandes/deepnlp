@@ -1,0 +1,45 @@
+zensols.deepnlp.layer package
+=============================
+
+Submodules
+----------
+
+zensols.deepnlp.layer.conv module
+---------------------------------
+
+.. automodule:: zensols.deepnlp.layer.conv
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.layer.embed module
+----------------------------------
+
+.. automodule:: zensols.deepnlp.layer.embed
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.layer.embrecurcrf module
+----------------------------------------
+
+.. automodule:: zensols.deepnlp.layer.embrecurcrf
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.layer.wordvec module
+------------------------------------
+
+.. automodule:: zensols.deepnlp.layer.wordvec
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: zensols.deepnlp.layer
+   :members:
+   :undoc-members:
+   :show-inheritance:
