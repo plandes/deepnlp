@@ -167,7 +167,7 @@ Copyright (c) 2020 - 2025 Paul Landes
 [pypi-badge]: https://img.shields.io/pypi/v/zensols.deepnlp.svg
 [python311-badge]: https://img.shields.io/badge/python-3.11-blue.svg
 [python311-link]: https://www.python.org/downloads/release/python-3110
-[python312-badge]: https://img.shields.io/badge/python-3.11-blue.svg
+[python312-badge]: https://img.shields.io/badge/python-3.12-blue.svg
 [python312-link]: https://www.python.org/downloads/release/python-3120
 [build-badge]: https://github.com/plandes/deepnlp/workflows/CI/badge.svg
 [build-link]: https://github.com/plandes/deepnlp/actions
