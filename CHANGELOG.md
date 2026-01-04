@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.18.2] - 2026-01-04
+### Changed
+- Support for Python 3.13.
+- Upgraded dependencies:
+  - [zensols.nlp] 1.13.1
+  - [zensols.deeplearn] 1.15.0
+  - gensim 4.4.0
+  - h5py 3.15.1
+
+
 ## [1.18.1] - 2025-08-28
 ### Changed
 - Upgrade HF `transformers` to 4.54.x.
@@ -390,7 +400,8 @@ Maintenance release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.18.1...HEAD
+[Unreleased]: https://github.com/plandes/deepnlp/compare/v1.18.2...HEAD
+[1.18.2]: https://github.com/plandes/deepnlp/compare/v1.18.1...v1.18.2
 [1.18.1]: https://github.com/plandes/deepnlp/compare/v1.18.0...v1.18.1
 [1.18.0]: https://github.com/plandes/deepnlp/compare/v1.17.2...v1.18.0
 [1.17.2]: https://github.com/plandes/deepnlp/compare/v1.17.1...v1.17.2
