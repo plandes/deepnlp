@@ -26,31 +26,31 @@ project:
     # Python interpreter versions
     version:
       # constraint on install eligibility
-      required: '>=3.11,<3.13'
+      required: '>=3.11,<3.15'
       # last supported version of Python supported for the project
-      previous: '3.11.12'
+      previous: '3.12.10'
       # Python version supported for current development
-      current: '3.12.10'
+      current: '3.13.11'
       # version of Python used to build/link specific to the host
-      package_host: '3.11.6'
+      package_host: '3.13.10'
     # pypi dependencies added to 'project'
     dependencies:
       # word vector
-      - 'gensim~=4.3.2'
-      - 'h5py~=3.10.0'
+      - 'gensim~=4.4.0'
+      - 'h5py~=3.15.1'
       # transformers
       - 'transformers~=4.54.1'
-      - 'sentencepiece~=0.2.0'
-      - 'protobuf~=3.20.1'
+      - 'sentencepiece~=0.2.1'
+      - 'protobuf~=3.20.3'
       # framework
-      - 'zensols.nlp~=1.12.5'
-      - 'zensols.deeplearn~=1.14.3'
+      - 'zensols.nlp~=1.13.1'
+      - 'zensols.deeplearn~=1.15.0'
 doc:
   api_config:
     intersphinx_mapping:
       util:
-        modules: ['zensols.util', 'zensols.persist', 'zensols.config', 'zensols.cli', 'zensols.multi']
-        url: '{RP_DOC_IM_URL}/{package}/'
+        modules: ['zensols.util']
+        url: "{RP_DOC_IM_URL}/{package}/"
       nlp:
         modules: ['zensols.nlp']
         url: '{RP_DOC_IM_URL}/nlparse/'
@@ -82,7 +82,7 @@ build:
   table_appends:
     tool.pixi.feature.pyverprev.pypi-dependencies:
       en_core_web_sm:
-        url: 'https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl'
+        url: 'https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl'
     tool.pixi.feature.pyvercur.pypi-dependencies:
       en_core_web_sm:
-        url: 'https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl'
+        url: 'https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl'

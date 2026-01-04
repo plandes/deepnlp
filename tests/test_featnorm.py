@@ -1,5 +1,7 @@
 from typing import Tuple
 import logging
+from pathlib import Path
+import numpy as np
 import torch
 from torch import Tensor
 from zensols.util import loglevel
@@ -247,6 +249,8 @@ class TestFeatureVectorizationCombined(TestFeatureVectorization):
 
 
 class TestFeatureVectorizationOverlap(TestFeatureVectorization):
+    WRITE: bool = False
+
     def test_token_counts(self):
         vec = self.fac.instance('overlap_vectorizer_manager')
         fdoc = vec.parse(self.sent_text)
@@ -258,6 +262,7 @@ class TestFeatureVectorizationOverlap(TestFeatureVectorization):
         self.assertTensorEquals(torch.tensor([3, 4]), tensor)
 
     def test_mutual_counts(self):
+        should_file = Path('test-resources/should/feature-vec.txt')
         vec = self.fac.instance('overlap_vectorizer_manager')
         fdoc = vec.parse(self.sent_text)
         fdoc2 = vec.parse('I be a Citizen.  I am Paul Landes.  I made $3 from my plasma.')
@@ -265,11 +270,7 @@ class TestFeatureVectorizationOverlap(TestFeatureVectorization):
         self.assertEqual((-1, 113), tvec.shape)
         tensor = tvec.transform((fdoc, fdoc2))
         self.assertEqual((1, 113), tuple(tensor.shape))
-        ar = [[4., 0., 0., 0., 0., 0., 0., 0., 2., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-               0., 0., 3., 0., 0., 0., 0., 0., 0., 0., 0., 4., 0., 0., 0., 0., 0., 0.,
-               0., 0., 0., 2., 0., 4., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-               0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 4., 0., 0., 0.,
-               0., 0., 3., 0., 0., 0., 2., 0., 0., 0., 0., 0., 0., 2., 0., 0., 0., 0.,
-               0., 4., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 3., 0., 0., 0.,
-               0., 0., 0., 0., 0.]]
-        self.assertTensorEquals(torch.tensor(ar), tensor)
+        if self.WRITE:
+            np.savetxt(should_file, tensor.detach().numpy(), fmt='%d')
+        should = torch.from_numpy(np.loadtxt(should_file)).unsqueeze(0)
+        self.assertTensorEquals(should, tensor)

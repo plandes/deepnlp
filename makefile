@@ -14,6 +14,12 @@ CLEAN_ALL_DEPS +=	cleanexamples
 EXAMPLE_DIR = 		example
 
 
+
+#PY_TEST_GLOB = test_labeler.py
+#PY_TEST_GLOB = test_multidoc.py
+
+
+
 ## Targets
 #
 include ./zenbuild/main.mk

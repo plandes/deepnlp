@@ -2,23 +2,36 @@ from typing import Tuple
 import logging
 import json
 import sys
+from pathlib import Path
 import torch
 from zensols.nlp import FeatureDocument
 from zensols.deepnlp.vectorize import (
     FeatureDocumentVectorizerManager, CountEnumContainerFeatureVectorizer
 )
-from util import TestFeatureVectorization
+from util import TestFeatureVectorization, Should
 
 logger = logging.getLogger(__name__)
 
 
 class TestMultiDoc(TestFeatureVectorization):
-    DEBUG = False
+    DEBUG: bool = False
+    WRITE: bool = 0
+
+    @classmethod
+    def setUpClass(cls):
+        cls.should = Should(cls.SHOULD_PATH, is_write=cls.WRITE)
+        if not cls.WRITE:
+            cls.should.load()
+
+    @classmethod
+    def tearDownClass(cls):
+        if cls.WRITE:
+            cls.should.save()
 
     def setUp(self):
         super().setUp()
-        with open('test-resources/multi.json') as f:
-            self.should = json.load(f)
+        # with open('test-resources/multi.json') as f:
+        #     self.should = json.load(f)
         self.maxDiff = sys.maxsize
         if self.DEBUG:
             print()
@@ -57,9 +70,12 @@ class TestMultiDoc(TestFeatureVectorization):
             print('count:')
             print(json.dumps(tvec.to_symbols(tensor), indent=4))
             print()
-        self.assertEqual(self.should['count'], tvec.to_symbols(tensor))
 
-    def _test_enums(self, t1, t2, tb, should):
+        syms = tvec.to_symbols(tensor)
+        should = self.should('count', syms)
+        self.assertEqual(should, syms)
+
+    def _test_enums(self, t1, t2, tb, should_name):
         vec = self.vmng
         docs = self._parse_docs(vec)
         tvec = vec['enum']
@@ -82,14 +98,19 @@ class TestMultiDoc(TestFeatureVectorization):
             for d in docs:
                 for t in d.token_iter():
                     print(t, t.ent_)
-            print(f'enums (should={should}):')
+            print(f'enums (should={should_name}):')
             print(json.dumps(tvec.to_symbols(tensor), indent=4))
             print()
-        self.assertEqual(self.should[should], tvec.to_symbols(tensor))
+
+        syms = tvec.to_symbols(tensor)
+        should = self.should(should_name, syms)
+        self.assertEqual(should, syms)
 
 
 class TestMultiDocVectorize(TestMultiDoc):
     """Test fixed token lengths."""
+    SHOULD_PATH = Path('test-resources/should/multidoc-vectorize.json')
+
     def test_counts(self):
         self._test_counts((2, 113), (1, 113), (2, 113))
 
@@ -100,6 +121,7 @@ class TestMultiDocVectorize(TestMultiDoc):
 
 class TestMultiDocVarBatch(TestMultiDoc):
     """Test non-fixed token lengths (i.e. ``token_length = -1``)."""
+    SHOULD_PATH = Path('test-resources/should/multidoc-varbatch.json')
 
     def setUp(self):
         super().setUp()

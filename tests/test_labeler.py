@@ -1,4 +1,5 @@
 from typing import List
+from pathlib import Path
 import torch
 from torch import Tensor
 from zensols.util import loglevel
@@ -10,7 +11,7 @@ from zensols.deepnlp.vectorize import TextFeatureType
 from zensols.deepnlp.transformer import (
     TransformerNominalFeatureVectorizer
 )
-from util import TestFeatureVectorization
+from util import TestFeatureVectorization, Should
 
 
 class TestLabelVectorizer(TestFeatureVectorization):
@@ -18,7 +19,22 @@ class TestLabelVectorizer(TestFeatureVectorization):
     TokenContainerVectorizer.
 
     """
-    DEBUG = False
+    DEBUG: bool = False
+    WRITE: bool = 0
+
+    @classmethod
+    def setUpClass(cls):
+        cls.should = Should(
+            Path('test-resources/should/label-vec.json'),
+            is_write=cls.WRITE,
+            dtype='torch')
+        if not cls.WRITE:
+            cls.should.load()
+
+    @classmethod
+    def tearDownClass(cls):
+        if cls.WRITE:
+            cls.should.save()
 
     def setUp(self):
         config = ImportIniConfig('test-resources/transformer.conf')
@@ -27,27 +43,6 @@ class TestLabelVectorizer(TestFeatureVectorization):
                       'Ukrainian women are volunteering to fight.')
         self.doc_parser: FeatureDocumentParser = self.fac('lab_doc_parser')
         self.docs = self._set_attributes(list(map(self.doc_parser, self.sents)))
-        # concatenate tokens of each document in to singleton sentence
-        # documents (single document case)
-        self.should_single = \
-            [[-100, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, -100, -100, -100, -100, -100],
-             [-100, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, -100]]
-        # concatenate tokens of each document in to singleton sentence
-        # documents
-        self.should_concat = \
-            [[-100, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 , 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, -100],
-             [-100, 3, 0, 0, 0, 0, 0, 0, 0, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]]
-        # all sentences of all documents become singleton sentence documents
-        self.should_sentence = \
-            [[-100, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, -100, -100, -100, -100, -100],
-             [-100, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, -100],
-             [-100, 3, 0, 0, 0, 0, 0, 0, 0, -100, -100, -100, -100, -100, -100, -100]]
-        # every sentence of each document is encoded separately, then the each
-        # sentence output is concatenated as the respsective document during
-        # decoding
-        self.should_separate = \
-            [[-100, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, -100, -100, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, -100],
-             [-100, 3, 0, 0, 0, 0, 0, 0, 0, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100]]
 
     def _set_attributes(self, docs: List[FeatureDocument]):
         for doc in docs:
@@ -62,6 +57,8 @@ class TestLabelVectorizer(TestFeatureVectorization):
 
     def _test_single(self, doc: TokenAnnotatedFeatureDocument,
                      vec: TransformerNominalFeatureVectorizer):
+        # concatenate tokens of each document in to singleton sentence
+        # documents (single document case)
         if self.DEBUG:
             print('vectorizer:')
             vec.write(1)
@@ -71,9 +68,9 @@ class TestLabelVectorizer(TestFeatureVectorization):
             tdoc.write(1)
         tensor: Tensor = vec.transform(doc)
         self.assertEqual((2, 16), tensor.shape)
-        should = self.should_single
+        should = self.should('single', tensor)
         self.assertEqual((2, 16), tensor.shape)
-        self.assertTensorEquals(torch.tensor(should), tensor)
+        self.assertTensorEquals(should, tensor)
 
     def _test_labeler(self):
         vec: TransformerNominalFeatureVectorizer
@@ -83,25 +80,35 @@ class TestLabelVectorizer(TestFeatureVectorization):
         self.assertEqual(vec.feature_type, TextFeatureType.NONE)
         self._test_single(self.docs[0], vec)
 
+        # concatenate tokens of each document in to singleton sentence
+        # documents
         tensor: Tensor = vec.transform(self.docs)
         self.assertEqual((2, 26), tensor.shape)
-        self.assertTensorEquals(torch.tensor(self.should_concat), tensor)
+        should = self.should('concat', tensor)
+        self.assertTensorEquals(should, tensor)
 
+        # all sentences of all documents become singleton sentence documents
         vec = self._get_vec('ent_label_trans_sentence_vectorizer')
         self._test_single(self.docs[0], vec)
         tensor: Tensor = vec.transform(self.docs)
         self.assertEqual((3, 16), tensor.shape)
-        self.assertTensorEquals(torch.tensor(self.should_sentence), tensor)
+        should = self.should('sentence', tensor)
+        self.assertTensorEquals(should, tensor)
 
+        # every sentence of each document is encoded separately, then the each
+        # sentence output is concatenated as the respsective document during
+        # decoding
         vec = self._get_vec('ent_label_trans_separate_vectorizer')
         tensor: Tensor = vec.transform(self.docs[0])
         self.assertEqual((1, 28), tensor.shape)
-        self.assertTensorEquals(torch.tensor(self.should_separate[0]), tensor.squeeze(0))
+        should = self.should('separate_sq', tensor.squeeze(0))
+        self.assertTensorEquals(should, tensor.squeeze(0))
 
         with loglevel('zensols.deepnlp.vectorize', init=True, enable=False):
             tensor: Tensor = vec.transform(self.docs)
+        should = self.should('separate', tensor.squeeze())
         self.assertEqual((2, 28), tensor.shape)
-        self.assertTensorEquals(torch.tensor(self.should_separate), tensor)
+        self.assertTensorEquals(should, tensor)
 
     def test_labeler_non_transformed(self):
         self.encode_transformed = False

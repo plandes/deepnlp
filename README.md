@@ -1,8 +1,8 @@
 # DeepZensols Natural Language Processing
 
 [![PyPI][pypi-badge]][pypi-link]
+[![Python 3.13][python313-badge]][python313-link]
 [![Python 3.12][python312-badge]][python312-link]
-[![Python 3.11][python311-badge]][python311-link]
 [![Build Status][build-badge]][build-link]
 
 Deep learning utility library for natural language processing that aids in
@@ -142,23 +142,23 @@ If you use this project in your research please use the following BibTeX entry:
 }
 ```
 
+## Community
+
+Please star this repository and let me know how and where you use this API.
+[Contributions](CONTRIBUTING.md) as pull requests, feedback, and any input is
+welcome.
+
 
 ## Changelog
 
 An extensive changelog is available [here](CHANGELOG.md).
 
 
-## Community
-
-Please star this repository and let me know how and where you use this API.
-Contributions as pull requests, feedback and any input is welcome.
-
-
 ## License
 
 [MIT License](LICENSE.md)
 
-Copyright (c) 2020 - 2025 Paul Landes
+Copyright (c) 2020 - 2026 Paul Landes
 
 
 <!-- links -->
