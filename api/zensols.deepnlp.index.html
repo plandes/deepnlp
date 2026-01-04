@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+
+<html class="no-js" data-content_root="../" lang="en">
+<head><meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="light dark" name="color-scheme"/><meta content="width=device-width, initial-scale=1" name="viewport">
+<link href="../genindex.html" rel="index" title="Index"/><link href="../search.html" rel="search" title="Search"/><link href="zensols.deepnlp.layer.html" rel="next" title="zensols.deepnlp.layer package"/><link href="zensols.deepnlp.embed.html" rel="prev" title="zensols.deepnlp.embed package"/>
+<!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
+<title>zensols.deepnlp.index package - DeepZensols Natural Language Processing 1.19.0 documentation</title>
+<link href="../_static/pygments.css?v=03e43079" rel="stylesheet" type="text/css">
+<link href="../_static/styles/furo.css?v=7bdb33bb" rel="stylesheet" type="text/css">
+<link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css">
+<link href="../_static/sphinx-codeautolink.css?v=b2176991" rel="stylesheet" type="text/css">
+<link href="../_static/graphviz.css" rel="stylesheet" type="text/css"/>
+<link href="../_static/styles/furo-extensions.css?v=8dab3a3b" rel="stylesheet" type="text/css"/>
+<link href="../_static/codeautolink.css?v=57550ae3" rel="stylesheet" type="text/css"/>
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></link></link></link></link></meta></head>
+<body>
+<script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+<svg style="display: none;" xmlns="http://www.w3.org/2000/svg">
+<symbol id="svg-toc" viewbox="0 0 24 24">
+<title>Contents</title>
+<svg fill="currentColor" stroke="currentColor" stroke-width="0" viewbox="0 0 1024 1024">
+<path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"></path>
+</svg>
+</symbol>
+<symbol id="svg-menu" viewbox="0 0 24 24">
+<title>Menu</title>
+<svg class="feather-menu" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<line x1="3" x2="21" y1="12" y2="12"></line>
+<line x1="3" x2="21" y1="6" y2="6"></line>
+<line x1="3" x2="21" y1="18" y2="18"></line>
+</svg>
+</symbol>
+<symbol id="svg-arrow-right" viewbox="0 0 24 24">
+<title>Expand</title>
+<svg class="feather-chevron-right" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<polyline points="9 18 15 12 9 6"></polyline>
+</svg>
+</symbol>
+<symbol id="svg-sun" viewbox="0 0 24 24">
+<title>Light mode</title>
+<svg class="feather-sun" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle cx="12" cy="12" r="5"></circle>
+<line x1="12" x2="12" y1="1" y2="3"></line>
+<line x1="12" x2="12" y1="21" y2="23"></line>
+<line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line>
+<line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line>
+<line x1="1" x2="3" y1="12" y2="12"></line>
+<line x1="21" x2="23" y1="12" y2="12"></line>
+<line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line>
+<line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line>
+</svg>
+</symbol>
+<symbol id="svg-moon" viewbox="0 0 24 24">
+<title>Dark mode</title>
+<svg class="icon-tabler-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 0h24v24H0z" fill="none" stroke="none"></path>
+<path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+</svg>
+</symbol>
+<symbol id="svg-sun-with-moon" viewbox="0 0 24 24">
+<title>Auto light/dark, in light mode</title>
+<svg class="icon-custom-derived-from-feather-sun-and-tabler-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z" style="opacity: 50%"></path>
+<line x1="14.5" x2="14.5" y1="3.25" y2="1.25"></line>
+<line x1="14.5" x2="14.5" y1="15.85" y2="17.85"></line>
+<line x1="10.044" x2="8.63" y1="5.094" y2="3.68"></line>
+<line x1="19" x2="20.414" y1="14.05" y2="15.464"></line>
+<line x1="8.2" x2="6.2" y1="9.55" y2="9.55"></line>
+<line x1="20.8" x2="22.8" y1="9.55" y2="9.55"></line>
+<line x1="10.044" x2="8.63" y1="14.006" y2="15.42"></line>
+<line x1="19" x2="20.414" y1="5.05" y2="3.636"></line>
+<circle cx="14.5" cy="9.55" r="3.6"></circle>
+</svg>
+</symbol>
+<symbol id="svg-moon-with-sun" viewbox="0 0 24 24">
+<title>Auto light/dark, in dark mode</title>
+<svg class="icon-custom-derived-from-feather-sun-and-tabler-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"></path>
+<line style="opacity: 50%" x1="18" x2="18" y1="3.705" y2="2.5"></line>
+<line style="opacity: 50%" x1="18" x2="18" y1="11.295" y2="12.5"></line>
+<line style="opacity: 50%" x1="15.316" x2="14.464" y1="4.816" y2="3.964"></line>
+<line style="opacity: 50%" x1="20.711" x2="21.563" y1="10.212" y2="11.063"></line>
+<line style="opacity: 50%" x1="14.205" x2="13.001" y1="7.5" y2="7.5"></line>
+<line style="opacity: 50%" x1="21.795" x2="23" y1="7.5" y2="7.5"></line>
+<line style="opacity: 50%" x1="15.316" x2="14.464" y1="10.184" y2="11.036"></line>
+<line style="opacity: 50%" x1="20.711" x2="21.563" y1="4.789" y2="3.937"></line>
+<circle cx="18" cy="7.5" r="2.169" style="opacity: 50%"></circle>
+</svg>
+</symbol>
+<symbol id="svg-pencil" viewbox="0 0 24 24">
+<svg class="icon-tabler-pencil-code" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"></path>
+<path d="M13.5 6.5l4 4"></path>
+<path d="M20 21l2 -2l-2 -2"></path>
+<path d="M17 17l-2 2l2 2"></path>
+</svg>
+</symbol>
+<symbol id="svg-eye" viewbox="0 0 24 24">
+<svg class="icon-tabler-eye-code" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 0h24v24H0z" fill="none" stroke="none"></path>
+<path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"></path>
+<path d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008"></path>
+<path d="M20 21l2 -2l-2 -2"></path>
+<path d="M17 17l-2 2l2 2"></path>
+</svg>
+</symbol>
+</svg>
+<input aria-label="Toggle site navigation sidebar" class="sidebar-toggle" id="__navigation" name="__navigation" type="checkbox"/>
+<input aria-label="Toggle table of contents sidebar" class="sidebar-toggle" id="__toc" name="__toc" type="checkbox"/>
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+<div class="page">
+<header class="mobile-header">
+<div class="header-left">
+<label class="nav-overlay-icon" for="__navigation">
+<span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+</label>
+</div>
+<div class="header-center">
+<a href="../top.html"><div class="brand">DeepZensols Natural Language Processing 1.19.0 documentation</div></a>
+</div>
+<div class="header-right">
+<div class="theme-toggle-container theme-toggle-header">
+<button aria-label="Toggle Light / Dark / Auto color theme" class="theme-toggle">
+<svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+<svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+<svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+<svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+</button>
+</div>
+<label class="toc-overlay-icon toc-header-icon" for="__toc">
+<span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+</label>
+</div>
+</header>
+<aside class="sidebar-drawer">
+<div class="sidebar-container">
+<div class="sidebar-sticky"><a class="sidebar-brand" href="../top.html">
+<span class="sidebar-brand-text">DeepZensols Natural Language Processing 1.19.0 documentation</span>
+</a><form action="../search.html" class="sidebar-search-container" method="get" role="search">
+<input aria-label="Search" class="sidebar-search" name="q" placeholder="Search"/>
+<input name="check_keywords" type="hidden" value="yes"/>
+<input name="area" type="hidden" value="default"/>
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/clickbate-example.html">Clickbate Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/movie-example.html">Movie Review Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/ner-example.html">NER Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/reslib.html">Resource Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/vectorizers.html">Vectorizers</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../api.html">API Reference</a><input aria-label="Toggle navigation of API Reference" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2 current has-children"><a class="reference internal" href="zensols.deepnlp.html">zensols.deepnlp package</a><input aria-label="Toggle navigation of zensols.deepnlp package" checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="zensols.deepnlp.classify.html">zensols.deepnlp.classify package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zensols.deepnlp.embed.html">zensols.deepnlp.embed package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">zensols.deepnlp.index package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zensols.deepnlp.layer.html">zensols.deepnlp.layer package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zensols.deepnlp.model.html">zensols.deepnlp.model package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zensols.deepnlp.transformer.html">zensols.deepnlp.transformer package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zensols.deepnlp.vectorize.html">zensols.deepnlp.vectorize package</a></li>
+</ul>
+</input></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.classify.html">zensols.deepnlp.classify package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.embed.html">zensols.deepnlp.embed package</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">zensols.deepnlp.index package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.layer.html">zensols.deepnlp.layer package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.model.html">zensols.deepnlp.model package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.transformer.html">zensols.deepnlp.transformer package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.vectorize.html">zensols.deepnlp.vectorize package</a></li>
+</ul>
+</input></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../LICENSE.html">License</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<div class="main">
+<div class="content">
+<div class="article-container">
+<a class="back-to-top muted-link" href="#">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+</svg>
+<span>Back to top</span>
+</a>
+<div class="content-icon-container">
+<div class="view-this-page">
+<a class="muted-link" href="../_sources/api/zensols.deepnlp.index.rst.txt" title="View this page">
+<svg><use href="#svg-eye"></use></svg>
+<span class="visually-hidden">View this page</span>
+</a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+<button aria-label="Toggle Light / Dark / Auto color theme" class="theme-toggle">
+<svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+<svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+<svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+<svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+</button>
+</div>
+<label class="toc-overlay-icon toc-content-icon" for="__toc">
+<span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+</label>
+</div>
+<article id="furo-main-content" role="main">
+<section id="zensols-deepnlp-index-package">
+<h1>zensols.deepnlp.index package<a class="headerlink" href="#zensols-deepnlp-index-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-zensols.deepnlp.index.domain">
+<span id="zensols-deepnlp-index-domain-module"></span><h2>zensols.deepnlp.index.domain module<a class="headerlink" href="#module-zensols.deepnlp.index.domain" title="Link to this heading">¶</a></h2>
+<p>Contains a base class for vectorizers for indexing document.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.domain.DocumentIndexVectorizer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">zensols.deepnlp.index.domain.</span></span><span class="sig-name descname"><span class="pre">DocumentIndexVectorizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_factory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">manager</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encode_transformed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc_factory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/index/domain.html#DocumentIndexVectorizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.index.domain.DocumentIndexVectorizer" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizer" title="zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">FeatureDocumentVectorizer</span></code></a>, <a class="reference external" href="https://plandes.github.io/util/api/zensols.persist.html#zensols.persist.annotation.PersistableContainer" title="(in Zensols Utilities v1.16.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PersistableContainer</span></code></a>, <a class="reference external" href="https://plandes.github.io/util/api/zensols.persist.html#zensols.persist.domain.Primeable" title="(in Zensols Utilities v1.16.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Primeable</span></code></a></p>
+<p>A vectorizer that generates vectorized features based on the index documents
+of the training set.  For example, latent dirichlet allocation maybe be
+used to generated a distrubiton of likelihood a document belongs to a
+topic.</p>
+<p>Subclasses of this abstract class are both vectorizers and models.  The
+model created once, and then cached.  To clear the cache and force it to be
+retrained, use <a class="reference internal" href="#zensols.deepnlp.index.domain.DocumentIndexVectorizer.clear" title="zensols.deepnlp.index.domain.DocumentIndexVectorizer.clear"><code class="xref py py-meth docutils literal notranslate"><span class="pre">clear()</span></code></a>.</p>
+<p>The method <a class="reference internal" href="#zensols.deepnlp.index.domain.DocumentIndexVectorizer._create_model" title="zensols.deepnlp.index.domain.DocumentIndexVectorizer._create_model"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_create_model()</span></code></a> must be implemented.</p>
+<dl class="field-list simple">
+<dt class="field-odd">See<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer" title="zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopicModelDocumentIndexerVectorizer</span></code></a></p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.domain.DocumentIndexVectorizer._create_model">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_create_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">docs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/index/domain.html#DocumentIndexVectorizer._create_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.index.domain.DocumentIndexVectorizer._create_model" title="Link to this definition">¶</a></dt>
+<dd><p>Create the model for this indexer.  The model is implementation specific.
+The model must be pickelabel and is cached in as <a class="reference internal" href="#zensols.deepnlp.index.domain.DocumentIndexVectorizer.model" title="zensols.deepnlp.index.domain.DocumentIndexVectorizer.model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">model</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.domain.DocumentIndexVectorizer.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_factory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">manager</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encode_transformed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc_factory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.index.domain.DocumentIndexVectorizer.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.domain.DocumentIndexVectorizer.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/index/domain.html#DocumentIndexVectorizer.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.index.domain.DocumentIndexVectorizer.clear" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.domain.DocumentIndexVectorizer.doc_factory">
+<span class="sig-name descname"><span class="pre">doc_factory</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#zensols.deepnlp.index.domain.IndexedDocumentFactory" title="zensols.deepnlp.index.domain.IndexedDocumentFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">IndexedDocumentFactory</span></code></a></em><a class="headerlink" href="#zensols.deepnlp.index.domain.DocumentIndexVectorizer.doc_factory" title="Link to this definition">¶</a></dt>
+<dd><p>The document factor used to create training documents for the model
+vectorizer.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.domain.DocumentIndexVectorizer.feat_to_tokens">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">feat_to_tokens</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">docs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/index/domain.html#DocumentIndexVectorizer.feat_to_tokens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.index.domain.DocumentIndexVectorizer.feat_to_tokens" title="Link to this definition">¶</a></dt>
+<dd><p>Create a tuple of string tokens from a set of documents suitable for
+document indexing.  The strings are the lemmas of the tokens.</p>
+<p><strong>Important</strong>: this method must remain static since the LSI instance of
+this class uses it as a factory function in the a vectorizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#Ellipsis" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.domain.DocumentIndexVectorizer.index_path">
+<span class="sig-name descname"><span class="pre">index_path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></em><a class="headerlink" href="#zensols.deepnlp.index.domain.DocumentIndexVectorizer.index_path" title="Link to this definition">¶</a></dt>
+<dd><p>The path to the pickeled cache file of the trained model.</p>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.domain.DocumentIndexVectorizer.model">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#zensols.deepnlp.index.domain.DocumentIndexVectorizer.model" title="Link to this definition">¶</a></dt>
+<dd><p>Return the trained model for this vectorizer.  See the class docs on how it
+is cached and cleared.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.domain.DocumentIndexVectorizer.prime">
+<span class="sig-name descname"><span class="pre">prime</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/index/domain.html#DocumentIndexVectorizer.prime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.index.domain.DocumentIndexVectorizer.prime" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.domain.IndexedDocumentFactory">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">zensols.deepnlp.index.domain.</span></span><span class="sig-name descname"><span class="pre">IndexedDocumentFactory</span></span><a class="reference internal" href="../_modules/zensols/deepnlp/index/domain.html#IndexedDocumentFactory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.index.domain.IndexedDocumentFactory" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
+<p>Creates training documents used to generate indexed features (i.e. latent
+dirichlet allocation, latent semantic indexing etc).</p>
+<dl class="field-list simple">
+<dt class="field-odd">See<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#zensols.deepnlp.index.domain.DocumentIndexVectorizer" title="zensols.deepnlp.index.domain.DocumentIndexVectorizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentIndexVectorizer</span></code></a></p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.domain.IndexedDocumentFactory.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.index.domain.IndexedDocumentFactory.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.domain.IndexedDocumentFactory.create_training_docs">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_training_docs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/index/domain.html#IndexedDocumentFactory.create_training_docs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.index.domain.IndexedDocumentFactory.create_training_docs" title="Link to this definition">¶</a></dt>
+<dd><p>Create the documents used to index in the model during training.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[<a class="reference external" href="https://plandes.github.io/nlparse/api/zensols.nlp.html#zensols.nlp.container.FeatureDocument" title="(in A utility library to assist in parsing natural language text. v1.13.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">FeatureDocument</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+</section>
+<section id="module-zensols.deepnlp.index.lda">
+<span id="zensols-deepnlp-index-lda-module"></span><h2>zensols.deepnlp.index.lda module<a class="headerlink" href="#module-zensols.deepnlp.index.lda" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">zensols.deepnlp.index.lda.</span></span><span class="sig-name descname"><span class="pre">TopicModelDocumentIndexerVectorizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_factory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">manager</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encode_transformed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc_factory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decode_as_flat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/index/lda.html#TopicModelDocumentIndexerVectorizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.index.domain.DocumentIndexVectorizer" title="zensols.deepnlp.index.domain.DocumentIndexVectorizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentIndexVectorizer</span></code></a></p>
+<p>Train a model using LDA for topic modeling.</p>
+<p>Citation:</p>
+<p>Hoffman, M., Bach, F., and Blei, D. 2010. Online Learning for Latent
+Dirichlet Allocation. Advances in Neural Information Processing Systems 23.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Shape<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">(topics,</span> <span class="pre">)</span></code> when <code class="docutils literal notranslate"><span class="pre">decode_as_flat</span></code> is <code class="docutils literal notranslate"><span class="pre">True,</span>
+<span class="pre">otherwise,</span> <span class="pre">``(,</span> <span class="pre">topics)</span></code></p>
+</dd>
+<dt class="field-even">See<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://radimrehurek.com/gensim/models/ldamodel.html#gensim.models.ldamodel.LdaModel" title="(in gensim v4.3.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gensim.models.ldamodel.LdaModel</span></code></a></p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer.DESCRIPTION">
+<span class="sig-name descname"><span class="pre">DESCRIPTION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'latent</span> <span class="pre">semantic</span> <span class="pre">indexing'</span></em><a class="headerlink" href="#zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer.DESCRIPTION" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer.FEATURE_TYPE">
+<span class="sig-name descname"><span class="pre">FEATURE_TYPE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer.FEATURE_TYPE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_factory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">manager</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encode_transformed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc_factory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decode_as_flat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer.decode_as_flat">
+<span class="sig-name descname"><span class="pre">decode_as_flat</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer.decode_as_flat" title="Link to this definition">¶</a></dt>
+<dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, flatten the tensor after decoding.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer.query">
+<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/index/lda.html#TopicModelDocumentIndexerVectorizer.query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer.query" title="Link to this definition">¶</a></dt>
+<dd><p>Return a distribution over the topics for a query set of tokens.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tokens</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – the string list of tokens to use for inferencing in the
+model</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a list of tuples in the form <code class="docutils literal notranslate"><span class="pre">(topic_id,</span> <span class="pre">probability)</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer.topics">
+<span class="sig-name descname"><span class="pre">topics</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">20</span></em><a class="headerlink" href="#zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer.topics" title="Link to this definition">¶</a></dt>
+<dd><p>The number of topics (usually denoted <code class="docutils literal notranslate"><span class="pre">K</span></code>).</p>
+</dd></dl>
+</dd></dl>
+</section>
+<section id="module-zensols.deepnlp.index.lsi">
+<span id="zensols-deepnlp-index-lsi-module"></span><h2>zensols.deepnlp.index.lsi module<a class="headerlink" href="#module-zensols.deepnlp.index.lsi" title="Link to this heading">¶</a></h2>
+<p>A Deerwester latent semantic index vectorizer implementation.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">zensols.deepnlp.index.lsi.</span></span><span class="sig-name descname"><span class="pre">LatentSemanticDocumentIndexerVectorizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_factory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">manager</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encode_transformed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc_factory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">components=100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations=10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vectorizer_params=&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/index/lsi.html#LatentSemanticDocumentIndexerVectorizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.index.domain.DocumentIndexVectorizer" title="zensols.deepnlp.index.domain.DocumentIndexVectorizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentIndexVectorizer</span></code></a></p>
+<p>Train a latent semantic indexing (LSI, aka LSA) model from:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Deerwester, S., Dumais, S.T., Furnas, G.W., Landauer, T.K., and Harshman,
+R. 1990.  Indexing by Latent Semantic Analysis. Journal of the American
+Society for Information Science; New York, N.Y. 41, 6, 391–407.
+</pre></div>
+</div>
+<p>This class can be used only to index TF/IDF.  To skip the LSI training, set
+<a class="reference internal" href="#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.iterations" title="zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.iterations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iterations</span></code></a> to zero.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Shape<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">(1,)</span></code></p>
+</dd>
+<dt class="field-even">See<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="http://scikit-learn.org/stable/modules/generated/sklearn.decomposition.TruncatedSVD.html#sklearn.decomposition.TruncatedSVD" title="(in scikit-learn v1.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.decomposition.TruncatedSVD</span></code></a></p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.DESCRIPTION">
+<span class="sig-name descname"><span class="pre">DESCRIPTION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'latent</span> <span class="pre">semantic</span> <span class="pre">indexing'</span></em><a class="headerlink" href="#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.DESCRIPTION" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.FEATURE_TYPE">
+<span class="sig-name descname"><span class="pre">FEATURE_TYPE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.FEATURE_TYPE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_factory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">manager</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encode_transformed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc_factory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">components=100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations=10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vectorizer_params=&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.components">
+<span class="sig-name descname"><span class="pre">components</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">100</span></em><a class="headerlink" href="#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.components" title="Link to this definition">¶</a></dt>
+<dd><p>The number of components for the output.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.iterations">
+<span class="sig-name descname"><span class="pre">iterations</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="headerlink" href="#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.iterations" title="Link to this definition">¶</a></dt>
+<dd><p>Number of iterations for randomized SVD solver if greater than 0 (see
+class docs).</p>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.lsa">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lsa</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="http://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="(in scikit-learn v1.8)"><span class="pre">Pipeline</span></a></em><a class="headerlink" href="#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.lsa" title="Link to this definition">¶</a></dt>
+<dd><p>The LSA pipeline trained on the document set.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.similarity">
+<span class="sig-name descname"><span class="pre">similarity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/index/lsi.html#LatentSemanticDocumentIndexerVectorizer.similarity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.similarity" title="Link to this definition">¶</a></dt>
+<dd><p>Return the semantic similarity between two documents.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.vectorizer">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vectorizer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="http://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html#sklearn.feature_extraction.text.TfidfVectorizer" title="(in scikit-learn v1.8)"><span class="pre">TfidfVectorizer</span></a></em><a class="headerlink" href="#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.vectorizer" title="Link to this definition">¶</a></dt>
+<dd><p>The vectorizer trained on the document set.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.vectorizer_params">
+<span class="sig-name descname"><span class="pre">vectorizer_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">,</span> <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.vectorizer_params" title="Link to this definition">¶</a></dt>
+<dd><p>Additional parameters passed to
+<a class="reference external" href="http://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html#sklearn.feature_extraction.text.TfidfVectorizer" title="(in scikit-learn v1.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TfidfVectorizer</span></code></a> when vectorizing
+TF/IDF features.</p>
+</dd></dl>
+</dd></dl>
+</section>
+<section id="module-zensols.deepnlp.index">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-zensols.deepnlp.index" title="Link to this heading">¶</a></h2>
+<p>Contains classes for vectorizers for indexing document.</p>
+</section>
+</section>
+</article>
+</div>
+<footer>
+<div class="related-pages">
+<a class="next-page" href="zensols.deepnlp.layer.html">
+<div class="page-info">
+<div class="context">
+<span>Next</span>
+</div>
+<div class="title">zensols.deepnlp.layer package</div>
+</div>
+<svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+</a>
+<a class="prev-page" href="zensols.deepnlp.embed.html">
+<svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+<div class="page-info">
+<div class="context">
+<span>Previous</span>
+</div>
+<div class="title">zensols.deepnlp.embed package</div>
+</div>
+</a>
+</div>
+<div class="bottom-of-page">
+<div class="left-details">
+<div class="copyright">
+                Copyright © 2026 Paul Landes
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+</div>
+<div class="right-details">
+</div>
+</div>
+</footer>
+</div>
+<aside class="toc-drawer">
+<div class="toc-sticky toc-scroll">
+<div class="toc-title-container">
+<span class="toc-title">
+            On this page
+          </span>
+</div>
+<div class="toc-tree-container">
+<div class="toc-tree">
+<ul>
+<li><a class="reference internal" href="#">zensols.deepnlp.index package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-zensols.deepnlp.index.domain">zensols.deepnlp.index.domain module</a><ul>
+<li><a class="reference internal" href="#zensols.deepnlp.index.domain.DocumentIndexVectorizer"><code class="docutils literal notranslate"><span class="pre">DocumentIndexVectorizer</span></code></a><ul>
+<li><a class="reference internal" href="#zensols.deepnlp.index.domain.DocumentIndexVectorizer._create_model"><code class="docutils literal notranslate"><span class="pre">DocumentIndexVectorizer._create_model()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.index.domain.DocumentIndexVectorizer.__init__"><code class="docutils literal notranslate"><span class="pre">DocumentIndexVectorizer.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.index.domain.DocumentIndexVectorizer.clear"><code class="docutils literal notranslate"><span class="pre">DocumentIndexVectorizer.clear()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.index.domain.DocumentIndexVectorizer.doc_factory"><code class="docutils literal notranslate"><span class="pre">DocumentIndexVectorizer.doc_factory</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.index.domain.DocumentIndexVectorizer.feat_to_tokens"><code class="docutils literal notranslate"><span class="pre">DocumentIndexVectorizer.feat_to_tokens()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.index.domain.DocumentIndexVectorizer.index_path"><code class="docutils literal notranslate"><span class="pre">DocumentIndexVectorizer.index_path</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.index.domain.DocumentIndexVectorizer.model"><code class="docutils literal notranslate"><span class="pre">DocumentIndexVectorizer.model</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.index.domain.DocumentIndexVectorizer.prime"><code class="docutils literal notranslate"><span class="pre">DocumentIndexVectorizer.prime()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#zensols.deepnlp.index.domain.IndexedDocumentFactory"><code class="docutils literal notranslate"><span class="pre">IndexedDocumentFactory</span></code></a><ul>
+<li><a class="reference internal" href="#zensols.deepnlp.index.domain.IndexedDocumentFactory.__init__"><code class="docutils literal notranslate"><span class="pre">IndexedDocumentFactory.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.index.domain.IndexedDocumentFactory.create_training_docs"><code class="docutils literal notranslate"><span class="pre">IndexedDocumentFactory.create_training_docs()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-zensols.deepnlp.index.lda">zensols.deepnlp.index.lda module</a><ul>
+<li><a class="reference internal" href="#zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer"><code class="docutils literal notranslate"><span class="pre">TopicModelDocumentIndexerVectorizer</span></code></a><ul>
+<li><a class="reference internal" href="#zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer.DESCRIPTION"><code class="docutils literal notranslate"><span class="pre">TopicModelDocumentIndexerVectorizer.DESCRIPTION</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer.FEATURE_TYPE"><code class="docutils literal notranslate"><span class="pre">TopicModelDocumentIndexerVectorizer.FEATURE_TYPE</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer.__init__"><code class="docutils literal notranslate"><span class="pre">TopicModelDocumentIndexerVectorizer.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer.decode_as_flat"><code class="docutils literal notranslate"><span class="pre">TopicModelDocumentIndexerVectorizer.decode_as_flat</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer.query"><code class="docutils literal notranslate"><span class="pre">TopicModelDocumentIndexerVectorizer.query()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer.topics"><code class="docutils literal notranslate"><span class="pre">TopicModelDocumentIndexerVectorizer.topics</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-zensols.deepnlp.index.lsi">zensols.deepnlp.index.lsi module</a><ul>
+<li><a class="reference internal" href="#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer"><code class="docutils literal notranslate"><span class="pre">LatentSemanticDocumentIndexerVectorizer</span></code></a><ul>
+<li><a class="reference internal" href="#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.DESCRIPTION"><code class="docutils literal notranslate"><span class="pre">LatentSemanticDocumentIndexerVectorizer.DESCRIPTION</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.FEATURE_TYPE"><code class="docutils literal notranslate"><span class="pre">LatentSemanticDocumentIndexerVectorizer.FEATURE_TYPE</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.__init__"><code class="docutils literal notranslate"><span class="pre">LatentSemanticDocumentIndexerVectorizer.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.components"><code class="docutils literal notranslate"><span class="pre">LatentSemanticDocumentIndexerVectorizer.components</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.iterations"><code class="docutils literal notranslate"><span class="pre">LatentSemanticDocumentIndexerVectorizer.iterations</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.lsa"><code class="docutils literal notranslate"><span class="pre">LatentSemanticDocumentIndexerVectorizer.lsa</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.similarity"><code class="docutils literal notranslate"><span class="pre">LatentSemanticDocumentIndexerVectorizer.similarity()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.vectorizer"><code class="docutils literal notranslate"><span class="pre">LatentSemanticDocumentIndexerVectorizer.vectorizer</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.vectorizer_params"><code class="docutils literal notranslate"><span class="pre">LatentSemanticDocumentIndexerVectorizer.vectorizer_params</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-zensols.deepnlp.index">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</div><script src="../_static/documentation_options.js?v=54b9a5ca"></script>
+<script src="../_static/doctools.js?v=9a2dae69"></script>
+<script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+<script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="../_static/copybutton.js?v=f281be69"></script>
+</body>
+</html>

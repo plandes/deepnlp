@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+
+<html class="no-js" data-content_root="../" lang="en">
+<head><meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="light dark" name="color-scheme"/><meta content="width=device-width, initial-scale=1" name="viewport">
+<link href="../genindex.html" rel="index" title="Index"/><link href="../search.html" rel="search" title="Search"/><link href="ner-example.html" rel="next" title="NER Example"/><link href="layers.html" rel="prev" title="Layers"/>
+<!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
+<title>Movie Review Example - DeepZensols Natural Language Processing 1.19.0 documentation</title>
+<link href="../_static/pygments.css?v=03e43079" rel="stylesheet" type="text/css">
+<link href="../_static/styles/furo.css?v=7bdb33bb" rel="stylesheet" type="text/css">
+<link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css">
+<link href="../_static/sphinx-codeautolink.css?v=b2176991" rel="stylesheet" type="text/css">
+<link href="../_static/graphviz.css" rel="stylesheet" type="text/css"/>
+<link href="../_static/styles/furo-extensions.css?v=8dab3a3b" rel="stylesheet" type="text/css"/>
+<link href="../_static/codeautolink.css?v=57550ae3" rel="stylesheet" type="text/css"/>
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></link></link></link></link></meta></head>
+<body>
+<script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+<svg style="display: none;" xmlns="http://www.w3.org/2000/svg">
+<symbol id="svg-toc" viewbox="0 0 24 24">
+<title>Contents</title>
+<svg fill="currentColor" stroke="currentColor" stroke-width="0" viewbox="0 0 1024 1024">
+<path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"></path>
+</svg>
+</symbol>
+<symbol id="svg-menu" viewbox="0 0 24 24">
+<title>Menu</title>
+<svg class="feather-menu" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<line x1="3" x2="21" y1="12" y2="12"></line>
+<line x1="3" x2="21" y1="6" y2="6"></line>
+<line x1="3" x2="21" y1="18" y2="18"></line>
+</svg>
+</symbol>
+<symbol id="svg-arrow-right" viewbox="0 0 24 24">
+<title>Expand</title>
+<svg class="feather-chevron-right" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<polyline points="9 18 15 12 9 6"></polyline>
+</svg>
+</symbol>
+<symbol id="svg-sun" viewbox="0 0 24 24">
+<title>Light mode</title>
+<svg class="feather-sun" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle cx="12" cy="12" r="5"></circle>
+<line x1="12" x2="12" y1="1" y2="3"></line>
+<line x1="12" x2="12" y1="21" y2="23"></line>
+<line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line>
+<line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line>
+<line x1="1" x2="3" y1="12" y2="12"></line>
+<line x1="21" x2="23" y1="12" y2="12"></line>
+<line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line>
+<line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line>
+</svg>
+</symbol>
+<symbol id="svg-moon" viewbox="0 0 24 24">
+<title>Dark mode</title>
+<svg class="icon-tabler-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 0h24v24H0z" fill="none" stroke="none"></path>
+<path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+</svg>
+</symbol>
+<symbol id="svg-sun-with-moon" viewbox="0 0 24 24">
+<title>Auto light/dark, in light mode</title>
+<svg class="icon-custom-derived-from-feather-sun-and-tabler-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z" style="opacity: 50%"></path>
+<line x1="14.5" x2="14.5" y1="3.25" y2="1.25"></line>
+<line x1="14.5" x2="14.5" y1="15.85" y2="17.85"></line>
+<line x1="10.044" x2="8.63" y1="5.094" y2="3.68"></line>
+<line x1="19" x2="20.414" y1="14.05" y2="15.464"></line>
+<line x1="8.2" x2="6.2" y1="9.55" y2="9.55"></line>
+<line x1="20.8" x2="22.8" y1="9.55" y2="9.55"></line>
+<line x1="10.044" x2="8.63" y1="14.006" y2="15.42"></line>
+<line x1="19" x2="20.414" y1="5.05" y2="3.636"></line>
+<circle cx="14.5" cy="9.55" r="3.6"></circle>
+</svg>
+</symbol>
+<symbol id="svg-moon-with-sun" viewbox="0 0 24 24">
+<title>Auto light/dark, in dark mode</title>
+<svg class="icon-custom-derived-from-feather-sun-and-tabler-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"></path>
+<line style="opacity: 50%" x1="18" x2="18" y1="3.705" y2="2.5"></line>
+<line style="opacity: 50%" x1="18" x2="18" y1="11.295" y2="12.5"></line>
+<line style="opacity: 50%" x1="15.316" x2="14.464" y1="4.816" y2="3.964"></line>
+<line style="opacity: 50%" x1="20.711" x2="21.563" y1="10.212" y2="11.063"></line>
+<line style="opacity: 50%" x1="14.205" x2="13.001" y1="7.5" y2="7.5"></line>
+<line style="opacity: 50%" x1="21.795" x2="23" y1="7.5" y2="7.5"></line>
+<line style="opacity: 50%" x1="15.316" x2="14.464" y1="10.184" y2="11.036"></line>
+<line style="opacity: 50%" x1="20.711" x2="21.563" y1="4.789" y2="3.937"></line>
+<circle cx="18" cy="7.5" r="2.169" style="opacity: 50%"></circle>
+</svg>
+</symbol>
+<symbol id="svg-pencil" viewbox="0 0 24 24">
+<svg class="icon-tabler-pencil-code" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"></path>
+<path d="M13.5 6.5l4 4"></path>
+<path d="M20 21l2 -2l-2 -2"></path>
+<path d="M17 17l-2 2l2 2"></path>
+</svg>
+</symbol>
+<symbol id="svg-eye" viewbox="0 0 24 24">
+<svg class="icon-tabler-eye-code" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 0h24v24H0z" fill="none" stroke="none"></path>
+<path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"></path>
+<path d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008"></path>
+<path d="M20 21l2 -2l-2 -2"></path>
+<path d="M17 17l-2 2l2 2"></path>
+</svg>
+</symbol>
+</svg>
+<input aria-label="Toggle site navigation sidebar" class="sidebar-toggle" id="__navigation" name="__navigation" type="checkbox"/>
+<input aria-label="Toggle table of contents sidebar" class="sidebar-toggle" id="__toc" name="__toc" type="checkbox"/>
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+<div class="page">
+<header class="mobile-header">
+<div class="header-left">
+<label class="nav-overlay-icon" for="__navigation">
+<span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+</label>
+</div>
+<div class="header-center">
+<a href="../top.html"><div class="brand">DeepZensols Natural Language Processing 1.19.0 documentation</div></a>
+</div>
+<div class="header-right">
+<div class="theme-toggle-container theme-toggle-header">
+<button aria-label="Toggle Light / Dark / Auto color theme" class="theme-toggle">
+<svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+<svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+<svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+<svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+</button>
+</div>
+<label class="toc-overlay-icon toc-header-icon" for="__toc">
+<span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+</label>
+</div>
+</header>
+<aside class="sidebar-drawer">
+<div class="sidebar-container">
+<div class="sidebar-sticky"><a class="sidebar-brand" href="../top.html">
+<span class="sidebar-brand-text">DeepZensols Natural Language Processing 1.19.0 documentation</span>
+</a><form action="../search.html" class="sidebar-search-container" method="get" role="search">
+<input aria-label="Search" class="sidebar-search" name="q" placeholder="Search"/>
+<input name="check_keywords" type="hidden" value="yes"/>
+<input name="area" type="hidden" value="default"/>
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="clickbate-example.html">Clickbate Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layers.html">Layers</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Movie Review Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ner-example.html">NER Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reslib.html">Resource Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vectorizers.html">Vectorizers</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api.html">API Reference</a><input aria-label="Toggle navigation of API Reference" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/zensols.deepnlp.html">zensols.deepnlp package</a><input aria-label="Toggle navigation of zensols.deepnlp package" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/zensols.deepnlp.classify.html">zensols.deepnlp.classify package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/zensols.deepnlp.embed.html">zensols.deepnlp.embed package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/zensols.deepnlp.index.html">zensols.deepnlp.index package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/zensols.deepnlp.layer.html">zensols.deepnlp.layer package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/zensols.deepnlp.model.html">zensols.deepnlp.model package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/zensols.deepnlp.transformer.html">zensols.deepnlp.transformer package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/zensols.deepnlp.vectorize.html">zensols.deepnlp.vectorize package</a></li>
+</ul>
+</input></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/zensols.deepnlp.classify.html">zensols.deepnlp.classify package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/zensols.deepnlp.embed.html">zensols.deepnlp.embed package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/zensols.deepnlp.index.html">zensols.deepnlp.index package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/zensols.deepnlp.layer.html">zensols.deepnlp.layer package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/zensols.deepnlp.model.html">zensols.deepnlp.model package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/zensols.deepnlp.transformer.html">zensols.deepnlp.transformer package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/zensols.deepnlp.vectorize.html">zensols.deepnlp.vectorize package</a></li>
+</ul>
+</input></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../LICENSE.html">License</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<div class="main">
+<div class="content">
+<div class="article-container">
+<a class="back-to-top muted-link" href="#">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+</svg>
+<span>Back to top</span>
+</a>
+<div class="content-icon-container">
+<div class="view-this-page">
+<a class="muted-link" href="../_sources/doc/movie-example.md.txt" title="View this page">
+<svg><use href="#svg-eye"></use></svg>
+<span class="visually-hidden">View this page</span>
+</a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+<button aria-label="Toggle Light / Dark / Auto color theme" class="theme-toggle">
+<svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+<svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+<svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+<svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+</button>
+</div>
+<label class="toc-overlay-icon toc-content-icon" for="__toc">
+<span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+</label>
+</div>
+<article id="furo-main-content" role="main">
+<section id="movie-review-example">
+<h1>Movie Review Example<a class="headerlink" href="#movie-review-example" title="Link to this heading">¶</a></h1>
+<p>This document describes the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie">movie review task example</a> to demonstrate the
+DeepZenols NLP framework on the sentiment analysis task using the Stanford
+sentiment analysis corpus.  It is highly recommended to first read through the
+<a class="reference external" href="clickbate">clickbate example</a>, which contains concepts assumed that are understood for
+this example.  For this reason, only new configuration and concepts will be
+provided.</p>
+<section id="corpus">
+<h2>Corpus<a class="headerlink" href="#corpus" title="Link to this heading">¶</a></h2>
+<p>The corpus used for this example is fairly small so the models train fast.  It
+is the Stanford movie review dataset with Cornell labels:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://nlp.stanford.edu/sentiment/">Stanford movie review</a></p></li>
+<li><p><a class="reference external" href="https://www.cs.cornell.edu/people/pabo/movie-review-data/">Cornell sentiment polarity</a></p></li>
+</ul>
+<p>The corpus is automatically downloaded to the <code class="docutils literal notranslate"><span class="pre">corpus</span></code> directory the first time
+the model is trained or the batch set accessed.</p>
+</section>
+<section id="model-configuration">
+<h2>Model Configuration<a class="headerlink" href="#model-configuration" title="Link to this heading">¶</a></h2>
+<p>The model specific configuration is located in the <code class="docutils literal notranslate"><span class="pre">models</span></code> directory.  Each
+has a file that’s given with the <code class="docutils literal notranslate"><span class="pre">--config</span></code> command line option to the
+<a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie/harness.py">harness.py</a> entry point Python file and contains configuration that overrides
+on a per model basis.</p>
+</section>
+<section id="data-set-and-corpus">
+<h2>Data Set and Corpus<a class="headerlink" href="#data-set-and-corpus" title="Link to this heading">¶</a></h2>
+<p>This example utilizes much of the <a class="reference external" href="https://plandes.github.io/deeplearn/index.html">deeplearn API</a> framework code.  The main
+thrust is to create a <a class="reference external" href="https://pandas.pydata.org">Pandas</a> data frame, which is then used to provide the
+natural language text and labels.  All features are taken only from the text.</p>
+</section>
+<section id="application-configuration">
+<h2>Application Configuration<a class="headerlink" href="#application-configuration" title="Link to this heading">¶</a></h2>
+<p>Like the <a class="reference external" href="clickbate">clickbate example</a>, the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie/resources/app.conf">app.conf</a> contains command line
+configuration used by the entry point <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie/harness.py">harness.py</a> script to invoke the example
+application.  The model and other application configuration is given in the
+<a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie/resources/obj.yml">obj.yml</a> resource library file.  Also like the clickbate example, we will
+detail each section that was not already covered since these two projects are
+text classification.  Instead, this document will focus on those more advanced
+areas such as extending the feature creation aspect of the application.</p>
+<p>Generally, the term <em>section</em> refers to both a configuration section (like
+those described in the <a class="reference external" href="https://plandes.github.io/util/doc/config.html#ini-format">INI format</a>).  However, for the remainder of this
+document, <em>section group</em> refers to a grouping of sections that are demarcated
+by two hashes (<code class="docutils literal notranslate"><span class="pre">##</span></code>) in the configuration file such as <code class="docutils literal notranslate"><span class="pre">##</span> <span class="pre">Install</span> <span class="pre">the</span> <span class="pre">corpus</span></code>.</p>
+<p>The <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie/resources/obj.yml">obj.yml</a> contains the application specific configuration for reading the
+corpus files and parsing it in to features that will later be vectorized.  It
+also contains the model.  All of this is described in each sub section in this
+document with the respective named group section (root YAML nodes) in the
+<a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie/resources/obj.yml">obj.yml</a> application configuration file.</p>
+<section id="install-the-corpus">
+<h3>Install the Corpus<a class="headerlink" href="#install-the-corpus" title="Link to this heading">¶</a></h3>
+<p>As in the <a class="reference external" href="clickbate">clickbate example</a> we download several files: the corpus and the
+labels.  The <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie/mr/corpus.py">corpus.py</a> file provides the <code class="docutils literal notranslate"><span class="pre">DatasetFactory</span></code> class that merges
+the Stanford movie review corpus with the Cornell labels and populated with the
+install resources to locate the local corpus files.  This class is configured
+as the <code class="docutils literal notranslate"><span class="pre">dataset_factory</span></code> in the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie/resources/obj.yml">obj.yml</a> application configuration file.</p>
+</section>
+<section id="natural-language-parsing">
+<h3>Natural language parsing<a class="headerlink" href="#natural-language-parsing" title="Link to this heading">¶</a></h3>
+<p>Like in the <a class="reference external" href="clickbate">clickbate example</a>, we configure a <a class="reference external" href="../api/zensols.deepnlp.html#zensols.deepnlp.parse.FeatureDocumentParser">FeatureDocumentParser</a>.
+However, this time, we’ll use the one we provide in the <code class="docutils literal notranslate"><span class="pre">MovieReview</span></code> project
+described more in the next section.</p>
+</section>
+<section id="feature-creation">
+<h3>Feature Creation<a class="headerlink" href="#feature-creation" title="Link to this heading">¶</a></h3>
+<p>Most of the feature creation code comes with the package and the respective
+configuration with the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/resources/feature.conf">feature resource library</a>, which is why the project has
+only three Python source code files, two resource library files, and three
+model configuration files.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">MovieReviewRowStash</span></code> (configured by overriding the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/resources/feature.conf">feature resource
+library</a> <code class="docutils literal notranslate"><span class="pre">dataframe_stash</span></code> section in <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie/resources/obj.yml">obj.yml</a>) in the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie/mr/domain.py">domain.py</a> source file
+is used by framework to get a <a class="reference external" href="https://pandas.pydata.org">Pandas</a> data frame and inherits
+<a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.dataframe.html#zensols.dataframe.stash.ResourceFeatureDataframeStash">ResourceFeatureDataframeStash</a> to first download the corpus.  Afterward, it
+uses the <code class="docutils literal notranslate"><span class="pre">DatasetFactory</span></code> to create a dataframe containing the label and the
+natural language text used to test and train the model.</p>
+<p>The <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie/mr/domain.py">domain.py</a> file also defines a <code class="docutils literal notranslate"><span class="pre">MovieReview</span></code> container class that has the
+polarity positive or negative feed back for each review.  All we need to do is
+to extend <a class="reference external" href="../api/zensols.deepnlp.html#zensols.deepnlp.domain.FeatureDocument">FeatureDocument</a> and add the label to get the complete domain
+feature document for our application.  This class is used by
+<code class="docutils literal notranslate"><span class="pre">MovieReviewFeatureStash</span></code>, that handles the work of parsing the text in to
+features and extends (<a class="reference external" href="../api/zensols.deepnlp.feature.html#zensols.deepnlp.feature.stash.DocumentFeatureStash">DocumentFeatureStash</a>) to use parser to create instances
+of <code class="docutils literal notranslate"><span class="pre">MovieReview</span></code> feature documents with the polarity (positive or negative
+sentiment) labels.  Note that we could have used the default
+<a class="reference external" href="../api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.domain.LabeledFeatureDocument">LabeledFeatureDocument</a> from the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/resources/classify.conf">classify resource library</a>, but this example
+shows how to create our own specific labels by overriding a method invoke the
+parsing with the text and set the label from the <a class="reference external" href="https://pandas.pydata.org">Pandas</a> data frame:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">_parse_document</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/functions.html#int" title="int"><span class="nb">int</span></a><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Review</span><span class="p">:</span>
+	<span class="c1"># text to parse with SpaCy</span>
+	<span class="n">text</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">'sentence'</span><span class="p">]</span>
+	<span class="c1"># the class label</span>
+	<span class="n">polarity</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">'polarity'</span><span class="p">]</span>
+	<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vec_manager</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">polarity</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>See the <a class="reference external" href="https://plandes.github.io/deeplearn/index.html">deeplearn API</a> more documentation on <a class="reference external" href="https://plandes.github.io/deeplearn/doc/preprocess.html#data-as-a-pandas-data-frame">data frame stashes</a>.</p>
+<p>So far we’ve defined that base feature class <code class="docutils literal notranslate"><span class="pre">MovieReview</span></code>, the stash that keeps
+track of them, <code class="docutils literal notranslate"><span class="pre">MovieReviewFeatureStash</span></code>.  Now we need to extend the <a class="reference external" href="https://plandes.github.io/deeplearn/doc/preprocess.html#batches">deeplearn API
+batch</a> classes.  We’ll start with the data point class:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ReviewDataPoint</span><span class="p">(</span><span class="n">FeatureDocumentDataPoint</span><span class="p">):</span>
+    <a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/functions.html#property" title="property"><span class="nd">@property</span></a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">label</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/stdtypes.html#str" title="str"><span class="nb">str</span></a><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">polarity</span>
+</pre></div>
+</div>
+<p>which extends from the linguistic specific data point class
+<a class="reference external" href="../api/zensols.deepnlp.batch.html#zensols.deepnlp.batch.domain.FeatureDocumentDataPoint">FeatureDocumentDataPoint</a>.  There’s not much more to this than returning the
+label from the <code class="docutils literal notranslate"><span class="pre">MovieReview</span></code> class that’s retrieved from the <code class="docutils literal notranslate"><span class="pre">MovieReviewFeatureStash</span></code>
+that’s set as the <code class="docutils literal notranslate"><span class="pre">doc</span></code> attribute on the <a class="reference external" href="../api/zensols.deepnlp.batch.html#zensols.deepnlp.batch.domain.FeatureDocumentDataPoint">FeatureDocumentDataPoint</a> by
+<code class="docutils literal notranslate"><span class="pre">MovieReviewFeatureStash</span></code> (via the super class <a class="reference external" href="../api/zensols.deepnlp.feature.html#zensols.deepnlp.feature.stash.DocumentFeatureStash">DocumentFeatureStash</a>).</p>
+</section>
+<section id="vectorization">
+<h3>Vectorization<a class="headerlink" href="#vectorization" title="Link to this heading">¶</a></h3>
+<p>We still have configure the polarity labels (<code class="docutils literal notranslate"><span class="pre">n</span></code>, and <code class="docutils literal notranslate"><span class="pre">p</span></code>) for the label
+vectorizer so it knows what to use for nominal values during the batch
+processing.  We also declare the vectorizer managers to include language
+features, the label vectorizer (<code class="docutils literal notranslate"><span class="pre">classify_label_vectorizer_manager</span></code> provided in
+the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/resources/feature.conf">feature resource library</a>) and the transformer expanders that allow for
+language features to be concatenated to BERT embeddings.</p>
+</section>
+<section id="batch">
+<h3>Batch<a class="headerlink" href="#batch" title="Link to this heading">¶</a></h3>
+<p>We configure our custom <code class="docutils literal notranslate"><span class="pre">MovieReviewDataPoint</span></code> class in the <code class="docutils literal notranslate"><span class="pre">batch_stash</span></code>
+section.  The rest of this section is self explanatory if the <a class="reference external" href="clickbate">clickbate
+example</a> has been reviewed</p>
+</section>
+</section>
+<section id="running">
+<h2>Running<a class="headerlink" href="#running" title="Link to this heading">¶</a></h2>
+<p>The movie review data set example can be run from the command line or as a
+Jupyter notebook.</p>
+<section id="command-line">
+<h3>Command Line<a class="headerlink" href="#command-line" title="Link to this heading">¶</a></h3>
+<p>Everything can be done with the harness script:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># get the command line help using a thin wrapper around the framework</span>
+./harness.py<span class="w"> </span>-h
+<span class="c1"># the executor tests and trains the model, use it to get the stats used to train</span>
+./harness.py<span class="w"> </span>info
+<span class="c1"># print a sample Glove 50 (default) batch of what the model will get during training</span>
+./harness.py<span class="w"> </span>info<span class="w"> </span>-i<span class="w"> </span>batch
+<span class="c1"># print a sample transformer batch of what the model will get during training</span>
+./harness.py<span class="w"> </span>info<span class="w"> </span>-i<span class="w"> </span>batch<span class="w"> </span>-c<span class="w"> </span>models/transformer-trainable.conf<span class="w"> </span>
+<span class="c1"># train and test the model but switch to model profile with optimized</span>
+./harness.py<span class="w"> </span>traintest<span class="w"> </span>-p
+<span class="c1"># all model, its (hyper)parameters, metadata and results are stored in subdirectory of files</span>
+./harness.py<span class="w"> </span>result
+<span class="c1"># predict and write the test set to a CSV file</span>
+./harness.py<span class="w"> </span>-c<span class="w"> </span>models/glove50.conf<span class="w"> </span>preds
+<span class="c1"># predict ad-hoc a new sentence</span>
+./harness.py<span class="w"> </span>predtext<span class="w"> </span><span class="s1">'Great movie'</span>
+</pre></div>
+</div>
+<p>Note the <code class="docutils literal notranslate"><span class="pre">run.sh</span></code> script in the same directory provides a simpler API and more
+prediction examples as a way of calling the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie/harness.py">harness.py</a> entry point.  It also
+serves as an example of how one might simplify a command line for a specific
+model.</p>
+</section>
+<section id="jupyter-notebook">
+<h3>Jupyter Notebook<a class="headerlink" href="#jupyter-notebook" title="Link to this heading">¶</a></h3>
+<p>To run the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/movie/notebook/movie.ipynb">Jupyter movie notebook</a>:</p>
+<ol class="simple">
+<li><p>Pip install: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">notebook</span></code></p></li>
+<li><p>Go to the notebook directory: <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">examples/movie/notebook</span></code></p></li>
+<li><p>Start the notebook: <code class="docutils literal notranslate"><span class="pre">jupyter</span> <span class="pre">notebook</span></code></p></li>
+<li><p>Start the execution in the notebook with <code class="docutils literal notranslate"><span class="pre">Cell</span> <span class="pre">&gt;</span> <span class="pre">Run</span> <span class="pre">All</span></code>.</p></li>
+</ol>
+<!-- links --></section>
+</section>
+</section>
+</article>
+</div>
+<footer>
+<div class="related-pages">
+<a class="next-page" href="ner-example.html">
+<div class="page-info">
+<div class="context">
+<span>Next</span>
+</div>
+<div class="title">NER Example</div>
+</div>
+<svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+</a>
+<a class="prev-page" href="layers.html">
+<svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+<div class="page-info">
+<div class="context">
+<span>Previous</span>
+</div>
+<div class="title">Layers</div>
+</div>
+</a>
+</div>
+<div class="bottom-of-page">
+<div class="left-details">
+<div class="copyright">
+                Copyright © 2026 Paul Landes
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+</div>
+<div class="right-details">
+</div>
+</div>
+</footer>
+</div>
+<aside class="toc-drawer">
+<div class="toc-sticky toc-scroll">
+<div class="toc-title-container">
+<span class="toc-title">
+            On this page
+          </span>
+</div>
+<div class="toc-tree-container">
+<div class="toc-tree">
+<ul>
+<li><a class="reference internal" href="#">Movie Review Example</a><ul>
+<li><a class="reference internal" href="#corpus">Corpus</a></li>
+<li><a class="reference internal" href="#model-configuration">Model Configuration</a></li>
+<li><a class="reference internal" href="#data-set-and-corpus">Data Set and Corpus</a></li>
+<li><a class="reference internal" href="#application-configuration">Application Configuration</a><ul>
+<li><a class="reference internal" href="#install-the-corpus">Install the Corpus</a></li>
+<li><a class="reference internal" href="#natural-language-parsing">Natural language parsing</a></li>
+<li><a class="reference internal" href="#feature-creation">Feature Creation</a></li>
+<li><a class="reference internal" href="#vectorization">Vectorization</a></li>
+<li><a class="reference internal" href="#batch">Batch</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#running">Running</a><ul>
+<li><a class="reference internal" href="#command-line">Command Line</a></li>
+<li><a class="reference internal" href="#jupyter-notebook">Jupyter Notebook</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</div><script src="../_static/documentation_options.js?v=54b9a5ca"></script>
+<script src="../_static/doctools.js?v=9a2dae69"></script>
+<script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+<script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="../_static/copybutton.js?v=f281be69"></script>
+</body>
+</html>

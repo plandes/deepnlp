@@ -1,0 +1,21 @@
+DeepZensols Natural Language Processing
+=======================================
+Deep learning utility library for natural language processing that aids in feature engineering and embedding layers.
+
+.. toctree::
+   :maxdepth: 3
+   :glob:
+
+   Overview <index.md>
+   doc/*
+   API Reference <api.rst>
+   Contributing <CONTRIBUTING.md>
+   License <LICENSE.md>
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

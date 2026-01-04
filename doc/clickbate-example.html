@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+
+<html class="no-js" data-content_root="../" lang="en">
+<head><meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="light dark" name="color-scheme"/><meta content="width=device-width, initial-scale=1" name="viewport">
+<link href="../genindex.html" rel="index" title="Index"/><link href="../search.html" rel="search" title="Search"/><link href="layers.html" rel="next" title="Layers"/><link href="../index.html" rel="prev" title="DeepZensols Natural Language Processing"/>
+<!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
+<title>Clickbate Example - DeepZensols Natural Language Processing 1.19.0 documentation</title>
+<link href="../_static/pygments.css?v=03e43079" rel="stylesheet" type="text/css">
+<link href="../_static/styles/furo.css?v=7bdb33bb" rel="stylesheet" type="text/css">
+<link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css">
+<link href="../_static/sphinx-codeautolink.css?v=b2176991" rel="stylesheet" type="text/css">
+<link href="../_static/graphviz.css" rel="stylesheet" type="text/css"/>
+<link href="../_static/styles/furo-extensions.css?v=8dab3a3b" rel="stylesheet" type="text/css"/>
+<link href="../_static/codeautolink.css?v=57550ae3" rel="stylesheet" type="text/css"/>
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></link></link></link></link></meta></head>
+<body>
+<script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+<svg style="display: none;" xmlns="http://www.w3.org/2000/svg">
+<symbol id="svg-toc" viewbox="0 0 24 24">
+<title>Contents</title>
+<svg fill="currentColor" stroke="currentColor" stroke-width="0" viewbox="0 0 1024 1024">
+<path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"></path>
+</svg>
+</symbol>
+<symbol id="svg-menu" viewbox="0 0 24 24">
+<title>Menu</title>
+<svg class="feather-menu" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<line x1="3" x2="21" y1="12" y2="12"></line>
+<line x1="3" x2="21" y1="6" y2="6"></line>
+<line x1="3" x2="21" y1="18" y2="18"></line>
+</svg>
+</symbol>
+<symbol id="svg-arrow-right" viewbox="0 0 24 24">
+<title>Expand</title>
+<svg class="feather-chevron-right" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<polyline points="9 18 15 12 9 6"></polyline>
+</svg>
+</symbol>
+<symbol id="svg-sun" viewbox="0 0 24 24">
+<title>Light mode</title>
+<svg class="feather-sun" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle cx="12" cy="12" r="5"></circle>
+<line x1="12" x2="12" y1="1" y2="3"></line>
+<line x1="12" x2="12" y1="21" y2="23"></line>
+<line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line>
+<line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line>
+<line x1="1" x2="3" y1="12" y2="12"></line>
+<line x1="21" x2="23" y1="12" y2="12"></line>
+<line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line>
+<line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line>
+</svg>
+</symbol>
+<symbol id="svg-moon" viewbox="0 0 24 24">
+<title>Dark mode</title>
+<svg class="icon-tabler-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 0h24v24H0z" fill="none" stroke="none"></path>
+<path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+</svg>
+</symbol>
+<symbol id="svg-sun-with-moon" viewbox="0 0 24 24">
+<title>Auto light/dark, in light mode</title>
+<svg class="icon-custom-derived-from-feather-sun-and-tabler-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z" style="opacity: 50%"></path>
+<line x1="14.5" x2="14.5" y1="3.25" y2="1.25"></line>
+<line x1="14.5" x2="14.5" y1="15.85" y2="17.85"></line>
+<line x1="10.044" x2="8.63" y1="5.094" y2="3.68"></line>
+<line x1="19" x2="20.414" y1="14.05" y2="15.464"></line>
+<line x1="8.2" x2="6.2" y1="9.55" y2="9.55"></line>
+<line x1="20.8" x2="22.8" y1="9.55" y2="9.55"></line>
+<line x1="10.044" x2="8.63" y1="14.006" y2="15.42"></line>
+<line x1="19" x2="20.414" y1="5.05" y2="3.636"></line>
+<circle cx="14.5" cy="9.55" r="3.6"></circle>
+</svg>
+</symbol>
+<symbol id="svg-moon-with-sun" viewbox="0 0 24 24">
+<title>Auto light/dark, in dark mode</title>
+<svg class="icon-custom-derived-from-feather-sun-and-tabler-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"></path>
+<line style="opacity: 50%" x1="18" x2="18" y1="3.705" y2="2.5"></line>
+<line style="opacity: 50%" x1="18" x2="18" y1="11.295" y2="12.5"></line>
+<line style="opacity: 50%" x1="15.316" x2="14.464" y1="4.816" y2="3.964"></line>
+<line style="opacity: 50%" x1="20.711" x2="21.563" y1="10.212" y2="11.063"></line>
+<line style="opacity: 50%" x1="14.205" x2="13.001" y1="7.5" y2="7.5"></line>
+<line style="opacity: 50%" x1="21.795" x2="23" y1="7.5" y2="7.5"></line>
+<line style="opacity: 50%" x1="15.316" x2="14.464" y1="10.184" y2="11.036"></line>
+<line style="opacity: 50%" x1="20.711" x2="21.563" y1="4.789" y2="3.937"></line>
+<circle cx="18" cy="7.5" r="2.169" style="opacity: 50%"></circle>
+</svg>
+</symbol>
+<symbol id="svg-pencil" viewbox="0 0 24 24">
+<svg class="icon-tabler-pencil-code" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"></path>
+<path d="M13.5 6.5l4 4"></path>
+<path d="M20 21l2 -2l-2 -2"></path>
+<path d="M17 17l-2 2l2 2"></path>
+</svg>
+</symbol>
+<symbol id="svg-eye" viewbox="0 0 24 24">
+<svg class="icon-tabler-eye-code" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 0h24v24H0z" fill="none" stroke="none"></path>
+<path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"></path>
+<path d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008"></path>
+<path d="M20 21l2 -2l-2 -2"></path>
+<path d="M17 17l-2 2l2 2"></path>
+</svg>
+</symbol>
+</svg>
+<input aria-label="Toggle site navigation sidebar" class="sidebar-toggle" id="__navigation" name="__navigation" type="checkbox"/>
+<input aria-label="Toggle table of contents sidebar" class="sidebar-toggle" id="__toc" name="__toc" type="checkbox"/>
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+<div class="page">
+<header class="mobile-header">
+<div class="header-left">
+<label class="nav-overlay-icon" for="__navigation">
+<span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+</label>
+</div>
+<div class="header-center">
+<a href="../top.html"><div class="brand">DeepZensols Natural Language Processing 1.19.0 documentation</div></a>
+</div>
+<div class="header-right">
+<div class="theme-toggle-container theme-toggle-header">
+<button aria-label="Toggle Light / Dark / Auto color theme" class="theme-toggle">
+<svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+<svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+<svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+<svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+</button>
+</div>
+<label class="toc-overlay-icon toc-header-icon" for="__toc">
+<span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+</label>
+</div>
+</header>
+<aside class="sidebar-drawer">
+<div class="sidebar-container">
+<div class="sidebar-sticky"><a class="sidebar-brand" href="../top.html">
+<span class="sidebar-brand-text">DeepZensols Natural Language Processing 1.19.0 documentation</span>
+</a><form action="../search.html" class="sidebar-search-container" method="get" role="search">
+<input aria-label="Search" class="sidebar-search" name="q" placeholder="Search"/>
+<input name="check_keywords" type="hidden" value="yes"/>
+<input name="area" type="hidden" value="default"/>
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Clickbate Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="movie-example.html">Movie Review Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ner-example.html">NER Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reslib.html">Resource Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vectorizers.html">Vectorizers</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api.html">API Reference</a><input aria-label="Toggle navigation of API Reference" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/zensols.deepnlp.html">zensols.deepnlp package</a><input aria-label="Toggle navigation of zensols.deepnlp package" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/zensols.deepnlp.classify.html">zensols.deepnlp.classify package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/zensols.deepnlp.embed.html">zensols.deepnlp.embed package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/zensols.deepnlp.index.html">zensols.deepnlp.index package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/zensols.deepnlp.layer.html">zensols.deepnlp.layer package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/zensols.deepnlp.model.html">zensols.deepnlp.model package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/zensols.deepnlp.transformer.html">zensols.deepnlp.transformer package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/zensols.deepnlp.vectorize.html">zensols.deepnlp.vectorize package</a></li>
+</ul>
+</input></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/zensols.deepnlp.classify.html">zensols.deepnlp.classify package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/zensols.deepnlp.embed.html">zensols.deepnlp.embed package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/zensols.deepnlp.index.html">zensols.deepnlp.index package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/zensols.deepnlp.layer.html">zensols.deepnlp.layer package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/zensols.deepnlp.model.html">zensols.deepnlp.model package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/zensols.deepnlp.transformer.html">zensols.deepnlp.transformer package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/zensols.deepnlp.vectorize.html">zensols.deepnlp.vectorize package</a></li>
+</ul>
+</input></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../LICENSE.html">License</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<div class="main">
+<div class="content">
+<div class="article-container">
+<a class="back-to-top muted-link" href="#">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+</svg>
+<span>Back to top</span>
+</a>
+<div class="content-icon-container">
+<div class="view-this-page">
+<a class="muted-link" href="../_sources/doc/clickbate-example.md.txt" title="View this page">
+<svg><use href="#svg-eye"></use></svg>
+<span class="visually-hidden">View this page</span>
+</a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+<button aria-label="Toggle Light / Dark / Auto color theme" class="theme-toggle">
+<svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+<svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+<svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+<svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+</button>
+</div>
+<label class="toc-overlay-icon toc-content-icon" for="__toc">
+<span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+</label>
+</div>
+<article id="furo-main-content" role="main">
+<section id="clickbate-example">
+<h1>Clickbate Example<a class="headerlink" href="#clickbate-example" title="Link to this heading">¶</a></h1>
+<p>This example provides a good starting point since it only contains code to
+parse a <a class="reference external" href="https://github.com/bhargaviparanjape/clickbait/tree/master/dataset">corpus</a>.  It also shows how to use your own model your own
+data by synthesizing a positive and negative dataset sources in to one, which
+is provided in the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/clickbate/cb.py">only source code</a> file for the project (excluding the entry
+point <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/clickbate/harness.py">harness.py</a> script).</p>
+<p>The example shows how to create, train, validate and test a model that
+determines if a headline is clickbate or not (see the corpus for details).  It
+comes with two models: one that uses word vectors (GloVE 50 dimension and the
+fasttext news pre-trained embeddings) with additional language features, and a
+BERT word embedding example.</p>
+<p>Note that there is quite a bit of inline documentation in the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/clickbate/resources/app.conf">app.conf</a> and
+<a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/clickbate/resources/obj.yml">obj.yml</a> configuration files. so it is recommended the reader follow it while
+reading this tutorial.</p>
+<section id="command-line-interface">
+<h2>Command Line Interface<a class="headerlink" href="#command-line-interface" title="Link to this heading">¶</a></h2>
+<p>All of the examples for this package are written as an Zensols CLI
+applications.  The entry point program is <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/clickbate/harness.py">harness.py</a>.  However, the command
+line is configured in <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/clickbate/resources/app.conf">app.conf</a> and the application in <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/clickbate/resources/obj.yml">obj.yml</a>, which is
+where almost all of the example.  These files configure the file system paths,
+tell where to load other <a class="reference external" href="https://plandes.github.io/util/doc/config.html#resource-libraries">resource libraries</a>, point to corpus resources and
+are also used by the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/clickbate/notebook/clickbate.ipynb">Jupyter notebook example</a> to allow for more rapid
+prototyping and experimentation.</p>
+<p>Because the examples (including this one) use <a class="reference external" href="https://plandes.github.io/util/doc/config.html#resource-libraries">resource libraries</a>, the
+configuration is much smaller and more manageable.  First we start with adding
+the application defaults allowing <code class="docutils literal notranslate"><span class="pre">name</span></code> to be <a class="reference external" href="https://plandes.github.io/util/api/zensols.cli.lib.html#zensols.cli.lib.config.ConfigurationOverrider">overridden</a> with the
+<code class="docutils literal notranslate"><span class="pre">--override</span></code> command line option:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[cb_default]</span>
+<span class="na">lang_features</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">dependencies, enums,</span>
+<span class="na">embedding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">${name}_embedding</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">--override</span></code> command line option takes a string (or file) containing any
+configuration in a comma delimited <code class="docutils literal notranslate"><span class="pre">&lt;section&gt;.&lt;option&gt;</span></code> and given on the
+command line to specify which word embeddings to use.  For example: <code class="docutils literal notranslate"><span class="pre">--override</span> <span class="pre">cb_default.name=glove_50</span></code>, would specify the 50 dimension <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/resources/glove.conf">GloVE resource
+library</a>.</p>
+<p>Now we add defaults for the deep learning package that set the model name,
+appears in results and file system naming.  In this example, we simply set the
+model name as the embeddings we’ll use:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[deeplearn_default]</span>
+<span class="na">model_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">${cb_default:embedding}</span>
+</pre></div>
+</div>
+<p>The following configuration adds default applications, which is invoked from
+the command line by the <a class="reference external" href="https://plandes.github.io/util/api/zensols.cli.html#zensols.cli.harness.CliHarness">CliHarness</a> defined in the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/clickbate/harness.py">harness.py</a> entry point
+and imported from <a class="reference external" href="https://plandes.github.io/util/doc/config.html#resource-libraries">resource libraries</a> as <a class="reference external" href="https://plandes.github.io/util/doc/command-line.html#user-configuration">first pass actions</a>:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[cli]</span>
+<span class="na">apps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">list: ${cli_config_default:apps}, ${cli_deeplearn_default:apps}, ${cli_deepnlp_default:apps},</span>
+<span class="w">  </span><span class="na">deepnlp_fac_text_classify_app, cleaner_cli</span>
+<span class="na">cleanups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">list: ${cli_config_default:cleanups}, ${cli_deeplearn_default:cleanups},</span>
+<span class="w">  </span><span class="na">${cli_deepnlp_default</span><span class="o">:</span><span class="s">cleanups}, deepnlp_fac_text_classify_app, cleaner_cli</span>
+<span class="na">cleanup_removes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">set: log_cli</span>
+</pre></div>
+</div>
+<p>The application defined in the sections loaded are simply Python <a class="reference external" href="https://docs.python.org/3/library/dataclasses.html">dataclasses</a>
+who’s class and method docstrings as help for the command line interface.  Each
+method is mapped to an <a class="reference external" href="https://plandes.github.io/util/doc/command-line.html#application-class-and-actions">action with positional and optional parameters</a>.</p>
+<p>Note the <code class="docutils literal notranslate"><span class="pre">log_cli</span></code> section is mentioned because it is listed as a clean up in a
+resource library.  However, we must keep this section because it is useful to
+configure child processes when batches are created to keep a consistent logging
+configuration.</p>
+<p>We can also configure a default for the <code class="docutils literal notranslate"><span class="pre">--override</span></code> flag that indicates the
+word embedding with:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[override_cli_decorator]</span>
+<span class="na">option_overrides = dict: {'override': {'default'</span><span class="o">:</span><span class="w"> </span><span class="s">'cb_default.name=glove_50'</span><span class="na">}}</span>
+</pre></div>
+</div>
+<p>While a user can create a model specific configuration file specified with the
+<code class="docutils literal notranslate"><span class="pre">--config</span></code> option (such as in the other examples), this example is so simple as
+to not need it.  For this reason, we make it optional:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[config_cli]</span>
+<span class="na">expect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">False</span>
+</pre></div>
+</div>
+<p>The configured actions and their options for the CLI in the <code class="docutils literal notranslate"><span class="pre">cli</span></code> section
+described earlier must be imported from their respective <a class="reference external" href="https://plandes.github.io/util/doc/config.html#resource-libraries">resource libraries</a>,
+which is done with:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[import]</span>
+<span class="na">config_files</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">list:</span>
+<span class="w">    </span><span class="na">resource(zensols.util)</span><span class="o">:</span><span class="w"> </span><span class="s">resources/default.conf,</span>
+<span class="na">...</span>
+<span class="w">    </span><span class="na">resource(zensols.deepnlp)</span><span class="o">:</span><span class="w"> </span><span class="s">resources/cleaner.conf</span>
+</pre></div>
+</div>
+<p>Finally we import the model configuration from the <a class="reference external" href="https://plandes.github.io/util/doc/config.html#resource-libraries">resource libraries</a> with a
+special section used by the <code class="docutils literal notranslate"><span class="pre">--config</span></code> option’s <a class="reference external" href="https://plandes.github.io/util/doc/command-line.html#user-configuration">first pass action</a>.  This
+provides special directives for loading the <a class="reference external" href="https://plandes.github.io/util/api/zensols.cli.lib.html#zensols.cli.lib.config.ConfigurationOverrider">overridden</a> <code class="docutils literal notranslate"><span class="pre">--override</span></code> and the
+configuration file.  We reference the <code class="docutils literal notranslate"><span class="pre">default</span></code> and <code class="docutils literal notranslate"><span class="pre">cb_default</span></code> as they are
+utilized in the loaded in the subordinate configuration files:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[config_import]</span>
+<span class="na">references</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">list: default, cb_default</span>
+<span class="na">sections</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">list: app_imp_conf</span>
+
+<span class="k">[app_imp_conf]</span>
+<span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">import</span>
+<span class="na">config_files</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">list:</span>
+<span class="w">    </span><span class="na">^{override},</span>
+<span class="w">    </span><span class="na">^{config_path},</span>
+<span class="w">    </span><span class="na">resource(zensols.deeplearn)</span><span class="o">:</span><span class="w"> </span><span class="s">resources/default.conf,</span>
+<span class="na">... </span>
+<span class="w">    </span><span class="na">resource(cb)</span><span class="o">:</span><span class="w"> </span><span class="s">resources/obj.yml,</span>
+<span class="w">    </span><span class="na">^{config_path}</span>
+</pre></div>
+</div>
+<p>This first loads the <a class="reference external" href="https://plandes.github.io/util/api/zensols.cli.lib.html#zensols.cli.lib.config.ConfigurationOverrider">override</a> with <code class="docutils literal notranslate"><span class="pre">--override</span></code>, then the <a class="reference external" href="https://plandes.github.io/util/api/zensols.cli.lib.html?#zensols.cli.lib.config.ConfigurationImporter">configuration
+importer</a> from a user provided configuration file with <code class="docutils literal notranslate"><span class="pre">--config</span></code> (if
+provided).  Then the defaults and model configuration is loaded.  Finally the
+configuration file is loaded again providing the user the option to override
+anything clobbered by the <a class="reference external" href="https://plandes.github.io/util/doc/config.html#resource-libraries">resource libraries</a> as everything loaded is either
+added over overwritten in order.  Nested in this list of resource files
+includes the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/clickbate/resources/obj.yml">obj.yml</a> file, which is this application example’s specific
+configuration.</p>
+</section>
+<section id="application-configuration">
+<h2>Application Configuration<a class="headerlink" href="#application-configuration" title="Link to this heading">¶</a></h2>
+<p>As mentioned in the previous section, the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/clickbate/resources/app.conf">app.conf</a> specifies <a class="reference external" href="https://plandes.github.io/util/doc/config.html#resource-libraries">resource
+libraries</a> to load allowing the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/clickbate/resources/obj.yml">obj.yml</a> to add and modify existing
+configuration.  This file could have been written as an <code class="docutils literal notranslate"><span class="pre">ini</span></code> file (like
+<a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/clickbate/resources/app.conf">app.conf</a>).  However, it contains the hierarchical vectorizer to batch
+mappings lending itself better to a hierarchical data format such as YAML.</p>
+<p>Generally, the term <em>section</em> refers to both a configuration section (like
+those described in the <a class="reference external" href="https://plandes.github.io/util/doc/config.html#ini-format">INI format</a>).  However, for the remainder of this
+document, <em>section group</em> refers to a grouping of sections that are demarcated
+by two hashes (<code class="docutils literal notranslate"><span class="pre">##</span></code>) in the configuration file such as <code class="docutils literal notranslate"><span class="pre">##</span> <span class="pre">Install</span> <span class="pre">the</span> <span class="pre">corpus</span></code>.</p>
+<p>The <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/clickbate/resources/obj.yml">obj.yml</a> contains the application specific configuration for reading the
+corpus files and parsing it in to features that will later be vectorized.  It
+also contains the model.  All of this is described in each sub section in this
+document with the respective named group section (root YAML nodes) in the
+<a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/clickbate/resources/obj.yml">obj.yml</a> application configuration file.</p>
+<section id="install-the-corpus">
+<h3>Install the Corpus<a class="headerlink" href="#install-the-corpus" title="Link to this heading">¶</a></h3>
+<p>First the configuration defines where to download the corpus uncompress the
+files to make it available to the program.  The <code class="docutils literal notranslate"><span class="pre">Install</span> <span class="pre">the</span> <span class="pre">corpus</span></code> sections
+tell where the resources are on the Internet, and the file naming, which by
+default takes the naming from the URL.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">cb_data_resource</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">class_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zensols.install.Resource</span>
+<span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s">'https://github.com/bhargaviparanjape/clickbait/raw/master/dataset/clickbait_data.gz'</span>
+<span class="nt">non_cb_data_resource</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">class_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zensols.install.Resource</span>
+<span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s">'https://github.com/bhargaviparanjape/clickbait/raw/master/dataset/non_clickbait_data.gz'</span>
+
+<span class="nt">feature_installer</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">resources</span><span class="p">:</span><span class="w"> </span><span class="s">'instance:</span><span class="nv"> </span><span class="s">list:</span><span class="nv"> </span><span class="s">cb_data_resource,</span><span class="nv"> </span><span class="s">non_cb_data_resource'</span>
+</pre></div>
+</div>
+<p>The installer has a list of resources it uses to download the files and
+uncompress them on the file system.  This local directory is set in the
+<a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/resources/feature.conf">feature resource library</a>.</p>
+</section>
+<section id="feature-creation">
+<h3>Feature Creation<a class="headerlink" href="#feature-creation" title="Link to this heading">¶</a></h3>
+<p>This section contains several sections that describe <a class="reference external" href="https://plandes.github.io/util/api/zensols.persist.html#zensols.persist.domain.Stash">Stash</a> instances that
+cache the vectorized batches to the file system (see <em>batch encoding</em> in <a class="reference external" href="https://arxiv.org/pdf/2109.03383.pdf">the
+paper</a>).  This process as it relates to this section includes:</p>
+<ol class="simple">
+<li><p>Parse the downloaded corpus from the sentence text files
+(<code class="docutils literal notranslate"><span class="pre">dataframe_stash</span></code>).</p></li>
+<li><p>Randomly split the dataset in to train, validation and test set, then store
+the data from the dataframe as a picked file on the file system
+(<code class="docutils literal notranslate"><span class="pre">dataframe_stash</span></code>).</p></li>
+<li><p>Parse the English sentences from the <code class="docutils literal notranslate"><span class="pre">dataframe_stash</span></code> using spaCy across as
+many processes as the CPU has cores (<code class="docutils literal notranslate"><span class="pre">feature_factory_stash</span></code>) and persisting
+them to the file system in directories by feature (<code class="docutils literal notranslate"><span class="pre">feature_dir_stash</span></code> only
+found in the <code class="docutils literal notranslate"><span class="pre">deeplearn</span></code> resource library).</p></li>
+<li><p>Read only certain files (based on feature selection for the particular
+model) from the file system to reconstruct batches (see <em>batch decoding</em> in
+<a class="reference external" href="https://arxiv.org/pdf/2109.03383.pdf">the paper</a>).</p></li>
+<li><p>Train, validate and test the model using the same ordering and splits
+sampled by the <code class="docutils literal notranslate"><span class="pre">dataframe_stash</span></code> from step 1.</p></li>
+</ol>
+</section>
+<section id="natural-language-processing">
+<h3>Natural Language Processing<a class="headerlink" href="#natural-language-processing" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">doc_parser</span></code> section tells the parser to create instances of a different
+class that what was defined in its resource library (<code class="docutils literal notranslate"><span class="pre">FeatureDocument</span></code>) using
+the classification resource library set up (loaded by the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/resources/classify.conf">classify resource
+library</a> by <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/clickbate/resources/app.conf">app.conf</a>).  The class we provide for this example contains an
+attribute to carry a label for our text classification task.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">doc_parser</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">doc_class</span><span class="p">:</span><span class="w"> </span><span class="s">'class:</span><span class="nv"> </span><span class="s">zensols.deepnlp.classify.LabeledFeatureDocument'</span>
+<span class="w">  </span><span class="nt">components</span><span class="p">:</span><span class="w"> </span><span class="s">'instance:</span><span class="nv"> </span><span class="s">list:</span><span class="nv"> </span><span class="s">remove_sent_boundaries_component'</span>
+
+<span class="nt">classify_label_vectorizer</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">categories</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${dataframe_stash:labels}</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">classify_label_vectorizer</span></code> comes from the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/resources/feature.conf">feature resource library</a>,
+which needs the output nominal label names for encoding/vectorization.</p>
+</section>
+<section id="batch">
+<h3>Batch<a class="headerlink" href="#batch" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">Batch</span></code> section provides all the configuration necessary to batch the
+vectorized data in to chunks usable by the model.  Specifically, the
+<code class="docutils literal notranslate"><span class="pre">batch_stash</span></code> section describes how to map between the vectorized output to
+entries in the batches and their grouping.  It also gives the default set of
+attributes to test with at experimentation and the number of sub-process
+workers to use during batching.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">batch_stash</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">batch_feature_mappings</span><span class="p">:</span><span class="w"> </span><span class="s">'dataclass(zensols.deeplearn.batch.ConfigBatchFeatureMapping):</span><span class="nv"> </span><span class="s">cb_batch_mappings'</span>
+<span class="w">  </span><span class="nt">decoded_attributes</span><span class="p">:</span><span class="w"> </span><span class="s">'set:</span><span class="nv"> </span><span class="s">label,</span><span class="nv"> </span><span class="s">${cb_default:lang_features}</span><span class="nv"> </span><span class="s">${cb_default:embedding}'</span>
+<span class="w">  </span><span class="nt">workers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-2</span>
+
+<span class="nt">cb_batch_mappings</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">batch_feature_mapping_adds</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'dataclass(zensols.deeplearn.batch.BatchFeatureMapping):</span><span class="nv"> </span><span class="s">classify_label_batch_mappings'</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'dataclass(zensols.deeplearn.batch.BatchFeatureMapping):</span><span class="nv"> </span><span class="s">lang_batch_mappings'</span>
+<span class="w">  </span><span class="nt">field_keep</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">label</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">enums</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">dependencies</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">glove_50_embedding</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">fasttext_news_300_embedding</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">cb_batch_mappings</span></code> section indicates to reuse the text classification
+mappings from the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/resources/classify.conf">classify resource library</a>, and the more general language
+features (such as spaCy parsed vectorized data) from the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/resources/lang-batch.yml">lang-batch resource
+library</a>.  The <code class="docutils literal notranslate"><span class="pre">workers:</span> <span class="pre">-2</span></code> says to use all but two cores for the number of
+sub-processes for vectorization/batch creation.</p>
+</section>
+<section id="model">
+<h3>Model<a class="headerlink" href="#model" title="Link to this heading">¶</a></h3>
+<p>The executor in the <code class="docutils literal notranslate"><span class="pre">Model</span></code> section sets <code class="docutils literal notranslate"><span class="pre">net_settings</span></code> to
+<code class="docutils literal notranslate"><span class="pre">classify_net_settings</span></code> to provide the top level text classification for the
+application using a BiLSTM-CRF.  This model is provided in the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/resources/classify.conf">classify
+resource library</a> in <code class="docutils literal notranslate"><span class="pre">deepnlp</span></code> (this project), with little left to specify.
+These remaining portions of the model that are specified are:</p>
+<ul class="simple">
+<li><p>Dense output layer that connects the LSTM to the CRF and specifies the output
+label cardinality, which is set to two (either clickbate or not).</p></li>
+<li><p>The embedding layer to use, which is string substituted with the
+<code class="docutils literal notranslate"><span class="pre">cb_default:embedding</span></code> section/option injected with the <a class="reference external" href="https://plandes.github.io/util/api/zensols.cli.lib.html#zensols.cli.lib.config.ConfigurationOverrider">overridden</a>
+(<code class="docutils literal notranslate"><span class="pre">--override</span></code>) option.</p></li>
+<li><p>The section containing the LSTM configuration (<code class="docutils literal notranslate"><span class="pre">recurrent_settings</span></code>).</p></li>
+<li><p>Model settings that include the model name, learning rate, default epoch
+count and the component that decodes model output to labels and softmaxes
+(confidence like scores).</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">executor</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">net_settings</span><span class="p">:</span><span class="w"> </span><span class="s">'instance:</span><span class="nv"> </span><span class="s">classify_net_settings'</span>
+
+<span class="nt">linear_settings</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">out_features</span><span class="p">:</span><span class="w"> </span><span class="s">"eval:</span><span class="nv"> </span><span class="s">'${dataframe_stash:labels}'.count(',')</span><span class="nv"> </span><span class="s">+</span><span class="nv"> </span><span class="s">1"</span>
+
+<span class="nt">classify_net_settings</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">embedding_layer</span><span class="p">:</span><span class="w"> </span><span class="s">'instance:</span><span class="nv"> </span><span class="s">${cb_default:embedding}_layer'</span>
+<span class="w">  </span><span class="nt">recurrent_settings</span><span class="p">:</span><span class="w"> </span><span class="s">'instance:</span><span class="nv"> </span><span class="s">recurrent_settings'</span>
+<span class="w">  </span><span class="nt">dropout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.2</span>
+
+<span class="nt">model_settings</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">model_name</span><span class="p">:</span><span class="w"> </span><span class="s">'clickbate:</span><span class="nv"> </span><span class="s">${cb_default:name}'</span>
+<span class="w">  </span><span class="nt">learning_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1e-3</span>
+<span class="w">  </span><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">35</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="imported-from-resource-libraries">
+<h2>Imported from Resource Libraries<a class="headerlink" href="#imported-from-resource-libraries" title="Link to this heading">¶</a></h2>
+<p>Other important components of the application not specified in the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/clickbate/resources/obj.yml">obj.yml</a>
+but present from being imported from resource libraries include:</p>
+<ul class="simple">
+<li><p>The facade class (<code class="docutils literal notranslate"><span class="pre">ClassifyModelFacade</span></code>) provided in the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/resources/classify.conf">classify resource
+library</a>, which is used by a second pass CLI application to predict ad-hoc
+text.</p></li>
+<li><p>Model events (i.e. when training or validation starts/end) to track model
+train/test time consumption using an observer pattern in <a class="reference external" href="https://github.com/plandes/deeplearn/blob/master/resources/observer.conf">observer resource
+library</a>.</p></li>
+<li><p>Vectorizer configuration, vectorizer manager and manager sets, which take
+data (in our case English text) and vectorize in to binary form usable by the
+model.  See <a class="reference external" href="https://arxiv.org/pdf/2109.03383.pdf">the paper</a> for more information.</p></li>
+<li><p>A <a class="reference external" href="https://plandes.github.io/util/api/zensols.persist.html#zensols.persist.domain.Stash">Stash</a> that stratifies each dataset by label and other components that
+enable batching from the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/resources/feature.conf">feature resource library</a>.</p></li>
+</ul>
+</section>
+<section id="code">
+<h2>Code<a class="headerlink" href="#code" title="Link to this heading">¶</a></h2>
+<p>All the code for this example is in the is in the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/clickbate/cb.py">cb.py</a> that merges the
+corpus CSV files and the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/clickbate/harness.py">harness.py</a> entry point application that invokes the
+command line interface API.</p>
+</section>
+<section id="running">
+<h2>Running<a class="headerlink" href="#running" title="Link to this heading">¶</a></h2>
+<p>The movie review data set example can be run from the command line or as a
+Jupyter notebook.</p>
+<section id="command-line">
+<h3>Command Line<a class="headerlink" href="#command-line" title="Link to this heading">¶</a></h3>
+<p>Everything can be done with the harness script:</p>
+<p>Get the command line help using a thin wrapper around the framework:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>./harness.py<span class="w"> </span>-h
+
+Usage:<span class="w"> </span>harness.py<span class="w"> </span>&lt;actions&gt;<span class="w"> </span><span class="o">[</span>options<span class="o">]</span>:
+
+Options:
+<span class="w">  </span>-h,<span class="w"> </span>--help<span class="w">                                     </span>show<span class="w"> </span>this<span class="w"> </span><span class="nb">help</span><span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span><span class="nb">exit</span>
+<span class="w">  </span>--version<span class="w">                                      </span>show<span class="w"> </span>the<span class="w"> </span>program<span class="w"> </span>version<span class="w"> </span>and<span class="w"> </span><span class="nb">exit</span>
+<span class="w">  </span>--level<span class="w"> </span>X<span class="w">                                      </span>the<span class="w"> </span>level<span class="w"> </span>to<span class="w"> </span><span class="nb">set</span><span class="w"> </span>the<span class="w"> </span>application<span class="w"> </span>logger,<span class="w"> </span>X<span class="w"> </span>is<span class="w"> </span>one<span class="w"> </span>of:<span class="w"> </span>debug,<span class="w"> </span>err,<span class="w"> </span>info,<span class="w"> </span>warn
+<span class="w">  </span>-c,<span class="w"> </span>--config<span class="w"> </span>FILE<span class="w">                              </span>the<span class="w"> </span>path<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>configuration<span class="w"> </span>file
+<span class="w">  </span>--override<span class="w"> </span>&lt;FILE<span class="p">|</span>DIR<span class="p">|</span>STRING&gt;<span class="w">  </span>cb_default.n...<span class="w">  </span>a<span class="w"> </span>config<span class="w"> </span>file/dir<span class="w"> </span>or<span class="w"> </span>a<span class="w"> </span>comma<span class="w"> </span>delimited<span class="w"> </span>section.key<span class="o">=</span>value<span class="w"> </span>string<span class="w"> </span>that<span class="w"> </span>overrides
+<span class="w">                                                 </span>configuration<span class="w"> </span>with<span class="w"> </span>default<span class="w"> </span>cb_default.name<span class="o">=</span>glove_50
+
+Actions:
+list<span class="w">                                             </span>list<span class="w"> </span>all<span class="w"> </span>actions<span class="w"> </span>and<span class="w"> </span><span class="nb">help</span>
+<span class="w">  </span>--lstfmt<span class="w"> </span>&lt;json<span class="p">|</span>name<span class="p">|</span>text&gt;<span class="w">     </span>text<span class="w">             </span>the<span class="w"> </span>output<span class="w"> </span>format<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>action<span class="w"> </span>listing
+...
+</pre></div>
+</div>
+<p>The executor tests and trains the model, use it to get the stats used to train:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>./harness.py<span class="w"> </span>info
+clickbate:<span class="w"> </span>glove_50:
+executor:
+<span class="w">    </span>model:<span class="w"> </span>clickbate:<span class="w"> </span>glove_50
+<span class="w">    </span>feature<span class="w"> </span>splits:
+<span class="w">        </span>split<span class="w"> </span>stash<span class="w"> </span>splits:
+<span class="w">            </span>train:<span class="w"> </span><span class="m">25598</span><span class="w"> </span><span class="o">(</span><span class="m">80</span>.0%<span class="o">)</span>
+<span class="w">            </span>validation:<span class="w"> </span><span class="m">3201</span><span class="w"> </span><span class="o">(</span><span class="m">10</span>.0%<span class="o">)</span>
+<span class="w">            </span>test:<span class="w"> </span><span class="m">3201</span><span class="w"> </span><span class="o">(</span><span class="m">10</span>.0%<span class="o">)</span>
+<span class="w">            </span>total:<span class="w"> </span><span class="m">32000</span>
+<span class="w">        </span>total<span class="w"> </span>this<span class="w"> </span>instance:<span class="w"> </span><span class="m">32000</span>
+<span class="w">        </span>keys<span class="w"> </span>consistent:<span class="w"> </span>True
+...
+</pre></div>
+</div>
+<p>Print a sample Glove 50 (default) batch of what the model will get during training:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>./harness.py<span class="w"> </span>info<span class="w"> </span>-i<span class="w"> </span>batch
+clickbate:<span class="w"> </span>glove_50:
+DefaultBatch
+<span class="w">    </span>size:<span class="w"> </span><span class="m">200</span>
+<span class="w">        </span>label:<span class="w"> </span>torch.Size<span class="o">([</span><span class="m">200</span><span class="o">])</span>
+<span class="w">        </span>glove_50_embedding:<span class="w"> </span>torch.Size<span class="o">([</span><span class="m">200</span>,<span class="w"> </span><span class="m">20</span><span class="o">])</span>
+<span class="w">        </span>enums:<span class="w"> </span>torch.Size<span class="o">([</span><span class="m">200</span>,<span class="w"> </span><span class="m">20</span>,<span class="w"> </span><span class="m">174</span><span class="o">])</span>
+<span class="w">        </span>dependencies:<span class="w"> </span>torch.Size<span class="o">([</span><span class="m">200</span>,<span class="w"> </span><span class="m">20</span>,<span class="w"> </span><span class="m">1</span><span class="o">])</span>
+...
+</pre></div>
+</div>
+<p>Train and test the model but switch to model profile with optimized:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>./harness.py<span class="w"> </span>traintest<span class="w"> </span>-p
+<span class="m">2022</span>-06-14<span class="w"> </span><span class="m">13</span>:55:06,094<span class="w"> </span>resetting<span class="w"> </span>executor
+...
+<span class="m">2022</span>-06-14<span class="w"> </span><span class="m">13</span>:55:06,947<span class="w"> </span>training<span class="w"> </span>model<span class="w"> </span>&lt;class<span class="w"> </span><span class="s1">'zensols.deepnlp.classify.model.ClassifyNetwork'</span>&gt;<span class="w"> </span>on<span class="w"> </span>cpu<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="m">35</span><span class="w"> </span>epochs<span class="w"> </span>using<span class="w"> </span>learning<span class="w"> </span>rate<span class="w"> </span><span class="m">0</span>.001
+</pre></div>
+</div>
+<p>All model, its (hyper)parameters, metadata and results are stored in subdirectory of files:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>./harness.py<span class="w"> </span>result
+Name:<span class="w"> </span>clickbate:<span class="w"> </span>glove_50:<span class="w"> </span><span class="m">1</span>
+Run<span class="w"> </span>index:<span class="w"> </span><span class="m">2</span>
+Learning<span class="w"> </span>rate:<span class="w"> </span><span class="m">0</span>.001
+<span class="w">    </span>train:
+<span class="w">        </span>started:<span class="w"> </span><span class="m">06</span>/14/2022<span class="w"> </span><span class="m">13</span>:55:06:957329
+...
+</pre></div>
+</div>
+<p>Predict and write the test set to a CSV file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>./harness.py<span class="w"> </span>preds
+<span class="m">2022</span>-06-14<span class="w"> </span><span class="m">13</span>:58:57,186<span class="w"> </span>wrote<span class="w"> </span>predictions:<span class="w"> </span>clickbate-glove_50.csv
+</pre></div>
+</div>
+<p>Predict ad-hoc a few sentences:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ./harness.py predtext "Can't Wait For Summer?  You've Got To See These Pics"
+pred=y, logit=0.9994343519210815: Can't Wait For Summer?  You've Got To See These Pics
+
+$ ./harness.py predtext "Biden is fired up over inflation."
+pred=n, logit=0.9951714277267456: Biden is fired up over inflation.
+</pre></div>
+</div>
+<p>Note the <code class="docutils literal notranslate"><span class="pre">run.sh</span></code> script in the same directory provides a simpler API and more
+prediction examples as a way of calling the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/clickbate/harness.py">harness.py</a> entry point.  It also
+serves as an example of how one might simplify a command line for a specific
+model.</p>
+</section>
+<section id="jupyter-notebook">
+<h3>Jupyter Notebook<a class="headerlink" href="#jupyter-notebook" title="Link to this heading">¶</a></h3>
+<p>There is a <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/clickbate/notebook/clickbate.ipynb">Jupyter notebook</a> that executes the entire download, train,
+validate, test and report process for both models.  In <a class="reference external" href="https://github.com/plandes/deepnlp/tree/master/example/clickbate/notebook">notebook directory</a> is
+the notebook, a Python source <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/clickbate/notebook/mngfac.py">mngfac.py</a> (facade manager factory) file that
+“glues” the CLI to the notebook API, and the output of a previous run of the
+notebook.</p>
+<p>The <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/clickbate/notebook/mngfac.py">mngfac.py</a> file contains a convenience class used by the notebook to add
+directories to the Python path, which is useful for debugging when the package
+isn’t installed.  It also has life cycle methods to manage instances of
+<a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.model.html#zensols.deeplearn.model.facade.ModelFacade">ModelFacade</a> and configure the Jupyter notebook for things such as logging and
+page width.</p>
+<p>To run the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/example/clickbate/notebook/clickbate.ipynb">Jupyter notebook</a>:</p>
+<ol class="simple">
+<li><p>Pip install: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">notebook</span></code></p></li>
+<li><p>Go to the notebook directory: <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">examples/clickbate/notebook</span></code></p></li>
+<li><p>Start the notebook: <code class="docutils literal notranslate"><span class="pre">jupyter</span> <span class="pre">notebook</span></code></p></li>
+<li><p>Start the execution in the notebook with <code class="docutils literal notranslate"><span class="pre">Cell</span> <span class="pre">&gt;</span> <span class="pre">Run</span> <span class="pre">All</span></code>.</p></li>
+</ol>
+<!-- links --></section>
+</section>
+</section>
+</article>
+</div>
+<footer>
+<div class="related-pages">
+<a class="next-page" href="layers.html">
+<div class="page-info">
+<div class="context">
+<span>Next</span>
+</div>
+<div class="title">Layers</div>
+</div>
+<svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+</a>
+<a class="prev-page" href="../index.html">
+<svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+<div class="page-info">
+<div class="context">
+<span>Previous</span>
+</div>
+<div class="title">DeepZensols Natural Language Processing</div>
+</div>
+</a>
+</div>
+<div class="bottom-of-page">
+<div class="left-details">
+<div class="copyright">
+                Copyright © 2026 Paul Landes
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+</div>
+<div class="right-details">
+</div>
+</div>
+</footer>
+</div>
+<aside class="toc-drawer">
+<div class="toc-sticky toc-scroll">
+<div class="toc-title-container">
+<span class="toc-title">
+            On this page
+          </span>
+</div>
+<div class="toc-tree-container">
+<div class="toc-tree">
+<ul>
+<li><a class="reference internal" href="#">Clickbate Example</a><ul>
+<li><a class="reference internal" href="#command-line-interface">Command Line Interface</a></li>
+<li><a class="reference internal" href="#application-configuration">Application Configuration</a><ul>
+<li><a class="reference internal" href="#install-the-corpus">Install the Corpus</a></li>
+<li><a class="reference internal" href="#feature-creation">Feature Creation</a></li>
+<li><a class="reference internal" href="#natural-language-processing">Natural Language Processing</a></li>
+<li><a class="reference internal" href="#batch">Batch</a></li>
+<li><a class="reference internal" href="#model">Model</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#imported-from-resource-libraries">Imported from Resource Libraries</a></li>
+<li><a class="reference internal" href="#code">Code</a></li>
+<li><a class="reference internal" href="#running">Running</a><ul>
+<li><a class="reference internal" href="#command-line">Command Line</a></li>
+<li><a class="reference internal" href="#jupyter-notebook">Jupyter Notebook</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</div><script src="../_static/documentation_options.js?v=54b9a5ca"></script>
+<script src="../_static/doctools.js?v=9a2dae69"></script>
+<script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+<script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="../_static/copybutton.js?v=f281be69"></script>
+</body>
+</html>

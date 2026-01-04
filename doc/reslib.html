@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+
+<html class="no-js" data-content_root="../" lang="en">
+<head><meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="light dark" name="color-scheme"/><meta content="width=device-width, initial-scale=1" name="viewport">
+<link href="../genindex.html" rel="index" title="Index"/><link href="../search.html" rel="search" title="Search"/><link href="vectorizers.html" rel="next" title="Vectorizers"/><link href="ner-example.html" rel="prev" title="NER Example"/>
+<!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
+<title>Resource Library - DeepZensols Natural Language Processing 1.19.0 documentation</title>
+<link href="../_static/pygments.css?v=03e43079" rel="stylesheet" type="text/css">
+<link href="../_static/styles/furo.css?v=7bdb33bb" rel="stylesheet" type="text/css">
+<link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css">
+<link href="../_static/sphinx-codeautolink.css?v=b2176991" rel="stylesheet" type="text/css">
+<link href="../_static/graphviz.css" rel="stylesheet" type="text/css"/>
+<link href="../_static/styles/furo-extensions.css?v=8dab3a3b" rel="stylesheet" type="text/css"/>
+<link href="../_static/codeautolink.css?v=57550ae3" rel="stylesheet" type="text/css"/>
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></link></link></link></link></meta></head>
+<body>
+<script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+<svg style="display: none;" xmlns="http://www.w3.org/2000/svg">
+<symbol id="svg-toc" viewbox="0 0 24 24">
+<title>Contents</title>
+<svg fill="currentColor" stroke="currentColor" stroke-width="0" viewbox="0 0 1024 1024">
+<path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"></path>
+</svg>
+</symbol>
+<symbol id="svg-menu" viewbox="0 0 24 24">
+<title>Menu</title>
+<svg class="feather-menu" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<line x1="3" x2="21" y1="12" y2="12"></line>
+<line x1="3" x2="21" y1="6" y2="6"></line>
+<line x1="3" x2="21" y1="18" y2="18"></line>
+</svg>
+</symbol>
+<symbol id="svg-arrow-right" viewbox="0 0 24 24">
+<title>Expand</title>
+<svg class="feather-chevron-right" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<polyline points="9 18 15 12 9 6"></polyline>
+</svg>
+</symbol>
+<symbol id="svg-sun" viewbox="0 0 24 24">
+<title>Light mode</title>
+<svg class="feather-sun" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle cx="12" cy="12" r="5"></circle>
+<line x1="12" x2="12" y1="1" y2="3"></line>
+<line x1="12" x2="12" y1="21" y2="23"></line>
+<line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line>
+<line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line>
+<line x1="1" x2="3" y1="12" y2="12"></line>
+<line x1="21" x2="23" y1="12" y2="12"></line>
+<line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line>
+<line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line>
+</svg>
+</symbol>
+<symbol id="svg-moon" viewbox="0 0 24 24">
+<title>Dark mode</title>
+<svg class="icon-tabler-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 0h24v24H0z" fill="none" stroke="none"></path>
+<path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+</svg>
+</symbol>
+<symbol id="svg-sun-with-moon" viewbox="0 0 24 24">
+<title>Auto light/dark, in light mode</title>
+<svg class="icon-custom-derived-from-feather-sun-and-tabler-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z" style="opacity: 50%"></path>
+<line x1="14.5" x2="14.5" y1="3.25" y2="1.25"></line>
+<line x1="14.5" x2="14.5" y1="15.85" y2="17.85"></line>
+<line x1="10.044" x2="8.63" y1="5.094" y2="3.68"></line>
+<line x1="19" x2="20.414" y1="14.05" y2="15.464"></line>
+<line x1="8.2" x2="6.2" y1="9.55" y2="9.55"></line>
+<line x1="20.8" x2="22.8" y1="9.55" y2="9.55"></line>
+<line x1="10.044" x2="8.63" y1="14.006" y2="15.42"></line>
+<line x1="19" x2="20.414" y1="5.05" y2="3.636"></line>
+<circle cx="14.5" cy="9.55" r="3.6"></circle>
+</svg>
+</symbol>
+<symbol id="svg-moon-with-sun" viewbox="0 0 24 24">
+<title>Auto light/dark, in dark mode</title>
+<svg class="icon-custom-derived-from-feather-sun-and-tabler-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"></path>
+<line style="opacity: 50%" x1="18" x2="18" y1="3.705" y2="2.5"></line>
+<line style="opacity: 50%" x1="18" x2="18" y1="11.295" y2="12.5"></line>
+<line style="opacity: 50%" x1="15.316" x2="14.464" y1="4.816" y2="3.964"></line>
+<line style="opacity: 50%" x1="20.711" x2="21.563" y1="10.212" y2="11.063"></line>
+<line style="opacity: 50%" x1="14.205" x2="13.001" y1="7.5" y2="7.5"></line>
+<line style="opacity: 50%" x1="21.795" x2="23" y1="7.5" y2="7.5"></line>
+<line style="opacity: 50%" x1="15.316" x2="14.464" y1="10.184" y2="11.036"></line>
+<line style="opacity: 50%" x1="20.711" x2="21.563" y1="4.789" y2="3.937"></line>
+<circle cx="18" cy="7.5" r="2.169" style="opacity: 50%"></circle>
+</svg>
+</symbol>
+<symbol id="svg-pencil" viewbox="0 0 24 24">
+<svg class="icon-tabler-pencil-code" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"></path>
+<path d="M13.5 6.5l4 4"></path>
+<path d="M20 21l2 -2l-2 -2"></path>
+<path d="M17 17l-2 2l2 2"></path>
+</svg>
+</symbol>
+<symbol id="svg-eye" viewbox="0 0 24 24">
+<svg class="icon-tabler-eye-code" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 0h24v24H0z" fill="none" stroke="none"></path>
+<path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"></path>
+<path d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008"></path>
+<path d="M20 21l2 -2l-2 -2"></path>
+<path d="M17 17l-2 2l2 2"></path>
+</svg>
+</symbol>
+</svg>
+<input aria-label="Toggle site navigation sidebar" class="sidebar-toggle" id="__navigation" name="__navigation" type="checkbox"/>
+<input aria-label="Toggle table of contents sidebar" class="sidebar-toggle" id="__toc" name="__toc" type="checkbox"/>
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+<div class="page">
+<header class="mobile-header">
+<div class="header-left">
+<label class="nav-overlay-icon" for="__navigation">
+<span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+</label>
+</div>
+<div class="header-center">
+<a href="../top.html"><div class="brand">DeepZensols Natural Language Processing 1.19.0 documentation</div></a>
+</div>
+<div class="header-right">
+<div class="theme-toggle-container theme-toggle-header">
+<button aria-label="Toggle Light / Dark / Auto color theme" class="theme-toggle">
+<svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+<svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+<svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+<svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+</button>
+</div>
+<label class="toc-overlay-icon toc-header-icon" for="__toc">
+<span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+</label>
+</div>
+</header>
+<aside class="sidebar-drawer">
+<div class="sidebar-container">
+<div class="sidebar-sticky"><a class="sidebar-brand" href="../top.html">
+<span class="sidebar-brand-text">DeepZensols Natural Language Processing 1.19.0 documentation</span>
+</a><form action="../search.html" class="sidebar-search-container" method="get" role="search">
+<input aria-label="Search" class="sidebar-search" name="q" placeholder="Search"/>
+<input name="check_keywords" type="hidden" value="yes"/>
+<input name="area" type="hidden" value="default"/>
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="clickbate-example.html">Clickbate Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="movie-example.html">Movie Review Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ner-example.html">NER Example</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Resource Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vectorizers.html">Vectorizers</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api.html">API Reference</a><input aria-label="Toggle navigation of API Reference" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/zensols.deepnlp.html">zensols.deepnlp package</a><input aria-label="Toggle navigation of zensols.deepnlp package" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/zensols.deepnlp.classify.html">zensols.deepnlp.classify package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/zensols.deepnlp.embed.html">zensols.deepnlp.embed package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/zensols.deepnlp.index.html">zensols.deepnlp.index package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/zensols.deepnlp.layer.html">zensols.deepnlp.layer package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/zensols.deepnlp.model.html">zensols.deepnlp.model package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/zensols.deepnlp.transformer.html">zensols.deepnlp.transformer package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/zensols.deepnlp.vectorize.html">zensols.deepnlp.vectorize package</a></li>
+</ul>
+</input></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/zensols.deepnlp.classify.html">zensols.deepnlp.classify package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/zensols.deepnlp.embed.html">zensols.deepnlp.embed package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/zensols.deepnlp.index.html">zensols.deepnlp.index package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/zensols.deepnlp.layer.html">zensols.deepnlp.layer package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/zensols.deepnlp.model.html">zensols.deepnlp.model package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/zensols.deepnlp.transformer.html">zensols.deepnlp.transformer package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/zensols.deepnlp.vectorize.html">zensols.deepnlp.vectorize package</a></li>
+</ul>
+</input></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../LICENSE.html">License</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<div class="main">
+<div class="content">
+<div class="article-container">
+<a class="back-to-top muted-link" href="#">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+</svg>
+<span>Back to top</span>
+</a>
+<div class="content-icon-container">
+<div class="view-this-page">
+<a class="muted-link" href="../_sources/doc/reslib.md.txt" title="View this page">
+<svg><use href="#svg-eye"></use></svg>
+<span class="visually-hidden">View this page</span>
+</a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+<button aria-label="Toggle Light / Dark / Auto color theme" class="theme-toggle">
+<svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+<svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+<svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+<svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+</button>
+</div>
+<label class="toc-overlay-icon toc-content-icon" for="__toc">
+<span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+</label>
+</div>
+<article id="furo-main-content" role="main">
+<section id="resource-library">
+<h1>Resource Library<a class="headerlink" href="#resource-library" title="Link to this heading">¶</a></h1>
+<p>DeepZenols NLP framework has a comprehensive <a class="reference external" href="https://plandes.github.io/util/doc/config.html#resource-libraries">resource library</a> that configures
+popular models that enable little to no code written for many standard language
+models.  This document provides a highlight of the available configuration of
+the API and <a class="reference external" href="https://github.com/plandes/deepnlp/tree/master/resources">deepnlp resource library</a> available with this package.</p>
+<section id="embedding">
+<h2>Embedding<a class="headerlink" href="#embedding" title="Link to this heading">¶</a></h2>
+<p>The models configured by the <a class="reference external" href="https://github.com/plandes/deepnlp/tree/master/resources">deepnlp resource library</a> files include
+non-contextual word embeddings (i.e. GloVE), a frozen transformer (i.e. <a class="reference external" href="https://huggingface.co/transformers/model_doc/bert.html">BERT</a>)
+transformer model and a fine-tune trainable transformer model.</p>
+<p>The Zensols Deep NLP library supports word embeddings for <a class="reference external" href="https://nlp.stanford.edu/projects/glove/">GloVE</a>, <a class="reference external" href="https://code.google.com/archive/p/word2vec/">word2Vec</a>,
+<a class="reference external" href="https://fasttext.cc">fastText</a> and <a class="reference external" href="https://huggingface.co/transformers/model_doc/bert.html">BERT</a>.  The <code class="docutils literal notranslate"><span class="pre">embedding</span></code> section of the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/resources/glove.conf">GloVE resource library</a>
+specifies which word vector models and layers that use them:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[glove_50_embedding]</span>
+<span class="na">class_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">zensols.deepnlp.embed.GloveWordEmbedModel</span>
+<span class="na">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">path: ${default:corpus_dir}/glove</span>
+<span class="na">desc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">6B</span>
+<span class="na">dimension</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">50</span>
+<span class="na">lowercase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">True</span>
+</pre></div>
+</div>
+<p>which defines the 6 billion token (400K vocab) 50 dimension <a class="reference external" href="https://nlp.stanford.edu/projects/glove/">GloVE</a> model with a
+<a class="reference external" href="../api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.glove.GloveWordEmbedModel">GloveWordEmbedModel</a> instance.  The <code class="docutils literal notranslate"><span class="pre">lowercase</span></code> property telling the framework
+to down case all queries to the model since the word vectors were trained on a
+down cased corpus.</p>
+<p>The feature vectorizer <a class="reference external" href="../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.WordVectorSentenceFeatureVectorizer">WordVectorSentenceFeatureVectorizer</a> that uses
+the above embedding is defined.  This converts the word vector indexes
+(depending on the configuration) to a tensor of the word embedding representing
+the corresponding sentence:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[glove_50_feature_vectorizer]</span>
+<span class="na">class_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">zensols.deepnlp.vectorize.WordVectorSentenceFeatureVectorizer</span>
+<span class="na">feature_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">wvglove50</span>
+<span class="na">embed_model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">instance: glove_50_embedding</span>
+</pre></div>
+</div>
+<p>The last configuration needed is a <a class="reference external" href="../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.layer.WordVectorEmbeddingLayer">WordVectorEmbeddingLayer</a>, which extends
+a <code class="docutils literal notranslate"><span class="pre">torch.nn.Module</span></code>, and used by the <a class="reference external" href="https://pytorch.org">PyTorch</a> framework to utilize the word
+embedding:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[glove_50_embedding_layer]</span>
+<span class="na">class_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">zensols.deepnlp.vectorize.WordVectorEmbeddingLayer</span>
+<span class="na">embed_model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">instance: glove_50_embedding</span>
+<span class="na">feature_vectorizer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">instance: language_feature_manager</span>
+</pre></div>
+</div>
+<p>This module uses the glove embedding model to forward using a
+<code class="docutils literal notranslate"><span class="pre">torch.nn.Embedding</span></code> as input at the beginning of the forward <a class="reference external" href="https://pytorch.org">PyTorch</a> process.
+The reference to <code class="docutils literal notranslate"><span class="pre">language_feature_manager</span></code> is covered later.</p>
+<p>The embedding resource libraries have a similar definition for the <a class="reference external" href="https://nlp.stanford.edu/projects/glove/">GloVE</a> 300
+dimension, the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/resources/word2vec.conf">word2vec resource library</a> for the Google’s pre-trained 300
+dimension, the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/resources/fasttext.conf">fasttext resource library</a> for Facebook’s pre-trained News and
+Crawl pre-trained embeddings, and the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/resources/transformer.conf">transformer resource library</a> contains
+<a class="reference external" href="https://huggingface.co/transformers/model_doc/bert.html">BERT</a> embeddings.  When <code class="docutils literal notranslate"><span class="pre">decode_embedding</span></code> is set to true, the embedding are
+created during decode time, rather than at the time the batch is processed.
+The <code class="docutils literal notranslate"><span class="pre">transformer_trainable_resource:model_id</span></code> is the <a class="reference external" href="https://github.com/huggingface/transformers">HuggingFace</a> model
+identifier to use, such as <code class="docutils literal notranslate"><span class="pre">bert-base-cased</span></code>, <code class="docutils literal notranslate"><span class="pre">bert-large-cased</span></code>,
+<code class="docutils literal notranslate"><span class="pre">distilbert-base-cased</span></code>, <code class="docutils literal notranslate"><span class="pre">roberta-base</span></code>.</p>
+<section id="vectorizer-configuration">
+<h3>Vectorizer Configuration<a class="headerlink" href="#vectorizer-configuration" title="Link to this heading">¶</a></h3>
+<p>Linguistic features are vectorized at one of the following levels:</p>
+<ul class="simple">
+<li><p><strong>token</strong>: token level with a shape congruent with the number of tokens,
+typically concatenated with the ebedding layer</p></li>
+<li><p><strong>document</strong>: document level, typically added to a join layer</p></li>
+<li><p><strong>embedding</strong>: embedding layer, typically used as the input layer</p></li>
+</ul>
+<p>Each <a class="reference external" href="../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizer">FeatureDocumentVectorizer</a>, which extends the <a class="reference external" href="https://plandes.github.io/deeplearn/index.html">deeplearn API</a>
+<a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.vectorize.html#zensols.deeplearn.vectorize.manager.EncodableFeatureVectorizer">EncodableFeatureVectorizer</a> class defines a <code class="docutils literal notranslate"><span class="pre">FEATURE_TYPE</span></code> of type
+<a class="reference external" href="../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.TextFeatureType">TextFeatureType</a> that indicates this level.  We’ll see examples of
+these later in the configuration.  See the <a class="reference external" href="https://plandes.github.io/deeplearn/index.html">deeplearn API</a> for more information
+on the base class <a class="reference external" href="https://plandes.github.io/deeplearn/doc/preprocess.html#vectorizers">deeplearn vectorizers</a>.</p>
+<p>The next configuration defines an <a class="reference external" href="../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer">EnumContainerFeatureVectorizer</a> in the
+<a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/resources/vectorizer.conf">vectorizer resource library</a>, which vectorizes <a class="reference external" href="https://spacy.io">spaCy</a> features in to one hot
+encoded vectors at the <em>token</em> level.  In this configuration, POS tags, NER
+tags and dependency head tree is vectorized.  See <a class="reference external" href="../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer">SpacyFeatureVectorizer</a> for
+more information.</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[enum_feature_vectorizer]</span>
+<span class="na">class_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">zensols.deepnlp.vectorize.EnumContainerFeatureVectorizer</span>
+<span class="na">feature_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">enum</span>
+<span class="na">decoded_feature_ids</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">set: ent, tag, dep</span>
+</pre></div>
+</div>
+<p>Similarly, the <a class="reference external" href="../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer">CountEnumContainerFeatureVectorizer</a> encodes counts of each
+feature in the text at the <em>document</em> level.</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[count_feature_vectorizer]</span>
+<span class="na">class_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">zensols.deepnlp.vectorize.CountEnumContainerFeatureVectorizer</span>
+<span class="na">feature_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">count</span>
+<span class="na">decoded_feature_ids</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">eval: set('ent tag dep'.split())</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">language_feature_manager</span></code> configuration is used to create a
+<a class="reference external" href="../api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager">FeatureDocumentVectorizerManager</a>, which is a language specific vectorizer
+manager that uses the <a class="reference external" href="../api/zensols.deepnlp.html#zensols.deepnlp.parse.FeatureDocumentParser">FeatureDocumentParser</a> we defined earlier with the
+<code class="docutils literal notranslate"><span class="pre">doc_parser</span></code> entry.  This class extends from <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.vectorize.html#zensols.deeplearn.vectorize.manager.FeatureVectorizerManager">FeatureVectorizerManager</a> as an
+NLP specific manager that creates and encodes the word embeddings and the other
+linguistic feature vectorizers configured.  The <code class="docutils literal notranslate"><span class="pre">token_length</span></code> parameter are
+the lengths of sentences or documents in numbers of tokens.</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[language_feature_manager]</span>
+<span class="na">class_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">zensols.deepnlp.vectorize.FeatureDocumentVectorizerManager</span>
+<span class="na">torch_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">instance: torch_config</span>
+<span class="na">configured_vectorizers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">eval: [</span>
+<span class="w">  </span><span class="na">'word2vec_300_feature_vectorizer',</span>
+<span class="w">  </span><span class="na">'glove_50_feature_vectorizer',</span>
+<span class="w">  </span><span class="na">'glove_300_feature_vectorizer',</span>
+<span class="w">  </span><span class="na">'transformer_feature_vectorizer',</span>
+<span class="w">  </span><span class="na">'enum_feature_vectorizer',</span>
+<span class="w">  </span><span class="na">'count_feature_vectorizer',</span>
+<span class="w">  </span><span class="na">'language_stats_feature_vectorizer',</span>
+<span class="w">  </span><span class="na">'depth_token_feature_vectorizer']</span>
+<span class="na">doc_parser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">instance: doc_parser</span>
+<span class="na">token_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">${language_defaults:token_length}</span>
+<span class="na">token_feature_ids</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">${doc_parser:token_feature_ids}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="text-classification">
+<h2>Text Classification<a class="headerlink" href="#text-classification" title="Link to this heading">¶</a></h2>
+<p>The <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/resources/classify.conf">text classification resource library</a> provides configuration for components and
+models used to classify tokens and text.</p>
+<p>See the <a class="reference external" href="clickbate-example.html">Clickbate example</a> of how this resource library is used.</p>
+<section id="vectorization-text">
+<h3>Vectorization (Text)<a class="headerlink" href="#vectorization-text" title="Link to this heading">¶</a></h3>
+<p>This configuration set defines the vectorizer for the label itself, which uses
+option <code class="docutils literal notranslate"><span class="pre">categories</span></code> as the labels and provided in the <a class="reference external" href="https://plandes.github.io/util/doc/config.html#application-context">application context</a>:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[classify_label_vectorizer]</span>
+<span class="na">class_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">zensols.deeplearn.vectorize.NominalEncodedEncodableFeatureVectorizer</span>
+<span class="c1">#categories = y, n</span>
+<span class="na">feature_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">lblabel</span>
+</pre></div>
+</div>
+<p>We define a manager and manager set separate from the linguistic configuration
+since the package space is different:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="c1"># the vectorizer for labels is not language specific and lives in the</span>
+<span class="c1"># zensols.deeplearn.vectorize package, so it needs it's own instance</span>
+<span class="k">[classify_label_vectorizer_manager]</span>
+<span class="na">class_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">zensols.deeplearn.vectorize.FeatureVectorizerManager</span>
+<span class="na">torch_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">instance: torch_config</span>
+<span class="na">configured_vectorizers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">list: classify_label_vectorizer</span>
+
+<span class="k">[vectorizer_manager_set]</span>
+<span class="na">names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">list: language_vectorizer_manager, classify_label_vectorizer_manager</span>
+</pre></div>
+</div>
+</section>
+<section id="batch-stash">
+<h3>Batch Stash<a class="headerlink" href="#batch-stash" title="Link to this heading">¶</a></h3>
+<p>The batch stash configuration should look familiar if you have read through the
+<a class="reference external" href="https://plandes.github.io/deeplearn/doc/preprocess.html#batch-stash">deeplearn API batch stash</a> documentation.  The configuration below is for a
+<a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.batch.html#zensols.deeplearn.batch.stash.BatchDirectoryCompositeStash">BatchDirectoryCompositeStash</a>, which splits data in separate files across
+features for each batch.</p>
+<p>In this configuration, we split the label, embeddings, and linguistic features
+in their own groups so that we can experiment using different embeddings for
+each test.  Using <a class="reference external" href="https://huggingface.co/transformers/model_doc/bert.html">BERT</a> will take the longest since each sentence will be
+computed during decoding.</p>
+<p>However, <a class="reference external" href="https://nlp.stanford.edu/projects/glove/">GloVE</a> 50D embeddings vectorize much quicker as only the indexes
+are stored and quickly retrieved in the <a class="reference external" href="https://pytorch.org">PyTorch</a> API on demand.  Our caching
+strategy also changes as we can (with most graphics cards) fit the entire
+<a class="reference external" href="https://nlp.stanford.edu/projects/glove/">GloVE</a> 50D embedding in GPU memory.  Our composition stash configuration
+follows:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[batch_dir_stash]</span>
+<span class="na">groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">eval: (</span>
+<span class="w">       </span><span class="na">set('label'.split()),</span>
+<span class="w">       </span><span class="na">set('glove_50_embedding'.split()),</span>
+<span class="na">...</span>
+<span class="w">       </span><span class="na">set('transformer_enum_expander transformer_dep_expander'.split()))</span>
+</pre></div>
+</div>
+<p>The batch stash is configured next.  This configuration uses dynamic batch
+mappings, which map feature attribute names used in the code with the feature
+IDs used in vectorizers:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[batch_stash]</span>
+<span class="na">data_point_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">eval({'import': ['zensols.deepnlp.classify']}): zensols.deepnlp.classify.LabeledFeatureDocumentDataPoint</span>
+<span class="na">batch_feature_mappings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">dataclass(zensols.deeplearn.batch.ConfigBatchFeatureMapping): classify_batch_mappings</span>
+</pre></div>
+</div>
+<p><a class="reference external" href="../api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.domain.LabeledFeatureDocumentDataPoint">LabeledFeatureDocumentDataPoint</a> is a subclass of <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.batch.html#zensols.deeplearn.batch.domain.DataPoint">DataPoint</a> class that
+contains a <a class="reference external" href="../api/zensols.deepnlp.html#zensols.deepnlp.domain.FeatureDocument">FeatureDocument</a>, and the <code class="docutils literal notranslate"><span class="pre">classify_batch_mappings</span></code> is a reference
+to the batch binding in <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/resources/classify-batch.yml">classify-batch.yml</a>, which is defined as:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">classify_batch_mappings</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">batch_feature_mapping_adds</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'dataclass(zensols.deeplearn.batch.BatchFeatureMapping):</span><span class="nv"> </span><span class="s">classify_label_batch_mappings'</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'dataclass(zensols.deeplearn.batch.BatchFeatureMapping):</span><span class="nv"> </span><span class="s">lang_batch_mappings'</span>
+</pre></div>
+</div>
+<p>The root defines a section, the second level adds classification and language
+specific mappings.  The classify batch mappings are:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">classify_label_batch_mappings</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">label_attribute_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">label</span>
+<span class="w">  </span><span class="nt">manager_mappings</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">vectorizer_manager_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">classify_label_vectorizer_manager</span>
+<span class="w">      </span><span class="nt">fields</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">attr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">label</span>
+<span class="w">          </span><span class="nt">feature_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lblabel</span>
+<span class="w">          </span><span class="nt">is_agg</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+<p>This says to use the singleton <code class="docutils literal notranslate"><span class="pre">label</span></code> mapping under <code class="docutils literal notranslate"><span class="pre">fields</span></code> for the label and
+used by the framework to calculate performance metrics.</p>
+</section>
+<section id="facade">
+<h3>Facade<a class="headerlink" href="#facade" title="Link to this heading">¶</a></h3>
+<p>The facade is configured as a <a class="reference external" href="../api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade">ClassifyModelFacade</a>:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[facade]</span>
+<span class="na">class_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">zensols.deepnlp.classify.ClassifyModelFacade</span>
+</pre></div>
+</div>
+<p>This class extends <a class="reference external" href="../api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacade">LanguageModelFacade</a>, which supports natural
+language model feature updating and sets up logging.  This class is used both
+from the command line and the Jupyter notebook via the CLI facade applications.</p>
+<p>This facade class adds classification specific functionality, including
+feature updating from a Jupyter notebook or Python REPL.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ClassifyModelFacade</span><span class="p">(</span><span class="n">LanguageModelFacade</span><span class="p">):</span>
+    <span class="n">LANGUAGE_MODEL_CONFIG</span> <span class="o">=</span> <span class="n">LanguageModelFacadeConfig</span><span class="p">(</span>
+        <span class="n">manager_name</span><span class="o">=</span><span class="n">ReviewBatch</span><span class="o">.</span><span class="n">LANGUAGE_FEATURE_MANAGER_NAME</span><span class="p">,</span>
+        <span class="n">attribs</span><span class="o">=</span><span class="n">ReviewBatch</span><span class="o">.</span><span class="n">LANGUAGE_ATTRIBUTES</span><span class="p">,</span>
+        <span class="n">embedding_attribs</span><span class="o">=</span><span class="n">ReviewBatch</span><span class="o">.</span><span class="n">EMBEDDING_ATTRIBUTES</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and used by the framework by overriding:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">_get_language_model_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LanguageModelFacadeConfig</span><span class="p">:</span>
+	<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">LANGUAGE_MODEL_CONFIG</span>
+</pre></div>
+</div>
+<p>Setting the dropout triggers property setters to propagate (linear and
+recurrent layers) the setting when set on the facade:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+	<a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/functions.html#super" title="super"><span class="nb">super</span></a><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+	<span class="n">settings</span><span class="p">:</span> <span class="n">NetworkSettings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="o">.</span><span class="n">net_settings</span>
+	<span class="k">if</span> <a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/functions.html#hasattr" title="hasattr"><span class="nb">hasattr</span></a><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="s1">'dropout'</span><span class="p">):</span>
+		<span class="c1"># set to trigger writeback through to sub settings (linear, recur)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="o">.</span><span class="n">net_settings</span><span class="o">.</span><span class="n">dropout</span>
+</pre></div>
+</div>
+<p>We can also override the <a class="reference external" href="../api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade.get_predictions">get_predictions method</a> to include the review text
+and it’s length when creating the data frame and respective CSV export:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_predictions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+	<span class="k">return</span> <a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/functions.html#super" title="super"><span class="nb">super</span></a><span class="p">()</span><span class="o">.</span><span class="n">get_predictions</span><span class="p">(</span>
+		<span class="p">(</span><span class="s1">'text'</span><span class="p">,</span> <span class="s1">'len'</span><span class="p">),</span>
+		<span class="k">lambda</span> <span class="n">dp</span><span class="p">:</span> <span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/functions.html#len" title="len"><span class="nb">len</span></a><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="p">)),</span>
+		<span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="model-text">
+<h3>Model (Text)<a class="headerlink" href="#model-text" title="Link to this heading">¶</a></h3>
+<p>The model section configures the <a class="reference external" href="../api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.model.ClassifyNetworkSettings">ClassifyNetworkSettings</a>, which is either a
+BiLSTM with an optional CRF output layer or a transformer (see the <a class="reference external" href="https://plandes.github.io/deepnlp/doc/movie-example.html">movie
+review sentiment example</a> for how this can be configured in both settings.</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[classify_net_settings]</span>
+<span class="na">class_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">zensols.deepnlp.classify.ClassifyNetworkSettings</span>
+<span class="c1">#embedding_layer = instance: ${deepnlp_default:embedding}_layer</span>
+<span class="na">recurrent_settings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">None</span>
+<span class="na">linear_settings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">instance: linear_settings</span>
+<span class="na">batch_stash</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">instance: batch_stash</span>
+<span class="na">dropout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">None</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">batch_stash</span></code> instance is configured on this model so it has access to the
+dynamic batch metadata for the embedding layer.  The commented out
+<code class="docutils literal notranslate"><span class="pre">embedding_layer</span></code> has to be overridden and set as the instance of the embedding
+layer instance use that create the input embeddings from the input text.  The
+<code class="docutils literal notranslate"><span class="pre">linear_settings</span></code> is the network between the recurrent network and the output
+CRF (if there is one configured).</p>
+</section>
+<section id="prediction-text">
+<h3>Prediction (Text)<a class="headerlink" href="#prediction-text" title="Link to this heading">¶</a></h3>
+<p>The prediction mapper uses the model to classify text from the command line.
+For text classification, the <a class="reference external" href="../api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.pred.ClassificationPredictionMapper">ClassificationPredictionMapper</a> is used and takes
+text given from the command line and predicts a label:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[classify_feature_prediction_mapper]</span>
+<span class="na">class_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">zensols.deepnlp.classify.ClassificationPredictionMapper</span>
+<span class="na">vec_manager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">instance: language_vectorizer_manager</span>
+<span class="na">label_feature_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">classify_label_vectorizer_manager.lblabel</span>
+</pre></div>
+</div>
+<p>This component needs the vectorizer manager that creates the vectorized label
+and the nominal vectorizer to reverse map using a scikit-learn <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.LabelEncoder.html">LabelEncoder</a>
+back to the human readable label.</p>
+</section>
+</section>
+<section id="token-classification">
+<h2>Token Classification<a class="headerlink" href="#token-classification" title="Link to this heading">¶</a></h2>
+<p>Token classification refers to labeling tokens instead of a string of text as
+with <a class="reference external" href="#text-classification">text classification</a>.  However, there is some cross
+over functionality between these two tasks, so the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/resources/token-classify.conf">token classification
+resource library</a> resource library uses some of the same components (not
+configuration) defined in the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/resources/classify.conf">text classification resource library</a>.  For
+example, we reuse the <a class="reference external" href="../api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade">ClassifyModelFacade</a> by overriding the class in the
+<code class="docutils literal notranslate"><span class="pre">facade</span></code> section.</p>
+<p><em>Note</em>: despite this overlap, either import only the <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/resources/classify.conf">text classification
+resource library</a> for text classification projects and only <a class="reference external" href="https://github.com/plandes/deepnlp/blob/master/resources/token-classify.conf">token classification
+resource library</a> for token classification projects, but not both.</p>
+<p>Only the notable differences compared to the <a class="reference external" href="#text-classification">text
+classification</a> section are documented.</p>
+<p>See the <a class="reference external" href="ner-example.html">NER example</a> of how this resource library is used.</p>
+<section id="vectorization-token">
+<h3>Vectorization (Token)<a class="headerlink" href="#vectorization-token" title="Link to this heading">¶</a></h3>
+<p>This section has the token label vectorizers and mask vectorizers.  The mask is
+needed for the <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.layer.html#zensols.deeplearn.layer.crf.CRF">CRF</a> (when configured) to mask out blank tokens for sentences
+shorter than a max length.  Usually, zeroed tensors are used for token slots
+not used, for example in the word embedding layer for deep learning networks.
+This is because the zero vectors are learned for sentences are shorter.
+However, the CRF layer needs to block these as valid state transitions during
+training and testing.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">tok_label_1_vectorizer</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">class_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zensols.deeplearn.vectorize.NominalEncodedEncodableFeatureVectorizer</span>
+<span class="w">  </span><span class="nt">feature_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tclabel1</span>
+
+<span class="nt">tok_label_vectorizer</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">class_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zensols.deeplearn.vectorize.AggregateEncodableFeatureVectorizer</span>
+<span class="w">  </span><span class="nt">feature_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tclabel</span>
+<span class="w">  </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span>
+<span class="w">  </span><span class="nt">delegate_feature_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tclabel1</span>
+
+<span class="nt">tok_mask_vectorizer</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">class_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zensols.deeplearn.vectorize.MaskFeatureVectorizer</span>
+<span class="w">  </span><span class="nt">feature_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tmask</span>
+<span class="w">  </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span>
+
+<span class="nt">tok_label_batch_mappings</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">manager_mappings</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">vectorizer_manager_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tok_label_vectorizer_manager</span>
+<span class="w">      </span><span class="nt">fields</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">attr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tok_labels</span>
+<span class="w">          </span><span class="nt">feature_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tclabel</span>
+<span class="w">          </span><span class="nt">is_agg</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">          </span><span class="nt">is_label</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">attr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tok_mask</span>
+<span class="w">          </span><span class="nt">feature_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tmask</span>
+<span class="w">          </span><span class="nt">is_agg</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">          </span><span class="nt">attr_access</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tok_labels</span>
+
+<span class="nt">tok_label_vectorizer_manager</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">class_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zensols.deeplearn.vectorize.FeatureVectorizerManager</span>
+<span class="w">  </span><span class="nt">torch_config</span><span class="p">:</span><span class="w"> </span><span class="s">'instance:</span><span class="nv"> </span><span class="s">torch_config'</span>
+<span class="w">  </span><span class="nt">configured_vectorizers</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tok_label_1_vectorizer</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tok_label_vectorizer</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tok_mask_vectorizer</span>
+
+<span class="c1"># add new feature vectorizer managers</span>
+<span class="nt">vectorizer_manager_set</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">names</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">language_vectorizer_manager</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tok_label_vectorizer_manager</span>
+</pre></div>
+</div>
+</section>
+<section id="model-token">
+<h3>Model (Token)<a class="headerlink" href="#model-token" title="Link to this heading">¶</a></h3>
+<p>The <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.model.html#zensols.deeplearn.model.sequence.SequenceBatchIterator">SequenceBatchIterator</a> configured in the <code class="docutils literal notranslate"><span class="pre">model_settings</span></code> indicates to use
+a different scoring method.  This class is used in the framework to calculate a
+different loss and produce the output, which must be treated differently than
+neural float tensor output.  This is because the Viterbi algorithm is used to
+determine the lowest cost path through the elements.  The sum of this path is
+used as the cost instead of a differential optimization function.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">model_settings</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">batch_iteration_class_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zensols.deeplearn.model.SequenceBatchIterator</span>
+<span class="w">  </span><span class="nt">reduce_outcomes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">none</span>
+<span class="w">  </span><span class="nt">prediction_mapper_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">feature_prediction_mapper</span>
+
+<span class="nt">recurrent_crf_net_settings</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">mask_attribute</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tok_mask</span>
+</pre></div>
+</div>
+<p>Because we use a <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.layer.html#zensols.deeplearn.layer.crf.CRF">CRF</a> as the output layer for <a class="reference external" href="../api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRF">EmbeddedRecurrentCRF</a>, our
+output are the NER labels.  Therefore, must also set <code class="docutils literal notranslate"><span class="pre">reduce_outcomes</span> <span class="pre">=</span> <span class="pre">none</span></code>
+to pass the <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.layer.html#zensols.deeplearn.layer.crf.CRF">CRF</a> output through unaltered.</p>
+<p>In the <code class="docutils literal notranslate"><span class="pre">recurrent_crf_net_settings</span></code> section, we override the <code class="docutils literal notranslate"><span class="pre">mask_attribute</span></code>,
+which tells recurrent <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.layer.html#zensols.deeplearn.layer.crf.CRF">CRF</a> to use the <code class="docutils literal notranslate"><span class="pre">tok_mask</span></code> attribute when masking the
+label output.</p>
+</section>
+<section id="prediction-token">
+<h3>Prediction (Token)<a class="headerlink" href="#prediction-token" title="Link to this heading">¶</a></h3>
+<p>The section is the same, but we instead use the sequence base version
+(<a class="reference external" href="../api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.pred.SequencePredictionMapper">SequencePredictionMapper</a>) where the token stream is used as that sequence.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">feature_prediction_mapper</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">class_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zensols.deepnlp.classify.SequencePredictionMapper</span>
+<span class="w">  </span><span class="nt">vec_manager</span><span class="p">:</span><span class="w"> </span><span class="s">'instance:</span><span class="nv"> </span><span class="s">language_vectorizer_manager'</span>
+<span class="w">  </span><span class="nt">label_feature_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tok_label_vectorizer_manager.tclabel1</span>
+</pre></div>
+</div>
+<!-- links --></section>
+</section>
+</section>
+</article>
+</div>
+<footer>
+<div class="related-pages">
+<a class="next-page" href="vectorizers.html">
+<div class="page-info">
+<div class="context">
+<span>Next</span>
+</div>
+<div class="title">Vectorizers</div>
+</div>
+<svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+</a>
+<a class="prev-page" href="ner-example.html">
+<svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+<div class="page-info">
+<div class="context">
+<span>Previous</span>
+</div>
+<div class="title">NER Example</div>
+</div>
+</a>
+</div>
+<div class="bottom-of-page">
+<div class="left-details">
+<div class="copyright">
+                Copyright © 2026 Paul Landes
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+</div>
+<div class="right-details">
+</div>
+</div>
+</footer>
+</div>
+<aside class="toc-drawer">
+<div class="toc-sticky toc-scroll">
+<div class="toc-title-container">
+<span class="toc-title">
+            On this page
+          </span>
+</div>
+<div class="toc-tree-container">
+<div class="toc-tree">
+<ul>
+<li><a class="reference internal" href="#">Resource Library</a><ul>
+<li><a class="reference internal" href="#embedding">Embedding</a><ul>
+<li><a class="reference internal" href="#vectorizer-configuration">Vectorizer Configuration</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#text-classification">Text Classification</a><ul>
+<li><a class="reference internal" href="#vectorization-text">Vectorization (Text)</a></li>
+<li><a class="reference internal" href="#batch-stash">Batch Stash</a></li>
+<li><a class="reference internal" href="#facade">Facade</a></li>
+<li><a class="reference internal" href="#model-text">Model (Text)</a></li>
+<li><a class="reference internal" href="#prediction-text">Prediction (Text)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#token-classification">Token Classification</a><ul>
+<li><a class="reference internal" href="#vectorization-token">Vectorization (Token)</a></li>
+<li><a class="reference internal" href="#model-token">Model (Token)</a></li>
+<li><a class="reference internal" href="#prediction-token">Prediction (Token)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</div><script src="../_static/documentation_options.js?v=54b9a5ca"></script>
+<script src="../_static/doctools.js?v=9a2dae69"></script>
+<script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+<script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="../_static/copybutton.js?v=f281be69"></script>
+</body>
+</html>

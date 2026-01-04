@@ -1,0 +1,51 @@
+zensols.deepnlp package
+=======================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   zensols.deepnlp.classify
+   zensols.deepnlp.embed
+   zensols.deepnlp.index
+   zensols.deepnlp.layer
+   zensols.deepnlp.model
+   zensols.deepnlp.transformer
+   zensols.deepnlp.vectorize
+
+Submodules
+----------
+
+zensols.deepnlp.cli module
+--------------------------
+
+.. automodule:: zensols.deepnlp.cli
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.feature module
+------------------------------
+
+.. automodule:: zensols.deepnlp.feature
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.deepnlp.score module
+----------------------------
+
+.. automodule:: zensols.deepnlp.score
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: zensols.deepnlp
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,2444 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="#"><link rel="search" title="Search" href="search.html">
+
+    <!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 --><title>Index - DeepZensols Natural Language Processing 1.19.0 documentation</title>
+<link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-codeautolink.css?v=b2176991" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="_static/codeautolink.css?v=57550ae3" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="top.html"><div class="brand">DeepZensols Natural Language Processing 1.19.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="top.html">
+  
+  <span class="sidebar-brand-text">DeepZensols Natural Language Processing 1.19.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc/clickbate-example.html">Clickbate Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc/movie-example.html">Movie Review Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc/ner-example.html">NER Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc/reslib.html">Resource Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc/vectorizers.html">Vectorizers</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api.html">API Reference</a><input aria-label="Toggle navigation of API Reference" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="api/zensols.deepnlp.html">zensols.deepnlp package</a><input aria-label="Toggle navigation of zensols.deepnlp package" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/zensols.deepnlp.classify.html">zensols.deepnlp.classify package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/zensols.deepnlp.embed.html">zensols.deepnlp.embed package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/zensols.deepnlp.index.html">zensols.deepnlp.index package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/zensols.deepnlp.layer.html">zensols.deepnlp.layer package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/zensols.deepnlp.model.html">zensols.deepnlp.model package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/zensols.deepnlp.transformer.html">zensols.deepnlp.transformer package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/zensols.deepnlp.vectorize.html">zensols.deepnlp.vectorize package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/zensols.deepnlp.classify.html">zensols.deepnlp.classify package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/zensols.deepnlp.embed.html">zensols.deepnlp.embed package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/zensols.deepnlp.index.html">zensols.deepnlp.index package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/zensols.deepnlp.layer.html">zensols.deepnlp.layer package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/zensols.deepnlp.model.html">zensols.deepnlp.model package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/zensols.deepnlp.transformer.html">zensols.deepnlp.transformer package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/zensols.deepnlp.vectorize.html">zensols.deepnlp.vectorize package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LICENSE.html">License</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          
+<section class="genindex-section">
+  <h1 id="index">Index</h1>
+  <div class="genindex-jumpbox"><a href="#_"><strong>_</strong></a> | <a href="#A"><strong>A</strong></a> | <a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#H"><strong>H</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#K"><strong>K</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#O"><strong>O</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#Q"><strong>Q</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#U"><strong>U</strong></a> | <a href="#V"><strong>V</strong></a> | <a href="#W"><strong>W</strong></a> | <a href="#Z"><strong>Z</strong></a></div>
+</section>
+<section id="_" class="genindex-section">
+  <h2>_</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerError.__annotations__">__annotations__ (zensols.deepnlp.transformer.resource.TransformerError attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedError.__firstlineno__">__firstlineno__ (zensols.deepnlp.embed.domain.WordEmbedError attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerError.__firstlineno__">(zensols.deepnlp.transformer.resource.TransformerError attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.domain.LabeledFeatureDocument.__init__">__init__() (zensols.deepnlp.classify.domain.LabeledFeatureDocument method)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.domain.LabeledFeatureDocumentDataPoint.__init__">(zensols.deepnlp.classify.domain.LabeledFeatureDocumentDataPoint method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.domain.PredictionFeatureDocument.__init__">(zensols.deepnlp.classify.domain.PredictionFeatureDocument method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.domain.TokenContainerDataPoint.__init__">(zensols.deepnlp.classify.domain.TokenContainerDataPoint method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade.__init__">(zensols.deepnlp.classify.facade.ClassifyModelFacade method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.MultilabelClassifyModelFacade.__init__">(zensols.deepnlp.classify.facade.MultilabelClassifyModelFacade method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.TokenClassifyModelFacade.__init__">(zensols.deepnlp.classify.facade.TokenClassifyModelFacade method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.model.ClassifyNetwork.__init__">(zensols.deepnlp.classify.model.ClassifyNetwork method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.model.ClassifyNetworkSettings.__init__">(zensols.deepnlp.classify.model.ClassifyNetworkSettings method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.multilabel.MultiLabelFeatureDocument.__init__">(zensols.deepnlp.classify.multilabel.MultiLabelFeatureDocument method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.multilabel.MultiLabelFeatureDocumentDataPoint.__init__">(zensols.deepnlp.classify.multilabel.MultiLabelFeatureDocumentDataPoint method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.pred.ClassificationPredictionMapper.__init__">(zensols.deepnlp.classify.pred.ClassificationPredictionMapper method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.pred.SequencePredictionMapper.__init__">(zensols.deepnlp.classify.pred.SequencePredictionMapper method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.cli.NLPClassifyPackedModelApplication.__init__">(zensols.deepnlp.cli.NLPClassifyPackedModelApplication method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.cli.NLPFacadeBatchApplication.__init__">(zensols.deepnlp.cli.NLPFacadeBatchApplication method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.cli.NLPFacadeModelApplication.__init__">(zensols.deepnlp.cli.NLPFacadeModelApplication method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.cli.NLPSequenceClassifyFacadeModelApplication.__init__">(zensols.deepnlp.cli.NLPSequenceClassifyFacadeModelApplication method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.__init__">(zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.NoOpWordEmbedModel.__init__">(zensols.deepnlp.embed.domain.NoOpWordEmbedModel method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel.__init__">(zensols.deepnlp.embed.domain.WordEmbedModel method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordVectorModel.__init__">(zensols.deepnlp.embed.domain.WordVectorModel method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.fasttext.FastTextEmbedModel.__init__">(zensols.deepnlp.embed.fasttext.FastTextEmbedModel method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.glove.GloveWordEmbedModel.__init__">(zensols.deepnlp.embed.glove.GloveWordEmbedModel method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.word2vec.Word2VecModel.__init__">(zensols.deepnlp.embed.word2vec.Word2VecModel method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.__init__">(zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.wordtext.TextWordEmbedModel.__init__">(zensols.deepnlp.embed.wordtext.TextWordEmbedModel method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.wordtext.TextWordModelMetadata.__init__">(zensols.deepnlp.embed.wordtext.TextWordModelMetadata method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.feature.DataframeDocumentFeatureStash.__init__">(zensols.deepnlp.feature.DataframeDocumentFeatureStash method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.feature.DocumentFeatureStash.__init__">(zensols.deepnlp.feature.DocumentFeatureStash method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.domain.DocumentIndexVectorizer.__init__">(zensols.deepnlp.index.domain.DocumentIndexVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.domain.IndexedDocumentFactory.__init__">(zensols.deepnlp.index.domain.IndexedDocumentFactory method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer.__init__">(zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.__init__">(zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1d.__init__">(zensols.deepnlp.layer.conv.DeepConvolution1d method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.__init__">(zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.EmbeddingLayer.__init__">(zensols.deepnlp.layer.embed.EmbeddingLayer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.EmbeddingNetworkModule.__init__">(zensols.deepnlp.layer.embed.EmbeddingNetworkModule method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.EmbeddingNetworkSettings.__init__">(zensols.deepnlp.layer.embed.EmbeddingNetworkSettings method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRF.__init__">(zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRF method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings.__init__">(zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.wordvec.WordVectorEmbeddingLayer.__init__">(zensols.deepnlp.layer.wordvec.WordVectorEmbeddingLayer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacade.__init__">(zensols.deepnlp.model.facade.LanguageModelFacade method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacadeConfig.__init__">(zensols.deepnlp.model.facade.LanguageModelFacadeConfig method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.sequence.BioSequenceAnnotationMapper.__init__">(zensols.deepnlp.model.sequence.BioSequenceAnnotationMapper method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.sequence.SequenceAnnotation.__init__">(zensols.deepnlp.model.sequence.SequenceAnnotation method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.sequence.SequenceDocumentAnnotation.__init__">(zensols.deepnlp.model.sequence.SequenceDocumentAnnotation method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedDocument.__init__">(zensols.deepnlp.transformer.domain.TokenizedDocument method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedFeatureDocument.__init__">(zensols.deepnlp.transformer.domain.TokenizedFeatureDocument method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.embed.TransformerEmbedding.__init__">(zensols.deepnlp.transformer.embed.TransformerEmbedding method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.layer.TransformerEmbeddingLayer.__init__">(zensols.deepnlp.transformer.layer.TransformerEmbeddingLayer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.layer.TransformerSequence.__init__">(zensols.deepnlp.transformer.layer.TransformerSequence method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.layer.TransformerSequenceNetworkSettings.__init__">(zensols.deepnlp.transformer.layer.TransformerSequenceNetworkSettings method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.mask.MaskFiller.__init__">(zensols.deepnlp.transformer.mask.MaskFiller method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.mask.Prediction.__init__">(zensols.deepnlp.transformer.mask.Prediction method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.mask.TokenPrediction.__init__">(zensols.deepnlp.transformer.mask.TokenPrediction method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.pred.TransformerSequencePredictionsDataFrameFactory.__init__">(zensols.deepnlp.transformer.pred.TransformerSequencePredictionsDataFrameFactory method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerResource.__init__">(zensols.deepnlp.transformer.resource.TransformerResource method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.tokenizer.TransformerDocumentTokenizer.__init__">(zensols.deepnlp.transformer.tokenizer.TransformerDocumentTokenizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.DocumentEmbeddingFeatureVectorizer.__init__">(zensols.deepnlp.transformer.vectorizers.DocumentEmbeddingFeatureVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.DocumentMappedTransformerFeatureContext.__init__">(zensols.deepnlp.transformer.vectorizers.DocumentMappedTransformerFeatureContext method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.LabelTransformerFeatureVectorizer.__init__">(zensols.deepnlp.transformer.vectorizers.LabelTransformerFeatureVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerEmbeddingFeatureVectorizer.__init__">(zensols.deepnlp.transformer.vectorizers.TransformerEmbeddingFeatureVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerExpanderFeatureContext.__init__">(zensols.deepnlp.transformer.vectorizers.TransformerExpanderFeatureContext method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerExpanderFeatureVectorizer.__init__">(zensols.deepnlp.transformer.vectorizers.TransformerExpanderFeatureVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerFeatureContext.__init__">(zensols.deepnlp.transformer.vectorizers.TransformerFeatureContext method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerFeatureVectorizer.__init__">(zensols.deepnlp.transformer.vectorizers.TransformerFeatureVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerMaskFeatureVectorizer.__init__">(zensols.deepnlp.transformer.vectorizers.TransformerMaskFeatureVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerNominalFeatureVectorizer.__init__">(zensols.deepnlp.transformer.vectorizers.TransformerNominalFeatureVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.CachingWordPieceFeatureDocumentFactory.__init__">(zensols.deepnlp.transformer.wordpiece.CachingWordPieceFeatureDocumentFactory method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPiece.__init__">(zensols.deepnlp.transformer.wordpiece.WordPiece method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceDocumentDecorator.__init__">(zensols.deepnlp.transformer.wordpiece.WordPieceDocumentDecorator method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocument.__init__">(zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocument method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocumentFactory.__init__">(zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocumentFactory method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureSentence.__init__">(zensols.deepnlp.transformer.wordpiece.WordPieceFeatureSentence method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureSpan.__init__">(zensols.deepnlp.transformer.wordpiece.WordPieceFeatureSpan method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureToken.__init__">(zensols.deepnlp.transformer.wordpiece.WordPieceFeatureToken method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureVectorizer.__init__">(zensols.deepnlp.transformer.wordpiece.WordPieceFeatureVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.embed.EmbeddingFeatureVectorizer.__init__">(zensols.deepnlp.vectorize.embed.EmbeddingFeatureVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.embed.WordVectorEmbeddingFeatureVectorizer.__init__">(zensols.deepnlp.vectorize.embed.WordVectorEmbeddingFeatureVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizer.__init__">(zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager.__init__">(zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FoldingDocumentVectorizer.__init__">(zensols.deepnlp.vectorize.manager.FoldingDocumentVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.MultiDocumentVectorizer.__init__">(zensols.deepnlp.vectorize.manager.MultiDocumentVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer.__init__">(zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer.__init__">(zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer.__init__">(zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.__init__">(zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer.__init__">(zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.DecodedContainerFeatureVectorizer.__init__">(zensols.deepnlp.vectorize.vectorizers.DecodedContainerFeatureVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.DepthFeatureDocumentVectorizer.__init__">(zensols.deepnlp.vectorize.vectorizers.DepthFeatureDocumentVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer.__init__">(zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer.__init__">(zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.OneHotEncodedFeatureDocumentVectorizer.__init__">(zensols.deepnlp.vectorize.vectorizers.OneHotEncodedFeatureDocumentVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.OverlappingFeatureDocumentVectorizer.__init__">(zensols.deepnlp.vectorize.vectorizers.OverlappingFeatureDocumentVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.StatisticsFeatureDocumentVectorizer.__init__">(zensols.deepnlp.vectorize.vectorizers.StatisticsFeatureDocumentVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.TokenEmbeddingFeatureVectorizer.__init__">(zensols.deepnlp.vectorize.vectorizers.TokenEmbeddingFeatureVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.WordEmbeddingFeatureVectorizer.__init__">(zensols.deepnlp.vectorize.vectorizers.WordEmbeddingFeatureVectorizer method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedError.__module__">__module__ (zensols.deepnlp.embed.domain.WordEmbedError attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerError.__module__">(zensols.deepnlp.transformer.resource.TransformerError attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedError.__static_attributes__">__static_attributes__ (zensols.deepnlp.embed.domain.WordEmbedError attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerError.__static_attributes__">(zensols.deepnlp.transformer.resource.TransformerError attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.domain.DocumentIndexVectorizer._create_model">_create_model() (zensols.deepnlp.index.domain.DocumentIndexVectorizer method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.feature.DocumentFeatureStash._parse_document">_parse_document() (zensols.deepnlp.feature.DocumentFeatureStash method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="A" class="genindex-section">
+  <h2>A</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureVectorizer.access">access (zensols.deepnlp.transformer.wordpiece.WordPieceFeatureVectorizer attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.TokenEmbeddingFeatureVectorizer.add_dims">add_dims (zensols.deepnlp.vectorize.vectorizers.TokenEmbeddingFeatureVectorizer attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocumentFactory.add_sent_embeddings">add_sent_embeddings() (zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocumentFactory method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocumentFactory.add_token_embeddings">add_token_embeddings() (zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocumentFactory method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.feature.DataframeDocumentFeatureStash.additional_columns">additional_columns (zensols.deepnlp.feature.DataframeDocumentFeatureStash attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.embed.TransformerEmbedding.ALL_OUTPUT">ALL_OUTPUT (zensols.deepnlp.transformer.embed.TransformerEmbedding attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.tokenizer.TransformerDocumentTokenizer.all_special_tokens">all_special_tokens (zensols.deepnlp.transformer.tokenizer.TransformerDocumentTokenizer property)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerNominalFeatureVectorizer.annotations_attribute">annotations_attribute (zensols.deepnlp.transformer.vectorizers.TransformerNominalFeatureVectorizer attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.applies">applies (zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerResource.args">args (zensols.deepnlp.transformer.resource.TransformerResource attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedDocument.attention_mask">attention_mask (zensols.deepnlp.transformer.domain.TokenizedDocument property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.feature.DocumentFeatureStash.ATTR_EXP_META">ATTR_EXP_META (zensols.deepnlp.feature.DocumentFeatureStash attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer.ATTR_EXP_META">(zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer.ATTR_EXP_META">(zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacadeConfig.attribs">attribs (zensols.deepnlp.model.facade.LanguageModelFacadeConfig attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="B" class="genindex-section">
+  <h2>B</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.sequence.BioSequenceAnnotationMapper.begin_tag">begin_tag (zensols.deepnlp.model.sequence.BioSequenceAnnotationMapper attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.sequence.BioSequenceAnnotationMapper">BioSequenceAnnotationMapper (class in zensols.deepnlp.model.sequence)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedDocument.boundary_tokens">boundary_tokens (zensols.deepnlp.transformer.domain.TokenizedDocument attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="C" class="genindex-section">
+  <h2>C</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel.cache">cache (zensols.deepnlp.embed.domain.WordEmbedModel attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.embed.TransformerEmbedding.cache">(zensols.deepnlp.transformer.embed.TransformerEmbedding property)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerResource.cache">(zensols.deepnlp.transformer.resource.TransformerResource attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerResource.cache_dir">cache_dir (zensols.deepnlp.transformer.resource.TransformerResource attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerResource.cached">cached (zensols.deepnlp.transformer.resource.TransformerResource property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.CachingWordPieceFeatureDocumentFactory">CachingWordPieceFeatureDocumentFactory (class in zensols.deepnlp.transformer.wordpiece)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerResource.cased">cased (zensols.deepnlp.transformer.resource.TransformerResource attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedFeatureDocument.char_offsets">char_offsets (zensols.deepnlp.transformer.domain.TokenizedFeatureDocument attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.pred.ClassificationPredictionMapper">ClassificationPredictionMapper (class in zensols.deepnlp.classify.pred)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade">ClassifyModelFacade (class in zensols.deepnlp.classify.facade)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.model.ClassifyNetwork">ClassifyNetwork (class in zensols.deepnlp.classify.model)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.model.ClassifyNetworkSettings">ClassifyNetworkSettings (class in zensols.deepnlp.classify.model)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.domain.DocumentIndexVectorizer.clear">clear() (zensols.deepnlp.index.domain.DocumentIndexVectorizer method)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerResource.clear">(zensols.deepnlp.transformer.resource.TransformerResource method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.CachingWordPieceFeatureDocumentFactory.clear">(zensols.deepnlp.transformer.wordpiece.CachingWordPieceFeatureDocumentFactory method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel.clear_cache">clear_cache() (zensols.deepnlp.embed.domain.WordEmbedModel method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.cli.NLPClassifyPackedModelApplication.CLI_META">CLI_META (zensols.deepnlp.cli.NLPClassifyPackedModelApplication attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.cli.NLPFacadeBatchApplication.CLI_META">(zensols.deepnlp.cli.NLPFacadeBatchApplication attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.cli.NLPFacadeModelApplication.CLI_META">(zensols.deepnlp.cli.NLPFacadeModelApplication attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureToken.clone">clone() (zensols.deepnlp.transformer.wordpiece.WordPieceFeatureToken method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.components">components (zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager.configured_spacy_vectorizers">configured_spacy_vectorizers (zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.mask.Prediction.cont">cont (zensols.deepnlp.transformer.mask.Prediction attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.domain.TokenContainerDataPoint.container">container (zensols.deepnlp.classify.domain.TokenContainerDataPoint attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerExpanderFeatureContext.contexts">contexts (zensols.deepnlp.transformer.vectorizers.TransformerExpanderFeatureContext attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.model.ClassifyNetworkSettings.convolution_settings">convolution_settings (zensols.deepnlp.classify.model.ClassifyNetworkSettings attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocument.copy_embedding">copy_embedding() (zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocument method)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureSpan.copy_embedding">(zensols.deepnlp.transformer.wordpiece.WordPieceFeatureSpan method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureToken.copy_embedding">(zensols.deepnlp.transformer.wordpiece.WordPieceFeatureToken method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.fasttext.FastTextEmbedModel.corpus">corpus (zensols.deepnlp.embed.fasttext.FastTextEmbedModel attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacade.count_feature_ids">count_feature_ids (zensols.deepnlp.model.facade.LanguageModelFacade property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer.count_vectorizer">count_vectorizer (zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer.count_vectorizer_feature_id">count_vectorizer_feature_id (zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer">CountEnumContainerFeatureVectorizer (class in zensols.deepnlp.vectorize.vectorizers)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade.COUNTS_ATTRIBUTE">COUNTS_ATTRIBUTE (zensols.deepnlp.classify.facade.ClassifyModelFacade attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.CachingWordPieceFeatureDocumentFactory.create">create() (zensols.deepnlp.transformer.wordpiece.CachingWordPieceFeatureDocumentFactory method)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocumentFactory.create">(zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocumentFactory method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.domain.IndexedDocumentFactory.create_training_docs">create_training_docs() (zensols.deepnlp.index.domain.IndexedDocumentFactory method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="D" class="genindex-section">
+  <h2>D</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerMaskFeatureVectorizer.data_type">data_type (zensols.deepnlp.transformer.vectorizers.TransformerMaskFeatureVectorizer attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.feature.DataframeDocumentFeatureStash">DataframeDocumentFeatureStash (class in zensols.deepnlp.feature)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.wordtext.TextWordEmbedModel.DATASET_NAME">DATASET_NAME (zensols.deepnlp.embed.wordtext.TextWordEmbedModel attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel.deallocate">deallocate() (zensols.deepnlp.embed.domain.WordEmbedModel method)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1d.deallocate">(zensols.deepnlp.layer.conv.DeepConvolution1d method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.EmbeddingLayer.deallocate">(zensols.deepnlp.layer.embed.EmbeddingLayer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRF.deallocate">(zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRF method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedDocument.deallocate">(zensols.deepnlp.transformer.domain.TokenizedDocument method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.layer.TransformerEmbeddingLayer.deallocate">(zensols.deepnlp.transformer.layer.TransformerEmbeddingLayer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.layer.TransformerSequence.deallocate">(zensols.deepnlp.transformer.layer.TransformerSequence method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerExpanderFeatureContext.deallocate">(zensols.deepnlp.transformer.vectorizers.TransformerExpanderFeatureContext method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerFeatureContext.deallocate">(zensols.deepnlp.transformer.vectorizers.TransformerFeatureContext method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager.deallocate">(zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FoldingDocumentVectorizer.decode">decode() (zensols.deepnlp.vectorize.manager.FoldingDocumentVectorizer method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer.decode_as_flat">decode_as_flat (zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureVectorizer.decode_embedding">decode_embedding (zensols.deepnlp.transformer.wordpiece.WordPieceFeatureVectorizer attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.embed.EmbeddingFeatureVectorizer.decode_embedding">(zensols.deepnlp.vectorize.embed.EmbeddingFeatureVectorizer attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.DecodedContainerFeatureVectorizer.decoded_feature_ids">decoded_feature_ids (zensols.deepnlp.vectorize.vectorizers.DecodedContainerFeatureVectorizer attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.DecodedContainerFeatureVectorizer">DecodedContainerFeatureVectorizer (class in zensols.deepnlp.vectorize.vectorizers)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.layer.TransformerSequenceNetworkSettings.decoder_settings">decoder_settings (zensols.deepnlp.transformer.layer.TransformerSequenceNetworkSettings attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.decorate">decorate() (zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator method)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceDocumentDecorator.decorate">(zensols.deepnlp.transformer.wordpiece.WordPieceDocumentDecorator method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1d">DeepConvolution1d (class in zensols.deepnlp.layer.conv)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings">DeepConvolution1dNetworkSettings (class in zensols.deepnlp.layer.conv)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.tokenizer.TransformerDocumentTokenizer.DEFAULT_PARAMS">DEFAULT_PARAMS (zensols.deepnlp.transformer.tokenizer.TransformerDocumentTokenizer attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel">DefaultTextWordEmbedModel (class in zensols.deepnlp.embed.wordtext)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerNominalFeatureVectorizer.delegate_feature_id">delegate_feature_id (zensols.deepnlp.transformer.vectorizers.TransformerNominalFeatureVectorizer attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerExpanderFeatureVectorizer.delegate_feature_ids">delegate_feature_ids (zensols.deepnlp.transformer.vectorizers.TransformerExpanderFeatureVectorizer attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerExpanderFeatureVectorizer.delegates">delegates (zensols.deepnlp.transformer.vectorizers.TransformerExpanderFeatureVectorizer property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade.DEPENDENCIES_ATTRIBUTE">DEPENDENCIES_ATTRIBUTE (zensols.deepnlp.classify.facade.ClassifyModelFacade attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade.DEPENDENCY_EXPANDER_ATTRIBTE">DEPENDENCY_EXPANDER_ATTRIBTE (zensols.deepnlp.classify.facade.ClassifyModelFacade attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer">DependencyFeatureVectorizer (class in zensols.deepnlp.vectorize.spacy)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.DepthFeatureDocumentVectorizer">DepthFeatureDocumentVectorizer (class in zensols.deepnlp.vectorize.vectorizers)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.fasttext.FastTextEmbedModel.desc">desc (zensols.deepnlp.embed.fasttext.FastTextEmbedModel attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.glove.GloveWordEmbedModel.desc">(zensols.deepnlp.embed.glove.GloveWordEmbedModel attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.desc">(zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.wordtext.TextWordModelMetadata.desc">(zensols.deepnlp.embed.wordtext.TextWordModelMetadata attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer.DESCRIPTION">DESCRIPTION (zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.DESCRIPTION">(zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.DocumentEmbeddingFeatureVectorizer.DESCRIPTION">(zensols.deepnlp.transformer.vectorizers.DocumentEmbeddingFeatureVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerEmbeddingFeatureVectorizer.DESCRIPTION">(zensols.deepnlp.transformer.vectorizers.TransformerEmbeddingFeatureVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerExpanderFeatureVectorizer.DESCRIPTION">(zensols.deepnlp.transformer.vectorizers.TransformerExpanderFeatureVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerMaskFeatureVectorizer.DESCRIPTION">(zensols.deepnlp.transformer.vectorizers.TransformerMaskFeatureVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerNominalFeatureVectorizer.DESCRIPTION">(zensols.deepnlp.transformer.vectorizers.TransformerNominalFeatureVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureVectorizer.DESCRIPTION">(zensols.deepnlp.transformer.wordpiece.WordPieceFeatureVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.embed.WordVectorEmbeddingFeatureVectorizer.DESCRIPTION">(zensols.deepnlp.vectorize.embed.WordVectorEmbeddingFeatureVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer.DESCRIPTION">(zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer.DESCRIPTION">(zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer.DESCRIPTION">(zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.description">description (zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer.DESCRIPTION">DESCRIPTION (zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.DepthFeatureDocumentVectorizer.DESCRIPTION">(zensols.deepnlp.vectorize.vectorizers.DepthFeatureDocumentVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer.DESCRIPTION">(zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer.DESCRIPTION">(zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.OneHotEncodedFeatureDocumentVectorizer.DESCRIPTION">(zensols.deepnlp.vectorize.vectorizers.OneHotEncodedFeatureDocumentVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.OverlappingFeatureDocumentVectorizer.DESCRIPTION">(zensols.deepnlp.vectorize.vectorizers.OverlappingFeatureDocumentVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.StatisticsFeatureDocumentVectorizer.DESCRIPTION">(zensols.deepnlp.vectorize.vectorizers.StatisticsFeatureDocumentVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.TokenEmbeddingFeatureVectorizer.DESCRIPTION">(zensols.deepnlp.vectorize.vectorizers.TokenEmbeddingFeatureVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.WordEmbeddingFeatureVectorizer.DESCRIPTION">(zensols.deepnlp.vectorize.vectorizers.WordEmbeddingFeatureVectorizer attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedDocument.detach">detach() (zensols.deepnlp.transformer.domain.TokenizedDocument method)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedFeatureDocument.detach">(zensols.deepnlp.transformer.domain.TokenizedFeatureDocument method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureToken.detach">(zensols.deepnlp.transformer.wordpiece.WordPieceFeatureToken method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.mask.Prediction.df">df (zensols.deepnlp.transformer.mask.Prediction attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.fasttext.FastTextEmbedModel.dimension">dimension (zensols.deepnlp.embed.fasttext.FastTextEmbedModel attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.glove.GloveWordEmbedModel.dimension">(zensols.deepnlp.embed.glove.GloveWordEmbedModel attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.word2vec.Word2VecModel.dimension">(zensols.deepnlp.embed.word2vec.Word2VecModel attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.dimension">(zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.wordtext.TextWordModelMetadata.dimension">(zensols.deepnlp.embed.wordtext.TextWordModelMetadata attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.dist">dist() (zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.domain.TokenContainerDataPoint.doc">doc (zensols.deepnlp.classify.domain.TokenContainerDataPoint property)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.sequence.SequenceAnnotation.doc">(zensols.deepnlp.model.sequence.SequenceAnnotation attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.sequence.SequenceDocumentAnnotation.doc">(zensols.deepnlp.model.sequence.SequenceDocumentAnnotation attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.domain.DocumentIndexVectorizer.doc_factory">doc_factory (zensols.deepnlp.index.domain.DocumentIndexVectorizer attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacade.doc_parser">doc_parser (zensols.deepnlp.model.facade.LanguageModelFacade property)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager.doc_parser">(zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.TextFeatureType.DOCUMENT">DOCUMENT (zensols.deepnlp.vectorize.manager.TextFeatureType attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.feature.DocumentFeatureStash.document_limit">document_limit (zensols.deepnlp.feature.DocumentFeatureStash attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.DocumentEmbeddingFeatureVectorizer">DocumentEmbeddingFeatureVectorizer (class in zensols.deepnlp.transformer.vectorizers)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.feature.DocumentFeatureStash">DocumentFeatureStash (class in zensols.deepnlp.feature)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.domain.DocumentIndexVectorizer">DocumentIndexVectorizer (class in zensols.deepnlp.index.domain)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.DocumentMappedTransformerFeatureContext">DocumentMappedTransformerFeatureContext (class in zensols.deepnlp.transformer.vectorizers)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.cli.NLPFacadeBatchApplication.dump_batches">dump_batches() (zensols.deepnlp.cli.NLPFacadeBatchApplication method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="E" class="genindex-section">
+  <h2>E</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocumentFactory.embed_model">embed_model (zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocumentFactory attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureVectorizer.embed_model">(zensols.deepnlp.transformer.wordpiece.WordPieceFeatureVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.embed.EmbeddingFeatureVectorizer.embed_model">(zensols.deepnlp.vectorize.embed.EmbeddingFeatureVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.WordEmbeddingFeatureVectorizer.embed_model">(zensols.deepnlp.vectorize.vectorizers.WordEmbeddingFeatureVectorizer attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.pred.TransformerSequencePredictionsDataFrameFactory.embedded_document_attribute">embedded_document_attribute (zensols.deepnlp.transformer.pred.TransformerSequencePredictionsDataFrameFactory attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRF">EmbeddedRecurrentCRF (class in zensols.deepnlp.layer.embrecurcrf)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings">EmbeddedRecurrentCRFSettings (class in zensols.deepnlp.layer.embrecurcrf)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacade.embedding">embedding (zensols.deepnlp.model.facade.LanguageModelFacade property)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocument.embedding">(zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocument property)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureSpan.embedding">(zensols.deepnlp.transformer.wordpiece.WordPieceFeatureSpan attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureToken.embedding">(zensols.deepnlp.transformer.wordpiece.WordPieceFeatureToken attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.TextFeatureType.EMBEDDING">EMBEDDING (zensols.deepnlp.vectorize.manager.TextFeatureType attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacadeConfig.embedding_attribs">embedding_attribs (zensols.deepnlp.model.facade.LanguageModelFacadeConfig attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade.EMBEDDING_ATTRIBUTES">EMBEDDING_ATTRIBUTES (zensols.deepnlp.classify.facade.ClassifyModelFacade attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.embedding_dimension">embedding_dimension (zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.EmbeddingNetworkModule.embedding_dimension">(zensols.deepnlp.layer.embed.EmbeddingNetworkModule property)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.EmbeddingNetworkSettings.embedding_layer">embedding_layer (zensols.deepnlp.layer.embed.EmbeddingNetworkSettings attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.embed.EmbeddingFeatureVectorizer">EmbeddingFeatureVectorizer (class in zensols.deepnlp.vectorize.embed)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.EmbeddingLayer">EmbeddingLayer (class in zensols.deepnlp.layer.embed)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.EmbeddingNetworkModule">EmbeddingNetworkModule (class in zensols.deepnlp.layer.embed)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.EmbeddingNetworkSettings">EmbeddingNetworkSettings (class in zensols.deepnlp.layer.embed)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureVectorizer.encode">encode() (zensols.deepnlp.transformer.wordpiece.WordPieceFeatureVectorizer method)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizer.encode">(zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FoldingDocumentVectorizer.encode">(zensols.deepnlp.vectorize.manager.FoldingDocumentVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.MultiDocumentVectorizer.encode">(zensols.deepnlp.vectorize.manager.MultiDocumentVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.DepthFeatureDocumentVectorizer.encode">(zensols.deepnlp.vectorize.vectorizers.DepthFeatureDocumentVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.TokenEmbeddingFeatureVectorizer.encode">(zensols.deepnlp.vectorize.vectorizers.TokenEmbeddingFeatureVectorizer method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerFeatureVectorizer.encode_tokenized">encode_tokenized (zensols.deepnlp.transformer.vectorizers.TransformerFeatureVectorizer attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureVectorizer.encode_transformed">encode_transformed (zensols.deepnlp.transformer.wordpiece.WordPieceFeatureVectorizer attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade.ENUM_EXPANDER_ATTRIBUTE">ENUM_EXPANDER_ATTRIBUTE (zensols.deepnlp.classify.facade.ClassifyModelFacade attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacade.enum_feature_ids">enum_feature_ids (zensols.deepnlp.model.facade.LanguageModelFacade property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer">EnumContainerFeatureVectorizer (class in zensols.deepnlp.vectorize.vectorizers)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade.ENUMS_ATTRIBUTE">ENUMS_ATTRIBUTE (zensols.deepnlp.classify.facade.ClassifyModelFacade attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="F" class="genindex-section">
+  <h2>F</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.cli.NLPClassifyPackedModelApplication.facade">facade (zensols.deepnlp.cli.NLPClassifyPackedModelApplication property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.feature.DocumentFeatureStash.factory">factory (zensols.deepnlp.feature.DocumentFeatureStash attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade.FASTTEXT_CRAWL_300_EMBEDDING">FASTTEXT_CRAWL_300_EMBEDDING (zensols.deepnlp.classify.facade.ClassifyModelFacade attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade.FASTTEXT_NEWS_300_EMBEDDING">FASTTEXT_NEWS_300_EMBEDDING (zensols.deepnlp.classify.facade.ClassifyModelFacade attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.fasttext.FastTextEmbedModel">FastTextEmbedModel (class in zensols.deepnlp.embed.fasttext)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.domain.DocumentIndexVectorizer.feat_to_tokens">feat_to_tokens() (zensols.deepnlp.index.domain.DocumentIndexVectorizer static method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedFeatureDocument.feature">feature (zensols.deepnlp.transformer.domain.TokenizedFeatureDocument attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.OneHotEncodedFeatureDocumentVectorizer.feature_attribute">feature_attribute (zensols.deepnlp.vectorize.vectorizers.OneHotEncodedFeatureDocumentVectorizer attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.mask.MaskFiller.feature_id">feature_id (zensols.deepnlp.transformer.mask.MaskFiller attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.tokenizer.TransformerDocumentTokenizer.feature_id">(zensols.deepnlp.transformer.tokenizer.TransformerDocumentTokenizer attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer.FEATURE_ID">FEATURE_ID (zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer.FEATURE_ID">(zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer.FEATURE_ID">(zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer.FEATURE_TYPE">FEATURE_TYPE (zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.FEATURE_TYPE">(zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.DocumentEmbeddingFeatureVectorizer.FEATURE_TYPE">(zensols.deepnlp.transformer.vectorizers.DocumentEmbeddingFeatureVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.LabelTransformerFeatureVectorizer.FEATURE_TYPE">(zensols.deepnlp.transformer.vectorizers.LabelTransformerFeatureVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerEmbeddingFeatureVectorizer.FEATURE_TYPE">(zensols.deepnlp.transformer.vectorizers.TransformerEmbeddingFeatureVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerExpanderFeatureVectorizer.FEATURE_TYPE">(zensols.deepnlp.transformer.vectorizers.TransformerExpanderFeatureVectorizer attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerFeatureVectorizer.feature_type">feature_type (zensols.deepnlp.transformer.vectorizers.TransformerFeatureVectorizer property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureVectorizer.FEATURE_TYPE">FEATURE_TYPE (zensols.deepnlp.transformer.wordpiece.WordPieceFeatureVectorizer attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.embed.WordVectorEmbeddingFeatureVectorizer.FEATURE_TYPE">(zensols.deepnlp.vectorize.embed.WordVectorEmbeddingFeatureVectorizer attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizer.feature_type">feature_type (zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizer property)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.MultiDocumentVectorizer.FEATURE_TYPE">FEATURE_TYPE (zensols.deepnlp.vectorize.manager.MultiDocumentVectorizer attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer.FEATURE_TYPE">(zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.DepthFeatureDocumentVectorizer.FEATURE_TYPE">(zensols.deepnlp.vectorize.vectorizers.DepthFeatureDocumentVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer.FEATURE_TYPE">(zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.OneHotEncodedFeatureDocumentVectorizer.feature_type">feature_type (zensols.deepnlp.vectorize.vectorizers.OneHotEncodedFeatureDocumentVectorizer property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.StatisticsFeatureDocumentVectorizer.FEATURE_TYPE">FEATURE_TYPE (zensols.deepnlp.vectorize.vectorizers.StatisticsFeatureDocumentVectorizer attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.TokenEmbeddingFeatureVectorizer.feature_type">feature_type (zensols.deepnlp.vectorize.vectorizers.TokenEmbeddingFeatureVectorizer property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.WordEmbeddingFeatureVectorizer.FEATURE_TYPE">FEATURE_TYPE (zensols.deepnlp.vectorize.vectorizers.WordEmbeddingFeatureVectorizer attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.mask.MaskFiller.feature_value">feature_value (zensols.deepnlp.transformer.mask.MaskFiller attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizer">FeatureDocumentVectorizer (class in zensols.deepnlp.vectorize.manager)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager">FeatureDocumentVectorizerManager (class in zensols.deepnlp.vectorize.manager)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.file_name">file_name (zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.file_name_pattern">file_name_pattern (zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureVectorizer.fold_method">fold_method (zensols.deepnlp.transformer.wordpiece.WordPieceFeatureVectorizer attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FoldingDocumentVectorizer.fold_method">(zensols.deepnlp.vectorize.manager.FoldingDocumentVectorizer attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FoldingDocumentVectorizer">FoldingDocumentVectorizer (class in zensols.deepnlp.vectorize.manager)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.wordvec.WordVectorEmbeddingLayer.forward">forward() (zensols.deepnlp.layer.wordvec.WordVectorEmbeddingLayer method)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.layer.TransformerEmbeddingLayer.forward">(zensols.deepnlp.transformer.layer.TransformerEmbeddingLayer method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.EmbeddingNetworkModule.forward_document_features">forward_document_features() (zensols.deepnlp.layer.embed.EmbeddingNetworkModule method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.EmbeddingNetworkModule.forward_embedding_features">forward_embedding_features() (zensols.deepnlp.layer.embed.EmbeddingNetworkModule method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.EmbeddingNetworkModule.forward_token_features">forward_token_features() (zensols.deepnlp.layer.embed.EmbeddingNetworkModule method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.from_spacy">from_spacy() (zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedDocument.from_tensor">from_tensor() (zensols.deepnlp.transformer.domain.TokenizedDocument class method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="G" class="genindex-section">
+  <h2>G</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel.get">get() (zensols.deepnlp.embed.domain.WordEmbedModel method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.mask.Prediction.get_container">get_container() (zensols.deepnlp.transformer.mask.Prediction method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerFeatureContext.get_document">get_document() (zensols.deepnlp.transformer.vectorizers.TransformerFeatureContext method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.EmbeddingNetworkModule.get_embedding_tensors">get_embedding_tensors() (zensols.deepnlp.layer.embed.EmbeddingNetworkModule method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer.get_feature_counts">get_feature_counts() (zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerFeatureContext.get_feature_document">get_feature_document() (zensols.deepnlp.transformer.vectorizers.TransformerFeatureContext method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1d.get_layers">get_layers() (zensols.deepnlp.layer.conv.DeepConvolution1d method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacade.get_max_word_piece_len">get_max_word_piece_len() (zensols.deepnlp.model.facade.LanguageModelFacade method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.model.ClassifyNetworkSettings.get_module_class_name">get_module_class_name() (zensols.deepnlp.classify.model.ClassifyNetworkSettings method)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.get_module_class_name">(zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.EmbeddingNetworkSettings.get_module_class_name">(zensols.deepnlp.layer.embed.EmbeddingNetworkSettings method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings.get_module_class_name">(zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.layer.TransformerSequenceNetworkSettings.get_module_class_name">(zensols.deepnlp.transformer.layer.TransformerSequenceNetworkSettings method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager.get_token_length">get_token_length() (zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.mask.Prediction.get_tokens">get_tokens() (zensols.deepnlp.transformer.mask.Prediction method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacade.get_transformer_vectorizer">get_transformer_vectorizer() (zensols.deepnlp.model.facade.LanguageModelFacade method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedDocument.get_wordpiece_count">get_wordpiece_count() (zensols.deepnlp.transformer.domain.TokenizedDocument method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade.GLOVE_300_EMBEDDING">GLOVE_300_EMBEDDING (zensols.deepnlp.classify.facade.ClassifyModelFacade attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade.GLOVE_50_EMBEDDING">GLOVE_50_EMBEDDING (zensols.deepnlp.classify.facade.ClassifyModelFacade attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.glove.GloveWordEmbedModel">GloveWordEmbedModel (class in zensols.deepnlp.embed.glove)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="H" class="genindex-section">
+  <h2>H</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.CachingWordPieceFeatureDocumentFactory.hasher">hasher (zensols.deepnlp.transformer.wordpiece.CachingWordPieceFeatureDocumentFactory attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="I" class="genindex-section">
+  <h2>I</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedFeatureDocument.id2tok">id2tok (zensols.deepnlp.transformer.domain.TokenizedFeatureDocument attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.tokenizer.TransformerDocumentTokenizer.id2tok">(zensols.deepnlp.transformer.tokenizer.TransformerDocumentTokenizer property)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.id_from_spacy">id_from_spacy() (zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.id_from_spacy_symbol">id_from_spacy_symbol() (zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.sequence.BioSequenceAnnotationMapper.in_tag">in_tag (zensols.deepnlp.model.sequence.BioSequenceAnnotationMapper attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPiece.index">index (zensols.deepnlp.transformer.wordpiece.WordPiece attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.domain.DocumentIndexVectorizer.index_path">index_path (zensols.deepnlp.index.domain.DocumentIndexVectorizer attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.domain.IndexedDocumentFactory">IndexedDocumentFactory (class in zensols.deepnlp.index.domain)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureToken.indexes">indexes (zensols.deepnlp.transformer.wordpiece.WordPieceFeatureToken property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.init">init() (in module zensols.deepnlp)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedDocument.input_ids">input_ids (zensols.deepnlp.transformer.domain.TokenizedDocument property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.word2vec.Word2VecModel.installer">installer (zensols.deepnlp.embed.word2vec.Word2VecModel attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.wordtext.TextWordEmbedModel.installer">(zensols.deepnlp.embed.wordtext.TextWordEmbedModel attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager.is_batch_token_length">is_batch_token_length (zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedDocument.is_empty">is_empty (zensols.deepnlp.transformer.domain.TokenizedDocument property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.LabelTransformerFeatureVectorizer.is_labeler">is_labeler (zensols.deepnlp.transformer.vectorizers.LabelTransformerFeatureVectorizer attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerFeatureVectorizer.is_labeler">(zensols.deepnlp.transformer.vectorizers.TransformerFeatureVectorizer attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPiece.is_unknown">is_unknown (zensols.deepnlp.transformer.wordpiece.WordPiece property)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureToken.is_unknown">(zensols.deepnlp.transformer.wordpiece.WordPieceFeatureToken property)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.iterations">iterations (zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="K" class="genindex-section">
+  <h2>K</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.mask.MaskFiller.k">k (zensols.deepnlp.transformer.mask.MaskFiller attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel.keyed_vectors">keyed_vectors (zensols.deepnlp.embed.domain.WordEmbedModel property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel.keys">keys() (zensols.deepnlp.embed.domain.WordEmbedModel method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="L" class="genindex-section">
+  <h2>L</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.domain.LabeledFeatureDocument.label">label (zensols.deepnlp.classify.domain.LabeledFeatureDocument attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.domain.LabeledFeatureDocumentDataPoint.label">(zensols.deepnlp.classify.domain.LabeledFeatureDocumentDataPoint property)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.sequence.SequenceAnnotation.label">(zensols.deepnlp.model.sequence.SequenceAnnotation attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerNominalFeatureVectorizer.label_all_tokens">label_all_tokens (zensols.deepnlp.transformer.vectorizers.TransformerNominalFeatureVectorizer attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.pred.ClassificationPredictionMapper.label_feature_id">label_feature_id (zensols.deepnlp.classify.pred.ClassificationPredictionMapper attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.pred.ClassificationPredictionMapper.label_vectorizer">label_vectorizer (zensols.deepnlp.classify.pred.ClassificationPredictionMapper property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.domain.LabeledFeatureDocument">LabeledFeatureDocument (class in zensols.deepnlp.classify.domain)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.domain.LabeledFeatureDocumentDataPoint">LabeledFeatureDocumentDataPoint (class in zensols.deepnlp.classify.domain)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.multilabel.MultiLabelFeatureDocument.labels">labels (zensols.deepnlp.classify.multilabel.MultiLabelFeatureDocument attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.multilabel.MultiLabelFeatureDocumentDataPoint.labels">(zensols.deepnlp.classify.multilabel.MultiLabelFeatureDocumentDataPoint property)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.LabelTransformerFeatureVectorizer">LabelTransformerFeatureVectorizer (class in zensols.deepnlp.transformer.vectorizers)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer.LANG">LANG (zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer.LANG">(zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer.LANG">(zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade.LANGUAGE_ATTRIBUTES">LANGUAGE_ATTRIBUTES (zensols.deepnlp.classify.facade.ClassifyModelFacade attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacade.language_attributes">language_attributes (zensols.deepnlp.model.facade.LanguageModelFacade property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade.LANGUAGE_FEATURE_MANAGER_NAME">LANGUAGE_FEATURE_MANAGER_NAME (zensols.deepnlp.classify.facade.ClassifyModelFacade attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade.LANGUAGE_MODEL_CONFIG">LANGUAGE_MODEL_CONFIG (zensols.deepnlp.classify.facade.ClassifyModelFacade attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacade.language_vectorizer_manager">language_vectorizer_manager (zensols.deepnlp.model.facade.LanguageModelFacade property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacade">LanguageModelFacade (class in zensols.deepnlp.model.facade)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacadeConfig">LanguageModelFacadeConfig (class in zensols.deepnlp.model.facade)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.embed.TransformerEmbedding.LAST_HIDDEN_STATE_OUTPUT">LAST_HIDDEN_STATE_OUTPUT (zensols.deepnlp.transformer.embed.TransformerEmbedding attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer">LatentSemanticDocumentIndexerVectorizer (class in zensols.deepnlp.index.lsi)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.layer_factories">layer_factories (zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.OneHotEncodedFeatureDocumentVectorizer.level">level (zensols.deepnlp.vectorize.vectorizers.OneHotEncodedFeatureDocumentVectorizer attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.TokenEmbeddingFeatureVectorizer.level">(zensols.deepnlp.vectorize.vectorizers.TokenEmbeddingFeatureVectorizer attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.model.ClassifyNetworkSettings.linear_settings">linear_settings (zensols.deepnlp.classify.model.ClassifyNetworkSettings attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel.lowercase">lowercase (zensols.deepnlp.embed.domain.WordEmbedModel attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.lsa">lsa (zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer property)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="M" class="genindex-section">
+  <h2>M</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacadeConfig.manager_name">manager_name (zensols.deepnlp.model.facade.LanguageModelFacadeConfig attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.sequence.BioSequenceAnnotationMapper.map">map() (zensols.deepnlp.model.sequence.BioSequenceAnnotationMapper method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.pred.ClassificationPredictionMapper.map_results">map_results() (zensols.deepnlp.classify.pred.ClassificationPredictionMapper method)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.pred.SequencePredictionMapper.map_results">(zensols.deepnlp.classify.pred.SequencePredictionMapper method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedDocument.map_to_word_pieces">map_to_word_pieces() (zensols.deepnlp.transformer.domain.TokenizedDocument method)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedFeatureDocument.map_to_word_pieces">(zensols.deepnlp.transformer.domain.TokenizedFeatureDocument method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedDocument.map_word_pieces">map_word_pieces() (zensols.deepnlp.transformer.domain.TokenizedDocument static method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings.mask_attribute">mask_attribute (zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.mask.Prediction.masked_token_dicts">masked_token_dicts (zensols.deepnlp.transformer.mask.Prediction property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.mask.Prediction.masked_tokens">masked_tokens (zensols.deepnlp.transformer.mask.Prediction attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.mask.MaskFiller">MaskFiller (class in zensols.deepnlp.transformer.mask)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel.matrix">matrix (zensols.deepnlp.embed.domain.WordEmbedModel property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.sequence.SequenceAnnotation.mention">mention (zensols.deepnlp.model.sequence.SequenceAnnotation property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.wordtext.TextWordEmbedModel.metadata">metadata (zensols.deepnlp.embed.wordtext.TextWordEmbedModel property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.model">model (zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.domain.DocumentIndexVectorizer.model">(zensols.deepnlp.index.domain.DocumentIndexVectorizer property)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.embed.TransformerEmbedding.model">(zensols.deepnlp.transformer.embed.TransformerEmbedding property)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerResource.model">(zensols.deepnlp.transformer.resource.TransformerResource property)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.model">(zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerResource.model_args">model_args (zensols.deepnlp.transformer.resource.TransformerResource attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerResource.model_class">model_class (zensols.deepnlp.transformer.resource.TransformerResource attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel.model_id">model_id (zensols.deepnlp.embed.domain.WordEmbedModel property)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerResource.model_id">(zensols.deepnlp.transformer.resource.TransformerResource attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.cli.NLPSequenceClassifyFacadeModelApplication.model_path">model_path (zensols.deepnlp.cli.NLPSequenceClassifyFacadeModelApplication attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.word2vec.Word2VecModel.model_type">model_type (zensols.deepnlp.embed.word2vec.Word2VecModel attribute)</a>
+</li>
+        <li>
+    module
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.html#module-zensols.deepnlp">zensols.deepnlp</a>
+</li>
+          <li><a href="api/zensols.deepnlp.classify.html#module-zensols.deepnlp.classify">zensols.deepnlp.classify</a>
+</li>
+          <li><a href="api/zensols.deepnlp.classify.html#module-zensols.deepnlp.classify.domain">zensols.deepnlp.classify.domain</a>
+</li>
+          <li><a href="api/zensols.deepnlp.classify.html#module-zensols.deepnlp.classify.facade">zensols.deepnlp.classify.facade</a>
+</li>
+          <li><a href="api/zensols.deepnlp.classify.html#module-zensols.deepnlp.classify.model">zensols.deepnlp.classify.model</a>
+</li>
+          <li><a href="api/zensols.deepnlp.classify.html#module-zensols.deepnlp.classify.multilabel">zensols.deepnlp.classify.multilabel</a>
+</li>
+          <li><a href="api/zensols.deepnlp.classify.html#module-zensols.deepnlp.classify.pred">zensols.deepnlp.classify.pred</a>
+</li>
+          <li><a href="api/zensols.deepnlp.html#module-zensols.deepnlp.cli">zensols.deepnlp.cli</a>
+</li>
+          <li><a href="api/zensols.deepnlp.embed.html#module-zensols.deepnlp.embed">zensols.deepnlp.embed</a>
+</li>
+          <li><a href="api/zensols.deepnlp.embed.html#module-zensols.deepnlp.embed.doc">zensols.deepnlp.embed.doc</a>
+</li>
+          <li><a href="api/zensols.deepnlp.embed.html#module-zensols.deepnlp.embed.domain">zensols.deepnlp.embed.domain</a>
+</li>
+          <li><a href="api/zensols.deepnlp.embed.html#module-zensols.deepnlp.embed.fasttext">zensols.deepnlp.embed.fasttext</a>
+</li>
+          <li><a href="api/zensols.deepnlp.embed.html#module-zensols.deepnlp.embed.glove">zensols.deepnlp.embed.glove</a>
+</li>
+          <li><a href="api/zensols.deepnlp.embed.html#module-zensols.deepnlp.embed.word2vec">zensols.deepnlp.embed.word2vec</a>
+</li>
+          <li><a href="api/zensols.deepnlp.embed.html#module-zensols.deepnlp.embed.wordtext">zensols.deepnlp.embed.wordtext</a>
+</li>
+          <li><a href="api/zensols.deepnlp.html#module-zensols.deepnlp.feature">zensols.deepnlp.feature</a>
+</li>
+          <li><a href="api/zensols.deepnlp.index.html#module-zensols.deepnlp.index">zensols.deepnlp.index</a>
+</li>
+          <li><a href="api/zensols.deepnlp.index.html#module-zensols.deepnlp.index.domain">zensols.deepnlp.index.domain</a>
+</li>
+          <li><a href="api/zensols.deepnlp.index.html#module-zensols.deepnlp.index.lda">zensols.deepnlp.index.lda</a>
+</li>
+          <li><a href="api/zensols.deepnlp.index.html#module-zensols.deepnlp.index.lsi">zensols.deepnlp.index.lsi</a>
+</li>
+          <li><a href="api/zensols.deepnlp.layer.html#module-zensols.deepnlp.layer">zensols.deepnlp.layer</a>
+</li>
+          <li><a href="api/zensols.deepnlp.layer.html#module-zensols.deepnlp.layer.conv">zensols.deepnlp.layer.conv</a>
+</li>
+          <li><a href="api/zensols.deepnlp.layer.html#module-zensols.deepnlp.layer.embed">zensols.deepnlp.layer.embed</a>
+</li>
+          <li><a href="api/zensols.deepnlp.layer.html#module-zensols.deepnlp.layer.embrecurcrf">zensols.deepnlp.layer.embrecurcrf</a>
+</li>
+          <li><a href="api/zensols.deepnlp.layer.html#module-zensols.deepnlp.layer.wordvec">zensols.deepnlp.layer.wordvec</a>
+</li>
+          <li><a href="api/zensols.deepnlp.model.html#module-zensols.deepnlp.model">zensols.deepnlp.model</a>
+</li>
+          <li><a href="api/zensols.deepnlp.model.html#module-zensols.deepnlp.model.facade">zensols.deepnlp.model.facade</a>
+</li>
+          <li><a href="api/zensols.deepnlp.model.html#module-zensols.deepnlp.model.sequence">zensols.deepnlp.model.sequence</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#module-zensols.deepnlp.transformer">zensols.deepnlp.transformer</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#module-zensols.deepnlp.transformer.domain">zensols.deepnlp.transformer.domain</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#module-zensols.deepnlp.transformer.embed">zensols.deepnlp.transformer.embed</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#module-zensols.deepnlp.transformer.layer">zensols.deepnlp.transformer.layer</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#module-zensols.deepnlp.transformer.mask">zensols.deepnlp.transformer.mask</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#module-zensols.deepnlp.transformer.optimizer">zensols.deepnlp.transformer.optimizer</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#module-zensols.deepnlp.transformer.pred">zensols.deepnlp.transformer.pred</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#module-zensols.deepnlp.transformer.resource">zensols.deepnlp.transformer.resource</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#module-zensols.deepnlp.transformer.tokenizer">zensols.deepnlp.transformer.tokenizer</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#module-zensols.deepnlp.transformer.vectorizers">zensols.deepnlp.transformer.vectorizers</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#module-zensols.deepnlp.transformer.wordpiece">zensols.deepnlp.transformer.wordpiece</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#module-zensols.deepnlp.vectorize">zensols.deepnlp.vectorize</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#module-zensols.deepnlp.vectorize.embed">zensols.deepnlp.vectorize.embed</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#module-zensols.deepnlp.vectorize.manager">zensols.deepnlp.vectorize.manager</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#module-zensols.deepnlp.vectorize.spacy">zensols.deepnlp.vectorize.spacy</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#module-zensols.deepnlp.vectorize.vectorizers">zensols.deepnlp.vectorize.vectorizers</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.model.ClassifyNetwork.MODULE_NAME">MODULE_NAME (zensols.deepnlp.classify.model.ClassifyNetwork attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1d.MODULE_NAME">(zensols.deepnlp.layer.conv.DeepConvolution1d attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.EmbeddingNetworkModule.MODULE_NAME">(zensols.deepnlp.layer.embed.EmbeddingNetworkModule attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRF.MODULE_NAME">(zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRF attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.layer.TransformerEmbeddingLayer.MODULE_NAME">(zensols.deepnlp.transformer.layer.TransformerEmbeddingLayer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.layer.TransformerSequence.MODULE_NAME">(zensols.deepnlp.transformer.layer.TransformerSequence attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.TextFeatureType.MULTI_DOCUMENT">MULTI_DOCUMENT (zensols.deepnlp.vectorize.manager.TextFeatureType attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.MultiDocumentVectorizer">MultiDocumentVectorizer (class in zensols.deepnlp.vectorize.manager)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.MultilabelClassifyModelFacade">MultilabelClassifyModelFacade (class in zensols.deepnlp.classify.facade)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.multilabel.MultiLabelFeatureDocument">MultiLabelFeatureDocument (class in zensols.deepnlp.classify.multilabel)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.multilabel.MultiLabelFeatureDocumentDataPoint">MultiLabelFeatureDocumentDataPoint (class in zensols.deepnlp.classify.multilabel)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer">MutualFeaturesContainerFeatureVectorizer (class in zensols.deepnlp.vectorize.vectorizers)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="N" class="genindex-section">
+  <h2>N</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.wordtext.TextWordModelMetadata.n_vocab">n_vocab (zensols.deepnlp.embed.wordtext.TextWordModelMetadata attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel.name">name (zensols.deepnlp.embed.domain.WordEmbedModel attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.name">(zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.wordtext.TextWordModelMetadata.name">(zensols.deepnlp.embed.wordtext.TextWordModelMetadata attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.embed.TransformerEmbedding.name">(zensols.deepnlp.transformer.embed.TransformerEmbedding attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerResource.name">(zensols.deepnlp.transformer.resource.TransformerResource attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer">NamedEntityRecognitionFeatureVectorizer (class in zensols.deepnlp.vectorize.spacy)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.cli.NLPClassifyFacadeModelApplication">NLPClassifyFacadeModelApplication (class in zensols.deepnlp.cli)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.cli.NLPClassifyPackedModelApplication">NLPClassifyPackedModelApplication (class in zensols.deepnlp.cli)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.cli.NLPFacadeBatchApplication">NLPFacadeBatchApplication (class in zensols.deepnlp.cli)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.cli.NLPFacadeModelApplication">NLPFacadeModelApplication (class in zensols.deepnlp.cli)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.cli.NLPSequenceClassifyFacadeModelApplication">NLPSequenceClassifyFacadeModelApplication (class in zensols.deepnlp.cli)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.TextFeatureType.NONE">NONE (zensols.deepnlp.vectorize.manager.TextFeatureType attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.NoOpWordEmbedModel">NoOpWordEmbedModel (class in zensols.deepnlp.embed.domain)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.normalize_huggingface_logging">normalize_huggingface_logging() (in module zensols.deepnlp.transformer)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="O" class="genindex-section">
+  <h2>O</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedDocument.offsets">offsets (zensols.deepnlp.transformer.domain.TokenizedDocument property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.OneHotEncodedFeatureDocumentVectorizer">OneHotEncodedFeatureDocumentVectorizer (class in zensols.deepnlp.vectorize.vectorizers)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer.ones">ones (zensols.deepnlp.vectorize.vectorizers.MutualFeaturesContainerFeatureVectorizer property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager.ordered_spacy_vectorizers">ordered_spacy_vectorizers (zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager property)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.out_shape">out_shape (zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.sequence.BioSequenceAnnotationMapper.out_tag">out_tag (zensols.deepnlp.model.sequence.BioSequenceAnnotationMapper attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.embed.TransformerEmbedding.output">output (zensols.deepnlp.transformer.embed.TransformerEmbedding attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.embed.TransformerEmbedding.output_attentions">output_attentions (zensols.deepnlp.transformer.embed.TransformerEmbedding attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.OverlappingFeatureDocumentVectorizer">OverlappingFeatureDocumentVectorizer (class in zensols.deepnlp.vectorize.vectorizers)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="P" class="genindex-section">
+  <h2>P</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.padding">padding (zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.tokenizer.TransformerDocumentTokenizer.params">params (zensols.deepnlp.transformer.tokenizer.TransformerDocumentTokenizer attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedDocument.params">params() (zensols.deepnlp.transformer.domain.TokenizedDocument method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager.parse">parse() (zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer">PartOfSpeechFeatureVectorizer (class in zensols.deepnlp.vectorize.spacy)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.word2vec.Word2VecModel.path">path (zensols.deepnlp.embed.word2vec.Word2VecModel property)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.wordtext.TextWordEmbedModel.path">(zensols.deepnlp.embed.wordtext.TextWordEmbedModel attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.pool_padding">pool_padding (zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.pool_stride">pool_stride (zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.pool_token_kernel">pool_token_kernel (zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.embed.TransformerEmbedding.POOLER_OUTPUT">POOLER_OUTPUT (zensols.deepnlp.transformer.embed.TransformerEmbedding attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocumentFactory.populate">populate() (zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocumentFactory method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.domain.LabeledFeatureDocument.pred">pred (zensols.deepnlp.classify.domain.LabeledFeatureDocument attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.pred.ClassificationPredictionMapper.pred_attribute">pred_attribute (zensols.deepnlp.classify.pred.ClassificationPredictionMapper attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade.predict">predict() (zensols.deepnlp.classify.facade.ClassifyModelFacade method)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.cli.NLPClassifyPackedModelApplication.predict">(zensols.deepnlp.cli.NLPClassifyPackedModelApplication method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.mask.MaskFiller.predict">(zensols.deepnlp.transformer.mask.MaskFiller method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.cli.NLPClassifyFacadeModelApplication.predict_text">predict_text() (zensols.deepnlp.cli.NLPClassifyFacadeModelApplication method)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.cli.NLPSequenceClassifyFacadeModelApplication.predict_text">(zensols.deepnlp.cli.NLPSequenceClassifyFacadeModelApplication method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.mask.Prediction">Prediction (class in zensols.deepnlp.transformer.mask)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.mask.TokenPrediction.prediction">prediction (zensols.deepnlp.transformer.mask.TokenPrediction attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.domain.PredictionFeatureDocument">PredictionFeatureDocument (class in zensols.deepnlp.classify.domain)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.MultilabelClassifyModelFacade.predictions_dataframe_factory_class">predictions_dataframe_factory_class (zensols.deepnlp.classify.facade.MultilabelClassifyModelFacade attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.TokenClassifyModelFacade.predictions_dataframe_factory_class">(zensols.deepnlp.classify.facade.TokenClassifyModelFacade attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.multilabel.MultiLabelFeatureDocument.preds">preds (zensols.deepnlp.classify.multilabel.MultiLabelFeatureDocument attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.tokenizer.TransformerDocumentTokenizer.pretrained_tokenizer">pretrained_tokenizer (zensols.deepnlp.transformer.tokenizer.TransformerDocumentTokenizer property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel.prime">prime() (zensols.deepnlp.embed.domain.WordEmbedModel method)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.wordtext.TextWordEmbedModel.prime">(zensols.deepnlp.embed.wordtext.TextWordEmbedModel method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.feature.DocumentFeatureStash.prime">(zensols.deepnlp.feature.DocumentFeatureStash method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.domain.DocumentIndexVectorizer.prime">(zensols.deepnlp.index.domain.DocumentIndexVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.embed.EmbeddingFeatureVectorizer.prime">(zensols.deepnlp.vectorize.embed.EmbeddingFeatureVectorizer method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="Q" class="genindex-section">
+  <h2>Q</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer.query">query() (zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="R" class="genindex-section">
+  <h2>R</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings.recurrent_crf_settings">recurrent_crf_settings (zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.model.ClassifyNetworkSettings.recurrent_settings">recurrent_settings (zensols.deepnlp.classify.model.ClassifyNetworkSettings attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.repeats">repeats (zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.TrainableEmbeddingLayer.reset_parameters">reset_parameters() (zensols.deepnlp.layer.embed.TrainableEmbeddingLayer method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.word2vec.Word2VecModel.resource">resource (zensols.deepnlp.embed.word2vec.Word2VecModel attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.wordtext.TextWordEmbedModel.resource">(zensols.deepnlp.embed.wordtext.TextWordEmbedModel attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.embed.TransformerEmbedding.resource">(zensols.deepnlp.transformer.embed.TransformerEmbedding property)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.mask.MaskFiller.resource">(zensols.deepnlp.transformer.mask.MaskFiller attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.tokenizer.TransformerDocumentTokenizer.resource">(zensols.deepnlp.transformer.tokenizer.TransformerDocumentTokenizer attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="S" class="genindex-section">
+  <h2>S</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.mask.TokenPrediction.score">score (zensols.deepnlp.transformer.mask.TokenPrediction attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.sequence.SequenceAnnotation.sent">sent (zensols.deepnlp.model.sequence.SequenceAnnotation property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.sent_embeddings">sent_embeddings (zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocumentFactory.sent_embeddings">(zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocumentFactory attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.sequence.SequenceDocumentAnnotation.sequence_anons">sequence_anons (zensols.deepnlp.model.sequence.SequenceDocumentAnnotation attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.sequence.SequenceAnnotation">SequenceAnnotation (class in zensols.deepnlp.model.sequence)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.sequence.SequenceDocumentAnnotation">SequenceDocumentAnnotation (class in zensols.deepnlp.model.sequence)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.pred.SequencePredictionMapper">SequencePredictionMapper (class in zensols.deepnlp.classify.pred)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel.shape">shape (zensols.deepnlp.embed.domain.WordEmbedModel property)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedDocument.shape">(zensols.deepnlp.transformer.domain.TokenizedDocument property)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.similarity">similarity() (zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.skip_oov">skip_oov (zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.domain.PredictionFeatureDocument.softmax_logit">softmax_logit (zensols.deepnlp.classify.domain.PredictionFeatureDocument attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.pred.ClassificationPredictionMapper.softmax_logit_attribute">softmax_logit_attribute (zensols.deepnlp.classify.pred.ClassificationPredictionMapper attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.wordtext.TextWordModelMetadata.source_path">source_path (zensols.deepnlp.embed.wordtext.TextWordModelMetadata attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.sequence.SequenceDocumentAnnotation.spacy_doc">spacy_doc (zensols.deepnlp.model.sequence.SequenceDocumentAnnotation property)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager.spacy_vectorizers">spacy_vectorizers (zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer">SpacyFeatureVectorizer (class in zensols.deepnlp.vectorize.spacy)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.CachingWordPieceFeatureDocumentFactory.stash">stash (zensols.deepnlp.transformer.wordpiece.CachingWordPieceFeatureDocumentFactory attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.TrainableEmbeddingLayer.state_dict">state_dict() (zensols.deepnlp.layer.embed.TrainableEmbeddingLayer method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.StatisticsFeatureDocumentVectorizer">StatisticsFeatureDocumentVectorizer (class in zensols.deepnlp.vectorize.vectorizers)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade.STATS_ATTRIBUTE">STATS_ATTRIBUTE (zensols.deepnlp.classify.facade.ClassifyModelFacade attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.stride">stride (zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer.string_symbol_feature_ids">string_symbol_feature_ids (zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer.string_symbol_feature_ids">(zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.wordtext.TextWordModelMetadata.sub_directory">sub_directory (zensols.deepnlp.embed.wordtext.TextWordModelMetadata attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.facade.LanguageModelFacade.suppress_transformer_warnings">suppress_transformer_warnings (zensols.deepnlp.model.facade.LanguageModelFacade attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.suppress_warnings">suppress_warnings() (in module zensols.deepnlp.transformer)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer.SYMBOLS">SYMBOLS (zensols.deepnlp.vectorize.spacy.DependencyFeatureVectorizer attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer.SYMBOLS">(zensols.deepnlp.vectorize.spacy.NamedEntityRecognitionFeatureVectorizer attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer.SYMBOLS">(zensols.deepnlp.vectorize.spacy.PartOfSpeechFeatureVectorizer attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.symbols">symbols (zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer property)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="T" class="genindex-section">
+  <h2>T</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedDocument.tensor">tensor (zensols.deepnlp.transformer.domain.TokenizedDocument attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings.tensor_predictions">tensor_predictions (zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.feature.DataframeDocumentFeatureStash.text_column">text_column (zensols.deepnlp.feature.DataframeDocumentFeatureStash attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.TextFeatureType">TextFeatureType (class in zensols.deepnlp.vectorize.manager)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.wordtext.TextWordEmbedModel">TextWordEmbedModel (class in zensols.deepnlp.embed.wordtext)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.wordtext.TextWordModelMetadata">TextWordModelMetadata (class in zensols.deepnlp.embed.wordtext)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel.to_matrix">to_matrix() (zensols.deepnlp.embed.domain.WordEmbedModel method)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordVectorModel.to_matrix">(zensols.deepnlp.embed.domain.WordVectorModel method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer.to_symbols">to_symbols() (zensols.deepnlp.vectorize.vectorizers.CountEnumContainerFeatureVectorizer method)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer.to_symbols">(zensols.deepnlp.vectorize.vectorizers.EnumContainerFeatureVectorizer method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.mask.TokenPrediction.token">token (zensols.deepnlp.transformer.mask.TokenPrediction attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.TextFeatureType.TOKEN">TOKEN (zensols.deepnlp.vectorize.manager.TextFeatureType attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureToken.token_embedding">token_embedding (zensols.deepnlp.transformer.wordpiece.WordPieceFeatureToken property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.token_embeddings">token_embeddings (zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocumentFactory.token_embeddings">(zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocumentFactory attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.embed.WordVectorEmbeddingFeatureVectorizer.token_feature_id">token_feature_id (zensols.deepnlp.vectorize.embed.WordVectorEmbeddingFeatureVectorizer attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.DocumentEmbeddingFeatureVectorizer.token_feature_ids">token_feature_ids (zensols.deepnlp.transformer.vectorizers.DocumentEmbeddingFeatureVectorizer attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager.token_feature_ids">(zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.token_kernel">token_kernel (zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.domain.TokenContainerDataPoint.token_labels">token_labels (zensols.deepnlp.classify.domain.TokenContainerDataPoint property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.token_length">token_length (zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.EmbeddingLayer.token_length">(zensols.deepnlp.layer.embed.EmbeddingLayer property)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizer.token_length">(zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizer property)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager.token_length">(zensols.deepnlp.vectorize.manager.FeatureDocumentVectorizerManager attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.sequence.SequenceAnnotation.token_matches">token_matches (zensols.deepnlp.model.sequence.SequenceAnnotation property)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.sequence.SequenceDocumentAnnotation.token_matches">(zensols.deepnlp.model.sequence.SequenceDocumentAnnotation property)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.tokenizer.TransformerDocumentTokenizer.token_max_length">token_max_length (zensols.deepnlp.transformer.tokenizer.TransformerDocumentTokenizer property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.DocumentEmbeddingFeatureVectorizer.token_pattern">token_pattern (zensols.deepnlp.transformer.vectorizers.DocumentEmbeddingFeatureVectorizer attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedDocument.token_type_ids">token_type_ids (zensols.deepnlp.transformer.domain.TokenizedDocument property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.TokenClassifyModelFacade">TokenClassifyModelFacade (class in zensols.deepnlp.classify.facade)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.domain.TokenContainerDataPoint">TokenContainerDataPoint (class in zensols.deepnlp.classify.domain)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.TokenEmbeddingFeatureVectorizer">TokenEmbeddingFeatureVectorizer (class in zensols.deepnlp.vectorize.vectorizers)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.embed.TransformerEmbedding.tokenize">tokenize() (zensols.deepnlp.transformer.embed.TransformerEmbedding method)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.tokenizer.TransformerDocumentTokenizer.tokenize">(zensols.deepnlp.transformer.tokenizer.TransformerDocumentTokenizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerFeatureVectorizer.tokenize">(zensols.deepnlp.transformer.vectorizers.TransformerFeatureVectorizer method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocument.tokenized">tokenized (zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocument attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedDocument">TokenizedDocument (class in zensols.deepnlp.transformer.domain)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedFeatureDocument">TokenizedFeatureDocument (class in zensols.deepnlp.transformer.domain)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.embed.TransformerEmbedding.tokenizer">tokenizer (zensols.deepnlp.transformer.embed.TransformerEmbedding attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerResource.tokenizer">(zensols.deepnlp.transformer.resource.TransformerResource property)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocumentFactory.tokenizer">(zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocumentFactory attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerResource.tokenizer_args">tokenizer_args (zensols.deepnlp.transformer.resource.TransformerResource attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerResource.tokenizer_class">tokenizer_class (zensols.deepnlp.transformer.resource.TransformerResource attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.mask.TokenPrediction">TokenPrediction (class in zensols.deepnlp.transformer.mask)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.sequence.SequenceAnnotation.tokens">tokens (zensols.deepnlp.model.sequence.SequenceAnnotation attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer">TopicModelDocumentIndexerVectorizer (class in zensols.deepnlp.index.lda)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer.topics">topics (zensols.deepnlp.index.lda.TopicModelDocumentIndexerVectorizer attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.torch_config">torch_config (zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.EmbeddingLayer.torch_config">(zensols.deepnlp.layer.embed.EmbeddingLayer property)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerResource.torch_config">(zensols.deepnlp.transformer.resource.TransformerResource attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.torch_config">(zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.embed.TransformerEmbedding.trainable">trainable (zensols.deepnlp.transformer.embed.TransformerEmbedding property)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerResource.trainable">(zensols.deepnlp.transformer.resource.TransformerResource attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.TrainableEmbeddingLayer">TrainableEmbeddingLayer (class in zensols.deepnlp.layer.embed)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.embed.TransformerEmbedding.transform">transform() (zensols.deepnlp.transformer.embed.TransformerEmbedding method)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.transform">(zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade.TRANSFORMER_FIXED_EMBEDDING">TRANSFORMER_FIXED_EMBEDDING (zensols.deepnlp.classify.facade.ClassifyModelFacade attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade.TRANSFORMER_TRAINBLE_EMBEDDING">TRANSFORMER_TRAINBLE_EMBEDDING (zensols.deepnlp.classify.facade.ClassifyModelFacade attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.optimizer.TransformerAdamFactory">TransformerAdamFactory (class in zensols.deepnlp.transformer.optimizer)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.tokenizer.TransformerDocumentTokenizer">TransformerDocumentTokenizer (class in zensols.deepnlp.transformer.tokenizer)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.embed.TransformerEmbedding">TransformerEmbedding (class in zensols.deepnlp.transformer.embed)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerEmbeddingFeatureVectorizer">TransformerEmbeddingFeatureVectorizer (class in zensols.deepnlp.transformer.vectorizers)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.layer.TransformerEmbeddingLayer">TransformerEmbeddingLayer (class in zensols.deepnlp.transformer.layer)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerError">TransformerError</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerExpanderFeatureContext">TransformerExpanderFeatureContext (class in zensols.deepnlp.transformer.vectorizers)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerExpanderFeatureVectorizer">TransformerExpanderFeatureVectorizer (class in zensols.deepnlp.transformer.vectorizers)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerFeatureContext">TransformerFeatureContext (class in zensols.deepnlp.transformer.vectorizers)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerFeatureVectorizer">TransformerFeatureVectorizer (class in zensols.deepnlp.transformer.vectorizers)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerMaskFeatureVectorizer">TransformerMaskFeatureVectorizer (class in zensols.deepnlp.transformer.vectorizers)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerNominalFeatureVectorizer">TransformerNominalFeatureVectorizer (class in zensols.deepnlp.transformer.vectorizers)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.resource.TransformerResource">TransformerResource (class in zensols.deepnlp.transformer.resource)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.optimizer.TransformerSchedulerFactory">TransformerSchedulerFactory (class in zensols.deepnlp.transformer.optimizer)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.layer.TransformerSequence">TransformerSequence (class in zensols.deepnlp.transformer.layer)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.layer.TransformerSequenceNetworkSettings">TransformerSequenceNetworkSettings (class in zensols.deepnlp.transformer.layer)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.pred.TransformerSequencePredictionsDataFrameFactory">TransformerSequencePredictionsDataFrameFactory (class in zensols.deepnlp.transformer.pred)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedDocument.truncate">truncate() (zensols.deepnlp.transformer.domain.TokenizedDocument method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.turn_off_huggingface_downloads">turn_off_huggingface_downloads() (in module zensols.deepnlp.transformer)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="U" class="genindex-section">
+  <h2>U</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel.unk_idx">unk_idx (zensols.deepnlp.embed.domain.WordEmbedModel property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel.UNKNOWN">UNKNOWN (zensols.deepnlp.embed.domain.WordEmbedModel attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceTokenContainer.unknown_count">unknown_count (zensols.deepnlp.transformer.wordpiece.WordPieceTokenContainer property)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPiece.UNKNOWN_TOKEN">UNKNOWN_TOKEN (zensols.deepnlp.transformer.wordpiece.WordPiece attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.cli.NLPClassifyPackedModelApplication.unpacker">unpacker (zensols.deepnlp.cli.NLPClassifyPackedModelApplication attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings.use_crf">use_crf (zensols.deepnlp.layer.embrecurcrf.EmbeddedRecurrentCRFSettings attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="V" class="genindex-section">
+  <h2>V</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.validate">validate() (zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.pred.ClassificationPredictionMapper.vec_manager">vec_manager (zensols.deepnlp.classify.pred.ClassificationPredictionMapper attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.feature.DocumentFeatureStash.vec_manager">(zensols.deepnlp.feature.DocumentFeatureStash attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel.vector_dimension">vector_dimension (zensols.deepnlp.embed.domain.WordEmbedModel property)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.embed.TransformerEmbedding.vector_dimension">(zensols.deepnlp.transformer.embed.TransformerEmbedding property)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.vectorizer">vectorizer (zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer property)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.embed.EmbeddingNetworkModule.vectorizer_by_name">vectorizer_by_name() (zensols.deepnlp.layer.embed.EmbeddingNetworkModule method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.index.html#zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer.vectorizer_params">vectorizer_params (zensols.deepnlp.index.lsi.LatentSemanticDocumentIndexerVectorizer attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel.vectors">vectors (zensols.deepnlp.embed.domain.WordEmbedModel property)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordVectorModel.vectors">(zensols.deepnlp.embed.domain.WordVectorModel attribute)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.embed.WordVectorEmbeddingFeatureVectorizer.vectors">(zensols.deepnlp.vectorize.embed.WordVectorEmbeddingFeatureVectorizer property)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPiece.vocab_index">vocab_index (zensols.deepnlp.transformer.wordpiece.WordPiece attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.glove.GloveWordEmbedModel.vocab_size">vocab_size (zensols.deepnlp.embed.glove.GloveWordEmbedModel attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.vocab_size">(zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="W" class="genindex-section">
+  <h2>W</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPiece.word">word (zensols.deepnlp.transformer.wordpiece.WordPiece attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordVectorModel.word2idx">word2idx (zensols.deepnlp.embed.domain.WordVectorModel attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel.word2idx">word2idx() (zensols.deepnlp.embed.domain.WordEmbedModel method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel.word2idx_or_unk">word2idx_or_unk() (zensols.deepnlp.embed.domain.WordEmbedModel method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordVectorModel.word2vec">word2vec (zensols.deepnlp.embed.domain.WordVectorModel attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.facade.ClassifyModelFacade.WORD2VEC_300_EMBEDDING">WORD2VEC_300_EMBEDDING (zensols.deepnlp.classify.facade.ClassifyModelFacade attribute)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.word2vec.Word2VecModel">Word2VecModel (class in zensols.deepnlp.embed.word2vec)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureToken.word_iter">word_iter() (zensols.deepnlp.transformer.wordpiece.WordPieceFeatureToken method)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceTokenContainer.word_iter">(zensols.deepnlp.transformer.wordpiece.WordPieceTokenContainer method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceDocumentDecorator.word_piece_doc_factory">word_piece_doc_factory (zensols.deepnlp.transformer.wordpiece.WordPieceDocumentDecorator attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureVectorizer.word_piece_doc_factory">(zensols.deepnlp.transformer.wordpiece.WordPieceFeatureVectorizer attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.tokenizer.TransformerDocumentTokenizer.word_piece_token_length">word_piece_token_length (zensols.deepnlp.transformer.tokenizer.TransformerDocumentTokenizer attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerFeatureVectorizer.word_piece_token_length">(zensols.deepnlp.transformer.vectorizers.TransformerFeatureVectorizer property)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.WordEmbeddingFeatureVectorizer">WordEmbeddingFeatureVectorizer (class in zensols.deepnlp.vectorize.vectorizers)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator">WordEmbedDocumentDecorator (class in zensols.deepnlp.embed.doc)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedError">WordEmbedError</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel">WordEmbedModel (class in zensols.deepnlp.embed.domain)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPiece">WordPiece (class in zensols.deepnlp.transformer.wordpiece)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceDocumentDecorator">WordPieceDocumentDecorator (class in zensols.deepnlp.transformer.wordpiece)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocument">WordPieceFeatureDocument (class in zensols.deepnlp.transformer.wordpiece)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocumentFactory">WordPieceFeatureDocumentFactory (class in zensols.deepnlp.transformer.wordpiece)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureSentence">WordPieceFeatureSentence (class in zensols.deepnlp.transformer.wordpiece)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureSpan">WordPieceFeatureSpan (class in zensols.deepnlp.transformer.wordpiece)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureToken">WordPieceFeatureToken (class in zensols.deepnlp.transformer.wordpiece)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureVectorizer">WordPieceFeatureVectorizer (class in zensols.deepnlp.transformer.wordpiece)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceTokenContainer">WordPieceTokenContainer (class in zensols.deepnlp.transformer.wordpiece)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordVectorModel.words">words (zensols.deepnlp.embed.domain.WordVectorModel attribute)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureToken.words">(zensols.deepnlp.transformer.wordpiece.WordPieceFeatureToken attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.embed.WordVectorEmbeddingFeatureVectorizer">WordVectorEmbeddingFeatureVectorizer (class in zensols.deepnlp.vectorize.embed)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.wordvec.WordVectorEmbeddingLayer">WordVectorEmbeddingLayer (class in zensols.deepnlp.layer.wordvec)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordVectorModel">WordVectorModel (class in zensols.deepnlp.embed.domain)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.domain.LabeledFeatureDocument.write">write() (zensols.deepnlp.classify.domain.LabeledFeatureDocument method)</a>
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.domain.PredictionFeatureDocument.write">(zensols.deepnlp.classify.domain.PredictionFeatureDocument method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.domain.TokenContainerDataPoint.write">(zensols.deepnlp.classify.domain.TokenContainerDataPoint method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.classify.html#zensols.deepnlp.classify.multilabel.MultiLabelFeatureDocument.write">(zensols.deepnlp.classify.multilabel.MultiLabelFeatureDocument method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.layer.html#zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings.write">(zensols.deepnlp.layer.conv.DeepConvolution1dNetworkSettings method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.sequence.SequenceAnnotation.write">(zensols.deepnlp.model.sequence.SequenceAnnotation method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.model.html#zensols.deepnlp.model.sequence.SequenceDocumentAnnotation.write">(zensols.deepnlp.model.sequence.SequenceDocumentAnnotation method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedDocument.write">(zensols.deepnlp.transformer.domain.TokenizedDocument method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.domain.TokenizedFeatureDocument.write">(zensols.deepnlp.transformer.domain.TokenizedFeatureDocument method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.mask.Prediction.write">(zensols.deepnlp.transformer.mask.Prediction method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.vectorizers.TransformerNominalFeatureVectorizer.write">(zensols.deepnlp.transformer.vectorizers.TransformerNominalFeatureVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocument.write">(zensols.deepnlp.transformer.wordpiece.WordPieceFeatureDocument method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureSpan.write">(zensols.deepnlp.transformer.wordpiece.WordPieceFeatureSpan method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.transformer.html#zensols.deepnlp.transformer.wordpiece.WordPieceFeatureToken.write">(zensols.deepnlp.transformer.wordpiece.WordPieceFeatureToken method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer.write">(zensols.deepnlp.vectorize.spacy.SpacyFeatureVectorizer method)</a>
+</li>
+          <li><a href="api/zensols.deepnlp.vectorize.html#zensols.deepnlp.vectorize.vectorizers.DecodedContainerFeatureVectorizer.write">(zensols.deepnlp.vectorize.vectorizers.DecodedContainerFeatureVectorizer method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.cli.NLPClassifyPackedModelApplication.write_model_info">write_model_info() (zensols.deepnlp.cli.NLPClassifyPackedModelApplication method)</a>
+</li>
+        <li><a href="api/zensols.deepnlp.html#zensols.deepnlp.cli.NLPClassifyPackedModelApplication.write_predictions">write_predictions() (zensols.deepnlp.cli.NLPClassifyPackedModelApplication method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="Z" class="genindex-section">
+  <h2>Z</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li>
+    zensols.deepnlp
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.html#module-zensols.deepnlp">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.classify
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.classify.html#module-zensols.deepnlp.classify">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.classify.domain
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.classify.html#module-zensols.deepnlp.classify.domain">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.classify.facade
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.classify.html#module-zensols.deepnlp.classify.facade">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.classify.model
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.classify.html#module-zensols.deepnlp.classify.model">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.classify.multilabel
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.classify.html#module-zensols.deepnlp.classify.multilabel">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.classify.pred
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.classify.html#module-zensols.deepnlp.classify.pred">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.cli
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.html#module-zensols.deepnlp.cli">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.embed
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.embed.html#module-zensols.deepnlp.embed">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.embed.doc
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.embed.html#module-zensols.deepnlp.embed.doc">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.embed.domain
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.embed.html#module-zensols.deepnlp.embed.domain">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.embed.fasttext
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.embed.html#module-zensols.deepnlp.embed.fasttext">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.embed.glove
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.embed.html#module-zensols.deepnlp.embed.glove">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.embed.word2vec
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.embed.html#module-zensols.deepnlp.embed.word2vec">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.embed.wordtext
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.embed.html#module-zensols.deepnlp.embed.wordtext">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.feature
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.html#module-zensols.deepnlp.feature">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.index
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.index.html#module-zensols.deepnlp.index">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.index.domain
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.index.html#module-zensols.deepnlp.index.domain">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.index.lda
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.index.html#module-zensols.deepnlp.index.lda">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.index.lsi
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.index.html#module-zensols.deepnlp.index.lsi">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.layer
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.layer.html#module-zensols.deepnlp.layer">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.layer.conv
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.layer.html#module-zensols.deepnlp.layer.conv">module</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li>
+    zensols.deepnlp.layer.embed
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.layer.html#module-zensols.deepnlp.layer.embed">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.layer.embrecurcrf
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.layer.html#module-zensols.deepnlp.layer.embrecurcrf">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.layer.wordvec
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.layer.html#module-zensols.deepnlp.layer.wordvec">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.model
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.model.html#module-zensols.deepnlp.model">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.model.facade
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.model.html#module-zensols.deepnlp.model.facade">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.model.sequence
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.model.html#module-zensols.deepnlp.model.sequence">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.transformer
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#module-zensols.deepnlp.transformer">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.transformer.domain
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#module-zensols.deepnlp.transformer.domain">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.transformer.embed
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#module-zensols.deepnlp.transformer.embed">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.transformer.layer
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#module-zensols.deepnlp.transformer.layer">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.transformer.mask
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#module-zensols.deepnlp.transformer.mask">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.transformer.optimizer
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#module-zensols.deepnlp.transformer.optimizer">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.transformer.pred
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#module-zensols.deepnlp.transformer.pred">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.transformer.resource
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#module-zensols.deepnlp.transformer.resource">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.transformer.tokenizer
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#module-zensols.deepnlp.transformer.tokenizer">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.transformer.vectorizers
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#module-zensols.deepnlp.transformer.vectorizers">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.transformer.wordpiece
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.transformer.html#module-zensols.deepnlp.transformer.wordpiece">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.vectorize
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.vectorize.html#module-zensols.deepnlp.vectorize">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.vectorize.embed
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.vectorize.html#module-zensols.deepnlp.vectorize.embed">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.vectorize.manager
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.vectorize.html#module-zensols.deepnlp.vectorize.manager">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.vectorize.spacy
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.vectorize.html#module-zensols.deepnlp.vectorize.spacy">module</a>
+</li>
+        </ul></li>
+        <li>
+    zensols.deepnlp.vectorize.vectorizers
+
+        <ul>
+          <li><a href="api/zensols.deepnlp.vectorize.html#module-zensols.deepnlp.vectorize.vectorizers">module</a>
+</li>
+        </ul></li>
+        <li><a href="api/zensols.deepnlp.embed.html#zensols.deepnlp.embed.domain.WordEmbedModel.ZERO">ZERO (zensols.deepnlp.embed.domain.WordEmbedModel attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026 Paul Landes
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=54b9a5ca"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    </body>
+</html>

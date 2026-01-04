@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+
+<html class="no-js" data-content_root="../" lang="en">
+<head><meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="light dark" name="color-scheme"/><meta content="width=device-width, initial-scale=1" name="viewport">
+<link href="../genindex.html" rel="index" title="Index"/><link href="../search.html" rel="search" title="Search"/><link href="zensols.deepnlp.index.html" rel="next" title="zensols.deepnlp.index package"/><link href="zensols.deepnlp.classify.html" rel="prev" title="zensols.deepnlp.classify package"/>
+<!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
+<title>zensols.deepnlp.embed package - DeepZensols Natural Language Processing 1.19.0 documentation</title>
+<link href="../_static/pygments.css?v=03e43079" rel="stylesheet" type="text/css">
+<link href="../_static/styles/furo.css?v=7bdb33bb" rel="stylesheet" type="text/css">
+<link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css">
+<link href="../_static/sphinx-codeautolink.css?v=b2176991" rel="stylesheet" type="text/css">
+<link href="../_static/graphviz.css" rel="stylesheet" type="text/css"/>
+<link href="../_static/styles/furo-extensions.css?v=8dab3a3b" rel="stylesheet" type="text/css"/>
+<link href="../_static/codeautolink.css?v=57550ae3" rel="stylesheet" type="text/css"/>
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></link></link></link></link></meta></head>
+<body>
+<script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+<svg style="display: none;" xmlns="http://www.w3.org/2000/svg">
+<symbol id="svg-toc" viewbox="0 0 24 24">
+<title>Contents</title>
+<svg fill="currentColor" stroke="currentColor" stroke-width="0" viewbox="0 0 1024 1024">
+<path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"></path>
+</svg>
+</symbol>
+<symbol id="svg-menu" viewbox="0 0 24 24">
+<title>Menu</title>
+<svg class="feather-menu" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<line x1="3" x2="21" y1="12" y2="12"></line>
+<line x1="3" x2="21" y1="6" y2="6"></line>
+<line x1="3" x2="21" y1="18" y2="18"></line>
+</svg>
+</symbol>
+<symbol id="svg-arrow-right" viewbox="0 0 24 24">
+<title>Expand</title>
+<svg class="feather-chevron-right" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<polyline points="9 18 15 12 9 6"></polyline>
+</svg>
+</symbol>
+<symbol id="svg-sun" viewbox="0 0 24 24">
+<title>Light mode</title>
+<svg class="feather-sun" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle cx="12" cy="12" r="5"></circle>
+<line x1="12" x2="12" y1="1" y2="3"></line>
+<line x1="12" x2="12" y1="21" y2="23"></line>
+<line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line>
+<line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line>
+<line x1="1" x2="3" y1="12" y2="12"></line>
+<line x1="21" x2="23" y1="12" y2="12"></line>
+<line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line>
+<line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line>
+</svg>
+</symbol>
+<symbol id="svg-moon" viewbox="0 0 24 24">
+<title>Dark mode</title>
+<svg class="icon-tabler-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 0h24v24H0z" fill="none" stroke="none"></path>
+<path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+</svg>
+</symbol>
+<symbol id="svg-sun-with-moon" viewbox="0 0 24 24">
+<title>Auto light/dark, in light mode</title>
+<svg class="icon-custom-derived-from-feather-sun-and-tabler-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z" style="opacity: 50%"></path>
+<line x1="14.5" x2="14.5" y1="3.25" y2="1.25"></line>
+<line x1="14.5" x2="14.5" y1="15.85" y2="17.85"></line>
+<line x1="10.044" x2="8.63" y1="5.094" y2="3.68"></line>
+<line x1="19" x2="20.414" y1="14.05" y2="15.464"></line>
+<line x1="8.2" x2="6.2" y1="9.55" y2="9.55"></line>
+<line x1="20.8" x2="22.8" y1="9.55" y2="9.55"></line>
+<line x1="10.044" x2="8.63" y1="14.006" y2="15.42"></line>
+<line x1="19" x2="20.414" y1="5.05" y2="3.636"></line>
+<circle cx="14.5" cy="9.55" r="3.6"></circle>
+</svg>
+</symbol>
+<symbol id="svg-moon-with-sun" viewbox="0 0 24 24">
+<title>Auto light/dark, in dark mode</title>
+<svg class="icon-custom-derived-from-feather-sun-and-tabler-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"></path>
+<line style="opacity: 50%" x1="18" x2="18" y1="3.705" y2="2.5"></line>
+<line style="opacity: 50%" x1="18" x2="18" y1="11.295" y2="12.5"></line>
+<line style="opacity: 50%" x1="15.316" x2="14.464" y1="4.816" y2="3.964"></line>
+<line style="opacity: 50%" x1="20.711" x2="21.563" y1="10.212" y2="11.063"></line>
+<line style="opacity: 50%" x1="14.205" x2="13.001" y1="7.5" y2="7.5"></line>
+<line style="opacity: 50%" x1="21.795" x2="23" y1="7.5" y2="7.5"></line>
+<line style="opacity: 50%" x1="15.316" x2="14.464" y1="10.184" y2="11.036"></line>
+<line style="opacity: 50%" x1="20.711" x2="21.563" y1="4.789" y2="3.937"></line>
+<circle cx="18" cy="7.5" r="2.169" style="opacity: 50%"></circle>
+</svg>
+</symbol>
+<symbol id="svg-pencil" viewbox="0 0 24 24">
+<svg class="icon-tabler-pencil-code" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"></path>
+<path d="M13.5 6.5l4 4"></path>
+<path d="M20 21l2 -2l-2 -2"></path>
+<path d="M17 17l-2 2l2 2"></path>
+</svg>
+</symbol>
+<symbol id="svg-eye" viewbox="0 0 24 24">
+<svg class="icon-tabler-eye-code" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 0h24v24H0z" fill="none" stroke="none"></path>
+<path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"></path>
+<path d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008"></path>
+<path d="M20 21l2 -2l-2 -2"></path>
+<path d="M17 17l-2 2l2 2"></path>
+</svg>
+</symbol>
+</svg>
+<input aria-label="Toggle site navigation sidebar" class="sidebar-toggle" id="__navigation" name="__navigation" type="checkbox"/>
+<input aria-label="Toggle table of contents sidebar" class="sidebar-toggle" id="__toc" name="__toc" type="checkbox"/>
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+<div class="page">
+<header class="mobile-header">
+<div class="header-left">
+<label class="nav-overlay-icon" for="__navigation">
+<span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+</label>
+</div>
+<div class="header-center">
+<a href="../top.html"><div class="brand">DeepZensols Natural Language Processing 1.19.0 documentation</div></a>
+</div>
+<div class="header-right">
+<div class="theme-toggle-container theme-toggle-header">
+<button aria-label="Toggle Light / Dark / Auto color theme" class="theme-toggle">
+<svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+<svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+<svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+<svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+</button>
+</div>
+<label class="toc-overlay-icon toc-header-icon" for="__toc">
+<span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+</label>
+</div>
+</header>
+<aside class="sidebar-drawer">
+<div class="sidebar-container">
+<div class="sidebar-sticky"><a class="sidebar-brand" href="../top.html">
+<span class="sidebar-brand-text">DeepZensols Natural Language Processing 1.19.0 documentation</span>
+</a><form action="../search.html" class="sidebar-search-container" method="get" role="search">
+<input aria-label="Search" class="sidebar-search" name="q" placeholder="Search"/>
+<input name="check_keywords" type="hidden" value="yes"/>
+<input name="area" type="hidden" value="default"/>
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/clickbate-example.html">Clickbate Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/movie-example.html">Movie Review Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/ner-example.html">NER Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/reslib.html">Resource Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/vectorizers.html">Vectorizers</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../api.html">API Reference</a><input aria-label="Toggle navigation of API Reference" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2 current has-children"><a class="reference internal" href="zensols.deepnlp.html">zensols.deepnlp package</a><input aria-label="Toggle navigation of zensols.deepnlp package" checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="zensols.deepnlp.classify.html">zensols.deepnlp.classify package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">zensols.deepnlp.embed package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zensols.deepnlp.index.html">zensols.deepnlp.index package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zensols.deepnlp.layer.html">zensols.deepnlp.layer package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zensols.deepnlp.model.html">zensols.deepnlp.model package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zensols.deepnlp.transformer.html">zensols.deepnlp.transformer package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zensols.deepnlp.vectorize.html">zensols.deepnlp.vectorize package</a></li>
+</ul>
+</input></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.classify.html">zensols.deepnlp.classify package</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">zensols.deepnlp.embed package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.index.html">zensols.deepnlp.index package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.layer.html">zensols.deepnlp.layer package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.model.html">zensols.deepnlp.model package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.transformer.html">zensols.deepnlp.transformer package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zensols.deepnlp.vectorize.html">zensols.deepnlp.vectorize package</a></li>
+</ul>
+</input></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../LICENSE.html">License</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<div class="main">
+<div class="content">
+<div class="article-container">
+<a class="back-to-top muted-link" href="#">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+</svg>
+<span>Back to top</span>
+</a>
+<div class="content-icon-container">
+<div class="view-this-page">
+<a class="muted-link" href="../_sources/api/zensols.deepnlp.embed.rst.txt" title="View this page">
+<svg><use href="#svg-eye"></use></svg>
+<span class="visually-hidden">View this page</span>
+</a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+<button aria-label="Toggle Light / Dark / Auto color theme" class="theme-toggle">
+<svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+<svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+<svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+<svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+</button>
+</div>
+<label class="toc-overlay-icon toc-content-icon" for="__toc">
+<span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+</label>
+</div>
+<article id="furo-main-content" role="main">
+<section id="zensols-deepnlp-embed-package">
+<h1>zensols.deepnlp.embed package<a class="headerlink" href="#zensols-deepnlp-embed-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-zensols.deepnlp.embed.doc">
+<span id="zensols-deepnlp-embed-doc-module"></span><h2>zensols.deepnlp.embed.doc module<a class="headerlink" href="#module-zensols.deepnlp.embed.doc" title="Link to this heading">¶</a></h2>
+<p>A <a class="reference external" href="https://plandes.github.io/nlparse/api/zensols.nlp.html#zensols.nlp.container.FeatureDocument" title="(in A utility library to assist in parsing natural language text. v1.13.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">zensols.nlp.container.FeatureDocument</span></code></a> decorator that populates
+sentence and token embeddings.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">zensols.deepnlp.embed.doc.</span></span><span class="sig-name descname"><span class="pre">WordEmbedDocumentDecorator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torch_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token_embeddings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sent_embeddings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_oov</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/embed/doc.html#WordEmbedDocumentDecorator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://plandes.github.io/nlparse/api/zensols.nlp.html#zensols.nlp.parser.FeatureDocumentDecorator" title="(in A utility library to assist in parsing natural language text. v1.13.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">FeatureDocumentDecorator</span></code></a></p>
+<p>Populates sentence and token embeddings in the documents.  Token’s have
+shape <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">d)</span></code> where <code class="docutils literal notranslate"><span class="pre">d</span></code> is the embeddingn dimsion, and the first is
+always 1 to be compatible with word piece embeddings populated by
+<code class="xref py py-class docutils literal notranslate"><span class="pre">transformer.WordPieceDocumentDecorator</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">See<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel" title="zensols.deepnlp.embed.domain.WordEmbedModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">WordEmbedModel</span></code></a></p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torch_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token_embeddings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sent_embeddings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_oov</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.decorate">
+<span class="sig-name descname"><span class="pre">decorate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/embed/doc.html#WordEmbedDocumentDecorator.decorate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.decorate" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.model">
+<span class="sig-name descname"><span class="pre">model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel" title="zensols.deepnlp.embed.domain.WordEmbedModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">WordEmbedModel</span></code></a></em><a class="headerlink" href="#zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.model" title="Link to this definition">¶</a></dt>
+<dd><p>The word embedding model for populating tokens and sentences.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.sent_embeddings">
+<span class="sig-name descname"><span class="pre">sent_embeddings</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.sent_embeddings" title="Link to this definition">¶</a></dt>
+<dd><p><cite>.WordPieceFeatureSentence.embeddings</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Whether to add class</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.skip_oov">
+<span class="sig-name descname"><span class="pre">skip_oov</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.skip_oov" title="Link to this definition">¶</a></dt>
+<dd><p>Whether to skip out-of-vocabulary tokens that have no embeddings.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.token_embeddings">
+<span class="sig-name descname"><span class="pre">token_embeddings</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.token_embeddings" title="Link to this definition">¶</a></dt>
+<dd><p>Whether to add <code class="xref py py-class docutils literal notranslate"><span class="pre">WordPieceFeatureToken.embeddings</span></code>.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.torch_config">
+<span class="sig-name descname"><span class="pre">torch_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.html#zensols.deeplearn.torchconfig.TorchConfig" title="(in General deep learing utility library v1.15.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TorchConfig</span></code></a><span class="pre">]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.torch_config" title="Link to this definition">¶</a></dt>
+<dd><p>The Torch configuration to allocate the embeddings from either the GPU or
+the CPU.  If <code class="docutils literal notranslate"><span class="pre">None</span></code>, then Numpy <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> arrays are used
+instead of <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code>.</p>
+</dd></dl>
+</dd></dl>
+</section>
+<section id="module-zensols.deepnlp.embed.domain">
+<span id="zensols-deepnlp-embed-domain-module"></span><h2>zensols.deepnlp.embed.domain module<a class="headerlink" href="#module-zensols.deepnlp.embed.domain" title="Link to this heading">¶</a></h2>
+<p>Interface file for word vectors, aka non-contextual word embeddings.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.NoOpWordEmbedModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">zensols.deepnlp.embed.domain.</span></span><span class="sig-name descname"><span class="pre">NoOpWordEmbedModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/embed/domain.html#NoOpWordEmbedModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.embed.domain.NoOpWordEmbedModel" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel" title="zensols.deepnlp.embed.domain.WordEmbedModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">WordEmbedModel</span></code></a></p>
+<p>A no operational implementation of a <a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel" title="zensols.deepnlp.embed.domain.WordEmbedModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">WordEmbedModel</span></code></a>.  This is
+useful in unit test cases that download large models that do not fit on
+GitHub’s workflow actions environments.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.NoOpWordEmbedModel.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/embed/domain.html#NoOpWordEmbedModel.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.embed.domain.NoOpWordEmbedModel.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py exception">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">zensols.deepnlp.embed.domain.</span></span><span class="sig-name descname"><span class="pre">WordEmbedError</span></span><a class="reference internal" href="../_modules/zensols/deepnlp/embed/domain.html#WordEmbedError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.html#zensols.deeplearn.domain.DeepLearnError" title="(in General deep learing utility library v1.15.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DeepLearnError</span></code></a></p>
+<p>Raised for any errors pertaining to word vectors.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedError.__firstlineno__">
+<span class="sig-name descname"><span class="pre">__firstlineno__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">21</span></em><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedError.__firstlineno__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedError.__module__">
+<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'zensols.deepnlp.embed.domain'</span></em><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedError.__module__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedError.__static_attributes__">
+<span class="sig-name descname"><span class="pre">__static_attributes__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></em><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedError.__static_attributes__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">zensols.deepnlp.embed.domain.</span></span><span class="sig-name descname"><span class="pre">WordEmbedModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lowercase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/embed/domain.html#WordEmbedModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedModel" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://plandes.github.io/util/api/zensols.persist.html#zensols.persist.annotation.PersistableContainer" title="(in Zensols Utilities v1.16.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PersistableContainer</span></code></a></p>
+<p>This is an abstract base class that represents a set of word vectors
+(i.e. GloVe).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedModel.UNKNOWN">
+<span class="sig-name descname"><span class="pre">UNKNOWN</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">ClassVar</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'&lt;unk&gt;'</span></em><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedModel.UNKNOWN" title="Link to this definition">¶</a></dt>
+<dd><p>The unknown symbol used for out of vocabulary words.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedModel.ZERO">
+<span class="sig-name descname"><span class="pre">ZERO</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">ClassVar</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'&lt;unk&gt;'</span></em><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedModel.ZERO" title="Link to this definition">¶</a></dt>
+<dd><p>The zero vector symbol used for padding vectors.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedModel.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lowercase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedModel.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedModel.cache">
+<span class="sig-name descname"><span class="pre">cache</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedModel.cache" title="Link to this definition">¶</a></dt>
+<dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code> globally cache all data strucures, which should be <code class="docutils literal notranslate"><span class="pre">False</span></code>
+if more than one embedding across a model type is used.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedModel.clear_cache">
+<span class="sig-name descname"><span class="pre">clear_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/embed/domain.html#WordEmbedModel.clear_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedModel.clear_cache" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedModel.deallocate">
+<span class="sig-name descname"><span class="pre">deallocate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/embed/domain.html#WordEmbedModel.deallocate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedModel.deallocate" title="Link to this definition">¶</a></dt>
+<dd><p>Deallocate all resources for this instance.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedModel.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/embed/domain.html#WordEmbedModel.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedModel.get" title="Link to this definition">¶</a></dt>
+<dd><p>Just like a <code class="docutils literal notranslate"><span class="pre">dict.get()</span></code>, but but return the vector for a word.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – the word to get the vector</p></li>
+<li><p><strong>default</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></span>) – what to return if <code class="docutils literal notranslate"><span class="pre">key</span></code> doesn’t exist in the dict</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the word vector</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedModel.keyed_vectors">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">keyed_vectors</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://radimrehurek.com/gensim/models/keyedvectors.html#gensim.models.keyedvectors.KeyedVectors" title="(in gensim v4.3.3)"><span class="pre">KeyedVectors</span></a></em><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedModel.keyed_vectors" title="Link to this definition">¶</a></dt>
+<dd><p>Adapt instances of this class to a gensim keyed vector instance.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedModel.keys">
+<span class="sig-name descname"><span class="pre">keys</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/embed/domain.html#WordEmbedModel.keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedModel.keys" title="Link to this definition">¶</a></dt>
+<dd><p>Return the keys, which are the word2vec words.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedModel.lowercase">
+<span class="sig-name descname"><span class="pre">lowercase</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedModel.lowercase" title="Link to this definition">¶</a></dt>
+<dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, downcase each word for all methods that take a word as
+input.  Use this for embeddings that are only lower case in order to find
+more hits when querying for words that have uppercase characters.</p>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedModel.matrix">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">matrix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedModel.matrix" title="Link to this definition">¶</a></dt>
+<dd><p>The word vector matrix.</p>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedModel.model_id">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">model_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedModel.model_id" title="Link to this definition">¶</a></dt>
+<dd><p>Return a string that uniquely identifies this instance of the
+embedding model.  This should have the type, size and dimension of the
+embedding.</p>
+<p>This string is used to cache models in both CPU and GPU memory so the
+layers can have the benefit of reusing the same in memeory word
+embedding matrix.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedModel.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedModel.name" title="Link to this definition">¶</a></dt>
+<dd><p>The name of the model given by the configuration and must be unique
+across word vector type and dimension.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedModel.prime">
+<span class="sig-name descname"><span class="pre">prime</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/embed/domain.html#WordEmbedModel.prime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedModel.prime" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedModel.shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedModel.shape" title="Link to this definition">¶</a></dt>
+<dd><p>obj”<cite>matrix</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The shape of the word vector</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedModel.to_matrix">
+<span class="sig-name descname"><span class="pre">to_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">torch_config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/embed/domain.html#WordEmbedModel.to_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedModel.to_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Return a matrix the represents the entire vector embedding as a
+tensor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>torch_config</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://plandes.github.io/deeplearn/api/zensols.deeplearn.html#zensols.deeplearn.torchconfig.TorchConfig" title="(in General deep learing utility library v1.15.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TorchConfig</span></code></a></span>) – indicates where to load the new tensor</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedModel.unk_idx">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unk_idx</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedModel.unk_idx" title="Link to this definition">¶</a></dt>
+<dd><p>The ID to the out-of-vocabulary index</p>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedModel.vector_dimension">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vector_dimension</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedModel.vector_dimension" title="Link to this definition">¶</a></dt>
+<dd><p>Return the dimension of the word vectors.</p>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedModel.vectors">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vectors</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedModel.vectors" title="Link to this definition">¶</a></dt>
+<dd><p>Return all word vectors with the string words as keys.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedModel.word2idx">
+<span class="sig-name descname"><span class="pre">word2idx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/embed/domain.html#WordEmbedModel.word2idx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedModel.word2idx" title="Link to this definition">¶</a></dt>
+<dd><p>Return the index of <code class="docutils literal notranslate"><span class="pre">word</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">UNKONWN</span></code> if not indexed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordEmbedModel.word2idx_or_unk">
+<span class="sig-name descname"><span class="pre">word2idx_or_unk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/embed/domain.html#WordEmbedModel.word2idx_or_unk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordEmbedModel.word2idx_or_unk" title="Link to this definition">¶</a></dt>
+<dd><p>Return the index of <code class="docutils literal notranslate"><span class="pre">word</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">UNKONWN</span></code> if not indexed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordVectorModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">zensols.deepnlp.embed.domain.</span></span><span class="sig-name descname"><span class="pre">WordVectorModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vectors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word2vec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">words</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word2idx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/embed/domain.html#WordVectorModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordVectorModel" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Vector data from the model</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordVectorModel.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vectors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word2vec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">words</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word2idx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordVectorModel.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordVectorModel.to_matrix">
+<span class="sig-name descname"><span class="pre">to_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">torch_config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/embed/domain.html#WordVectorModel.to_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordVectorModel.to_matrix" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordVectorModel.vectors">
+<span class="sig-name descname"><span class="pre">vectors</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></em><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordVectorModel.vectors" title="Link to this definition">¶</a></dt>
+<dd><p>The word vectors.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordVectorModel.word2idx">
+<span class="sig-name descname"><span class="pre">word2idx</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">,</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordVectorModel.word2idx" title="Link to this definition">¶</a></dt>
+<dd><p>The word to word vector index mapping.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordVectorModel.word2vec">
+<span class="sig-name descname"><span class="pre">word2vec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">,</span> <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordVectorModel.word2vec" title="Link to this definition">¶</a></dt>
+<dd><p>The word to word vector mapping.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.domain.WordVectorModel.words">
+<span class="sig-name descname"><span class="pre">words</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#zensols.deepnlp.embed.domain.WordVectorModel.words" title="Link to this definition">¶</a></dt>
+<dd><p>The vocabulary.</p>
+</dd></dl>
+</dd></dl>
+</section>
+<section id="module-zensols.deepnlp.embed.fasttext">
+<span id="zensols-deepnlp-embed-fasttext-module"></span><h2>zensols.deepnlp.embed.fasttext module<a class="headerlink" href="#module-zensols.deepnlp.embed.fasttext" title="Link to this heading">¶</a></h2>
+<p>Fast text word vector implementation.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.fasttext.FastTextEmbedModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">zensols.deepnlp.embed.fasttext.</span></span><span class="sig-name descname"><span class="pre">FastTextEmbedModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lowercase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">installer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'2M'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">corpus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'crawl'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/embed/fasttext.html#FastTextEmbedModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.embed.fasttext.FastTextEmbedModel" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.embed.wordtext.TextWordEmbedModel" title="zensols.deepnlp.embed.wordtext.TextWordEmbedModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">TextWordEmbedModel</span></code></a></p>
+<p>This class reads the FastText word vector text data format and provides an
+instances of a <a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel" title="zensols.deepnlp.embed.domain.WordEmbedModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">WordEmbedModel</span></code></a>.  Files that have the format that
+look like <code class="docutils literal notranslate"><span class="pre">crawl-300d-2M.vec</span></code> can be downloaded with the link below.</p>
+<dl class="field-list simple">
+<dt class="field-odd">See<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://fasttext.cc/docs/en/english-vectors.html">English word vectors</a></p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.fasttext.FastTextEmbedModel.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lowercase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">installer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'2M'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">corpus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'crawl'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.embed.fasttext.FastTextEmbedModel.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.fasttext.FastTextEmbedModel.corpus">
+<span class="sig-name descname"><span class="pre">corpus</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'crawl'</span></em><a class="headerlink" href="#zensols.deepnlp.embed.fasttext.FastTextEmbedModel.corpus" title="Link to this definition">¶</a></dt>
+<dd><p>The corpus the embeddings were trained on, such as <code class="docutils literal notranslate"><span class="pre">crawl</span></code> and <code class="docutils literal notranslate"><span class="pre">web</span></code>.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.fasttext.FastTextEmbedModel.desc">
+<span class="sig-name descname"><span class="pre">desc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'2M'</span></em><a class="headerlink" href="#zensols.deepnlp.embed.fasttext.FastTextEmbedModel.desc" title="Link to this definition">¶</a></dt>
+<dd><p>The size description (i.e. 6B for the six billion word trained vectors).</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.fasttext.FastTextEmbedModel.dimension">
+<span class="sig-name descname"><span class="pre">dimension</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">300</span></em><a class="headerlink" href="#zensols.deepnlp.embed.fasttext.FastTextEmbedModel.dimension" title="Link to this definition">¶</a></dt>
+<dd><p>The word vector dimension.</p>
+</dd></dl>
+</dd></dl>
+</section>
+<section id="module-zensols.deepnlp.embed.glove">
+<span id="zensols-deepnlp-embed-glove-module"></span><h2>zensols.deepnlp.embed.glove module<a class="headerlink" href="#module-zensols.deepnlp.embed.glove" title="Link to this heading">¶</a></h2>
+<p>This module contains the definition of a class that operates like a dict to
+retrieve GloVE word embeddings.  It also creates, stores and reads a binary
+representation for quick loading on start up.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.glove.GloveWordEmbedModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">zensols.deepnlp.embed.glove.</span></span><span class="sig-name descname"><span class="pre">GloveWordEmbedModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lowercase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">installer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'6B'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vocab_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">400000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/embed/glove.html#GloveWordEmbedModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.embed.glove.GloveWordEmbedModel" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.embed.wordtext.TextWordEmbedModel" title="zensols.deepnlp.embed.wordtext.TextWordEmbedModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">TextWordEmbedModel</span></code></a></p>
+<p>This class uses the Stanford pretrained GloVE embeddings as a <code class="docutils literal notranslate"><span class="pre">dict</span></code> like
+Python object.  It loads the glove vectors from a text file and then
+creates a binary file that’s quick to load on subsequent uses.</p>
+<p>An example configuration would be:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[glove_embedding]
+class_name = zensols.deepnlp.embed.GloveWordEmbedModel
+path = path: ${default:corpus_dir}/glove
+desc = 6B
+dimension = 50
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.glove.GloveWordEmbedModel.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lowercase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">installer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'6B'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vocab_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">400000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.embed.glove.GloveWordEmbedModel.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.glove.GloveWordEmbedModel.desc">
+<span class="sig-name descname"><span class="pre">desc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'6B'</span></em><a class="headerlink" href="#zensols.deepnlp.embed.glove.GloveWordEmbedModel.desc" title="Link to this definition">¶</a></dt>
+<dd><p>The size description (i.e. 6B for the six billion word trained vectors).</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.glove.GloveWordEmbedModel.dimension">
+<span class="sig-name descname"><span class="pre">dimension</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">50</span></em><a class="headerlink" href="#zensols.deepnlp.embed.glove.GloveWordEmbedModel.dimension" title="Link to this definition">¶</a></dt>
+<dd><p>The word vector dimension.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.glove.GloveWordEmbedModel.vocab_size">
+<span class="sig-name descname"><span class="pre">vocab_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">400000</span></em><a class="headerlink" href="#zensols.deepnlp.embed.glove.GloveWordEmbedModel.vocab_size" title="Link to this definition">¶</a></dt>
+<dd><p>Vocabulary size.</p>
+</dd></dl>
+</dd></dl>
+</section>
+<section id="module-zensols.deepnlp.embed.word2vec">
+<span id="zensols-deepnlp-embed-word2vec-module"></span><h2>zensols.deepnlp.embed.word2vec module<a class="headerlink" href="#module-zensols.deepnlp.embed.word2vec" title="Link to this heading">¶</a></h2>
+<p>Convenience Gensim glue code for word embeddings/vectors.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.word2vec.Word2VecModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">zensols.deepnlp.embed.word2vec.</span></span><span class="sig-name descname"><span class="pre">Word2VecModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lowercase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">installer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'keyed'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/embed/word2vec.html#Word2VecModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.embed.word2vec.Word2VecModel" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel" title="zensols.deepnlp.embed.domain.WordEmbedModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">WordEmbedModel</span></code></a></p>
+<p>Load keyed or non-keyed Gensim models.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.word2vec.Word2VecModel.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lowercase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">installer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'keyed'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.embed.word2vec.Word2VecModel.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.word2vec.Word2VecModel.dimension">
+<span class="sig-name descname"><span class="pre">dimension</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">300</span></em><a class="headerlink" href="#zensols.deepnlp.embed.word2vec.Word2VecModel.dimension" title="Link to this definition">¶</a></dt>
+<dd><p>The dimension of the word embedding.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.word2vec.Word2VecModel.installer">
+<span class="sig-name descname"><span class="pre">installer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Installer</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#zensols.deepnlp.embed.word2vec.Word2VecModel.installer" title="Link to this definition">¶</a></dt>
+<dd><p>The installer used to for the text vector zip file.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.word2vec.Word2VecModel.model_type">
+<span class="sig-name descname"><span class="pre">model_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'keyed'</span></em><a class="headerlink" href="#zensols.deepnlp.embed.word2vec.Word2VecModel.model_type" title="Link to this definition">¶</a></dt>
+<dd><p>The type of the embeddings, which is either <code class="docutils literal notranslate"><span class="pre">keyed</span></code> or <code class="docutils literal notranslate"><span class="pre">gensim</span></code>.</p>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.word2vec.Word2VecModel.path">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Path</span></em><a class="headerlink" href="#zensols.deepnlp.embed.word2vec.Word2VecModel.path" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.word2vec.Word2VecModel.resource">
+<span class="sig-name descname"><span class="pre">resource</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Resource</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#zensols.deepnlp.embed.word2vec.Word2VecModel.resource" title="Link to this definition">¶</a></dt>
+<dd><p>The zip resource used to find the path to the model files.</p>
+</dd></dl>
+</dd></dl>
+</section>
+<section id="module-zensols.deepnlp.embed.wordtext">
+<span id="zensols-deepnlp-embed-wordtext-module"></span><h2>zensols.deepnlp.embed.wordtext module<a class="headerlink" href="#module-zensols.deepnlp.embed.wordtext" title="Link to this heading">¶</a></h2>
+<p>Contains an abstract class that makes it easier to implement load word
+vectors from text files.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">zensols.deepnlp.embed.wordtext.</span></span><span class="sig-name descname"><span class="pre">DefaultTextWordEmbedModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'unknown_name'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lowercase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">installer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'unknown_desc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vocab_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name_pattern</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'{name}.{desc}.{dimension}d.txt'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/embed/wordtext.html#DefaultTextWordEmbedModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.embed.wordtext.TextWordEmbedModel" title="zensols.deepnlp.embed.wordtext.TextWordEmbedModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">TextWordEmbedModel</span></code></a></p>
+<p>This class uses the Stanford pretrained GloVE embeddings as a <code class="docutils literal notranslate"><span class="pre">dict</span></code>
+like Python object.  It loads the glove vectors from a text file and then
+creates a binary file that’s quick to load on subsequent uses.</p>
+<p>An example configuration would be:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[glove_embedding]
+class_name = zensols.deepnlp.embed.GloveWordEmbedModel
+path = path: ${default:corpus_dir}/glove
+desc = 6B
+dimension = 50
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'unknown_name'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lowercase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">installer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'unknown_desc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vocab_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name_pattern</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'{name}.{desc}.{dimension}d.txt'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.desc">
+<span class="sig-name descname"><span class="pre">desc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'unknown_desc'</span></em><a class="headerlink" href="#zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.desc" title="Link to this definition">¶</a></dt>
+<dd><p>The size description (i.e. 6B for the six billion word trained vectors).</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.dimension">
+<span class="sig-name descname"><span class="pre">dimension</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">50</span></em><a class="headerlink" href="#zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.dimension" title="Link to this definition">¶</a></dt>
+<dd><p>The word vector dimension.</p>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.file_name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">file_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.file_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.file_name_pattern">
+<span class="sig-name descname"><span class="pre">file_name_pattern</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'{name}.{desc}.{dimension}d.txt'</span></em><a class="headerlink" href="#zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.file_name_pattern" title="Link to this definition">¶</a></dt>
+<dd><p>The format of the file to create.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'unknown_name'</span></em><a class="headerlink" href="#zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.name" title="Link to this definition">¶</a></dt>
+<dd><p>The name of the word vector set (i.e. glove).</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.vocab_size">
+<span class="sig-name descname"><span class="pre">vocab_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.vocab_size" title="Link to this definition">¶</a></dt>
+<dd><p>Vocabulary size.</p>
+</dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.wordtext.TextWordEmbedModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">zensols.deepnlp.embed.wordtext.</span></span><span class="sig-name descname"><span class="pre">TextWordEmbedModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lowercase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">installer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/embed/wordtext.html#TextWordEmbedModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.embed.wordtext.TextWordEmbedModel" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel" title="zensols.deepnlp.embed.domain.WordEmbedModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">WordEmbedModel</span></code></a>, <a class="reference external" href="https://plandes.github.io/util/api/zensols.persist.html#zensols.persist.domain.Primeable" title="(in Zensols Utilities v1.16.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Primeable</span></code></a></p>
+<p>Extensions of this class read a text vectors file and compile, then write
+a binary representation for fast loading.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.wordtext.TextWordEmbedModel.DATASET_NAME">
+<span class="sig-name descname"><span class="pre">DATASET_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'vec'</span></em><a class="headerlink" href="#zensols.deepnlp.embed.wordtext.TextWordEmbedModel.DATASET_NAME" title="Link to this definition">¶</a></dt>
+<dd><p>Name of the dataset in the HD5F file.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.wordtext.TextWordEmbedModel.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lowercase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">installer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.embed.wordtext.TextWordEmbedModel.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.wordtext.TextWordEmbedModel.installer">
+<span class="sig-name descname"><span class="pre">installer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Installer</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#zensols.deepnlp.embed.wordtext.TextWordEmbedModel.installer" title="Link to this definition">¶</a></dt>
+<dd><p>The installer used to for the text vector zip file.</p>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.wordtext.TextWordEmbedModel.metadata">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">metadata</span></span><a class="headerlink" href="#zensols.deepnlp.embed.wordtext.TextWordEmbedModel.metadata" title="Link to this definition">¶</a></dt>
+<dd><p>Return the metadata used to construct paths both text source vector
+file and all generated binary files.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.wordtext.TextWordEmbedModel.path">
+<span class="sig-name descname"><span class="pre">path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#zensols.deepnlp.embed.wordtext.TextWordEmbedModel.path" title="Link to this definition">¶</a></dt>
+<dd><p>The path to the model file(s).</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.wordtext.TextWordEmbedModel.prime">
+<span class="sig-name descname"><span class="pre">prime</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/embed/wordtext.html#TextWordEmbedModel.prime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.embed.wordtext.TextWordEmbedModel.prime" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.wordtext.TextWordEmbedModel.resource">
+<span class="sig-name descname"><span class="pre">resource</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Resource</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#zensols.deepnlp.embed.wordtext.TextWordEmbedModel.resource" title="Link to this definition">¶</a></dt>
+<dd><p>The zip resource used to find the path to the model files.</p>
+</dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.wordtext.TextWordModelMetadata">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">zensols.deepnlp.embed.wordtext.</span></span><span class="sig-name descname"><span class="pre">TextWordModelMetadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_vocab</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub_directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zensols/deepnlp/embed/wordtext.html#TextWordModelMetadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zensols.deepnlp.embed.wordtext.TextWordModelMetadata" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://plandes.github.io/util/api/zensols.config.html#zensols.config.dictable.Dictable" title="(in Zensols Utilities v1.16.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dictable</span></code></a></p>
+<p>Describes a text based <a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel" title="zensols.deepnlp.embed.domain.WordEmbedModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">WordEmbedModel</span></code></a>.  This information in
+this class is used to construct paths both text source vector file and all
+generated binary files</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.wordtext.TextWordModelMetadata.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_vocab</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub_directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#zensols.deepnlp.embed.wordtext.TextWordModelMetadata.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.wordtext.TextWordModelMetadata.desc">
+<span class="sig-name descname"><span class="pre">desc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#zensols.deepnlp.embed.wordtext.TextWordModelMetadata.desc" title="Link to this definition">¶</a></dt>
+<dd><p>A descriptor about this particular word vector set (i.e. 6B).</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.wordtext.TextWordModelMetadata.dimension">
+<span class="sig-name descname"><span class="pre">dimension</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></em><a class="headerlink" href="#zensols.deepnlp.embed.wordtext.TextWordModelMetadata.dimension" title="Link to this definition">¶</a></dt>
+<dd><p>The dimension of the word vectors.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.wordtext.TextWordModelMetadata.n_vocab">
+<span class="sig-name descname"><span class="pre">n_vocab</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></em><a class="headerlink" href="#zensols.deepnlp.embed.wordtext.TextWordModelMetadata.n_vocab" title="Link to this definition">¶</a></dt>
+<dd><p>The number of words in the vocabulary.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.wordtext.TextWordModelMetadata.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#zensols.deepnlp.embed.wordtext.TextWordModelMetadata.name" title="Link to this definition">¶</a></dt>
+<dd><p>The name of the word vector set (i.e. glove).</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.wordtext.TextWordModelMetadata.source_path">
+<span class="sig-name descname"><span class="pre">source_path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></em><a class="headerlink" href="#zensols.deepnlp.embed.wordtext.TextWordModelMetadata.source_path" title="Link to this definition">¶</a></dt>
+<dd><p>The path to the text file.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="zensols.deepnlp.embed.wordtext.TextWordModelMetadata.sub_directory">
+<span class="sig-name descname"><span class="pre">sub_directory</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/dataclasses.html#dataclasses.InitVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">InitVar</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#zensols.deepnlp.embed.wordtext.TextWordModelMetadata.sub_directory" title="Link to this definition">¶</a></dt>
+<dd><p>The subdirectory to be appended to <code class="xref py py-obj docutils literal notranslate"><span class="pre">self.bin_dir</span></code>, which defaults to
+the directory <code class="docutils literal notranslate"><span class="pre">bin/&lt;description&gt;.&lt;dimension&gt;</span></code>.</p>
+</dd></dl>
+</dd></dl>
+</section>
+<section id="module-zensols.deepnlp.embed">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-zensols.deepnlp.embed" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+</article>
+</div>
+<footer>
+<div class="related-pages">
+<a class="next-page" href="zensols.deepnlp.index.html">
+<div class="page-info">
+<div class="context">
+<span>Next</span>
+</div>
+<div class="title">zensols.deepnlp.index package</div>
+</div>
+<svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+</a>
+<a class="prev-page" href="zensols.deepnlp.classify.html">
+<svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+<div class="page-info">
+<div class="context">
+<span>Previous</span>
+</div>
+<div class="title">zensols.deepnlp.classify package</div>
+</div>
+</a>
+</div>
+<div class="bottom-of-page">
+<div class="left-details">
+<div class="copyright">
+                Copyright © 2026 Paul Landes
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+</div>
+<div class="right-details">
+</div>
+</div>
+</footer>
+</div>
+<aside class="toc-drawer">
+<div class="toc-sticky toc-scroll">
+<div class="toc-title-container">
+<span class="toc-title">
+            On this page
+          </span>
+</div>
+<div class="toc-tree-container">
+<div class="toc-tree">
+<ul>
+<li><a class="reference internal" href="#">zensols.deepnlp.embed package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-zensols.deepnlp.embed.doc">zensols.deepnlp.embed.doc module</a><ul>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator"><code class="docutils literal notranslate"><span class="pre">WordEmbedDocumentDecorator</span></code></a><ul>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.__init__"><code class="docutils literal notranslate"><span class="pre">WordEmbedDocumentDecorator.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.decorate"><code class="docutils literal notranslate"><span class="pre">WordEmbedDocumentDecorator.decorate()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.model"><code class="docutils literal notranslate"><span class="pre">WordEmbedDocumentDecorator.model</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.sent_embeddings"><code class="docutils literal notranslate"><span class="pre">WordEmbedDocumentDecorator.sent_embeddings</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.skip_oov"><code class="docutils literal notranslate"><span class="pre">WordEmbedDocumentDecorator.skip_oov</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.token_embeddings"><code class="docutils literal notranslate"><span class="pre">WordEmbedDocumentDecorator.token_embeddings</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.doc.WordEmbedDocumentDecorator.torch_config"><code class="docutils literal notranslate"><span class="pre">WordEmbedDocumentDecorator.torch_config</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-zensols.deepnlp.embed.domain">zensols.deepnlp.embed.domain module</a><ul>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.NoOpWordEmbedModel"><code class="docutils literal notranslate"><span class="pre">NoOpWordEmbedModel</span></code></a><ul>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.NoOpWordEmbedModel.__init__"><code class="docutils literal notranslate"><span class="pre">NoOpWordEmbedModel.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedError"><code class="docutils literal notranslate"><span class="pre">WordEmbedError</span></code></a><ul>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedError.__firstlineno__"><code class="docutils literal notranslate"><span class="pre">WordEmbedError.__firstlineno__</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedError.__module__"><code class="docutils literal notranslate"><span class="pre">WordEmbedError.__module__</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedError.__static_attributes__"><code class="docutils literal notranslate"><span class="pre">WordEmbedError.__static_attributes__</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel"><code class="docutils literal notranslate"><span class="pre">WordEmbedModel</span></code></a><ul>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel.UNKNOWN"><code class="docutils literal notranslate"><span class="pre">WordEmbedModel.UNKNOWN</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel.ZERO"><code class="docutils literal notranslate"><span class="pre">WordEmbedModel.ZERO</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel.__init__"><code class="docutils literal notranslate"><span class="pre">WordEmbedModel.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel.cache"><code class="docutils literal notranslate"><span class="pre">WordEmbedModel.cache</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel.clear_cache"><code class="docutils literal notranslate"><span class="pre">WordEmbedModel.clear_cache()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel.deallocate"><code class="docutils literal notranslate"><span class="pre">WordEmbedModel.deallocate()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel.get"><code class="docutils literal notranslate"><span class="pre">WordEmbedModel.get()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel.keyed_vectors"><code class="docutils literal notranslate"><span class="pre">WordEmbedModel.keyed_vectors</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel.keys"><code class="docutils literal notranslate"><span class="pre">WordEmbedModel.keys()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel.lowercase"><code class="docutils literal notranslate"><span class="pre">WordEmbedModel.lowercase</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel.matrix"><code class="docutils literal notranslate"><span class="pre">WordEmbedModel.matrix</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel.model_id"><code class="docutils literal notranslate"><span class="pre">WordEmbedModel.model_id</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel.name"><code class="docutils literal notranslate"><span class="pre">WordEmbedModel.name</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel.prime"><code class="docutils literal notranslate"><span class="pre">WordEmbedModel.prime()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel.shape"><code class="docutils literal notranslate"><span class="pre">WordEmbedModel.shape</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel.to_matrix"><code class="docutils literal notranslate"><span class="pre">WordEmbedModel.to_matrix()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel.unk_idx"><code class="docutils literal notranslate"><span class="pre">WordEmbedModel.unk_idx</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel.vector_dimension"><code class="docutils literal notranslate"><span class="pre">WordEmbedModel.vector_dimension</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel.vectors"><code class="docutils literal notranslate"><span class="pre">WordEmbedModel.vectors</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel.word2idx"><code class="docutils literal notranslate"><span class="pre">WordEmbedModel.word2idx()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordEmbedModel.word2idx_or_unk"><code class="docutils literal notranslate"><span class="pre">WordEmbedModel.word2idx_or_unk()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordVectorModel"><code class="docutils literal notranslate"><span class="pre">WordVectorModel</span></code></a><ul>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordVectorModel.__init__"><code class="docutils literal notranslate"><span class="pre">WordVectorModel.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordVectorModel.to_matrix"><code class="docutils literal notranslate"><span class="pre">WordVectorModel.to_matrix()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordVectorModel.vectors"><code class="docutils literal notranslate"><span class="pre">WordVectorModel.vectors</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordVectorModel.word2idx"><code class="docutils literal notranslate"><span class="pre">WordVectorModel.word2idx</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordVectorModel.word2vec"><code class="docutils literal notranslate"><span class="pre">WordVectorModel.word2vec</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.domain.WordVectorModel.words"><code class="docutils literal notranslate"><span class="pre">WordVectorModel.words</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-zensols.deepnlp.embed.fasttext">zensols.deepnlp.embed.fasttext module</a><ul>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.fasttext.FastTextEmbedModel"><code class="docutils literal notranslate"><span class="pre">FastTextEmbedModel</span></code></a><ul>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.fasttext.FastTextEmbedModel.__init__"><code class="docutils literal notranslate"><span class="pre">FastTextEmbedModel.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.fasttext.FastTextEmbedModel.corpus"><code class="docutils literal notranslate"><span class="pre">FastTextEmbedModel.corpus</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.fasttext.FastTextEmbedModel.desc"><code class="docutils literal notranslate"><span class="pre">FastTextEmbedModel.desc</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.fasttext.FastTextEmbedModel.dimension"><code class="docutils literal notranslate"><span class="pre">FastTextEmbedModel.dimension</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-zensols.deepnlp.embed.glove">zensols.deepnlp.embed.glove module</a><ul>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.glove.GloveWordEmbedModel"><code class="docutils literal notranslate"><span class="pre">GloveWordEmbedModel</span></code></a><ul>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.glove.GloveWordEmbedModel.__init__"><code class="docutils literal notranslate"><span class="pre">GloveWordEmbedModel.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.glove.GloveWordEmbedModel.desc"><code class="docutils literal notranslate"><span class="pre">GloveWordEmbedModel.desc</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.glove.GloveWordEmbedModel.dimension"><code class="docutils literal notranslate"><span class="pre">GloveWordEmbedModel.dimension</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.glove.GloveWordEmbedModel.vocab_size"><code class="docutils literal notranslate"><span class="pre">GloveWordEmbedModel.vocab_size</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-zensols.deepnlp.embed.word2vec">zensols.deepnlp.embed.word2vec module</a><ul>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.word2vec.Word2VecModel"><code class="docutils literal notranslate"><span class="pre">Word2VecModel</span></code></a><ul>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.word2vec.Word2VecModel.__init__"><code class="docutils literal notranslate"><span class="pre">Word2VecModel.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.word2vec.Word2VecModel.dimension"><code class="docutils literal notranslate"><span class="pre">Word2VecModel.dimension</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.word2vec.Word2VecModel.installer"><code class="docutils literal notranslate"><span class="pre">Word2VecModel.installer</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.word2vec.Word2VecModel.model_type"><code class="docutils literal notranslate"><span class="pre">Word2VecModel.model_type</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.word2vec.Word2VecModel.path"><code class="docutils literal notranslate"><span class="pre">Word2VecModel.path</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.word2vec.Word2VecModel.resource"><code class="docutils literal notranslate"><span class="pre">Word2VecModel.resource</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-zensols.deepnlp.embed.wordtext">zensols.deepnlp.embed.wordtext module</a><ul>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel"><code class="docutils literal notranslate"><span class="pre">DefaultTextWordEmbedModel</span></code></a><ul>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.__init__"><code class="docutils literal notranslate"><span class="pre">DefaultTextWordEmbedModel.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.desc"><code class="docutils literal notranslate"><span class="pre">DefaultTextWordEmbedModel.desc</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.dimension"><code class="docutils literal notranslate"><span class="pre">DefaultTextWordEmbedModel.dimension</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.file_name"><code class="docutils literal notranslate"><span class="pre">DefaultTextWordEmbedModel.file_name</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.file_name_pattern"><code class="docutils literal notranslate"><span class="pre">DefaultTextWordEmbedModel.file_name_pattern</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.name"><code class="docutils literal notranslate"><span class="pre">DefaultTextWordEmbedModel.name</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.wordtext.DefaultTextWordEmbedModel.vocab_size"><code class="docutils literal notranslate"><span class="pre">DefaultTextWordEmbedModel.vocab_size</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.wordtext.TextWordEmbedModel"><code class="docutils literal notranslate"><span class="pre">TextWordEmbedModel</span></code></a><ul>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.wordtext.TextWordEmbedModel.DATASET_NAME"><code class="docutils literal notranslate"><span class="pre">TextWordEmbedModel.DATASET_NAME</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.wordtext.TextWordEmbedModel.__init__"><code class="docutils literal notranslate"><span class="pre">TextWordEmbedModel.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.wordtext.TextWordEmbedModel.installer"><code class="docutils literal notranslate"><span class="pre">TextWordEmbedModel.installer</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.wordtext.TextWordEmbedModel.metadata"><code class="docutils literal notranslate"><span class="pre">TextWordEmbedModel.metadata</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.wordtext.TextWordEmbedModel.path"><code class="docutils literal notranslate"><span class="pre">TextWordEmbedModel.path</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.wordtext.TextWordEmbedModel.prime"><code class="docutils literal notranslate"><span class="pre">TextWordEmbedModel.prime()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.wordtext.TextWordEmbedModel.resource"><code class="docutils literal notranslate"><span class="pre">TextWordEmbedModel.resource</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.wordtext.TextWordModelMetadata"><code class="docutils literal notranslate"><span class="pre">TextWordModelMetadata</span></code></a><ul>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.wordtext.TextWordModelMetadata.__init__"><code class="docutils literal notranslate"><span class="pre">TextWordModelMetadata.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.wordtext.TextWordModelMetadata.desc"><code class="docutils literal notranslate"><span class="pre">TextWordModelMetadata.desc</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.wordtext.TextWordModelMetadata.dimension"><code class="docutils literal notranslate"><span class="pre">TextWordModelMetadata.dimension</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.wordtext.TextWordModelMetadata.n_vocab"><code class="docutils literal notranslate"><span class="pre">TextWordModelMetadata.n_vocab</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.wordtext.TextWordModelMetadata.name"><code class="docutils literal notranslate"><span class="pre">TextWordModelMetadata.name</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.wordtext.TextWordModelMetadata.source_path"><code class="docutils literal notranslate"><span class="pre">TextWordModelMetadata.source_path</span></code></a></li>
+<li><a class="reference internal" href="#zensols.deepnlp.embed.wordtext.TextWordModelMetadata.sub_directory"><code class="docutils literal notranslate"><span class="pre">TextWordModelMetadata.sub_directory</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-zensols.deepnlp.embed">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</div><script src="../_static/documentation_options.js?v=54b9a5ca"></script>
+<script src="../_static/doctools.js?v=9a2dae69"></script>
+<script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+<script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="../_static/copybutton.js?v=f281be69"></script>
+</body>
+</html>
